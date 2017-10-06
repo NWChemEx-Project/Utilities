@@ -1,44 +1,23 @@
-#include <IterTools/Permutations.hpp>
+#include <UtilitiesEx/IterTools/Permutations.hpp>
+#include <UtilitiesEx/TypeTraits/type_traitsExtensions.hpp>
 #define CATCH_CONFIG_MAIN
 #include "catch/catch.hpp"
 #include <type_traits>
 
-using namespace IterTools;
+using namespace UtilitiesEx;
 using set_type=std::vector<int>;
-using perm_type=Permuations<set_type>;
+using perm_type=Permutations<set_type>;
+using iterator=typename perm_type::iterator;
 
 /* General note: testing of the Permutations class really amounts to testing its
  * iterators.
  */
-
-TEST_CASE("Permutation satisfies container concept")
+TEST_CASE("Satisfy STL concepts")
 {
-
-    SECTION("Typedefs")
-    {
-        REQUIRE(std::is_same<typename perm_type::value_type,set_type>::value);
-        REQUIRE(std::is_same<typename perm_type::reference,
-                set_type &>::value);
-        REQUIRE(std::is_same<typename perm_type::const_reference,
-                const set_type&>::value);
-        REQUIRE(std::is_same<typename perm_type::iterator,
-                typename perm_type::PermutationItr>::value);
-        REQUIRE(std::is_same<typename perm_type::const_iterator,
-                const typename perm_type::PermutationItr>::value);
-        REQUIRE(std::is_same<typename perm_type::difference_type,
-                long int>::value);
-        REQUIRE(std::is_same<typename perm_type::size_type,
-                std::size_t>::value);
-    }
-    SECTION("Members")
-    {
-        REQUIRE(std::is_default_constructible<perm_type>::value);
-        REQUIRE(std::is_copy_constructible<perm_type>::value);
-        REQUIRE(std::is_assignable<perm_type>::value);
-        REQUIRE(std::is_destructible<perm_type>::value);
-        REQUIRE(std::is_member_function<decltype(&perm_type::begin)>::value);
-        REQUIRE(std::is_swappable<perm_type>::value);
-    }
+    bool is_cont=is_container<perm_type>::value;
+    bool is_bid=is_bidirectional_iterator<iterator>::value;
+    REQUIRE(is_cont);
+    REQUIRE(is_bid);
 }
 
 

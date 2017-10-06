@@ -1,8 +1,8 @@
-#include "IterTools/Combinatorics.hpp"
+#include <UtilitiesEx/Mathematician/Combinatorics.hpp>
 #define CATCH_CONFIG_MAIN
-#include "/home/ryan/Catch/single_include/catch.hpp"
+#include "catch/catch.hpp"
 
-using namespace IterTools;
+using namespace UtilitiesEx;
 
 TEST_CASE("Binomial coefficient")
 {
