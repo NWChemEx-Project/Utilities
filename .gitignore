@@ -1,0 +1,6 @@
+IterTools.config
+IterTools.files
+IterTools.includes
+*.autosave
+
+.idea/
