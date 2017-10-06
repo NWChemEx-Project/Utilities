@@ -4,3 +4,6 @@ IterTools.includes
 *.autosave
 
 .idea/
+
+Debug/
+Release/
