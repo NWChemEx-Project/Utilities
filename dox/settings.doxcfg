@@ -24,4 +24,5 @@ PROJECT_BRIEF          = "It's NWChem, but with an Ex"
 # spaces.
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  =
+INPUT                  = . UtilitiesEx UtilitiesEx/IterTools \
+                           UtilitiesEx/Mathematician UtilitiesEx/TypeTraits

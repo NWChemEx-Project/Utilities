@@ -27,6 +27,8 @@ TEST_CASE("Empty Permutation")
     auto begin_itr=p0.cbegin();
     auto end_itr=p0.cend();
     REQUIRE(p0.size() == 1);
+    REQUIRE(p0.max_size() == std::numeric_limits<std::size_t>::max());
+    REQUIRE(p0.empty());
     REQUIRE(*begin_itr == set_type());
     REQUIRE(begin_itr->size()==0);
     REQUIRE(begin_itr != end_itr);//Empty set has 1 permutation
@@ -83,6 +85,14 @@ TEST_CASE("Permutations instance {1,2,3} (i.e. no duplicates)")
     {
         Permutations<set_type> p1(p0);
         REQUIRE(p1 == p0);
+
+        SECTION("Permutation is swappable")
+        {
+            Permutations<set_type> p2;
+            p2.swap(p0);
+            REQUIRE(p2 == p1);
+        }
+
 
         SECTION("Permutations is movable")
         {
