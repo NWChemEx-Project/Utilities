@@ -265,6 +265,12 @@ private:
         ///The type of the internal offset maintained
         using size_type=std::size_t;
 
+        /** @brief Makes a place-holder PermutationItr
+         *
+         *  @thros None No throw guarantee.
+         */
+        PermutationItr()noexcept=default;
+
         /** @brief Makes a new permutation iterator over a given set.
          *
          *  @param[in] input_set The set to iterate over.
