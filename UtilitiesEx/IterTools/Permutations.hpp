@@ -1,14 +1,13 @@
 #pragma once
 #include "UtilitiesEx/Mathematician/Combinatorics.hpp"
-#include <algorithm>
 #include <iterator> //For iterator tags
 #include <limits> //For maximum value of size_t
 #include <tuple> //For std::tie
 
 namespace UtilitiesEx {
 
-/** @brief Simulates a container filled with all unique permutations of a
- *         sequence.
+/** @brief Simulates a non-mutable container filled with all unique
+           permutations of a sequence.
  *
  *  This class simulates a container filled with all unique  permutations of a
  *  sequence.  The STL provides next_permutation and prev_permutation for this
@@ -16,7 +15,7 @@ namespace UtilitiesEx {
  *  (as well as foreach loops) assumes a container like syntax, hence the need
  *  for this class.
  *
- *  Note for a sequence of @f$N@f$ elements there are @f$N!@f$ permutations. If
+ *  For a sequence of @f$N@f$ elements there are @f$N!@f$ permutations. If
  *  @f$M@f$ of these elements are unique the number of unique permutations is
  *  much less (but still typically a lot) and given by:
  *  @f[
@@ -27,17 +26,20 @@ namespace UtilitiesEx {
  *  container.  This class doesn't actually store them, but generates them on 
  *  the fly.
  *
- *  @note This container contains @b{all} the unique permutations.  The STL
+ *  @note This container contains @b all the unique permutations.  The STL
  *  variants, on the other hand, stop at the lexicographically largest
  *  (next_permutation) or lexicographically smallest (prev_permutation)
- *  permutation.
+ *  permutation.  For numbering purposes whatever sequence you provide is the
+ *  0th element of this container, even if it's not the lexicographically
+ *  smallest permutation.
  *
  *  @tparam sequence_type The type of the container used to hold the sequence.
- *          The type must satisfy sequence container.
+ *          The type must satisfy sequence container concept.
  */
 template<typename SequenceType>
 class Permutations {
 private:
+    ///Forward declaration of the iterator type
     class PermutationItr;
 public:
     ///Type of this class
@@ -73,7 +75,8 @@ public:
 
     /** @brief Fills container with all permutations of \p input_set
      *
-     *  @param[in] input_set The set whose permutations will grace this container.
+     *  @param[in] input_set The sequence whose permutations will grace this
+     *             container.
      *  @throws std::bad_alloc If there is not enough memory to copy the input.
      *          Strong throw guarantee.
      */
@@ -90,19 +93,24 @@ public:
     /** @copybrief Permutations(const Permutations&)
      *
      *  @param[in] rhs the instance to copy.
-     *  @throws std::bad_alloc if there is not enough memory to copy \p rhs.
+     *  @return The current instance containing a deep copy of @p rhs
+     *  @throws std::bad_alloc if there is not enough memory to copy @p rhs.
      *          Strong throw guarantee.
      */
     Permutations& operator=(const my_type& /*rhs*/)=default;
 
     /** @brief Takes ownership of another container
      *
+     *  @note After this operation @p rhs is in a valid, but undefined state
+     *
      *  @param[in] rhs The set of permutations to take ownership of
      *  @throws None No throw guarantee.
      */
     Permutations(my_type&& /*rhs*/)noexcept=default;
 
-    /** @brief Takes ownership of another container
+    /** @brief Assigns ownership of another container to this container
+     *
+     *  @note After this operation @p rhs is in a valid, but undefined state.
      *
      *  @param[in] rhs The set of permutations to take ownership of
      *  @returns This instance after taking ownership
@@ -112,16 +120,20 @@ public:
 
     /** @brief Frees memory associated with container.
      *
+     *  Although it is not recommended to do this (for clarity purposes),
+     *  iterators remain valid even after the container's destruction.
+     *
      *  @throws None No throw guarantee.
      */
-    ~Permutations()=default;
+    ~Permutations()noexcept=default;
 
     /** @brief Creates an iterator for this container that points to the first
      *         element of the container.
      *
      *  The returned iterator's state is decoupled from the container.
      *  This is done because next_permutation and prev_permutation actually
-     *  modify the contents of the container they operate on.
+     *  modify the contents of the container they operate on.  This in turn
+     *  actually makes the iterators to this container thread-safe.
      *
      *  @return An iterator pointing to the first element of the container.
      *  @throws std::bad_alloc if there is not enough memory to copy the set to
@@ -134,7 +146,9 @@ public:
 
     /** @brief Creates an iterator just past the last element of this container.
      *
-     *  @copydetails Permutations::begin()
+     *  The returned iterator is decoupled from the current container.  This is
+     *  done because next/prev permutation actually modify the contents of the
+     *  container they operate on.
      *
      *  @return An iterator set to just past the last element of this container.
      *  @throws std::bad_alloc if there is not enough memory to copy the set to
@@ -145,17 +159,13 @@ public:
         return PermutationItr(original_set_,size_);
     }
 
-    /** @copydoc Permutations::begin()
-     *
-     */
+    ///@copydoc Permutations::begin()
     const_iterator cbegin()const
     {
         return begin();
     }
 
-    /** @copydoc Permuations::end()
-     *
-     */
+    /// @copydoc Permuations::end()
     const_iterator cend()const
     {
         return end();
@@ -165,7 +175,7 @@ public:
      *
      *  Since we don't actually store all the permutations this function
      *  actually works by determining if this and \p other contain sets that
-     *  permutations of one another.
+     *  are permutations of one another.
      *
      *  @param[in] other The container to compare to.
      *  @return True if this container and @p other contain the same
@@ -176,7 +186,8 @@ public:
 
     /** @brief True if this contains different permutations from @p other.
      *
-     *  @copydetails Permutations::operator==(Permutations)
+     *  Syntactic sugar that simply negates the result of operator==.
+     *
      *  @return True if this container holds different permutations.
      *  @throws None No throw guarantee.
      *
@@ -185,6 +196,21 @@ public:
     {
         return !((*this)==other);
     }
+
+    /** @brief Returns a copy of the requested permutation
+     *
+     *  @section Memory
+     *  This call ultimately amounts to calls to decimal_to_fns and
+     *  fns_to_permutation and thus has the same memory footprints.
+     *
+     *  @param[in] perm The value of the requested permutation.  Must be in the
+     *                  range [0,size())
+     *  @return The requested permutation
+     *  @throws std::bad_alloc if there is insufficient memory to compute the
+     *          operation.
+     *
+     */
+    value_type operator[](size_type perm)const;
 
     /** @brief Swaps the contents of this container with another
      *
@@ -237,7 +263,8 @@ private:
     /** @brief The iterator actually returned by the Permutations class
      *
      *  This class is written in terms of next/prev permutation which wrap
-     *  around on themselves.  When they wrap they return the first element
+     *  around on themselves.  When they wrap they return the first element.
+     *  This class satisfies the concept of a random access iterator.
      */
     class PermutationItr {
     public:
@@ -279,7 +306,7 @@ private:
          *          Strong throw guarantee.
          */
         PermutationItr(const_reference input_set, size_type offset):
-            set_(input_set),offset_(offset)
+            orig_set_(input_set),set_(input_set),offset_(offset)
         {}
 
         /** @brief Makes a deep copy of the current instance.
@@ -374,6 +401,97 @@ private:
          */
         PermutationItr operator--(int)noexcept;
 
+        /** @brief Moves the current iterator @p n iterations
+         *
+         *  @param[in] n The number of iterations to move the iterator.  Can
+         *             be either forward or backward.
+         *  @returns The current iterator pointing at the element @p n
+         *           iterations away.
+         *  @throws std::bad_alloc if decimal_to_permutation has insufficient
+         *          memory to complete
+         *
+         */
+        PermutationItr& operator+=(difference_type n)
+        {
+            offset_+=n;
+            set_=decimal_to_permutation(offset_,orig_set_);
+            return *this;
+        }
+
+        /** @brief Returns a copy of the current iterator that points to the
+         *  element @p n elements away.
+         *
+         *  @param[in] n The number of elements to increment by.
+         *  @returns A copy of the current iterator pointing to the element
+         *           @p n elements away.
+         *  @throws std::bad_alloc if either there is insufficient memory to
+         *          copy the current instance or if operator+= throws
+         *
+         */
+        PermutationItr operator+(difference_type n)const
+        {
+            return PermutationItr(*this).operator+=(n);
+        }
+
+        /** @brief Moves the current iterator @p n iterations back.
+         *
+         *  @param[in] n The number of iterations to move the current iterator.
+         *             backwards by can be either forward or backward.
+         *  @returns The current iterator pointing at the element @p n
+         *           iterations prior.
+         *  @throws std::bad_alloc if decimal_to_permutation has insufficient
+         *          memory to complete
+         *
+         */
+        PermutationItr& operator-=(difference_type n)
+        {
+            offset_-=n;
+            set_=decimal_to_permutation(offset_,orig_set_);
+            return *this;
+        }
+
+        /** @brief Returns a copy of the current iterator that points to the
+         *  element @p n elements previous the current element.
+         *
+         *  @param[in] n The number of elements to decrement by.
+         *  @returns A copy of the current iterator pointing to the asked for
+         *           element.
+         *  @throws std::bad_alloc if either there is insufficient memory to
+         *  copy the current instance or if operator-= throws
+         *
+         */
+        PermutationItr operator-(difference_type n)const
+        {
+            return PermutationItr(*this).operator-=(n);
+        }
+
+        /** @brief Returns the number of permutations between this and @p other
+         *
+         * @param other The iterator pointing to the other permutation to
+         * compare to.
+         * @return The number of permutations between this and other
+         * @throws None. No throw guarantee
+         * */
+        difference_type operator-(const PermutationItr& other)const noexcept
+        {
+            const bool is_greater=(offset_>=other.offset_);
+            const difference_type abs_val= (is_greater ? offset_-other.offset_:
+                                                         other.offset_-offset_);
+            return (is_greater ? abs_val : -abs_val);
+        }
+
+        /** @brief Returns the permutation @n elements away.
+         *
+         *  @param[in] n How many iterations away is the permutation?
+         *  @returns The requested permutation.
+         *  @throws std::bad_alloc if operator+ has insufficient memory to
+         *          complete.
+         */
+        value_type operator[](difference_type n)const noexcept
+        {
+            return *((*this)+n);
+        }
+
         /** Compares two PermutationItrs for exact equality
          *
          *  Exact equality is defined as pointing to the same permutation,
@@ -398,7 +516,65 @@ private:
             return !((*this)==other);
         }
 
+
+        /** @brief Returns true if this iterator points to a permutation
+         *  lexicographically smaller than @p other.
+         *
+         * @param other The iterator to compare to.
+         * @return true if the permutation pointed to by this is less than that
+         *         of @p other.
+         * @throws None No throw guarantee.
+         */
+        bool operator<(const PermutationItr& other)const noexcept
+        {
+            return offset_ < other.offset_;
+        }
+
+
+        /** @brief Returns true if this iterator points to a permutation
+         *  lexicographically smaller than or equal to @p other.
+         *
+         * @param other The iterator to compare to.
+         * @return true if the permutation pointed to by this is less than
+         * or equal to that of @p other.
+         * @throws None No throw guarantee.
+         */
+        bool operator<=(const PermutationItr& other)const noexcept
+        {
+            return (*this)<other || (*this)==other;
+        }
+
+        /** @brief Returns true if this iterator points to a permutation
+         *  lexicographically greater than @p other.
+         *
+         * @param other The iterator to compare to.
+         * @return true if the permutation pointed to by this is greater than
+         * that of @p other.
+         * @throws None No throw guarantee.
+         */
+        bool operator>(const PermutationItr& other)const noexcept
+        {
+            return !((*this)<=other);
+        }
+
+        /** @brief Returns true if this iterator points to a permutation
+         *  lexicographically greater than or equal to @p other.
+         *
+         * @param other The iterator to compare to.
+         * @return true if the permutation pointed to by this is greater than
+         * or equal to @p other.
+         * @throws None No throw guarantee.
+         */
+        bool operator>=(const PermutationItr& other)const noexcept
+        {
+            return !((*this)<other);
+        }
+
+
     private:
+        ///A copy of the parent's set, doesn't get modified
+        value_type orig_set_;
+
         ///A copy of the parent's set
         value_type set_;
 
@@ -416,19 +592,8 @@ private:
 //Permutation range constructor
 template<typename container_type>
 Permutations<container_type>::Permutations(const container_type& input_set):
-    original_set_(input_set),size_(0)
+    original_set_(input_set),size_(n_permutations(input_set))
 {
-    container_type temp(input_set);
-    std::vector<size_type> counts;
-    std::sort(temp.begin(),temp.end());
-    auto ei=temp.begin();
-    while(ei!=temp.end())
-    {
-        const size_type n_ei=std::count(ei,temp.end(),*ei);
-        counts.push_back(n_ei);
-        ei+=n_ei;
-    }
-    size_=multinomial_coefficient<size_type>(counts);
 }
 
 //Permutation equality
@@ -439,6 +604,13 @@ bool Permutations<container_type>::operator==(
     if(size_ != other.size_) return false;
     return std::is_permutation(original_set_.begin(),original_set_.end(),
                                other.original_set_.begin());
+}
+
+template<typename container_type>
+container_type Permutations<container_type>::operator[](
+        std::size_t perm) const
+{
+    return decimal_to_permutation(perm,original_set_);
 }
 
 ///////////////////////////////// PermutationItr ///////////////////////////////
@@ -490,8 +662,8 @@ bool
 Permutations<container_type>::PermutationItr::operator==(
         const Permutations<container_type>::PermutationItr& other)const noexcept
 {
-    return std::tie(set_,offset_) ==
-           std::tie(other.set_,other.offset_);
+    return std::tie(orig_set_,set_,offset_) ==
+           std::tie(other.orig_set_,other.set_,other.offset_);
 }
 
 } //End namespace

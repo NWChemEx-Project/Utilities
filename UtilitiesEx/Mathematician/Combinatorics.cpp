@@ -33,6 +33,7 @@ std::size_t MCImpl<std::size_t>::eval(const std::vector<std::size_t> &ks)
     return result;
 }
 
+
 template class BCImpl<std::size_t>;
 template class MCImpl<std::size_t>;
 
