@@ -2,7 +2,6 @@
 #include <UtilitiesEx/TypeTraits/type_traitsExtensions.hpp>
 #define CATCH_CONFIG_MAIN
 #include "catch/catch.hpp"
-#include <type_traits>
 
 using namespace UtilitiesEx;
 using set_type=std::vector<int>;
@@ -15,7 +14,7 @@ using iterator=typename comb_type::iterator;
 TEST_CASE("Satisfy STL concepts")
 {
     bool is_cont=is_container<comb_type>::value;
-    bool is_bid=is_bidirectional_iterator<iterator>::value;
+    bool is_bid=is_random_access_iterator<iterator>::value;
     REQUIRE(is_cont);
     REQUIRE(is_bid);
 }
@@ -29,9 +28,9 @@ TEST_CASE("Empty Combination")
     REQUIRE(p0.size() == 1);
     REQUIRE(p0.max_size() == std::numeric_limits<std::size_t>::max());
     REQUIRE(p0.empty());
-    REQUIRE(*begin_itr == set_type());
-    REQUIRE(begin_itr->size()==0);
-    REQUIRE(begin_itr != end_itr);//Empty set has 1 permutation
+    REQUIRE(begin_itr.dereference() == set_type());
+    REQUIRE(! begin_itr.are_equal(end_itr));
+
 
     SECTION("Iterator is copyable")
     {
@@ -63,7 +62,7 @@ TEST_CASE("Empty Combination")
 
     SECTION("One prefix increment ends and doesn't copy")
     {
-        auto& pbegin_itr=++begin_itr;
+        auto& pbegin_itr=begin_itr.increment();
         REQUIRE(&pbegin_itr == &begin_itr);
         REQUIRE(begin_itr == end_itr);
     }
@@ -77,6 +76,7 @@ TEST_CASE("Combinations instance {1,2,3} (i.e. no duplicates)")
     auto end_itr = p0.cend();
     REQUIRE(p0.size() == 3);
     REQUIRE(*begin_itr == set_type({1,2}));
+    REQUIRE(begin_itr.distance_to(end_itr)==3);
     REQUIRE(begin_itr != end_itr);
 
     SECTION("Combinations is copyable")
@@ -129,6 +129,7 @@ TEST_CASE("Combinations instance {1,2,3} (i.e. no duplicates)")
             REQUIRE(*begin_itr == set_type({2,3}));
             REQUIRE(begin_itr != end_itr);
             REQUIRE(*rv== next_perm);
+            REQUIRE(rv.advance(1) == begin_itr);
         }
         SECTION("incrementing 2 more time ends")
         {

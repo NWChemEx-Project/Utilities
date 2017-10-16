@@ -229,31 +229,9 @@ private:
      *  technical note we invert the usual 0=false, 1=true mapping to get the
      *  unique permutations back in lexicographical order.
      */
-    class CombinationItr {
+    class CombinationItr : public
+        detail_::RandomAccessIteratorBase<CombinationItr,SequenceType> {
     public:
-        ///The type of a Combination returned by this iterator
-        using value_type=SequenceType;
-
-        ///The type of the difference between two iterators
-        using difference_type=long int;
-
-        ///The type of a Combination
-        using reference=const value_type&;
-
-        ///The type of a const Combination
-        using const_reference=const value_type&;
-
-        ///The type of a pointer to a Combination
-        using pointer=const value_type*;
-
-        ///The type of a const pointer to a Combination
-        using const_pointer=const value_type*;
-
-        ///The iterator tag
-        using iterator_category=std::bidirectional_iterator_tag;
-
-        ///The type of the internal offset maintained
-        using size_type=std::size_t;
 
         /** @brief Makes a new Combination iterator over a given set.
          *
@@ -299,21 +277,11 @@ private:
          *  @return The element being pointed to.
          *  @throws None No throw guarantee.
          */
-        const_reference operator*()const noexcept
+        const_reference dereference()const noexcept
         {
             return comb_;
         }
 
-        /** @brief Allows access to the current Combinations members.
-         *
-         *
-         *  @return The current Combination for use with the -> operator
-         *  @throws None No throw guarantee.
-         */
-        const_pointer operator->()const noexcept
-        {
-            return &comb_;
-        }
 
         /** @brief Makes the iterator point to the next Combination.
          *
@@ -327,14 +295,13 @@ private:
          *  @return The iterator after incrementing
          *  @throws None No throw guarantee.
          */
-        CombinationItr& operator++()noexcept;
+        CombinationItr& increment()noexcept
+        {
+            ++current_perm_;
+            update_comb();
+            return *this;
+        }
 
-        /** @copydoc CombinationItr::operator++()
-         *
-         *  @return A copy of the iterator before incrementing
-         *  @throws None No throw guarantee.
-         */
-        CombinationItr operator++(int)noexcept;
 
         /** @brief Makes the iterator point to the previous Combination.
          *
@@ -348,14 +315,12 @@ private:
          *  @return The iterator after decrementing
          *  @throws None No throw guarantee.
          */
-        CombinationItr& operator--()noexcept;
-
-        /** @copydoc CombinationItr::operator--()
-         *
-         *  @return A copy of the iterator before decrementing
-         *  @throws None No throw guarantee.
-         */
-        CombinationItr operator--(int)noexcept;
+        CombinationItr& decrement()noexcept
+        {
+            --current_perm_;
+            update_comb();
+            return *this;
+        }
 
         /** @brief Moves the current iterator @p n iterations
          *
@@ -367,27 +332,13 @@ private:
          *  insufficient memory to complete the request
          *
          */
-        CombinationItr& operator+=(difference_type n)
+        CombinationItr& advance(difference_type n)
         {
             current_perm_+=n;
             update_comb();
             return *this;
         }
 
-        /** @brief Returns a copy of the current iterator that points to the
-         *  element @p n elements away.
-         *
-         *  @param[in] n The number of elements to increment by.
-         *  @returns A copy of the current iterator pointing to the element
-         *           @p n elements away.
-         *  @throws std::bad_alloc if either there is insufficient memory to
-         *          copy the current instance or if operator+= throws
-         *
-         */
-        CombinationItr operator+(difference_type n)const
-        {
-            return CombinationItr(*this).operator+=(n);
-        }
 
         /** Compares two CombinationItrs for exact equality
          *
@@ -399,18 +350,20 @@ private:
          *  @return True if this iterator is exactly the same as @p other
          *  @throws None No throw guarantee.
          */
-        bool operator==(const CombinationItr& other)const noexcept;
-
-        /** Compares two CombinationItrs for any difference
-         *
-         *  @copydetails CombinationItr::operator==(const CombinationItr&)
-         *  @param[in] other The iterator to compare to.
-         *  @return True if this iterator is not exactly the same as @p other
-         *  @throws None No throw guarantee.
-         */
-        bool operator!=(const CombinationItr& other)const noexcept
+        bool are_equal(const CombinationItr& other)const noexcept
         {
-            return !((*this)==other);
+            return std::tie(set_,current_perm_) ==
+                   std::tie(other.set_,other.current_perm_);
+        }
+
+        /** @brief Returns the distance between this iterator and another
+         *
+         * @param[in] rhs The iterator we want the distance to.
+         * @returns the distance between the two iterators
+         */
+        difference_type distance_to(const CombinationItr& rhs)const noexcept
+        {
+            return current_perm_ - rhs.current_perm_;
         }
 
     private:
@@ -482,55 +435,8 @@ Combinations<container_type>::CombinationItr::CombinationItr(
     current_perm_=(at_end ? perms.end() : perms.begin());
     update_comb();
 }
-//CombinationItr prefix increment operator
-template<typename container_type>
-typename Combinations<container_type>::CombinationItr&
-Combinations<container_type>::CombinationItr::operator++()noexcept
-{
-    ++current_perm_;
-    update_comb();
-    return *this;
-}
 
-//CombinationItr postfix increment operator
-template<typename container_type>
-typename Combinations<container_type>::CombinationItr
-Combinations<container_type>::CombinationItr::operator++(int)noexcept
-{
-    CombinationItr copy(*this);
-    ++(*this);
-    return copy;
-}
 
-//CombinationItr prefix decrement operator
-template<typename container_type>
-typename Combinations<container_type>::CombinationItr&
-Combinations<container_type>::CombinationItr::operator--()noexcept
-{
-    --current_perm_;
-    update_comb();
-    return *this;
-}
-
-//CombinationItr postfix decrement operator
-template<typename container_type>
-typename Combinations<container_type>::CombinationItr
-Combinations<container_type>::CombinationItr::operator--(int)noexcept
-{
-    CombinationItr copy(*this);
-    --(*this);
-    return copy;
-}
-
-//CombinationItr equality operator
-template<typename container_type>
-bool
-Combinations<container_type>::CombinationItr::operator==(
-        const Combinations<container_type>::CombinationItr& other)const noexcept
-{
-    return std::tie(set_,current_perm_) ==
-           std::tie(other.set_,other.current_perm_);
-}
 
 } //End namespace
 
