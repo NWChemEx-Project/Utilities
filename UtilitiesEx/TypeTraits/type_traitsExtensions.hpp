@@ -388,12 +388,12 @@ struct is_bidirectional_iterator : Conjunction<is_forward_iterator<T>,
  *  available
  *  < a href="http://en.cppreference.com/w/cpp/concept/RandomAccessIterator">here</a>.
  */
-template<typename T>
+template<typename T, typename diff_type=long int>
 struct is_random_access_iterator : Conjunction<is_bidirectional_iterator<T>,
-                                               has_increment_by<T,int>,
-                                               has_decrement_by<T,int>,
-                                               has_plus<T,int>,
-                                               has_minus<T,int>,
+                                               has_increment_by<T,diff_type>,
+                                               has_decrement_by<T,diff_type>,
+                                               has_plus<T,diff_type>,
+                                               has_minus<T,diff_type>,
                                                has_minus<T,T>,
                                                is_indexable<T>,
                                                has_less_than<T,T>,

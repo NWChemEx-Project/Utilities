@@ -2,22 +2,18 @@
 #include <UtilitiesEx/TypeTraits/type_traitsExtensions.hpp>
 #define CATCH_CONFIG_MAIN
 #include "catch/catch.hpp"
-#include <type_traits>
 
 using namespace UtilitiesEx;
 using set_type=std::vector<int>;
 using perm_type=Permutations<set_type>;
 using iterator=typename perm_type::iterator;
 
-/* General note: testing of the Permutations class really amounts to testing its
- * iterators.
- */
 TEST_CASE("Satisfy STL concepts")
 {
     bool is_cont=is_container<perm_type>::value;
-    bool is_bid=is_random_access_iterator<iterator>::value;
+    bool is_rai=is_random_access_iterator<iterator>::value;
     REQUIRE(is_cont);
-    REQUIRE(is_bid);
+    REQUIRE(is_rai);
 }
 
 
@@ -26,18 +22,12 @@ TEST_CASE("Empty Permutation")
     Permutations<set_type> p0;
     auto begin_itr=p0.cbegin();
     auto end_itr=p0.cend();
+    REQUIRE(p0[0] == set_type());
     REQUIRE(p0.size() == 1);
     REQUIRE(p0.max_size() == std::numeric_limits<std::size_t>::max());
     REQUIRE(p0.empty());
-    REQUIRE(*begin_itr == set_type());
-    REQUIRE(!(end_itr < begin_itr));
-    REQUIRE(begin_itr < end_itr);
-    REQUIRE(!(begin_itr > end_itr));
-    REQUIRE(end_itr > begin_itr);
-    REQUIRE(begin_itr <= begin_itr);
-    REQUIRE(end_itr >= end_itr);
-    REQUIRE(p0[0] == set_type());
-    REQUIRE(begin_itr->size()==0);
+    REQUIRE(begin_itr.dereference() == set_type());
+    REQUIRE(!begin_itr.are_equal(end_itr));
     REQUIRE(begin_itr != end_itr);//Empty set has 1 permutation
 
     SECTION("Iterator is copyable")
@@ -71,22 +61,16 @@ TEST_CASE("Empty Permutation")
 
     SECTION("One prefix increment ends and doesn't copy")
     {
-        auto& pbegin_itr=++begin_itr;
+        auto& pbegin_itr=begin_itr.increment();
         REQUIRE(&pbegin_itr == &begin_itr);
         REQUIRE(begin_itr == end_itr);
 
     }
-    SECTION("Adding one to iterator terminates and copy")
+    SECTION("Adding one to iterator terminates")
     {
-        auto new_itr = begin_itr +1;
-        REQUIRE(new_itr == end_itr);
-        REQUIRE(begin_itr != end_itr);
-    }
-    SECTION("Incrementing by 1 leads to no copy and termination")
-    {
-        auto& old_itr = (begin_itr+=1);
+        auto& new_itr = begin_itr.advance(1);
+        REQUIRE(&new_itr == &begin_itr);
         REQUIRE(begin_itr == end_itr);
-        REQUIRE(&old_itr == & begin_itr);
     }
 }
 
@@ -156,10 +140,8 @@ TEST_CASE("Permutations instance {1,2,3} (i.e. no duplicates)")
             set_type next_next_perm({2,1,3});
             REQUIRE(p0[2] == next_next_perm);
             REQUIRE(*begin_itr == next_next_perm);
-            REQUIRE(begin_itr[-1] == next_perm);
-            REQUIRE(rv[1] == next_next_perm);
+            REQUIRE(rv.distance_to(begin_itr) == 1);
             REQUIRE(begin_itr != end_itr);
-            REQUIRE(*rv == next_perm);
 
             SECTION("incrementing 3 more times leads to {3,2,1}")
             {
@@ -178,33 +160,11 @@ TEST_CASE("Permutations instance {1,2,3} (i.e. no duplicates)")
             }
         }
 
-        SECTION("prefix decrement leads to {1,2,3} and no copy")
+        SECTION("Decrement leads to {1,2,3} and no copy")
         {
-            auto& pbegin_itr = --begin_itr;
+            auto& pbegin_itr = begin_itr.decrement();
             REQUIRE(*pbegin_itr == numbers);
             REQUIRE(&pbegin_itr == &begin_itr);
-            REQUIRE(begin_itr != end_itr);
-        }
-
-        SECTION("Subtracting 1 leads to {1,2,3} and copy")
-        {
-            auto new_itr = begin_itr-1;
-            REQUIRE(*new_itr == numbers);
-            REQUIRE(*begin_itr == next_perm);
-        }
-        SECTION("Decrementing by one leads to {1,2,3} and a copy")
-        {
-            auto& old_itr = begin_itr-=1;
-            REQUIRE(&old_itr == &begin_itr);
-            REQUIRE(*old_itr == numbers);
-        }
-
-
-        SECTION("postfix decrement leads to {1,2,3} and copy")
-        {
-            auto rv = begin_itr--;
-            REQUIRE(*begin_itr == numbers);
-            REQUIRE(*rv ==next_perm);
             REQUIRE(begin_itr != end_itr);
         }
     }

@@ -357,6 +357,38 @@ private:
          */
         CombinationItr operator--(int)noexcept;
 
+        /** @brief Moves the current iterator @p n iterations
+         *
+         *  @param[in] n The number of iterations to move the iterator.  Can
+         *             be either forward or backward.
+         *  @returns The current iterator pointing at the element @p n
+         *           iterations away.
+         *  @throws std::bad_alloc if the underlying PermutationItr has
+         *  insufficient memory to complete the request
+         *
+         */
+        CombinationItr& operator+=(difference_type n)
+        {
+            current_perm_+=n;
+            update_comb();
+            return *this;
+        }
+
+        /** @brief Returns a copy of the current iterator that points to the
+         *  element @p n elements away.
+         *
+         *  @param[in] n The number of elements to increment by.
+         *  @returns A copy of the current iterator pointing to the element
+         *           @p n elements away.
+         *  @throws std::bad_alloc if either there is insufficient memory to
+         *          copy the current instance or if operator+= throws
+         *
+         */
+        CombinationItr operator+(difference_type n)const
+        {
+            return CombinationItr(*this).operator+=(n);
+        }
+
         /** Compares two CombinationItrs for exact equality
          *
          *  Exact equality is defined as pointing to the same Combination,
