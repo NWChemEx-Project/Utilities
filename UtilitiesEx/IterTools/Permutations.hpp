@@ -281,7 +281,7 @@ private:
     public:
         /** @brief Makes a place-holder PermutationItr
          *
-         *  @thros None No throw guarantee.
+         *  @throws None No throw guarantee.
          */
         PermutationItr()noexcept=default;
 

@@ -269,6 +269,7 @@ private:
          */
         CombinationItr& operator=(CombinationItr&& /*rhs*/)noexcept=default;
 
+        ///Trivial destructor
         ~CombinationItr()=default;
 
         /** @brief Returns the element of the parent container currently pointed
