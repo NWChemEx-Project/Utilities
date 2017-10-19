@@ -1,5 +1,8 @@
 #pragma once
 #include "UtilitiesEx/IterTools/Permutations.hpp"
+#include <tuple> //for tie
+#include <limits>   //max size of size_t
+#include <algorithm> //is_permutation
 
 namespace UtilitiesEx {
 

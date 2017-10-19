@@ -3,6 +3,7 @@
 #include "UtilitiesEx/IterTools/IteratorTypes.hpp"
 #include <limits> //For maximum value of size_t
 #include <tuple> //For std::tie
+#include <algorithm> //For is_permutation, next/prev permutation
 
 namespace UtilitiesEx {
 
