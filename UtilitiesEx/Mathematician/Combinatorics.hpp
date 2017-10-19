@@ -1,6 +1,7 @@
 #pragma once
 #include <vector>
 #include <deque> //For returns of fns functions
+#include <numeric> //For inner_product and accumulate
 #include <algorithm> //For sort and count
 
 
