@@ -3,13 +3,73 @@ Introduction To Combinatorics
 
 The purpose of this page is to gather some notes and musings regarding
 combinatorics that hopefully helps other people out as they peruse the functions
-and classes in UtililitesEx.
+and classes in UtililitesEx.  This page also contains details pertaining to the 
+algorithms behind our implementations.
 
 Contents
 --------
 
+- [Combinations From Permutations](#combinations-from-permutations)
 - [Indexing Permutations Without Repetition](#indexing-permutations-without-repetition)  
 - [Indexing Permutations With Repetition](#indexing-permutations-with-repetition)
+
+Combinations From Permutations
+------------------------------
+
+The STL provides routines `prev_permutation` and `next_permutation` that can 
+generate each unique permutation of an \f$n\f$ element sequence, \f$S\f$ with a 
+complexity \f$\mathcal{O}(n)\f$ (which is the same complexity as doing it 
+with \f$n\f$ nested loops).  It does not however provide the corresponding 
+generators for combinations. Any combination, \f$C\f$, of \f$S\f$ can be 
+represented by a sequence \f$P\equiv\left[ x_1,x_2,\ldots,x_N\right]\f$ where 
+\f$x_i=1\f$ (true) if the \f$i\f$-th element of \f$S\f$ is in \f$C\f$ and 
+\f$x_i=0\f$ (false) otherwise.  Hence, we can generate all possible 
+combinations of \f$n\f$ objects, taken \f$k\f$ at a time, by iterating over all 
+unique permutations of \f$k\f$ 1s and \f$n-k\f$ 0s.  The resulting algorithm 
+will then scale the same as the STL permutation routines. 
+
+1. Fill a vector, \f$P\F$ with \f$k\f$ 1s followed by \f$n-k\f$ 0s.
+2. First combination is the first \f$k\f$ elements
+   - Time: 0 (it's the input)
+3. Compute next permutation of \f$P\f$
+   - Time: \f$\mathcal{O}(n)\f$
+4. Fill combination container based off \f$P\f$
+   - Time: \f$\mathcal{O}(n)\f$
+5. Repeat 3 and 4, \f${n\choose k}-2\f$ more times
+   - Time: \f$\mathcal{O}(n^k)\f$   
+
+Now let us consider combinations with repetition.  To that end, assume we want 
+all combinations with repetitions of an \f$n\f$ element sequence \f$S\f$, 
+such that we take \f$k\f$ elements at a time.  As with our analysis of 
+combinations without repeats, for a given combination with repetition, \f$C\f$,
+we can again define an \f$n\f$ element sequence \f$P\equiv\left[ x_1,x_2,
+\ldots,x_N\right]\f$ where $f$x_i\f$ is now the number of times the 
+\f$i\f$-th element of \f$S\f$ appears in \f$C\f$ (technically a 
+generalization of above).  Of course this again implies the sum of the 
+\f$x_i\f$s is equal to \f$k\f$; however, now they are not restricted to 0s 
+and 1s.  Hence its not enough to take all permutations of \f$P\f$, like it 
+was before.  This is easily seen by setting \f$x_i=k\f$ and taking all 
+permutations.  The resulting set is the \f$N\f$ combinations that can be 
+formed by repeating the same element \f$k\f$ times.  This neglects say the 
+combination where the first element appears \f$k-1\f$ times and the second 
+element appears \f$k\f$ times.  In other words, we need to "unclump" the 
+\f$x_i\f$s and then take permutations.  To this end we can instead think of 
+\f$P\f$ as being \f$x_1\f$ 1s, a separator, \f$x_2\f$ 1s, a separator, ..., 
+and then \f$x_n\f$ 1s. Accounting for the separators this gives us a 
+permutation of \f$k\f$ 1s and \f$n-1\f$ separators.  The set of all possible 
+unique permutations of \f$k\f$ 1s and \f$n-1\f$ separators (say 0s) then can be
+used to generate the set of combinations with repetition.
+
+1. Fill a vector, \f$P\f$ with \f$k\f$ 1s and \f$n-1\f$ 0s
+   - Time \f$\mathcal{O}(n+k)
+2. First combination is first element \f$k\f$ times
+   - Time \f$\mathcal{O}(k)\f$
+3. Next permutation of \f$P\f$
+   - Time \f$\mathcal{O}(n+k)\f$
+4. Count 1s and form combinations
+   - Time \f$\mathcal{O}(n+k)\f$ 
+5. Repeat 3 and 4, \f${n+k-1\choose k}-2\f$ more times
+   - Time: \f$\mathcal{O}(n^k+k^k)\f$           
 
 Indexing Permutations Without Repetition
 ----------------------------------------

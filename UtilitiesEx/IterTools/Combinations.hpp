@@ -8,10 +8,11 @@ namespace UtilitiesEx {
 
 /** @brief A container for holding all combinations of a sequence of numbers.
  *
- *  Given a sequence of @f$N@f$ elements, there are @f{N \choose m}@f$ possible
- *  ways to choose @f$m@f$ elements if repetitions are not allowed.  Like its
- *  Permutations container brethern, this class doesn't actually store the
- *  combinations, but rather computes them on the fly.
+ *  Given a sequence of @f$N@f$ elements, there are @f${N \choose m}@f$ possible
+ *  ways to choose @f$m@f$ elements if repetitions are not allowed and
+ *  @f${N+m-1\choose m}@f$ if they are.  Like its Permutations container
+ *  brethern, this class doesn't actually store the combinations, but rather
+ *  computes them on the fly.
  *
  *  As implemented this class will contain all combinations, all of which are
  *  not necessarily unique.  More specifically, if the input sequence contains
@@ -24,15 +25,16 @@ namespace UtilitiesEx {
  *
  *  @tparm SequenceType The sequence for which we are generating combinations.
  *         Should satisfy the concept of container.
+ *  @tparam Repeats True if repeats are allowed.  Default false.
  */
-template<typename SequenceType>
+template<typename SequenceType, bool Repeats=false>
 class Combinations {
 private:
     ///Forward declare for type stating reasons
     class CombinationItr;
 public:
     ///Type of this class (only declared for convenience)
-    using my_type=Combinations<SequenceType>;
+    using my_type=Combinations<SequenceType,Repeats>;
 
     ///Type of an element inside this container
     using value_type=SequenceType;
@@ -55,8 +57,10 @@ public:
     ///The type of an offset
     using size_type=std::size_t;
 
-    /** @brief Constructs a container filled with all Combinations of the empty
-     *         set, of which there is one, @em{i.e.} the empty set.
+    /** @brief Constructs a container filled no combinations.
+     *
+     *  The resulting instance is suitable only as a placeholder in the sense
+     *  that it can only contain combinations by assigning to it.
      *
      *  @throws None No throw guarantee.
      */
@@ -66,7 +70,12 @@ public:
      *
      *  @param[in] input_set The set whose Combinations will grace this
      *             container.
-     *  @param[in] k The number of objects chosen at a time
+     *  @param[in] k The number of objects chosen at a time.  Assumed to be in
+     *             the range [0,len(input_set)] if repeats are not allowed and
+     *             undefined behavior (likely a segfault) if @p k is not.
+     *             For repeats any @p k is possible so long as the set contains
+     *             at least one element (if its empty only k=0 is allowed).
+     *
      *  @throws std::bad_alloc If there is not enough memory to copy the input.
      *          Strong throw guarantee.
      */
@@ -83,12 +92,16 @@ public:
     /** @copybrief Combinations(const Combinations&)
      *
      *  @param[in] rhs the instance to copy.
-     *  @throws std::bad_alloc if there is not enough memory to copy \p rhs.
+     *  @return The current instance containing a deep copy of @p rhs
+     *  @throws std::bad_alloc if there is not enough memory to copy @p rhs.
      *          Strong throw guarantee.
      */
     Combinations& operator=(const my_type& /*rhs*/)=default;
 
-    /** @brief Takes ownership of another container
+    /** @brief Takes ownership of another container.
+     *
+     *  After this operation @p rhs is in a valid, but otherwise unspecified
+     *  state.
      *
      *  @param[in] rhs The set of Combinations to take ownership of
      *  @throws None No throw guarantee.
@@ -97,24 +110,33 @@ public:
 
     /** @brief Takes ownership of another container
      *
+     *  After this operation @p rhs is in a valid, but otherwise undefined
+     *  state.
+     *
      *  @param[in] rhs The set of Combinations to take ownership of
-     *  @returns This instance after taking ownership
+     *  @returns This instance after taking ownership of @p rhs
      *  @throws None No throw guarantee.
      */
     my_type& operator=(my_type&& /*rhs*/)noexcept=default;
 
-    /** @brief Frees memory associated with container.
+    /** @brief Frees memory associated with this container.
+     *
+     *  Note that the iterators for this class contain deep copies of its state.
+     *  So technically they are still valid after this classes destruction.  It
+     *  is recommended to not use them in that manner as it is contrary to usual
+     *  practices.
      *
      *  @throws None No throw guarantee.
      */
-    ~Combinations()=default;
+    ~Combinations()noexcept=default;
 
     /** @brief Creates an iterator for this container that points to the first
-     *         element of the container.
+     *         combination in the container.
      *
      *  The returned iterator's state is decoupled from the container.
-     *  This is done because next_Combination and prev_Combination actually
-     *  modify the contents of the container they operate on.
+     *  This is done purely for convenience.  The result is that changes to this
+     *  container will not affect any references to outstanding iterators in any
+     *  way shape or form.
      *
      *  @return An iterator pointing to the first element of the container.
      *  @throws std::bad_alloc if there is not enough memory to copy the set to
@@ -138,57 +160,74 @@ public:
         return CombinationItr(original_set_,k_,true);
     }
 
-    /** @copydoc Combinations::begin()
-     *
-     */
+    ///@copydoc Combinations::begin()
     const_iterator cbegin()const
     {
         return begin();
     }
 
-    /** @copydoc Combinations::end()
-     *
-     */
+    ///@copydoc Combinations::end()
     const_iterator cend()const
     {
         return end();
     }
 
-    /** @brief True if this contains the same Combinations as @p other.
+    /** @brief True if this contains the same combinations as @p rhs.
      *
+     *  Two instances of this class contain the same combinations if the
+     *  sequences they were given initially are the same and we are taking the
+     *  same number of elements at a time.  Strictly speaking the underlying
+     *  elements may not be in the same order depending on the semantics of the
+     *  container type this class is wrapping.  If it is ordered they will be.
      *
-     *  @param[in] other The container to compare to.
-     *  @return True if this container and @p other contain the same
+     *  @param[in] rhs The container to compare to.
+     *  @return True if this container and @p rhs contain the same
      *               Combinations.
      *  @throws None No throw guarantee.
      */
-    bool operator==(const my_type& other)const noexcept;
-
-    /** @brief True if this contains different Combinations from @p other.
-     *
-     *  @copydetails Combinations::operator==(Combinations)
-     *  @return True if this container holds different Combinations.
-     *  @throws None No throw guarantee.
-     *
-     */
-    bool operator!=(const my_type& other)const noexcept
+    bool operator==(const my_type& rhs)const noexcept
     {
-        return !((*this)==other);
+        return std::tie(size_,original_set_)==
+               std::tie(rhs.size_,rhs.original_set_);
     }
 
-    /** @brief Swaps the contents of this container with another
+    /** @brief True if this contains different combinations from @p rhs.
      *
-     *  @param[i] other The container to swap contents with
+     *  This function simply negates the result of
+     *  Combinations::operator==(Combinations).  See its documentation for more
+     *  details on the defintion of equality.
+     *
+     *  @param[in] rhs The container to compare to
+     *  @return True if this container holds different combinations than @p rhs
+     *  @throws None No throw guarantee.
+     *
+     */
+    bool operator!=(const my_type& rhs)const noexcept
+    {
+        return !((*this)==rhs);
+    }
+
+    /** @brief Swaps the contents of this container with those of @p rhs
+     *
+     *  @param[i] rhs The container to swap contents with
      *  @throws None No throw guarantee.
      */
-    void swap(my_type& other)noexcept
+    void swap(my_type& rhs)noexcept
     {
-        std::swap(original_set_,other.original_set_);
-        std::swap(k_, other.k_);
-        std::swap(size_,other.size_);
+        std::swap(original_set_,rhs.original_set_);
+        std::swap(size_,rhs.size_);
+        std::swap(k_,rhs.k_);
+        std::swap(defaulted_,rhs.defaulted_);
     }
 
     /** @brief Returns the number of elements in this container.
+     *
+     *  This is simply the value of @f${N\choose k}@f$ if this container does
+     *  not contain repeats, and the value @f${N+k-1 \choose k}@f$ otherwise.
+     *  @f$N@f$ and @f$k@f$ respectively are the total number of elements to
+     *  choose from and the number to choose at a time.  This function does not
+     *  actually represent the number of literal types stored in memory like
+     *  most other containers.
      *
      *  @return The number of Combinations in this container
      *  @throws None No throw guarantee.
@@ -201,7 +240,11 @@ public:
     /** @brief Returns the maximum possible size of this container.
      *
      *  Since this container does not actually contain its elements, so long as
-     *  the number of unique Combinations is expressible as a size_type integer
+     *  the number of unique combinations is expressible as a size_type integer
+     *  we assume it will fit in this container.  As is usual for the container
+     *  concept this is a theoretical maximum and owing to hardware limitations
+     *  it may not actually be possible to instantiate an object with that many
+     *  elements.
      */
     constexpr size_type max_size()const noexcept
     {
@@ -210,7 +253,10 @@ public:
 
     /** @brief Returns true if the container is empty.
      *
-     *  This container is only empty if it was default constructed.
+     *  This container is only empty if it was default constructed or is a copy
+     *  of one that was.  In all other cases this class was fed a sequence,
+     *  even if that sequence was empty, there is then at least one member in
+     *  this container, the empty set.
      *
      *  @returns true if the container is empty.
      *  @throws None No throw guarantee.
@@ -220,17 +266,22 @@ public:
         return defaulted_;
     }
 
+    value_type operator[](difference_type i)const
+    {
+        return *(cbegin()+i);
+    }
+
 private:
-    ///This is the set we are generating all unique Combinations of
+    ///This is the sequence we are generating all unique Combinations of
     value_type original_set_;
 
     ///The number of objects taken at a time
-    size_type k_=0;
+    size_type k_;
 
     ///This is the number of Combinations in the container
-    size_type size_=0;
+    size_type size_;
 
-    ///True if and only if this container was default constructed
+    ///True if this container was defaulted
     bool defaulted_=true;
 
     /** @brief The iterator actually returned by the Combinations class
@@ -243,10 +294,12 @@ private:
         detail_::RandomAccessIteratorBase<CombinationItr,SequenceType> {
     public:
 
-        /** @brief Makes a new Combination iterator over a given set.
+        /** @brief Makes a new combination iterator over a given sequence.
          *
          *  @param[in] input_set The set to iterate over.
-         *  @param[in] k The number of objects chosen at a time.
+         *  @param[in] k The number of objects chosen at a time.  @p k is
+         *             assumed in the range [0,len(input_set)] if repeats are
+         *             not allowed, otherwise it may be any value.
          *  @param[in] at_end True if this is the end iterator
          *  @throws std::bad_alloc If the copy fails because of lack of memory.
          *          Strong throw guarantee.
@@ -255,7 +308,11 @@ private:
 
         /** @brief Makes a deep copy of the current instance.
          *
+         *  Since the original instance is not tied to its parent container
+         *  neither is the resulting iterator.
+         *
          *  @param[in] rhs The Combination to copy.
+         *  @throws std:bad_alloc if copying fails.  Strong throw guarantee.
          */
         CombinationItr(const CombinationItr& /*rhs*/)=default;
 
@@ -263,24 +320,31 @@ private:
          *
          *  @param[in] rhs The Combination to copy.
          *  @returns The current iterator after the copy
+         *  @throws std::bad_alloc if the underlying copy fails.  Strong throw
+         *  guarantee.
          */
         CombinationItr& operator=(const CombinationItr& /*rhs*/)=default;
 
         /** @brief Takes ownership of another iterator
+         *
+         *  After the operation @p rhs is in a valid, but otherwise unspecified
+         *  state.
          *
          *  @param[in] rhs The iterator we are going to own
          *  @throws None No throw guarantee.
          */
         CombinationItr(CombinationItr&& /*rhs*/)noexcept=default;
 
-        /** @copybrief
+        /** @brief Takes ownership of another CombinationItr instance
+         *
          *  @param[in] rhs The iterator to take ownership of.
+         *  @return The current instance containing @p rhs 's state.
          *  @throws None No throw guarantee.
          */
         CombinationItr& operator=(CombinationItr&& /*rhs*/)noexcept=default;
 
         ///Trivial destructor
-        ~CombinationItr()=default;
+        ~CombinationItr()noexcept=default;
 
         /** @brief Returns the element of the parent container currently pointed
          *         to by this iterator.
@@ -399,56 +463,51 @@ private:
 
 /////////////////////////////////  Combinations  ///////////////////////////////
 //Combination range constructor
-template<typename container_type>
-Combinations<container_type>::Combinations(const container_type& input_set,
-                                           std::size_t k):
-        original_set_(input_set),k_(k),
-        size_(binomial_coefficient<size_type>(input_set.size(),k)),
+template<typename container_type, bool repeat>
+Combinations<container_type,repeat>::
+Combinations(const container_type& input_set, std::size_t k):
+        original_set_(input_set),
+        k_(k),
+        size_(!repeat?binomial_coefficient<size_type>(input_set.size(),k):
+                      binomial_coefficient<size_type>((input_set.size()+k)-1,k)
+             ),
         defaulted_(false)
 {
 }
 
-//Combination equality
-template<typename container_type>
-bool Combinations<container_type>::operator==(
-        const Combinations<container_type>& other)const noexcept
-{
-    if(size_ != other.size_) return false;
-    return std::is_permutation(original_set_.begin(),original_set_.end(),
-                               other.original_set_.begin());
-}
-
 ///////////////////////////////// CombinationItr ///////////////////////////////
 
-template<typename container_type>
-void Combinations<container_type>::CombinationItr::update_comb()
+template<typename container_type,bool repeat>
+void Combinations<container_type,repeat>::CombinationItr::update_comb()
 {
     const auto& p=*current_perm_;
-    for(size_type i=0,counter=0; i<p.size(); ++i)
+    for(size_type i=0,counter=0,bar_count=0;i<p.size();++i)
     {
         if(!p[i])
-            comb_[counter++]=set_[i];
-        if(counter==comb_.size())
-            break;
+            comb_[counter++] = set_[!repeat?i:bar_count];
+        else
+            ++bar_count;
+        if(counter == comb_.size())//Early termination, rest are false
+                break;
     }
 }
 
-template<typename container_type>
-Combinations<container_type>::CombinationItr::CombinationItr(
+template<typename container_type, bool repeat>
+Combinations<container_type,repeat>::CombinationItr::CombinationItr(
         const container_type& input_set,
         std::size_t k,
         bool at_end):
     set_(input_set),comb_(k)
 {
-    std::vector<bool> temp(input_set.size(),true);
+    const size_type n=input_set.size();
+    //k==n==0 is possible and leads to -1 (technically ok, -1 choose 0=1...)
+    const size_type eff_size=(n||k?n+k-1:0);
+    std::vector<bool> temp(!repeat?n:eff_size,true);
     for(size_t i=0;i<k;++i)
         temp[i]=false;
     Permutations<std::vector<bool>> perms(temp);
     current_perm_=(at_end ? perms.end() : perms.begin());
     update_comb();
 }
-
-
-
 } //End namespace
 

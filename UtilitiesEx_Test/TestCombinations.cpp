@@ -167,3 +167,37 @@ TEST_CASE("Combinations instance {1,2,3} (i.e. no duplicates)")
     }
 }
 
+TEST_CASE("Multicombinations")
+{
+    SECTION("n==k==0")
+    {
+        set_type elems;
+        Combinations<set_type,true> c0(elems,0);
+        REQUIRE(c0.size()==1);
+        REQUIRE(c0[0]==elems);
+    }
+
+    SECTION("n>0 k<n")
+    {
+        set_type elems({1,2,3});
+        Combinations<set_type,true> c0(elems,2);
+        REQUIRE(c0.size()==6);
+        REQUIRE(c0[0]==set_type({1,1}));
+        REQUIRE(c0[1]==set_type({1,2}));
+        REQUIRE(c0[2]==set_type({1,3}));
+        REQUIRE(c0[3]==set_type({2,2}));
+        REQUIRE(c0[4]==set_type({2,3}));
+        REQUIRE(c0[5]==set_type({3,3}));
+    }
+
+    SECTION("n>0 k>n")
+    {
+        set_type elems({1,2});
+        Combinations<set_type,true> c0(elems,3);
+        REQUIRE(c0.size()==4);
+        REQUIRE(c0[0]==set_type({1,1,1}));
+        REQUIRE(c0[1]==set_type({1,1,2}));
+        REQUIRE(c0[2]==set_type({1,2,2}));
+        REQUIRE(c0[3]==set_type({2,2,2}));
+    }
+}
