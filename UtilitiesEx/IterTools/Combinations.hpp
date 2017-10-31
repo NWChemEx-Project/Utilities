@@ -23,16 +23,18 @@ namespace UtilitiesEx {
  *  order will also be lexicographic).
  *
  *  @tparm SequenceType The sequence for which we are generating combinations.
+ *         Should satisfy the concept of container.
  */
 template<typename SequenceType>
 class Combinations {
 private:
+    ///Forward declare for type stating reasons
     class CombinationItr;
 public:
-    ///Type of this class
+    ///Type of this class (only declared for convenience)
     using my_type=Combinations<SequenceType>;
 
-    ///Type of an element of this container
+    ///Type of an element inside this container
     using value_type=SequenceType;
 
     ///Combinations are non-mutable so same as const_reference
@@ -120,7 +122,7 @@ public:
      */
     iterator begin()const
     {
-        return CombinationItr(original_set_,k_,false);
+        return CombinationItr(original_set_,k_,defaulted_);
     }
 
     /** @brief Creates an iterator just past the last element of this container.
@@ -208,12 +210,14 @@ public:
 
     /** @brief Returns true if the container is empty.
      *
+     *  This container is only empty if it was default constructed.
+     *
      *  @returns true if the container is empty.
      *  @throws None No throw guarantee.
      */
     bool empty()const noexcept
     {
-        return !original_set_.size();
+        return defaulted_;
     }
 
 private:
@@ -224,7 +228,10 @@ private:
     size_type k_=0;
 
     ///This is the number of Combinations in the container
-    size_type size_=1;
+    size_type size_=0;
+
+    ///True if and only if this container was default constructed
+    bool defaulted_=true;
 
     /** @brief The iterator actually returned by the Combinations class
      *
@@ -396,7 +403,8 @@ template<typename container_type>
 Combinations<container_type>::Combinations(const container_type& input_set,
                                            std::size_t k):
         original_set_(input_set),k_(k),
-        size_(binomial_coefficient<size_type>(input_set.size(),k))
+        size_(binomial_coefficient<size_type>(input_set.size(),k)),
+        defaulted_(false)
 {
 }
 

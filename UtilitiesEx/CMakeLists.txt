@@ -4,9 +4,9 @@ include(TargetMacros)
 set(UtilitiesEx_SRCS Mathematician/Combinatorics.cpp)
 set(UtilitiesEx_INCLUDES Mathematician/Combinatorics.hpp
                          IterTools/Combinations.hpp
-                         IterTools/IteratorTypes.hpp
+                         TypeTraits/IteratorTypes.hpp
                          IterTools/Permutations.hpp
-        TypeTraits/type_traitsExtensions.hpp
+                         TypeTraits/type_traitsExtensions.hpp
 )
 
 nwchemex_add_library(UtilitiesEx UtilitiesEx_SRCS

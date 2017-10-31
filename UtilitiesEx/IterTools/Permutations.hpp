@@ -1,6 +1,6 @@
 #pragma once
 #include "UtilitiesEx/Mathematician/Combinatorics.hpp"
-#include "UtilitiesEx/IterTools/IteratorTypes.hpp"
+#include "UtilitiesEx/TypeTraits/IteratorTypes.hpp"
 #include <limits> //For maximum value of size_t
 #include <tuple> //For std::tie
 #include <algorithm> //For is_permutation, next/prev permutation
@@ -67,8 +67,10 @@ public:
     ///The type of an offset
     using size_type=std::size_t;
 
-    /** @brief Constructs a container filled with all permutations of the empty
-     *         set, of which there is one, @em{i.e.} the empty set.
+    /** @brief Constructs an empty container.
+     *
+     *  This container is truly empty, that is to say its not even the set of
+     *  permutations of the empty set.
      *
      *  @throws None No throw guarantee.
      */
@@ -256,12 +258,16 @@ public:
 
     /** @brief Returns true if the container is empty.
      *
+     *  This function will only return true if this container was default
+     *  constructed.  If it was provided any set, even the empty set, this class
+     *  will contain at least one member.
+     *
      *  @returns true if the container is empty.
      *  @throws None No throw guarantee.
      */
     bool empty()const noexcept
     {
-        return !original_set_.size();
+        return cbegin()==cend();
     }
 
 private:
@@ -269,7 +275,7 @@ private:
     value_type original_set_;
 
     ///This is the number of permutations in the container
-    size_type size_=1;
+    size_type size_=0;
 
     /** @brief The iterator actually returned by the Permutations class
      *

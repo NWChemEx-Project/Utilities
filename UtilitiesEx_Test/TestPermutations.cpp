@@ -22,13 +22,11 @@ TEST_CASE("Empty Permutation")
     Permutations<set_type> p0;
     auto begin_itr=p0.cbegin();
     auto end_itr=p0.cend();
-    REQUIRE(p0[0] == set_type());
-    REQUIRE(p0.size() == 1);
+    REQUIRE(p0.size() == 0);
     REQUIRE(p0.max_size() == std::numeric_limits<std::size_t>::max());
     REQUIRE(p0.empty());
-    REQUIRE(begin_itr.dereference() == set_type());
-    REQUIRE(!begin_itr.are_equal(end_itr));
-    REQUIRE(begin_itr != end_itr);//Empty set has 1 permutation
+    REQUIRE(begin_itr.are_equal(end_itr));
+    REQUIRE(begin_itr==end_itr);
 
     SECTION("Iterator is copyable")
     {
@@ -58,6 +56,17 @@ TEST_CASE("Empty Permutation")
         REQUIRE(&pend_itr == &end_itr);
         REQUIRE(end_itr == p0.begin());
     }
+}
+
+TEST_CASE("Permutations of empty set")
+{
+    Permutations<set_type> p0(set_type({}));
+    auto begin_itr=p0.cbegin();
+    auto end_itr=p0.cend();
+    REQUIRE(p0.size() == 1);
+    REQUIRE(!p0.empty());
+    REQUIRE(!begin_itr.are_equal(end_itr));
+    REQUIRE(begin_itr!=end_itr);
 
     SECTION("One prefix increment ends and doesn't copy")
     {

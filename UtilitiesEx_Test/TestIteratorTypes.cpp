@@ -1,4 +1,4 @@
-#include <UtilitiesEx/IterTools/IteratorTypes.hpp>
+#include <UtilitiesEx/TypeTraits/IteratorTypes.hpp>
 #define CATCH_CONFIG_MAIN
 #include "catch/catch.hpp"
 #include <UtilitiesEx/TypeTraits/type_traitsExtensions.hpp>
