@@ -2,22 +2,18 @@
 #include <UtilitiesEx/TypeTraits/type_traitsExtensions.hpp>
 #define CATCH_CONFIG_MAIN
 #include "catch/catch.hpp"
-#include <type_traits>
 
 using namespace UtilitiesEx;
 using set_type=std::vector<int>;
 using perm_type=Permutations<set_type>;
 using iterator=typename perm_type::iterator;
 
-/* General note: testing of the Permutations class really amounts to testing its
- * iterators.
- */
 TEST_CASE("Satisfy STL concepts")
 {
     bool is_cont=is_container<perm_type>::value;
-    bool is_bid=is_bidirectional_iterator<iterator>::value;
+    bool is_rai=is_random_access_iterator<iterator>::value;
     REQUIRE(is_cont);
-    REQUIRE(is_bid);
+    REQUIRE(is_rai);
 }
 
 
@@ -26,10 +22,11 @@ TEST_CASE("Empty Permutation")
     Permutations<set_type> p0;
     auto begin_itr=p0.cbegin();
     auto end_itr=p0.cend();
-    REQUIRE(p0.size() == 1);
-    REQUIRE(*begin_itr == set_type());
-    REQUIRE(begin_itr->size()==0);
-    REQUIRE(begin_itr != end_itr);//Empty set has 1 permutation
+    REQUIRE(p0.size() == 0);
+    REQUIRE(p0.max_size() == std::numeric_limits<std::size_t>::max());
+    REQUIRE(p0.empty());
+    REQUIRE(begin_itr.are_equal(end_itr));
+    REQUIRE(begin_itr==end_itr);
 
     SECTION("Iterator is copyable")
     {
@@ -59,13 +56,30 @@ TEST_CASE("Empty Permutation")
         REQUIRE(&pend_itr == &end_itr);
         REQUIRE(end_itr == p0.begin());
     }
+}
+
+TEST_CASE("Permutations of empty set")
+{
+    Permutations<set_type> p0(set_type({}));
+    auto begin_itr=p0.cbegin();
+    auto end_itr=p0.cend();
+    REQUIRE(p0.size() == 1);
+    REQUIRE(!p0.empty());
+    REQUIRE(!begin_itr.are_equal(end_itr));
+    REQUIRE(begin_itr!=end_itr);
 
     SECTION("One prefix increment ends and doesn't copy")
     {
-        auto& pbegin_itr=++begin_itr;
+        auto& pbegin_itr=begin_itr.increment();
         REQUIRE(&pbegin_itr == &begin_itr);
         REQUIRE(begin_itr == end_itr);
 
+    }
+    SECTION("Adding one to iterator terminates")
+    {
+        auto& new_itr = begin_itr.advance(1);
+        REQUIRE(&new_itr == &begin_itr);
+        REQUIRE(begin_itr == end_itr);
     }
 }
 
@@ -76,6 +90,7 @@ TEST_CASE("Permutations instance {1,2,3} (i.e. no duplicates)")
     auto begin_itr = p0.cbegin();
     auto end_itr = p0.cend();
     REQUIRE(p0.size() == 6);
+    REQUIRE(p0[0] == numbers);
     REQUIRE(*begin_itr == numbers);
     REQUIRE(begin_itr != end_itr);
 
@@ -83,6 +98,14 @@ TEST_CASE("Permutations instance {1,2,3} (i.e. no duplicates)")
     {
         Permutations<set_type> p1(p0);
         REQUIRE(p1 == p0);
+
+        SECTION("Permutation is swappable")
+        {
+            Permutations<set_type> p2;
+            p2.swap(p0);
+            REQUIRE(p2 == p1);
+        }
+
 
         SECTION("Permutations is movable")
         {
@@ -116,20 +139,25 @@ TEST_CASE("Permutations instance {1,2,3} (i.e. no duplicates)")
     {
         set_type next_perm({1,3,2});
         ++begin_itr;
+        REQUIRE(p0[1] == next_perm);
         REQUIRE(*begin_itr == next_perm);
         REQUIRE(begin_itr != end_itr);
 
         SECTION("postfix increment leads to {2,1,3} and copy")
         {
             auto rv=begin_itr++;
-            REQUIRE(*begin_itr == set_type({2,1,3}));
+            set_type next_next_perm({2,1,3});
+            REQUIRE(p0[2] == next_next_perm);
+            REQUIRE(*begin_itr == next_next_perm);
+            REQUIRE(rv.distance_to(begin_itr) == 1);
             REQUIRE(begin_itr != end_itr);
-            REQUIRE(*rv == next_perm);
 
             SECTION("incrementing 3 more times leads to {3,2,1}")
             {
                 ++begin_itr;++begin_itr;++begin_itr;
-                REQUIRE(*begin_itr == set_type({3,2,1}));
+                set_type last_perm({3,2,1});
+                REQUIRE(p0[5] == last_perm);
+                REQUIRE(*begin_itr == last_perm);
                 REQUIRE(begin_itr != end_itr);
 
                 SECTION("Next increment ends")
@@ -141,19 +169,11 @@ TEST_CASE("Permutations instance {1,2,3} (i.e. no duplicates)")
             }
         }
 
-        SECTION("prefix decrement leads to {1,2,3} and no copy")
+        SECTION("Decrement leads to {1,2,3} and no copy")
         {
-            auto& pbegin_itr = --begin_itr;
+            auto& pbegin_itr = begin_itr.decrement();
             REQUIRE(*pbegin_itr == numbers);
             REQUIRE(&pbegin_itr == &begin_itr);
-            REQUIRE(begin_itr != end_itr);
-        }
-
-        SECTION("postfix decrement leads to {1,2,3} and copy")
-        {
-            auto rv = begin_itr--;
-            REQUIRE(*begin_itr == numbers);
-            REQUIRE(*rv ==next_perm);
             REQUIRE(begin_itr != end_itr);
         }
     }
@@ -166,19 +186,24 @@ TEST_CASE("Permutations instance {1,2,2} (i.e. duplicates)")
     auto begin_itr = p0.cbegin();
     auto end_itr = p0.cend();
     REQUIRE(p0.size() == 3);
+    REQUIRE(p0[0] == numbers);
     REQUIRE(*begin_itr == numbers);
     REQUIRE(begin_itr != end_itr);
 
     SECTION("prefix increment leads to {2,1,2}")
     {
         ++begin_itr;
-        REQUIRE(*begin_itr == set_type({2,1,2}));
+        set_type next_perm({2,1,2});
+        REQUIRE(p0[1] == next_perm);
+        REQUIRE(*begin_itr == next_perm);
         REQUIRE(begin_itr != end_itr);
 
         SECTION("prefix increment leads to {2,2,1}")
         {
             ++begin_itr;
-            REQUIRE(*begin_itr == set_type({2,2,1}));
+            set_type last_perm({2,2,1});
+            REQUIRE(p0[2] == last_perm);
+            REQUIRE(*begin_itr == last_perm);
             REQUIRE(begin_itr != end_itr);
 
             SECTION("Next increment ends")

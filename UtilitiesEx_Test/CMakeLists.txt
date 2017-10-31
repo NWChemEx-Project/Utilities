@@ -4,5 +4,7 @@ find_package(UtilitiesEx REQUIRED)
 include(TargetMacros)
 
 add_cxx_unit_test(Testtype_traitsExtensions UtilitiesEx)
+add_cxx_unit_test(TestCombinations UtilitiesEx)
 add_cxx_unit_test(TestCombinatorics UtilitiesEx)
+add_cxx_unit_test(TestIteratorTypes UtilitiesEx)
 add_cxx_unit_test(TestPermutations UtilitiesEx)
