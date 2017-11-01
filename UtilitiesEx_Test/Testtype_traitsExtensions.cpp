@@ -10,6 +10,11 @@ struct Struct1{
     bool operator!=(const Struct1&);
     int operator*();
     int operator++(int);
+    int operator[](int);
+    int operator+=(int);
+    int operator-=(int);
+    int operator<=(int);
+    int operator>=(int);
 };
 struct Struct2{
     using value_type=int;
@@ -18,6 +23,10 @@ struct Struct2{
     Struct2* operator->();
     int operator--();
     int operator--(int);
+    int operator+(int);
+    int operator-(int);
+    int operator<(int);
+    int operator>(int);
 };
 
 TEST_CASE("type_traits library extensions")
@@ -81,6 +90,53 @@ TEST_CASE("type_traits library extensions")
         bool postfix_dec_true=has_postfix_decrement<Struct2>::value;
         REQUIRE(!postfix_dec_false);
         REQUIRE(postfix_dec_true);
+
+        bool is_idx_false=is_indexable<Struct2>::value;
+        bool is_idx_true=is_indexable<Struct1>::value;
+        REQUIRE(!is_idx_false);
+        REQUIRE(is_idx_true);
+
+        bool has_lte_true=has_less_than_equal<Struct1,int>::value;
+        bool has_lte_false=has_less_than_equal<Struct2,int>::value;
+        REQUIRE(!has_lte_false);
+        REQUIRE(has_lte_true);
+
+        bool has_gte_true=has_greater_than_equal<Struct1,int>::value;
+        bool has_gte_false=has_greater_than_equal<Struct2,int>::value;
+        REQUIRE(!has_gte_false);
+        REQUIRE(has_gte_true);
+
+        bool has_lt_true=has_less_than<Struct2,int>::value;
+        bool has_lt_false=has_less_than<Struct1,int>::value;
+        REQUIRE(!has_lt_false);
+        REQUIRE(has_lt_true);
+
+        bool has_gt_true=has_greater_than<Struct2,int>::value;
+        bool has_gt_false=has_greater_than<Struct1,int>::value;
+        REQUIRE(!has_gt_false);
+        REQUIRE(has_gt_true);
+
+        bool has_inc_by_true=has_increment_by<Struct1,int>::value;
+        bool has_inc_by_false=has_increment_by<Struct2,int>::value;
+        REQUIRE(!has_inc_by_false);
+        REQUIRE(has_inc_by_true);
+
+        bool has_dec_by_true=has_decrement_by<Struct1,int>::value;
+        bool has_dec_by_false=has_decrement_by<Struct2,int>::value;
+        REQUIRE(!has_dec_by_false);
+        REQUIRE(has_dec_by_true);
+
+        bool has_plus_true=has_plus<Struct2,int>::value;
+        bool has_plus_false=has_plus<Struct1,int>::value;
+        REQUIRE(!has_plus_false);
+        REQUIRE(has_plus_true);
+
+        bool has_minus_true=has_minus<Struct2,int>::value;
+        bool has_minus_false=has_minus<Struct1,int>::value;
+        REQUIRE(!has_minus_false);
+        REQUIRE(has_minus_true);
+
+
     }
 
     SECTION("Container concept checks")
@@ -113,6 +169,16 @@ TEST_CASE("type_traits library extensions")
                 const bool bid_iterator_true=is_bidirectional_iterator<iterator>::value;
                 REQUIRE(!bid_iterator_false);
                 REQUIRE(bid_iterator_true);
+
+                SECTION("RandomAccessIterator")
+                {
+                    const bool ra_itr_false =
+                            is_random_access_iterator<Struct1>::value;
+                    const bool ra_itr_true =
+                            is_random_access_iterator<iterator>::value;
+                    REQUIRE(!ra_itr_false);
+                    REQUIRE(ra_itr_true);
+                }
             }
         }
     }

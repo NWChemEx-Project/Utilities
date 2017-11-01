@@ -16,7 +16,55 @@
  *        look for standard features mandated by the STL.  It's easier and more
  *        intuitive to adopt to their syntax.   Only when there may be a
  *        conflict with newer versions of the STL do I revert back to CamelCase.
+ *
+ *  Contents:
+ *  - VoidType    : Type that always defines a type "type" that is void
+ *  - Conjunction : performs multiple checks returning true if all are true
+ *  - has_value_type  : Checks if type defines typedef "value_type"
+ *  - has_reference   : Checks if type defines typedef "reference"
+ *  - has_const_reference   : Checks if type defines typedef "const_reference"
+ *  - has_pointer   : Checks if type defines typedef "pointer"
+ *  - has_const_pointer  : Checks if type defines typedef "const_pointer"
+ *  - has_iterator   : Checks if type defines typedef "iterator"
+ *  - has_const_iterator   : Checks if type defines typedef "const_iterator"
+ *  - has_difference_type   : Checks if type defines typedef "difference_type"
+ *  - has_size_type  : Checks if type defines typedef "size_type"
+ *  - has_iterator_category : Checks for typedef  "iterator_category"
+ *  - has_begin : Checks for member function "begin"
+ *  - has_end : Checks for member function "end"
+ *  - has_cbegin : Checks for member function "cbegin"
+ *  - has_cend : Checks for member function "cend"
+ *  - has_size : Checks for member function "size"
+ *  - has_max_size : Checks for member function "max_size"
+ *  - has_empty : Checks for member function "empty"
+ *  - has_equal_to : Checks for operator==
+ *  - has_not_equal_to : Checks for operator!=
+ *  - has_less_than : Checks for operator<
+ *  - has_greater_than : Checks for operator>
+ *  - has_less_than_equal : Checks for operator<=
+ *  - has_greater_than_equal : Checks for operator>=
+ *  - has_increment_by : Checks for operator+=
+ *  - has_decrement_by : Checks for operator-=
+ *  - has_plus : Checks for operator+
+ *  - has_minus : Checks for operator-
+ *  - has_dereference : Checks for operator*()
+ *  - has_arrow : Checks for operator->
+ *  - has_prefix_increment : Checks for operator++()
+ *  - has_postfix_increment : Checks for operator++(int)
+ *  - has_prefix_decrement : Checks for operator--()
+ *  - has_postfix_decrement : Checks for operator--(int)
+ *  - is_indexable : Checks for operator[]
+ *  - is_container : Checks if type satisfies concept of "container"
+ *  - is_iterator : Checks if type satisfies concept of "iterator"
+ *  - is_input_iterator : Checks if type satisfies concept of input iterator
+ *  - is_forward_iterator : Checks if type satisfies concept of forward iterator
+ *  - is_bidirectional_iterator : Checks if type satisfies concept of
+ *                                bidirectional iterator
+ *  - is_random_access_iterator : Checks if type satisfies concept of random
+ *                                access iterator
+ *
  */
+
 
 ///Namespace for all functionality in the UtilitiesEx library
 namespace UtilitiesEx {
@@ -130,6 +178,16 @@ std::true_type{}
 
 HAS_OPERATOR(equal_to,==);
 HAS_OPERATOR(not_equal_to,!=);
+HAS_OPERATOR(less_than,<);
+HAS_OPERATOR(greater_than,>);
+HAS_OPERATOR(less_than_equal,<=);
+HAS_OPERATOR(greater_than_equal,>=);
+HAS_OPERATOR(increment_by,+=);
+HAS_OPERATOR(decrement_by,-=);
+HAS_OPERATOR(plus,+);
+HAS_OPERATOR(minus,-);
+
+
 
 /** @brief Checks if a type is dereference-able via the star operator
  *
@@ -192,6 +250,15 @@ template<typename T>
 struct has_postfix_decrement<T,
      typename VoidType<decltype(std::declval<T>()--)>::type> : std::true_type{};
 
+/** @brief Checks if a type implements the index operator
+ *
+ * @tparam T The type to check
+ */
+template<typename T, typename = void>
+struct is_indexable : std::false_type {};
+template<typename T>
+struct is_indexable<T,typename VoidType<decltype(std::declval<T>()[0])>::type>
+: std::true_type{};
 
 #undef HAS_OPERATOR
 
@@ -307,6 +374,32 @@ template<typename T>
 struct is_bidirectional_iterator : Conjunction<is_forward_iterator<T>,
                                                has_prefix_decrement<T>,
                                                has_postfix_decrement<T>
+>{};
+
+/** @brief This struct will contain a value true if the type satisfies the C++
+ *         concept of "RandomAccessIterator"
+ *
+ *  @warning This type will not check if the type is swappable.  A type_trait,
+ *           is_swappable exists in C++17 for this purpose.  Implementing our
+ *           own is a royal pain on account of how the STL actually does
+ *           swapping...
+ *
+ *  The full specificiation of what an "random access iterator" must have is
+ *  available
+ *  < a href="http://en.cppreference.com/w/cpp/concept/RandomAccessIterator">here</a>.
+ */
+template<typename T, typename diff_type=long int>
+struct is_random_access_iterator : Conjunction<is_bidirectional_iterator<T>,
+                                               has_increment_by<T,diff_type>,
+                                               has_decrement_by<T,diff_type>,
+                                               has_plus<T,diff_type>,
+                                               has_minus<T,diff_type>,
+                                               has_minus<T,T>,
+                                               is_indexable<T>,
+                                               has_less_than<T,T>,
+                                               has_greater_than<T,T>,
+                                               has_less_than_equal<T,T>,
+                                               has_greater_than_equal<T,T>
 >{};
 
 }//End namespace
