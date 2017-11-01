@@ -276,10 +276,10 @@ private:
     value_type original_set_;
 
     ///The number of objects taken at a time
-    size_type k_;
+    size_type k_=0;
 
     ///This is the number of Combinations in the container
-    size_type size_;
+    size_type size_=0;
 
     ///True if this container was defaulted
     bool defaulted_=true;
