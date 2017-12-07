@@ -12,18 +12,18 @@ pipeline {
 			  cmake -H. -Bbuild
 			  cd build
 			  make
-		      ``` 
+			  '''
             }
         }
         stage('Test') {
             steps {
                 echo 'Testing..'
-		bash ```#!/bin/bash
+		bash '''#!/bin/bash
 		     source /etc/profile
 		     module load cmake
 		     cd build
 		     ctest
-		     ```
+		     '''
             }
         }
     }
