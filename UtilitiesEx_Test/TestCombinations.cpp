@@ -19,13 +19,6 @@ TEST_CASE("Satisfy STL concepts")
     REQUIRE(is_bid);
 }
 
-TEST_CASE("Intentional Fail")
-{
-  int i=0;
-  int j=1;
-    REQUIRE(i==j);
-}
-
 
 TEST_CASE("Empty Combination")
 {
