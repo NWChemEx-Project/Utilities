@@ -8,8 +8,9 @@ set(UtilitiesEx_INCLUDES Mathematician/Combinatorics.hpp
                          IterTools/Permutations.hpp
                          TypeTraits/type_traitsExtensions.hpp
 )
-
+set(UtilitiesEx_DEFINITIONS )
+set(UtilitiesEx_LINK_FLAGS )
 nwchemex_add_library(UtilitiesEx UtilitiesEx_SRCS
                                  UtilitiesEx_INCLUDES
-                                 ""
-)
+                                 UtilitiesEx_DEFINITIONS
+                                 UtilitiesEx_LINK_FLAGS)
