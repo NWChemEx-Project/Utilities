@@ -1,5 +1,4 @@
 #include <UtilitiesEx/TypeTraits/type_traitsExtensions.hpp>
-#define CATCH_CONFIG_MAIN
 #include "catch/catch.hpp"
 #include <vector>
 using namespace UtilitiesEx;

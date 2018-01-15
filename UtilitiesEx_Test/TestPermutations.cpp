@@ -1,6 +1,5 @@
 #include <UtilitiesEx/IterTools/Permutations.hpp>
 #include <UtilitiesEx/TypeTraits/type_traitsExtensions.hpp>
-#define CATCH_CONFIG_MAIN
 #include "catch/catch.hpp"
 
 using namespace UtilitiesEx;

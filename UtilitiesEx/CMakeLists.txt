@@ -12,4 +12,4 @@ set(UtilitiesEx_INCLUDES Mathematician/Combinatorics.hpp
 nwchemex_add_library(UtilitiesEx UtilitiesEx_SRCS
                                  UtilitiesEx_INCLUDES
                                  ""
-)
+                                 "")
