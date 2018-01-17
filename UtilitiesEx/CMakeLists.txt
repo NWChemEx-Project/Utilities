@@ -2,7 +2,8 @@ cmake_minimum_required(VERSION 3.1)
 project(UtilitiesEx-SRC VERSION 0.0.0 LANGUAGES CXX)
 include(TargetMacros)
 set(UtilitiesEx_SRCS Mathematician/Combinatorics.cpp)
-set(UtilitiesEx_INCLUDES Mathematician/Combinatorics.hpp
+set(UtilitiesEx_INCLUDES Any.hpp
+                         Mathematician/Combinatorics.hpp
                          IterTools/Combinations.hpp
                          TypeTraits/IteratorTypes.hpp
                          IterTools/Permutations.hpp

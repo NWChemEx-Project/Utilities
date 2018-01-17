@@ -2,6 +2,7 @@ cmake_minimum_required(VERSION 3.1)
 project(UtilitiesEx-Test VERSION 0.0.0 LANGUAGES CXX)
 include(TargetMacros)
 
+add_cxx_unit_test(TestAny)
 add_cxx_unit_test(Testtype_traitsExtensions)
 add_cxx_unit_test(TestCombinations)
 add_cxx_unit_test(TestCombinatorics)
