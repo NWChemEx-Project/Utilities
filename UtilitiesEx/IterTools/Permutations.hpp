@@ -1,9 +1,9 @@
 #pragma once
 #include "UtilitiesEx/Mathematician/Combinatorics.hpp"
 #include "UtilitiesEx/TypeTraits/IteratorTypes.hpp"
-#include <limits> //For maximum value of size_t
-#include <tuple> //For std::tie
 #include <algorithm> //For is_permutation, next/prev permutation
+#include <limits>    //For maximum value of size_t
+#include <tuple>     //For std::tie
 
 namespace UtilitiesEx {
 
@@ -23,8 +23,8 @@ namespace UtilitiesEx {
  *  {{N}\choose{n_1,n_2,\ldots,n_i,\ldots,n_M}}=\frac{N!}{\prod_{i=1}^Mn_i!}
  *  @f]
  *  where @f$n_i@f$ is the number of times the @f$i@f$-th unique element appears
- *  in the sequence.  Hence there are in theory a lot of elements in this 
- *  container.  This class doesn't actually store them, but generates them on 
+ *  in the sequence.  Hence there are in theory a lot of elements in this
+ *  container.  This class doesn't actually store them, but generates them on
  *  the fly.
  *
  *  @note This container contains @b all the unique permutations.  The STL
@@ -38,34 +38,36 @@ namespace UtilitiesEx {
  *          The type must satisfy sequence container concept.
  */
 template<typename SequenceType>
-class Permutations {
-private:
-    ///Forward declaration of the iterator type
+class Permutations
+{
+  private:
+    /// Forward declaration of the iterator type
     class PermutationItr;
-public:
-    ///Type of this class
-    using my_type=Permutations<SequenceType>;
 
-    ///Type of an element of this container
-    using value_type=SequenceType;
+  public:
+    /// Type of this class
+    using my_type = Permutations<SequenceType>;
 
-    ///Permutations are non-mutable so same as const_reference
-    using reference=const value_type&;
+    /// Type of an element of this container
+    using value_type = SequenceType;
 
-    ///Type of a const reference to an element of this container
-    using const_reference=const value_type&;
+    /// Permutations are non-mutable so same as const_reference
+    using reference = const value_type &;
 
-    ///Non-mutable container so same as const_iterator
-    using iterator=PermutationItr;
+    /// Type of a const reference to an element of this container
+    using const_reference = const value_type &;
 
-    ///Type of a non-mutating iterator to this container
-    using const_iterator=PermutationItr;
+    /// Non-mutable container so same as const_iterator
+    using iterator = PermutationItr;
 
-    ///Type of the difference between two iterators
-    using difference_type=long int;
+    /// Type of a non-mutating iterator to this container
+    using const_iterator = PermutationItr;
 
-    ///The type of an offset
-    using size_type=std::size_t;
+    /// Type of the difference between two iterators
+    using difference_type = long int;
+
+    /// The type of an offset
+    using size_type = std::size_t;
 
     /** @brief Constructs an empty container.
      *
@@ -74,7 +76,7 @@ public:
      *
      *  @throws None No throw guarantee.
      */
-    Permutations()noexcept=default;
+    Permutations() noexcept = default;
 
     /** @brief Fills container with all permutations of \p input_set
      *
@@ -83,9 +85,11 @@ public:
      *  @throws std::bad_alloc If there is not enough memory to copy the input.
      *          Strong throw guarantee.
      */
-    Permutations(const_reference input_set):
-        original_set_(input_set),size_(n_permutations(input_set))
-    {}
+    Permutations(const_reference input_set)
+      : original_set_(input_set)
+      , size_(n_permutations(input_set))
+    {
+    }
 
     /** @brief Deep copies another Permutations instance.
      *
@@ -93,7 +97,7 @@ public:
      *  @throws std::bad_alloc if there is not enough memory to copy \p rhs.
      *          Strong throw guarantee.
      */
-    Permutations(const my_type& /*rhs*/)=default;
+    Permutations(const my_type & /*rhs*/) = default;
 
     /** @copybrief Permutations(const Permutations&)
      *
@@ -102,7 +106,7 @@ public:
      *  @throws std::bad_alloc if there is not enough memory to copy @p rhs.
      *          Strong throw guarantee.
      */
-    Permutations& operator=(const my_type& /*rhs*/)=default;
+    Permutations & operator=(const my_type & /*rhs*/) = default;
 
     /** @brief Takes ownership of another container
      *
@@ -111,7 +115,7 @@ public:
      *  @param[in] rhs The set of permutations to take ownership of
      *  @throws None No throw guarantee.
      */
-    Permutations(my_type&& /*rhs*/)noexcept=default;
+    Permutations(my_type && /*rhs*/) noexcept = default;
 
     /** @brief Assigns ownership of another container to this container
      *
@@ -121,7 +125,7 @@ public:
      *  @returns This instance after taking ownership
      *  @throws None No throw guarantee.
      */
-    my_type& operator=(my_type&& /*rhs*/)noexcept=default;
+    my_type & operator=(my_type && /*rhs*/) noexcept = default;
 
     /** @brief Frees memory associated with container.
      *
@@ -130,7 +134,7 @@ public:
      *
      *  @throws None No throw guarantee.
      */
-    ~Permutations()noexcept=default;
+    ~Permutations() noexcept = default;
 
     /** @brief Creates an iterator for this container that points to the first
      *         element of the container.
@@ -144,9 +148,9 @@ public:
      *  @throws std::bad_alloc if there is not enough memory to copy the set to
      *          the iterator.  Strong throw guarantee.
      */
-    iterator begin()const
+    iterator begin() const
     {
-        return PermutationItr(original_set_,0);
+        return PermutationItr(original_set_, 0);
     }
 
     /** @brief Creates an iterator just past the last element of this container.
@@ -159,19 +163,19 @@ public:
      *  @throws std::bad_alloc if there is not enough memory to copy the set to
      *          the iterator.  Strong throw guarantee.
      */
-    iterator end()const
+    iterator end() const
     {
-        return PermutationItr(original_set_,size_);
+        return PermutationItr(original_set_, size_);
     }
 
     ///@copydoc Permutations::begin()
-    const_iterator cbegin()const
+    const_iterator cbegin() const
     {
         return begin();
     }
 
     /// @copydoc Permuations::end()
-    const_iterator cend()const
+    const_iterator cend() const
     {
         return end();
     }
@@ -187,10 +191,12 @@ public:
      *               permutations.
      *  @throws None No throw guarantee.
      */
-    bool operator==(const my_type& other)const noexcept
+    bool operator==(const my_type & other) const noexcept
     {
-        if(size_ != other.size_) return false;
-        return std::is_permutation(original_set_.begin(),original_set_.end(),
+        if(size_ != other.size_)
+            return false;
+        return std::is_permutation(original_set_.begin(),
+                                   original_set_.end(),
                                    other.original_set_.begin());
     }
 
@@ -202,9 +208,9 @@ public:
      *  @throws None No throw guarantee.
      *
      */
-    bool operator!=(const my_type& other)const noexcept
+    bool operator!=(const my_type & other) const noexcept
     {
-        return !((*this)==other);
+        return !((*this) == other);
     }
 
     /** @brief Returns a copy of the requested permutation
@@ -220,9 +226,9 @@ public:
      *          operation.
      *
      */
-    value_type operator[](size_type perm)const
+    value_type operator[](size_type perm) const
     {
-        return decimal_to_permutation(perm,original_set_);
+        return decimal_to_permutation(perm, original_set_);
     }
 
     /** @brief Swaps the contents of this container with another
@@ -230,10 +236,10 @@ public:
      *  @param[i] other The container to swap contents with
      *  @throws None No throw guarantee.
      */
-    void swap(my_type& other)noexcept
+    void swap(my_type & other) noexcept
     {
-        std::swap(original_set_,other.original_set_);
-        std::swap(size_,other.size_);
+        std::swap(original_set_, other.original_set_);
+        std::swap(size_, other.size_);
     }
 
     /** @brief Returns the number of elements in this container.
@@ -241,7 +247,7 @@ public:
      *  @return The number of permutations in this container
      *  @throws None No throw guarantee.
      */
-    size_type size()const noexcept
+    size_type size() const noexcept
     {
         return size_;
     }
@@ -251,7 +257,7 @@ public:
      *  Since this container does not actually contain its elements, so long as
      *  the number of unique permutations is expressible as a size_type integer
      */
-    constexpr size_type max_size()const noexcept
+    constexpr size_type max_size() const noexcept
     {
         return std::numeric_limits<size_type>::max();
     }
@@ -265,17 +271,17 @@ public:
      *  @returns true if the container is empty.
      *  @throws None No throw guarantee.
      */
-    bool empty()const noexcept
+    bool empty() const noexcept
     {
-        return cbegin()==cend();
+        return cbegin() == cend();
     }
 
-private:
-    ///This is the set we are generating all unique permutations of
+  private:
+    /// This is the set we are generating all unique permutations of
     value_type original_set_;
 
-    ///This is the number of permutations in the container
-    size_type size_=0;
+    /// This is the number of permutations in the container
+    size_type size_ = 0;
 
     /** @brief The iterator actually returned by the Permutations class
      *
@@ -283,14 +289,15 @@ private:
      *  around on themselves.  When they wrap they return the first element.
      *  This class satisfies the concept of a random access iterator.
      */
-    class PermutationItr: public
-        detail_::RandomAccessIteratorBase<PermutationItr,SequenceType> {
-    public:
+    class PermutationItr
+      : public detail_::RandomAccessIteratorBase<PermutationItr, SequenceType>
+    {
+      public:
         /** @brief Makes a place-holder PermutationItr
          *
          *  @throws None No throw guarantee.
          */
-        PermutationItr()noexcept=default;
+        PermutationItr() noexcept = default;
 
         /** @brief Makes a usable PermutationItr.
          *
@@ -299,13 +306,15 @@ private:
          * @param offset  Which permutation to start with.
          * @throws std::bad_alloc if the any of the copies fail.
          */
-        PermutationItr(const value_type& input_set, size_type offset):
-            orig_set_(input_set), set_(input_set),offset_(offset)
-        {}
+        PermutationItr(const value_type & input_set, size_type offset)
+          : orig_set_(input_set)
+          , set_(input_set)
+          , offset_(offset)
+        {
+        }
 
-        ///Trivial destructor
-        ~PermutationItr()=default;
-
+        /// Trivial destructor
+        ~PermutationItr() = default;
 
         /** @brief Returns the element of the parent container currently pointed
          *         to by this iterator.
@@ -313,7 +322,7 @@ private:
          *  @return The element being pointed to.
          *  @throws None No throw guarantee.
          */
-        const_reference dereference()const
+        const_reference dereference() const
         {
             return set_;
         }
@@ -330,7 +339,7 @@ private:
          *  @return The iterator after incrementing
          *  @throws None No throw guarantee.
          */
-        PermutationItr& increment()noexcept
+        PermutationItr & increment() noexcept
         {
             std::next_permutation(set_.begin(), set_.end());
             ++offset_;
@@ -347,10 +356,10 @@ private:
          *  @return True if this iterator is exactly the same as @p rhs
          *  @throws None No throw guarantee.
          */
-        bool are_equal(const PermutationItr& rhs)const noexcept
+        bool are_equal(const PermutationItr & rhs) const noexcept
         {
-            return std::tie(orig_set_,set_,offset_) ==
-                   std::tie(rhs.orig_set_,rhs.set_,rhs.offset_);
+            return std::tie(orig_set_, set_, offset_) ==
+                   std::tie(rhs.orig_set_, rhs.set_, rhs.offset_);
         }
 
         /** @brief Makes the iterator point to the previous permutation.
@@ -365,7 +374,7 @@ private:
          *  @return The iterator after decrementing
          *  @throws None No throw guarantee.
          */
-        PermutationItr& decrement()noexcept
+        PermutationItr & decrement() noexcept
         {
             std::prev_permutation(set_.begin(), set_.end());
             --offset_;
@@ -382,10 +391,10 @@ private:
          *          memory to complete
          *
          */
-        PermutationItr& advance(difference_type n)
+        PermutationItr & advance(difference_type n)
         {
-            offset_+=n;
-            set_=decimal_to_permutation(offset_,orig_set_);
+            offset_ += n;
+            set_ = decimal_to_permutation(offset_, orig_set_);
             return *this;
         }
 
@@ -396,25 +405,26 @@ private:
          * @return The number of permutations between this and other
          * @throws None. No throw guarantee
          * */
-        difference_type distance_to(const PermutationItr& other)const noexcept
+        difference_type distance_to(const PermutationItr & other) const noexcept
         {
-            const bool is_greater=(offset_>=other.offset_);
-            const difference_type abs_val= (is_greater ? offset_-other.offset_:
-                                                         other.offset_-offset_);
+            const bool is_greater = (offset_ >= other.offset_);
+            const difference_type abs_val =
+                (is_greater ? offset_ - other.offset_
+                            : other.offset_ - offset_);
             return (is_greater ? -abs_val : abs_val);
         }
 
-    private:
-        ///A copy of the parent's set, doesn't get modified
+      private:
+        /// A copy of the parent's set, doesn't get modified
         value_type orig_set_;
 
-        ///A copy of the parent's set, modified by next/prev permutation
+        /// A copy of the parent's set, modified by next/prev permutation
         value_type set_;
 
-        ///The number of increments from the first call
+        /// The number of increments from the first call
         size_type offset_;
 
-    };//End class PermutationItr
-}; //End class Permutations
+    }; // End class PermutationItr
+};     // End class Permutations
 
-} //End namespace
+} // namespace UtilitiesEx
