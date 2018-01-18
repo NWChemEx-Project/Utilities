@@ -1,8 +1,8 @@
 #pragma once
 #include "UtilitiesEx/IterTools/Permutations.hpp"
-#include <tuple> //for tie
-#include <limits>   //max size of size_t
 #include <algorithm> //is_permutation
+#include <limits>    //max size of size_t
+#include <tuple>     //for tie
 
 namespace UtilitiesEx {
 
@@ -27,35 +27,37 @@ namespace UtilitiesEx {
  *         Should satisfy the concept of container.
  *  @tparam Repeats True if repeats are allowed.  Default false.
  */
-template<typename SequenceType, bool Repeats=false>
-class Combinations {
-private:
-    ///Forward declare for type stating reasons
+template<typename SequenceType, bool Repeats = false>
+class Combinations
+{
+  private:
+    /// Forward declare for type stating reasons
     class CombinationItr;
-public:
-    ///Type of this class (only declared for convenience)
-    using my_type=Combinations<SequenceType,Repeats>;
 
-    ///Type of an element inside this container
-    using value_type=SequenceType;
+  public:
+    /// Type of this class (only declared for convenience)
+    using my_type = Combinations<SequenceType, Repeats>;
 
-    ///Combinations are non-mutable so same as const_reference
-    using reference=const value_type&;
+    /// Type of an element inside this container
+    using value_type = SequenceType;
 
-    ///Type of a const reference to an element of this container
-    using const_reference=const value_type&;
+    /// Combinations are non-mutable so same as const_reference
+    using reference = const value_type &;
 
-    ///Non-mutable container so same as const_iterator
-    using iterator=CombinationItr;
+    /// Type of a const reference to an element of this container
+    using const_reference = const value_type &;
 
-    ///Type of a non-mutating iterator to this container
-    using const_iterator=CombinationItr;
+    /// Non-mutable container so same as const_iterator
+    using iterator = CombinationItr;
 
-    ///Type of the difference between two iterators
-    using difference_type=long int;
+    /// Type of a non-mutating iterator to this container
+    using const_iterator = CombinationItr;
 
-    ///The type of an offset
-    using size_type=std::size_t;
+    /// Type of the difference between two iterators
+    using difference_type = long int;
+
+    /// The type of an offset
+    using size_type = std::size_t;
 
     /** @brief Constructs a container filled no combinations.
      *
@@ -64,7 +66,7 @@ public:
      *
      *  @throws None No throw guarantee.
      */
-    Combinations()noexcept=default;
+    Combinations() noexcept = default;
 
     /** @brief Fills container with all Combinations of \p input_set
      *
@@ -87,7 +89,7 @@ public:
      *  @throws std::bad_alloc if there is not enough memory to copy \p rhs.
      *          Strong throw guarantee.
      */
-    Combinations(const my_type& /*rhs*/)=default;
+    Combinations(const my_type & /*rhs*/) = default;
 
     /** @copybrief Combinations(const Combinations&)
      *
@@ -96,7 +98,7 @@ public:
      *  @throws std::bad_alloc if there is not enough memory to copy @p rhs.
      *          Strong throw guarantee.
      */
-    Combinations& operator=(const my_type& /*rhs*/)=default;
+    Combinations & operator=(const my_type & /*rhs*/) = default;
 
     /** @brief Takes ownership of another container.
      *
@@ -106,7 +108,7 @@ public:
      *  @param[in] rhs The set of Combinations to take ownership of
      *  @throws None No throw guarantee.
      */
-    Combinations(my_type&& /*rhs*/)noexcept=default;
+    Combinations(my_type && /*rhs*/) noexcept = default;
 
     /** @brief Takes ownership of another container
      *
@@ -117,7 +119,7 @@ public:
      *  @returns This instance after taking ownership of @p rhs
      *  @throws None No throw guarantee.
      */
-    my_type& operator=(my_type&& /*rhs*/)noexcept=default;
+    my_type & operator=(my_type && /*rhs*/) noexcept = default;
 
     /** @brief Frees memory associated with this container.
      *
@@ -128,7 +130,7 @@ public:
      *
      *  @throws None No throw guarantee.
      */
-    ~Combinations()noexcept=default;
+    ~Combinations() noexcept = default;
 
     /** @brief Creates an iterator for this container that points to the first
      *         combination in the container.
@@ -142,9 +144,9 @@ public:
      *  @throws std::bad_alloc if there is not enough memory to copy the set to
      *          the iterator.  Strong throw guarantee.
      */
-    iterator begin()const
+    iterator begin() const
     {
-        return CombinationItr(original_set_,k_,defaulted_);
+        return CombinationItr(original_set_, k_, defaulted_);
     }
 
     /** @brief Creates an iterator just past the last element of this container.
@@ -155,19 +157,19 @@ public:
      *  @throws std::bad_alloc if there is not enough memory to copy the set to
      *          the iterator.  Strong throw guarantee.
      */
-    iterator end()const
+    iterator end() const
     {
-        return CombinationItr(original_set_,k_,true);
+        return CombinationItr(original_set_, k_, true);
     }
 
     ///@copydoc Combinations::begin()
-    const_iterator cbegin()const
+    const_iterator cbegin() const
     {
         return begin();
     }
 
     ///@copydoc Combinations::end()
-    const_iterator cend()const
+    const_iterator cend() const
     {
         return end();
     }
@@ -185,10 +187,10 @@ public:
      *               Combinations.
      *  @throws None No throw guarantee.
      */
-    bool operator==(const my_type& rhs)const noexcept
+    bool operator==(const my_type & rhs) const noexcept
     {
-        return std::tie(size_,original_set_)==
-               std::tie(rhs.size_,rhs.original_set_);
+        return std::tie(size_, original_set_) ==
+               std::tie(rhs.size_, rhs.original_set_);
     }
 
     /** @brief True if this contains different combinations from @p rhs.
@@ -202,9 +204,9 @@ public:
      *  @throws None No throw guarantee.
      *
      */
-    bool operator!=(const my_type& rhs)const noexcept
+    bool operator!=(const my_type & rhs) const noexcept
     {
-        return !((*this)==rhs);
+        return !((*this) == rhs);
     }
 
     /** @brief Swaps the contents of this container with those of @p rhs
@@ -212,12 +214,12 @@ public:
      *  @param[i] rhs The container to swap contents with
      *  @throws None No throw guarantee.
      */
-    void swap(my_type& rhs)noexcept
+    void swap(my_type & rhs) noexcept
     {
-        std::swap(original_set_,rhs.original_set_);
-        std::swap(size_,rhs.size_);
-        std::swap(k_,rhs.k_);
-        std::swap(defaulted_,rhs.defaulted_);
+        std::swap(original_set_, rhs.original_set_);
+        std::swap(size_, rhs.size_);
+        std::swap(k_, rhs.k_);
+        std::swap(defaulted_, rhs.defaulted_);
     }
 
     /** @brief Returns the number of elements in this container.
@@ -232,7 +234,7 @@ public:
      *  @return The number of Combinations in this container
      *  @throws None No throw guarantee.
      */
-    size_type size()const noexcept
+    size_type size() const noexcept
     {
         return size_;
     }
@@ -246,7 +248,7 @@ public:
      *  it may not actually be possible to instantiate an object with that many
      *  elements.
      */
-    constexpr size_type max_size()const noexcept
+    constexpr size_type max_size() const noexcept
     {
         return std::numeric_limits<size_type>::max();
     }
@@ -261,28 +263,28 @@ public:
      *  @returns true if the container is empty.
      *  @throws None No throw guarantee.
      */
-    bool empty()const noexcept
+    bool empty() const noexcept
     {
         return defaulted_;
     }
 
-    value_type operator[](difference_type i)const
+    value_type operator[](difference_type i) const
     {
-        return *(cbegin()+i);
+        return *(cbegin() + i);
     }
 
-private:
-    ///This is the sequence we are generating all unique Combinations of
+  private:
+    /// This is the sequence we are generating all unique Combinations of
     value_type original_set_;
 
-    ///The number of objects taken at a time
-    size_type k_=0;
+    /// The number of objects taken at a time
+    size_type k_ = 0;
 
-    ///This is the number of Combinations in the container
-    size_type size_=0;
+    /// This is the number of Combinations in the container
+    size_type size_ = 0;
 
-    ///True if this container was defaulted
-    bool defaulted_=true;
+    /// True if this container was defaulted
+    bool defaulted_ = true;
 
     /** @brief The iterator actually returned by the Combinations class
      *
@@ -290,10 +292,10 @@ private:
      *  technical note we invert the usual 0=false, 1=true mapping to get the
      *  unique permutations back in lexicographical order.
      */
-    class CombinationItr : public
-        detail_::RandomAccessIteratorBase<CombinationItr,SequenceType> {
-    public:
-
+    class CombinationItr
+      : public detail_::RandomAccessIteratorBase<CombinationItr, SequenceType>
+    {
+      public:
         /** @brief Makes a new combination iterator over a given sequence.
          *
          *  @param[in] input_set The set to iterate over.
@@ -304,7 +306,9 @@ private:
          *  @throws std::bad_alloc If the copy fails because of lack of memory.
          *          Strong throw guarantee.
          */
-        CombinationItr(const_reference input_set, size_type offset, bool at_end);
+        CombinationItr(const_reference input_set,
+                       size_type offset,
+                       bool at_end);
 
         /** @brief Makes a deep copy of the current instance.
          *
@@ -314,7 +318,7 @@ private:
          *  @param[in] rhs The Combination to copy.
          *  @throws std:bad_alloc if copying fails.  Strong throw guarantee.
          */
-        CombinationItr(const CombinationItr& /*rhs*/)=default;
+        CombinationItr(const CombinationItr & /*rhs*/) = default;
 
         /** @brief Assigns a deep copy to the current instance.
          *
@@ -323,7 +327,7 @@ private:
          *  @throws std::bad_alloc if the underlying copy fails.  Strong throw
          *  guarantee.
          */
-        CombinationItr& operator=(const CombinationItr& /*rhs*/)=default;
+        CombinationItr & operator=(const CombinationItr & /*rhs*/) = default;
 
         /** @brief Takes ownership of another iterator
          *
@@ -333,7 +337,7 @@ private:
          *  @param[in] rhs The iterator we are going to own
          *  @throws None No throw guarantee.
          */
-        CombinationItr(CombinationItr&& /*rhs*/)noexcept=default;
+        CombinationItr(CombinationItr && /*rhs*/) = default;
 
         /** @brief Takes ownership of another CombinationItr instance
          *
@@ -341,10 +345,10 @@ private:
          *  @return The current instance containing @p rhs 's state.
          *  @throws None No throw guarantee.
          */
-        CombinationItr& operator=(CombinationItr&& /*rhs*/)noexcept=default;
+        CombinationItr & operator=(CombinationItr && /*rhs*/) = default;
 
-        ///Trivial destructor
-        ~CombinationItr()noexcept=default;
+        /// Trivial destructor
+        ~CombinationItr() noexcept = default;
 
         /** @brief Returns the element of the parent container currently pointed
          *         to by this iterator.
@@ -352,11 +356,10 @@ private:
          *  @return The element being pointed to.
          *  @throws None No throw guarantee.
          */
-        const_reference dereference()const noexcept
+        const_reference dereference() const noexcept
         {
             return comb_;
         }
-
 
         /** @brief Makes the iterator point to the next Combination.
          *
@@ -370,13 +373,12 @@ private:
          *  @return The iterator after incrementing
          *  @throws None No throw guarantee.
          */
-        CombinationItr& increment()noexcept
+        CombinationItr & increment() noexcept
         {
             ++current_perm_;
             update_comb();
             return *this;
         }
-
 
         /** @brief Makes the iterator point to the previous Combination.
          *
@@ -390,7 +392,7 @@ private:
          *  @return The iterator after decrementing
          *  @throws None No throw guarantee.
          */
-        CombinationItr& decrement()noexcept
+        CombinationItr & decrement() noexcept
         {
             --current_perm_;
             update_comb();
@@ -407,13 +409,12 @@ private:
          *  insufficient memory to complete the request
          *
          */
-        CombinationItr& advance(difference_type n)
+        CombinationItr & advance(difference_type n)
         {
-            current_perm_+=n;
+            current_perm_ += n;
             update_comb();
             return *this;
         }
-
 
         /** Compares two CombinationItrs for exact equality
          *
@@ -425,10 +426,10 @@ private:
          *  @return True if this iterator is exactly the same as @p other
          *  @throws None No throw guarantee.
          */
-        bool are_equal(const CombinationItr& other)const noexcept
+        bool are_equal(const CombinationItr & other) const noexcept
         {
-            return std::tie(set_,current_perm_) ==
-                   std::tie(other.set_,other.current_perm_);
+            return std::tie(set_, current_perm_) ==
+                   std::tie(other.set_, other.current_perm_);
         }
 
         /** @brief Returns the distance between this iterator and another
@@ -436,78 +437,79 @@ private:
          * @param[in] rhs The iterator we want the distance to.
          * @returns the distance between the two iterators
          */
-        difference_type distance_to(const CombinationItr& rhs)const noexcept
+        difference_type distance_to(const CombinationItr & rhs) const noexcept
         {
             return current_perm_ - rhs.current_perm_;
         }
 
-    private:
-        ///A copy of the parent's set
+      private:
+        /// A copy of the parent's set
         value_type set_;
 
-        ///The current combination
+        /// The current combination
         value_type comb_;
 
-        ///The current permutation
+        /// The current permutation
         typename Permutations<std::vector<bool>>::const_iterator current_perm_;
 
-        ///Updates @p comb_ to be consistent with current_perm_
+        /// Updates @p comb_ to be consistent with current_perm_
         void update_comb();
 
-    };//End class CombinationItr
-}; //End class Combinations
+    }; // End class CombinationItr
+};     // End class Combinations
 
 /******************************************************************************
  * Definitions.
  ******************************************************************************/
 
 /////////////////////////////////  Combinations  ///////////////////////////////
-//Combination range constructor
+// Combination range constructor
 template<typename container_type, bool repeat>
-Combinations<container_type,repeat>::
-Combinations(const container_type& input_set, std::size_t k):
-        original_set_(input_set),
-        k_(k),
-        size_(!repeat?binomial_coefficient<size_type>(input_set.size(),k):
-                      binomial_coefficient<size_type>((input_set.size()+k)-1,k)
-             ),
-        defaulted_(false)
+Combinations<container_type, repeat>::Combinations(
+    const container_type & input_set,
+    std::size_t k)
+  : original_set_(input_set)
+  , k_(k)
+  , size_(!repeat
+              ? binomial_coefficient<size_type>(input_set.size(), k)
+              : binomial_coefficient<size_type>((input_set.size() + k) - 1, k))
+  , defaulted_(false)
 {
 }
 
 ///////////////////////////////// CombinationItr ///////////////////////////////
 
-template<typename container_type,bool repeat>
-void Combinations<container_type,repeat>::CombinationItr::update_comb()
+template<typename container_type, bool repeat>
+void Combinations<container_type, repeat>::CombinationItr::update_comb()
 {
-    const auto& p=*current_perm_;
-    for(size_type i=0,counter=0,bar_count=0;i<p.size();++i)
+    const auto & p = *current_perm_;
+    for(size_type i = 0, counter = 0, bar_count = 0; i < p.size(); ++i)
     {
         if(!p[i])
-            comb_[counter++] = set_[!repeat?i:bar_count];
+            comb_[counter++] = set_[!repeat ? i : bar_count];
         else
             ++bar_count;
-        if(counter == comb_.size())//Early termination, rest are false
-                break;
+        if(counter == comb_.size()) // Early termination, rest are false
+            break;
     }
 }
 
 template<typename container_type, bool repeat>
-Combinations<container_type,repeat>::CombinationItr::CombinationItr(
-        const container_type& input_set,
-        std::size_t k,
-        bool at_end):
-    set_(input_set),comb_(k)
+Combinations<container_type, repeat>::CombinationItr::CombinationItr(
+    const container_type & input_set,
+    std::size_t k,
+    bool at_end)
+  : set_(input_set)
+  , comb_(k)
 {
-    const size_type n=input_set.size();
-    //k==n==0 is possible and leads to -1 (technically ok, -1 choose 0=1...)
-    const size_type eff_size=(n||k?n+k-1:0);
-    std::vector<bool> temp(!repeat?n:eff_size,true);
-    for(size_t i=0;i<k;++i)
-        temp[i]=false;
+    const size_type n = input_set.size();
+    // k==n==0 is possible and leads to -1 (technically ok, -1 choose 0=1...)
+    const size_type eff_size = (n || k ? n + k - 1 : 0);
+    std::vector<bool> temp(!repeat ? n : eff_size, true);
+    for(size_t i = 0; i < k; ++i)
+        temp[i] = false;
     Permutations<std::vector<bool>> perms(temp);
-    current_perm_=(at_end ? perms.end() : perms.begin());
+    current_perm_ = (at_end ? perms.end() : perms.begin());
     update_comb();
 }
-} //End namespace
-
+} // namespace UtilitiesEx
