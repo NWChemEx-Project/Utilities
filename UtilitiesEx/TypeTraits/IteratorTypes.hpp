@@ -18,7 +18,6 @@
  *  - RandomAccessIteratorBase : Base class for a random access iterator
  */
 
-
 namespace UtilitiesEx {
 namespace detail_ {
 
@@ -40,60 +39,61 @@ namespace detail_ {
  */
 template<typename ParentType,
          typename ValueType,
-         typename SizeType=std::size_t,
-         typename DifferenceType=long int
-        >
-struct InputIteratorBase {
-    ///The type of an element returned by this iterator.
-    using value_type=ValueType;
+         typename SizeType = std::size_t,
+         typename DifferenceType = long int>
+struct InputIteratorBase
+{
+    /// The type of an element returned by this iterator.
+    using value_type = ValueType;
 
-    ///The type of a mutable reference to an element
-    using reference=value_type &;
+    /// The type of a mutable reference to an element
+    using reference = value_type &;
 
-    ///The type of a non-mutable reference to an element
-    using const_reference=const value_type &;
+    /// The type of a non-mutable reference to an element
+    using const_reference = const value_type &;
 
-    ///The type of a pointer to an element
-    using pointer=value_type *;
+    /// The type of a pointer to an element
+    using pointer = value_type *;
 
-    ///The type of a pointer to a non-mutable element
-    using const_pointer=const value_type *;
+    /// The type of a pointer to a non-mutable element
+    using const_pointer = const value_type *;
 
-    ///The type of the index
-    using size_type=SizeType;
+    /// The type of the index
+    using size_type = SizeType;
 
-    ///The type of the difference between two indices
-    using difference_type=DifferenceType;
+    /// The type of the difference between two indices
+    using difference_type = DifferenceType;
 
-    ///The concept tag this iterator obeys
+    /// The concept tag this iterator obeys
     using iterator_category = std::input_iterator_tag;
 
-    ///Trivial default constructor
-    InputIteratorBase()noexcept=default;
+    /// Trivial default constructor
+    InputIteratorBase() noexcept = default;
 
-    ///Trivial copy constructor
-    InputIteratorBase(const InputIteratorBase& /*rhs*/)=default;
+    /// Trivial copy constructor
+    InputIteratorBase(const InputIteratorBase & /*rhs*/) = default;
 
-    ///Trivial assignment operator
-    InputIteratorBase& operator=(const InputIteratorBase& /*rhs*/)=default;
+    /// Trivial assignment operator
+    InputIteratorBase & operator=(const InputIteratorBase & /*rhs*/) = default;
 
-    ///Trivial move constructor
-    InputIteratorBase(InputIteratorBase&& /*rhs*/)noexcept=default;
+    /// Trivial move constructor
+    InputIteratorBase(InputIteratorBase && /*rhs*/) noexcept = default;
 
-    ///Trivial move assignment
-    InputIteratorBase& operator=(InputIteratorBase&& /*rhs*/)noexcept=default;
+    /// Trivial move assignment
+    InputIteratorBase & operator=(InputIteratorBase && /*rhs*/) noexcept =
+        default;
 
-    ///Trivial destructor
-    virtual ~InputIteratorBase()noexcept=default;
+    /// Trivial destructor
+    virtual ~InputIteratorBase() noexcept = default;
 
-    ///Implement this so we can increment your iterator
-    virtual ParentType& increment()=0;
+    /// Implement this so we can increment your iterator
+    virtual ParentType & increment() = 0;
 
-    ///Implement this so we can dereference your iterator
-    virtual const_reference dereference()const=0;
+    /// Implement this so we can dereference your iterator
+    virtual const_reference dereference() const = 0;
 
-    ///Implement to provide equality comparisons
-    virtual bool are_equal(const ParentType& rhs)const noexcept=0;
+    /// Implement to provide equality comparisons
+    virtual bool are_equal(const ParentType & rhs) const noexcept = 0;
 
     /** @brief Allows access to the element currently pointed at by this
      *  iterator.
@@ -103,7 +103,7 @@ struct InputIteratorBase {
      *  @return The element this iterator currently points to.
      *  @throws exception if dereference throws.
      */
-    const_reference operator*()const
+    const_reference operator*() const
     {
         return dereference();
     }
@@ -121,7 +121,7 @@ struct InputIteratorBase {
      * operator.
      * @throws exception if the dereference operation throws.
      */
-    const_pointer operator->()const
+    const_pointer operator->() const
     {
         return &(operator*());
     }
@@ -145,11 +145,12 @@ struct InputIteratorBase {
      *  Increments an iterator before returning the current value.  This
      *  operation is implemented by calling increment.
      *
-     *  @returns The iterator pointing to the value resulting from the increment.
+     *  @returns The iterator pointing to the value resulting from the
+     * increment.
      *  @throws exception if increment throws
      *
-    */
-    ParentType& operator++()
+     */
+    ParentType & operator++()
     {
         return increment();
     }
@@ -168,7 +169,7 @@ struct InputIteratorBase {
      */
     ParentType operator++(int)
     {
-        ParentType copy_of_me(static_cast<ParentType&>(*this));
+        ParentType copy_of_me(static_cast<ParentType &>(*this));
         ++(*this);
         return copy_of_me;
     }
@@ -181,8 +182,8 @@ struct InputIteratorBase {
      * @param[in] rhs The iterator to compare to.
      * @return true if the two iterators are equal
      * @throws None. No throw guarantee
-    */
-    bool operator==(const ParentType& rhs)const noexcept
+     */
+    bool operator==(const ParentType & rhs) const noexcept
     {
         return are_equal(rhs);
     }
@@ -197,9 +198,9 @@ struct InputIteratorBase {
      *  @returns True if the current iterator is not identical to @p rhs.
      *  @throws None. No throw guarantee.
      */
-    bool operator!=(const ParentType& rhs)const noexcept
+    bool operator!=(const ParentType & rhs) const noexcept
     {
-        return !((*this)==rhs);
+        return !((*this) == rhs);
     }
 };
 
@@ -228,34 +229,38 @@ struct InputIteratorBase {
  */
 template<typename ParentType,
          typename ValueType,
-         typename SizeType=std::size_t,
-         typename DifferenceType=long int
-        >
-struct BidirectionalIteratorBase :
-    public InputIteratorBase<ParentType,ValueType,SizeType,DifferenceType> {
+         typename SizeType = std::size_t,
+         typename DifferenceType = long int>
+struct BidirectionalIteratorBase
+  : public InputIteratorBase<ParentType, ValueType, SizeType, DifferenceType>
+{
 
     using iterator_category = std::bidirectional_iterator_tag;
-    
-    ///Trivial default constructor
-    BidirectionalIteratorBase()noexcept=default;
 
-    ///Trivial copy constructor
-    BidirectionalIteratorBase(const BidirectionalIteratorBase& /*rhs*/)=default;
+    /// Trivial default constructor
+    BidirectionalIteratorBase() noexcept = default;
 
-    ///Trivial assignment operator
-    BidirectionalIteratorBase& operator=(const BidirectionalIteratorBase& /*rhs*/)=default;
+    /// Trivial copy constructor
+    BidirectionalIteratorBase(const BidirectionalIteratorBase & /*rhs*/) =
+        default;
 
-    ///Trivial move constructor
-    BidirectionalIteratorBase(BidirectionalIteratorBase&& /*rhs*/)noexcept=default;
+    /// Trivial assignment operator
+    BidirectionalIteratorBase & operator=(
+        const BidirectionalIteratorBase & /*rhs*/) = default;
 
-    ///Trivial move assignment
-    BidirectionalIteratorBase& operator=(BidirectionalIteratorBase&& /*rhs*/)noexcept=default;
+    /// Trivial move constructor
+    BidirectionalIteratorBase(BidirectionalIteratorBase && /*rhs*/) noexcept =
+        default;
 
-    ///Trivial destructor
-    ~BidirectionalIteratorBase()noexcept=default;
+    /// Trivial move assignment
+    BidirectionalIteratorBase & operator=(
+        BidirectionalIteratorBase && /*rhs*/) noexcept = default;
 
-    ///Implement to provide decrement functionality
-    virtual ParentType& decrement()=0;
+    /// Trivial destructor
+    ~BidirectionalIteratorBase() noexcept = default;
+
+    /// Implement to provide decrement functionality
+    virtual ParentType & decrement() = 0;
 
     /** @brief Decrements the current iterator before returning the value.
      *
@@ -264,7 +269,7 @@ struct BidirectionalIteratorBase :
      *  @returns The current iterator after decrementing it.
      *  @throws exception if decrement throws.
      */
-    ParentType& operator--()
+    ParentType & operator--()
     {
         return decrement();
     }
@@ -280,14 +285,12 @@ struct BidirectionalIteratorBase :
      */
     ParentType operator--(int)
     {
-        ParentType& up_me= static_cast<ParentType&>(*this);
+        ParentType & up_me = static_cast<ParentType &>(*this);
         ParentType copy_of_me(up_me);
         --(*this);
         return copy_of_me;
     }
 };
-
-
 
 /** @brief This class is designed to facilitate making your own random access
  *  iterator class.
@@ -316,38 +319,44 @@ struct BidirectionalIteratorBase :
  */
 template<typename ParentType,
          typename ValueType,
-         typename SizeType=std::size_t,
-         typename DifferenceType=long int
-        >
-struct RandomAccessIteratorBase :
-    public BidirectionalIteratorBase<ParentType,ValueType,SizeType,
-                                     DifferenceType> {
+         typename SizeType = std::size_t,
+         typename DifferenceType = long int>
+struct RandomAccessIteratorBase
+  : public BidirectionalIteratorBase<ParentType,
+                                     ValueType,
+                                     SizeType,
+                                     DifferenceType>
+{
 
-    using iterator_category =std::random_access_iterator_tag;
+    using iterator_category = std::random_access_iterator_tag;
 
-    ///Trivial default constructor
-    RandomAccessIteratorBase()noexcept=default;
+    /// Trivial default constructor
+    RandomAccessIteratorBase() noexcept = default;
 
-    ///Trivial copy constructor
-    RandomAccessIteratorBase(const RandomAccessIteratorBase& /*rhs*/)=default;
+    /// Trivial copy constructor
+    RandomAccessIteratorBase(const RandomAccessIteratorBase & /*rhs*/) =
+        default;
 
-    ///Trivial assignment operator
-    RandomAccessIteratorBase& operator=(const RandomAccessIteratorBase&)=default;
+    /// Trivial assignment operator
+    RandomAccessIteratorBase & operator=(const RandomAccessIteratorBase &) =
+        default;
 
-    ///Trivial move constructor
-    RandomAccessIteratorBase(RandomAccessIteratorBase&&)noexcept=default;
+    /// Trivial move constructor
+    RandomAccessIteratorBase(RandomAccessIteratorBase &&) noexcept = default;
 
-    ///Trivial move assignment
-    RandomAccessIteratorBase& operator=(RandomAccessIteratorBase&&)noexcept=default;
+    /// Trivial move assignment
+    RandomAccessIteratorBase & operator=(RandomAccessIteratorBase &&) noexcept =
+        default;
 
-    ///Trivial destructor
-    ~RandomAccessIteratorBase()noexcept=default;
+    /// Trivial destructor
+    ~RandomAccessIteratorBase() noexcept = default;
 
-    ///Implement to provide advance
-    virtual ParentType& advance(DifferenceType n)=0;
+    /// Implement to provide advance
+    virtual ParentType & advance(DifferenceType n) = 0;
 
-    ///Implement to provide ordering
-    virtual DifferenceType distance_to(const ParentType& rhs)const noexcept=0;
+    /// Implement to provide ordering
+    virtual DifferenceType distance_to(const ParentType & rhs) const
+        noexcept = 0;
 
     /** @brief Provides random access to any element in the container relative
      *  to the element currently pointed to by this iterator.
@@ -358,9 +367,9 @@ struct RandomAccessIteratorBase :
      *  @return The element that is @p n iterations away
      *  @throws exception if operator + throws
      */
-    ValueType operator[](DifferenceType n)const
+    ValueType operator[](DifferenceType n) const
     {
-        return *((*this)+n);
+        return *((*this) + n);
     }
 
     /** @brief Compares two iterators and returns true if the current iterator
@@ -375,7 +384,7 @@ struct RandomAccessIteratorBase :
      *  earlier then the element pointed to by @p rhs.
      *  @throws None. No throw guarantee.
      */
-    bool operator<(const ParentType& rhs)const noexcept
+    bool operator<(const ParentType & rhs) const noexcept
     {
         return distance_to(rhs) > 0;
     }
@@ -393,9 +402,9 @@ struct RandomAccessIteratorBase :
      *  earlier than or the same as the element pointed to by @p rhs.
      *  @throws None. No throw guarantee.
      */
-    bool operator<=(const ParentType& rhs)const noexcept
+    bool operator<=(const ParentType & rhs) const noexcept
     {
-        return (*this)<rhs || (*this)==rhs;
+        return (*this) < rhs || (*this) == rhs;
     }
 
     /** @brief Compares two iterators and returns true if this iterator points
@@ -408,9 +417,9 @@ struct RandomAccessIteratorBase :
      *  @returns True if the current element is indexed after that of @p rhs.
      *  @throws None. No throw guarantee.
      */
-    bool operator>(const ParentType& rhs)const noexcept
+    bool operator>(const ParentType & rhs) const noexcept
     {
-        return rhs < static_cast<const ParentType&>(*this);
+        return rhs < static_cast<const ParentType &>(*this);
     }
 
     /** @brief Compares two iterators and returns true if they point to the
@@ -426,9 +435,9 @@ struct RandomAccessIteratorBase :
      *  later in the sequence than @p rhs.
      *  @throws None. No throw guarantee.
      */
-    bool operator>=(const ParentType& rhs)const noexcept
+    bool operator>=(const ParentType & rhs) const noexcept
     {
-        return rhs <= static_cast<const ParentType&>(*this);
+        return rhs <= static_cast<const ParentType &>(*this);
     }
 
     /** @brief Advances the current iterator a specified number of iterations.
@@ -440,7 +449,7 @@ struct RandomAccessIteratorBase :
      *  @returns The iterator advanced @p n elements.
      *  @throws exception if advance throws.
      */
-     ParentType& operator+=(DifferenceType n)
+    ParentType & operator+=(DifferenceType n)
     {
         return advance(n);
     }
@@ -456,13 +465,12 @@ struct RandomAccessIteratorBase :
      *  iterations away.
      *  @throws exception if either the copy constructor or operator+= throw.
      */
-     ParentType operator+(DifferenceType n)const
-     {
-        ParentType copy_of_me(static_cast<const ParentType&>(*this));
-        copy_of_me+=n;
+    ParentType operator+(DifferenceType n) const
+    {
+        ParentType copy_of_me(static_cast<const ParentType &>(*this));
+        copy_of_me += n;
         return copy_of_me;
-     }
-
+    }
 
     /** @brief Moves the current iterator backwards by the specified number of
      *  iterations.
@@ -475,9 +483,9 @@ struct RandomAccessIteratorBase :
      *  away.
      *  @throws exception if operator+ throws.
      */
-    ParentType& operator-=(DifferenceType n)
+    ParentType & operator-=(DifferenceType n)
     {
-        return (*this)+=(-n);
+        return (*this) += (-n);
     }
 
     /** @brief Creates a copy of the current iterator that points to the element
@@ -491,10 +499,10 @@ struct RandomAccessIteratorBase :
      *  iterations away.
      *  @throws exception if either the copy constructor or operator-= throw.
      */
-    ParentType operator-(DifferenceType n)const
+    ParentType operator-(DifferenceType n) const
     {
-        ParentType copy_of_me(static_cast<const ParentType&>(*this));
-        copy_of_me-=n;
+        ParentType copy_of_me(static_cast<const ParentType &>(*this));
+        copy_of_me -= n;
         return copy_of_me;
     }
 
@@ -506,12 +514,11 @@ struct RandomAccessIteratorBase :
      * @returns The distance between this and rhs.
      * @throws exception if distance_to throws.
      */
-    DifferenceType operator-(const ParentType& rhs)const
+    DifferenceType operator-(const ParentType & rhs) const
     {
         return distance_to(rhs);
     }
-
 };
 
-
-}} //End namespaces
+} // namespace detail_
+} // namespace UtilitiesEx

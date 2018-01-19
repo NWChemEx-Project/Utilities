@@ -1,7 +1,7 @@
 #pragma once
 
-#include<vector>
-#include<algorithm>
+#include <algorithm>
+#include <vector>
 
 namespace IterTools {
 
@@ -13,27 +13,26 @@ namespace IterTools {
  *          satisfy the concept of a random access iterator.
  */
 template<typename container_type>
-class CombinationGenerator {
-public:
-    using size_type=size_t;
+class CombinationGenerator
+{
+  public:
+    using size_type = size_t;
 
     /** @brief Makes iterator for empty set.
      *
      *
      *  @throws None No throw guarantee.
      */
-    CombinationGenerator()noexcept;
+    CombinationGenerator() noexcept;
 
     static begin(const container_type)
 
-private:
-    std::vector<bool> current_comb_;
+        private : std::vector<bool> current_comb_;
 
-    const container_type* container_;
+    const container_type * container_;
 
-    CombinationGenerator(const container_type& input_set,
-                         size_type
-                         bool at_end) noexcept;
+    CombinationGenerator(const container_type & input_set,
+                         size_type bool at_end) noexcept;
 
     void next_();
 };
@@ -43,16 +42,20 @@ private:
  ******************************************************************************/
 
 template<typename container_type>
-CombinationGenerator<container_type>::CombinationGenerator()noexcept :
-    current_comb_(),container_(nullptr)
-{}
+CombinationGenerator<container_type>::CombinationGenerator() noexcept
+  : current_comb_()
+  , container_(nullptr)
+{
+}
 
 template<typename container_type>
 CombinationGenerator<container_type>::CombinationGenerator(
-        const container_type& input_set, bool at_end) noexcept :
-    current_comb_(size), container_(&input_set)
+    const container_type & input_set,
+    bool at_end) noexcept
+  : current_comb_(size)
+  , container_(&input_set)
 {
     if
 }
 
-} //End namespace IterTools
+} // End namespace IterTools
