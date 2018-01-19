@@ -1,6 +1,7 @@
 #pragma once
 #include <utility>
 #include <type_traits>
+
 /** @file This file contains functions that should be viewed as extensions of
  *        the STL's type_traits library.
  *
@@ -81,6 +82,16 @@ namespace UtilitiesEx {
 template<typename /*T*/>
 struct VoidType {
     using type=void;
+};
+
+/** @brief Sets the member value to the opposite of the input value
+ *
+ * @tparam T the class containing the value to negate
+ * @todo C++17 provides this type
+ */
+template<typename T>
+struct Negation {
+    constexpr static bool value = !T::value;
 };
 
 /** @brief Returns true if all the types are true too.

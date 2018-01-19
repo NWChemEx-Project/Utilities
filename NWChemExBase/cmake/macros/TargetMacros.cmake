@@ -107,6 +107,7 @@ function(nwchemex_add_library __name __srcs __headers __flags __lflags)
     make_full_paths(__srcs_copy)
     is_valid(__srcs_copy HAS_LIBRARY)
     if(HAS_LIBRARY)
+        set(CMAKE_EXPORT_COMPILE_COMMANDS 1 CACHE BOOL "")
         add_library(${__name} ${__srcs_copy})
         nwchemex_set_up_target(${__name}
                 "${${_flags}}"
