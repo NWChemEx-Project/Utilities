@@ -73,6 +73,8 @@ TEST_CASE("apply_functor")
         const auto& cmy_tuple =
                 const_cast<const std::tuple<int,int>&>(my_tuple);
         auto result = apply_functor_to_tuple(cmy_tuple, functor1());
+        REQUIRE(std::get<0>(result) == 3);
+        REQUIRE(std::get<1>(result) == 4);
     }
 }
 
