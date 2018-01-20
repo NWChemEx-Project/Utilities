@@ -1,46 +1,189 @@
 #include <UtilitiesEx/Containers/MathSet.hpp>
 #include <UtilitiesEx/TypeTraits/type_traitsExtensions.hpp>
+#include <UtilitiesEx/IterTools/Zip.hpp>
 #include <catch/catch.hpp>
 
 using namespace UtilitiesEx;
+
+template<std::size_t N, typename element_type>
+void check_state(MathSet<element_type>& set,
+                 std::array<element_type, N> values)
+{
+    REQUIRE(set.size() == N);
+    REQUIRE(set.empty() == (N == 0));
+    if(N)
+        REQUIRE(set.begin() != set.end());
+    else
+        REQUIRE(set.begin() == set.end() );
+    for(auto& x : Zip(set, values))
+    {
+        REQUIRE(std::get<0>(x) == std::get<1>(x));
+    }
+
+
+}
 
 TEST_CASE("Is a container")
 {
     REQUIRE(is_container<MathSet<double>>::value);
 }
 
-void check_state(MathSet<double>& set,
-                 std::size_t size,
-                 std::initializer_list<double> values)
-{
-    REQUIRE(set.size() == size);
-    REQUIRE(set.empty() == (size==0));
 
-}
 
-TEST_CASE("MathSet<double>")
+TEST_CASE("Empty and trivial sets")
 {
-    MathSet<double> set1;
+    MathSet<double> empty_set;
 
     SECTION("Default constructor")
     {
-        check_state(set1,0);
+        check_state<0>(empty_set,{});
     }
 
-    set1.insert(1.1);
+    MathSet<double> set_11;
+    SECTION("Empty equality")
+    {
+        REQUIRE(set_11 == empty_set);
+    }
+
+    set_11.insert(1.1);
 
     SECTION("Adding an element")
     {
-        check_state(set1,1);
+        check_state<1>(set_11,{1.1});
     }
 
-    MathSet<double> set2(set1);
+    SECTION("Comparisons empty and trivial")
+    {
+        REQUIRE(set_11 != empty_set);
+        REQUIRE(empty_set < set_11);
+        REQUIRE(empty_set <= set_11);
+        REQUIRE(set_11 > empty_set);
+        REQUIRE(set_11 >= empty_set);
+        REQUIRE(!(empty_set > set_11));
+        REQUIRE(!(empty_set >= set_11));
+        REQUIRE(!(set_11 < empty_set));
+        REQUIRE(!(set_11 <= empty_set));
+    }
 
     SECTION("Copy constructor")
     {
-        check_state(set2,1);
+        MathSet<double> set2_11(set_11);
+        check_state<1>(set2_11,{1.1});
     }
 
+    SECTION("Assignment operator")
+    {
+        empty_set = set_11;
+        check_state<1>(empty_set, {1.1});
+    }
+
+    SECTION("Move constructor")
+    {
+        MathSet<double> set2_11(std::move(set_11));
+        check_state<1>(set2_11, {1.1});
+    }
+
+    SECTION("Move assignment")
+    {
+        empty_set = std::move(set_11);
+        check_state<1>(empty_set, {1.1});
+    }
 }
+
+TEST_CASE("Non-trivial sets")
+{
+    MathSet<double> set1({1.1, 2.2, 3.3});
+    MathSet<double> set2({2.2, 4.4, 5.5, 6.6});
+
+    SECTION("Initializer list constructor")
+    {
+        check_state<3>(set1, {1.1, 2.2, 3.3});
+        check_state<4>(set2, {2.2, 4.4, 5.5, 6.6});
+    }
+
+    SECTION("Comparisons w/ empty_set")
+    {
+        MathSet<double> empty_set;
+        REQUIRE(empty_set != set1);
+        REQUIRE(empty_set < set1);
+        REQUIRE(empty_set <= set1);
+        REQUIRE(set1 > empty_set);
+        REQUIRE(set1 >= empty_set);
+    }
+
+    SECTION("Union assignment")
+    {
+        auto& pset1 = (set1.union_assign(set2));
+        REQUIRE(&pset1 == &set1);
+        check_state<6>(set1, {1.1, 2.2, 3.3, 4.4, 5.5, 6.6});
+
+        SECTION("Non-trivial comparisons")
+        {
+            REQUIRE(set2 < set1);
+            REQUIRE(set2 <= set1);
+            REQUIRE(set1 > set2);
+            REQUIRE(set1 >= set2);
+            REQUIRE(set2 != set1);
+            REQUIRE(set2 >= set2);
+            REQUIRE(set2 <= set2);
+        }
+    }
+
+    SECTION("Take union")
+    {
+        auto rv = set2.take_union(set1);
+        check_state<4>(set2, {2.2, 4.4, 5.5, 6.6});
+        check_state<6>(rv, {1.1, 2.2, 3.3, 4.4, 5.5, 6.6});
+    }
+
+    SECTION("Intersection assign")
+    {
+        auto &pset1 = (set1.intersection_assign(set2));
+        REQUIRE(&pset1 == &set1);
+        check_state<1>(set1, {2.2});
+    }
+
+    SECTION("Intersection")
+    {
+        auto rv = set1.intersection(set2);
+        check_state<3>(set1, {1.1, 2.2, 3.3});
+        check_state<1>(rv, {2.2});
+    }
+
+    SECTION("Difference assign")
+    {
+        auto &pset1 = (set1.difference_assign(set2));
+        REQUIRE(&pset1 == &set1);
+        check_state<2>(set1, {1.1, 3.3});
+    }
+
+    SECTION("Difference")
+    {
+        auto rv = set1.difference(set2);
+        check_state<3>(set1, {1.1, 2.2, 3.3});
+        check_state<2>(rv, {1.1, 3.3});
+    }
+
+    SECTION("Symmetric difference assign")
+    {
+        auto& pset2 = (set2.symmetric_difference_assign(set1));
+        REQUIRE(&pset2 == &set2);
+        check_state<5>(set2, {1.1, 3.3, 4.4, 5.5, 6.6});
+    }
+
+    SECTION("Symmetric difference")
+    {
+        auto rv = set2.symmetric_difference(set1);
+        check_state<4>(set2, {2.2, 4.4, 5.5, 6.6});
+        check_state<5>(rv, {1.1, 3.3, 4.4, 5.5, 6.6});
+    }
+
+
+}
+
+
+
+
+
 
 

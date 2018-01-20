@@ -52,7 +52,7 @@ TEST_CASE("Single container")
 TEST_CASE("Two same size arrays")
 {
     std::vector<int> numbers({1,2,3});
-    std::vector<char> letters({'a','b','c'});
+    std::array<char,3> letters({'a','b','c'});
     auto test_container = Zip(numbers,letters);
     check_state(test_container, 3);
 
@@ -92,3 +92,10 @@ TEST_CASE("Different size arrays")
     }
 }
 
+TEST_CASE("Different size arrays (one empty)")
+{
+    std::vector<int> numbers({1,2,3});
+    std::vector<char> letters;
+    auto test_container = Zip(numbers,letters);
+    check_state(test_container, 0);
+}

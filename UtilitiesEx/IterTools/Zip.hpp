@@ -19,6 +19,17 @@ struct IsZipImpl : std::false_type {};
 template<typename...Args>
 struct IsZipImpl<ZipImpl<Args...>> : std::true_type{};
 
+///This will allow us to use iterators which are actually raw pointers
+template<typename T>
+struct GetValueType{
+    using type = typename T::value_type;
+};
+
+template<typename T>
+struct GetValueType<T*>{
+    using type = T;
+};
+
 /** @brief Simulates a container filled with all tuples of the elements in a
  *         series of iterators.
  *
@@ -88,8 +99,8 @@ private:
 
 public:
     ///The type of an element in this container.
-    using value_type =
-        std::tuple<typename ContainerTypes::iterator::value_type...>;
+    using value_type = std::tuple<
+            typename GetValueType<typename ContainerTypes::iterator>::type...>;
     ///The type of a reference to an element of this container
     using reference = value_type&;
     ///The type of a read-only element of this container
@@ -219,13 +230,14 @@ public:
      */
     iterator begin()
     {
-        return iterator(itrs_, false);
+        ///If we don't have elements "start" at the end
+        return iterator(itrs_, !size_);
     }
 
     ///@copydoc begin()
     const_iterator cbegin() const
     {
-        return const_iterator(itrs_, false);
+        return const_iterator(itrs_, !size_);
     }
 
     /**
@@ -338,8 +350,10 @@ private:
                 start_(apply_functor_to_tuple(containers, CallBegin())),
                 end_(apply_functor_to_tuple(containers, CallEnd())),
                 value_(!at_end ? start_ : end_),
-                buffer_(apply_functor_to_tuple(value_,Derefer()))
-        { }
+                buffer_(!at_end ? apply_functor_to_tuple(value_,Derefer())
+                                :value_type())
+        {
+        }
 
         ///Implements the means by which this class can be dereferenced
         reference dereference()
@@ -366,17 +380,21 @@ private:
             return value_ == rhs.value_;
         }
 
+        //Check if any iterator is at the end, if so set them all to end
+        void check_itrs()
+        {
+            auto at_end = combine_tuples(value_, end_, Comparer());
+            bool done = reduce_tuple(at_end, AnyTrue(), false);
+            if(done)
+                value_ = end_;
+        }
 
         template <std::size_t...I>
         ZipIterator& increment_imp(std::index_sequence<I...>)
         {
             value_ = std::make_tuple((++std::get<I>(value_))...);
-            //Check if any iterator is at the end, if so set them all to end
-            auto at_end = combine_tuples(value_, end_, Comparer());
-            bool done = reduce_tuple(at_end, AnyTrue(), false);
-            if(done)
-                value_ = end_;
-            else
+            check_itrs();
+            if(value_ != end_)
                 buffer_ = apply_functor_to_tuple(value_, Derefer());
             return *this;
         }

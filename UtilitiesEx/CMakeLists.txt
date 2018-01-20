@@ -5,7 +5,7 @@ include(TargetMacros)
 set(UtilitiesEx_SRCS Mathematician/Combinatorics.cpp)
 set(UtilitiesEx_INCLUDES Any.hpp
                          TupleUtilities.hpp
-                         #Containers/MathSet.hpp
+                         Containers/MathSet.hpp
                          Mathematician/Combinatorics.hpp
                          IterTools/Combinations.hpp
                          IterTools/Permutations.hpp
