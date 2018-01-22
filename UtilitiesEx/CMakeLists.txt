@@ -4,13 +4,15 @@ project(UtilitiesEx-SRC VERSION 0.0.0 LANGUAGES CXX)
 include(TargetMacros)
 set(UtilitiesEx_SRCS Mathematician/Combinatorics.cpp)
 set(UtilitiesEx_INCLUDES Any.hpp
-                         TupleUtilities.hpp
                          Containers/MathSet.hpp
+                         Containers/RangeContainer.hpp
                          Mathematician/Combinatorics.hpp
                          IterTools/Combinations.hpp
                          IterTools/Permutations.hpp
+                         IterTools/Range.hpp
                          IterTools/Zip.hpp
                          TypeTraits/IteratorTypes.hpp
+                         TypeTraits/TupleUtilities.hpp
                          TypeTraits/type_traitsExtensions.hpp
 )
 set(UtilitiesEx_DEFINITIONS )

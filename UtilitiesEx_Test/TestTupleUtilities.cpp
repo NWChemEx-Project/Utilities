@@ -1,4 +1,4 @@
-#include <UtilitiesEx/TupleUtilities.hpp>
+#include <UtilitiesEx/TypeTraits/TupleUtilities.hpp>
 #include <catch/catch.hpp>
 
 using namespace UtilitiesEx;
