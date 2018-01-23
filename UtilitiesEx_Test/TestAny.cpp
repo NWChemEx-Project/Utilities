@@ -6,7 +6,7 @@ using namespace UtilitiesEx;
 
 TEST_CASE("Defaulted Any and Basic operations")
 {
-    Any defaulted;
+    Any defaulted{};
     REQUIRE(!defaulted.has_value());
     defaulted.emplace<int>(2);
     REQUIRE(defaulted.has_value());
