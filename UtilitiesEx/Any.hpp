@@ -264,7 +264,7 @@ private:
   }
 
   /// The actual type-erased value
-  std::unique_ptr<AnyBase_> ptr_ = {};
+  std::unique_ptr<AnyBase_> ptr_;
 };
 
 /**

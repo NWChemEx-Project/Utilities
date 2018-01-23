@@ -64,7 +64,7 @@ TEST_CASE("Two same size arrays")
             SECTION("Iteration test")
             {
                 REQUIRE(std::get<0>(x) == numbers[counter]);
-                REQUIRE(std::get<1>(x) == letters[counter]);
+                REQUIRE(std::get<1>(x) == letters.at(counter));
             }
             ++counter;
         }

@@ -1,8 +1,8 @@
 #pragma once
-#include "UtilitiesEx/TupleUtilities.hpp" //Includes tuple always
 #include "UtilitiesEx/TypeTraits/IteratorTypes.hpp"
-#include <algorithm> //For std::min
-#include <limits>    //For numeric_limits
+#include "UtilitiesEx/TypeTraits/TupleUtilities.hpp" //Includes tuple always
+#include <algorithm>                                 //For std::min
+#include <limits>                                    //For numeric_limits
 
 namespace UtilitiesEx {
 namespace detail_ {
@@ -22,6 +22,7 @@ template <typename T> struct GetValueType {
   using type = typename T::value_type;
 };
 
+/// Partial specialization to catch raw pointers
 template <typename T> struct GetValueType<T *> { using type = T; };
 
 /** @brief Simulates a container filled with all tuples of the elements in a
@@ -147,10 +148,11 @@ public:
    *  input containers).
    *
    *  @param rhs The container to copy.
-   *  @throw None. No throw guarantee.
+   *  @throw None. No throw guarantee. Can't be noexcept b/c tuple copy
+   *  constructor is not noexcept; however,
    *
    */
-  ZipImpl(const ZipImpl & /*rhs*/) noexcept = default;
+  ZipImpl(const ZipImpl & /*rhs*/) = default;
 
   /** @brief Takes ownership of another container.
    *
@@ -176,9 +178,10 @@ public:
    *
    *  @param rhs The ZipImpl to copy the state of.
    *
-   *  @throw None. No throw guarantee.
+   *  @throw None. No throw guarantee. Can't be marked as noexcept because
+   *  tuple copy constructor is not noexcept
    */
-  ZipImpl &operator=(const ZipImpl & /*rhs*/) noexcept = default;
+  ZipImpl &operator=(const ZipImpl & /*rhs*/) = default;
 
   /** @brief Assigns another ZipImpl's state to this one.
    *
