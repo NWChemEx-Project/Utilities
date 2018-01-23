@@ -202,19 +202,19 @@ private:
 
   /// Defines API for handling the data
   struct AnyBase_ {
-    ///Trivial class does nothing
+    /// Trivial class does nothing
     AnyBase_() noexcept = default;
 
-    ///No state to copy
+    /// No state to copy
     AnyBase_(const AnyBase_ & /*rhs*/) noexcept = default;
 
-    ///No state to move
+    /// No state to move
     AnyBase_(AnyBase_ && /*rhs*/) noexcept = default;
 
-    ///No state to copy
+    /// No state to copy
     AnyBase_ &operator=(const AnyBase_ & /*rhs*/) noexcept = default;
 
-    ///No state to move
+    /// No state to move
     AnyBase_ &operator=(AnyBase_ && /*rhs*/) noexcept = default;
 
     /// Ensures the data gets deleted correctly
