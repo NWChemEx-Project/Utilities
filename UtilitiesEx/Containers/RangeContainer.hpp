@@ -26,17 +26,16 @@ namespace detail_ {
  *  presently assume it at least meets the concept of bidirectional iterator.
  */
 template<typename IteratorType>
-class RangeContainer
-{
-  public:
+class RangeContainer {
+    public:
     /// The type of the elements contained within this container
     using value_type = typename IteratorType::value_type;
 
     /// The type of a reference to an element in this container
-    using reference = value_type &;
+    using reference = value_type&;
 
     /// The type of a reference to a read-only element in this container
-    using const_reference = const value_type &;
+    using const_reference = const value_type&;
 
     /// The type of an iterator over this container.
     using iterator = IteratorType;
@@ -69,7 +68,7 @@ class RangeContainer
      * @throw ??? Throws if the iterator's copy constructor throws.  Strong
      * throw guarantee.
      */
-    RangeContainer(const RangeContainer & /*rhs*/) = default;
+    RangeContainer(const RangeContainer& /*rhs*/) = default;
 
     /** @brief Makes a new RangeContainer instance by taking over the state of
      *  another instance.
@@ -80,7 +79,7 @@ class RangeContainer
      *  @throw ??? Throws if iterator's move constructor throws.  Strong throw
      *  guarantee.
      */
-    RangeContainer(RangeContainer && /*rhs*/) = default;
+    RangeContainer(RangeContainer&& /*rhs*/) = default;
 
     /** @brief The primarily useful constructor capable of making a container
      *         holding the specified range.
@@ -91,10 +90,10 @@ class RangeContainer
      *        container.
      * @param size_in The number of elements between end_itr and start_itr.
      */
-    RangeContainer(iterator start_itr, iterator end_itr, size_type size_in)
-      : start_(start_itr)
-      , end_(end_itr)
-      , size_(size_in)
+    RangeContainer(iterator start_itr, iterator end_itr, size_type size_in) :
+      start_(start_itr),
+      end_(end_itr),
+      size_(size_in)
     {
     }
 
@@ -107,7 +106,7 @@ class RangeContainer
      * @throw ??? Throws if the iterator's copy constructors throw.  Strong
      * throw guarantee.
      */
-    RangeContainer & operator=(const RangeContainer & /*rhs*/) = default;
+    RangeContainer& operator=(const RangeContainer& /*rhs*/) = default;
 
     /** @brief Causes the current container to take ownership of another
      *  instance's state.
@@ -119,7 +118,7 @@ class RangeContainer
      *  @throw ??? Throws if the iterator's move constructor throws.  Strong
      *  throw guarantee.
      */
-    RangeContainer & operator=(RangeContainer && /*rhs*/) = default;
+    RangeContainer& operator=(RangeContainer&& /*rhs*/) = default;
 
     /** @brief Frees up memory associated with the current container.
      *
@@ -136,22 +135,13 @@ class RangeContainer
      *  @return An iterator pointing to the first element of this container.
      *  @throw ??? Throws if the iterator's copy constructor throws.
      */
-    iterator begin()
-    {
-        return start_;
-    }
+    iterator begin() { return start_; }
 
     ///@copydoc begin()
-    const_iterator begin() const
-    {
-        return start_;
-    }
+    const_iterator begin() const { return start_; }
 
     ///@copydoc begin()
-    const_iterator cbegin() const
-    {
-        return start_;
-    }
+    const_iterator cbegin() const { return start_; }
 
     /**
      * @brief Returns an iterator that points to just past the last element of
@@ -166,22 +156,13 @@ class RangeContainer
      * @throw ??? Throws if the iterator's copy constructor throws.  Strong
      * throw guarantee.
      */
-    iterator end()
-    {
-        return end_;
-    }
+    iterator end() { return end_; }
 
     ///@copydoc end()
-    const_iterator end() const
-    {
-        return end_;
-    }
+    const_iterator end() const { return end_; }
 
     ///@copydoc end()
-    const_iterator cend() const
-    {
-        return end_;
-    }
+    const_iterator cend() const { return end_; }
 
     /** @brief Returns the number of elements in this container.
      *
@@ -189,10 +170,7 @@ class RangeContainer
      *  @return The number of elements in this container.
      *  @throw None. No throw guarantee.
      */
-    size_type size() const noexcept
-    {
-        return size_;
-    }
+    size_type size() const noexcept { return size_; }
 
     /**
      * @brief The theoretical maximum size of the container regardless of
@@ -221,10 +199,7 @@ class RangeContainer
      * @return True if the container is empty and false otherwise.
      * @throw None. No throw guarantee.
      */
-    bool empty() const noexcept
-    {
-        return begin() == end();
-    }
+    bool empty() const noexcept { return begin() == end(); }
 
     /**
      * @brief Compares two RangeContainer instances for equality.
@@ -237,7 +212,7 @@ class RangeContainer
      * @throw ??? Throws if the equality comparison operator of the iterator
      * throws.  Strong throw guarantee.
      */
-    bool operator==(const RangeContainer & rhs) const
+    bool operator==(const RangeContainer& rhs) const
     {
         return std::tie(start_, end_) == std::tie(rhs.start_, rhs.end_);
     }
@@ -254,12 +229,12 @@ class RangeContainer
      * @throw ??? Throws if operator==() of the iterators throws.  Strong throw
      * guarantee.
      */
-    bool operator!=(const RangeContainer & rhs) const
+    bool operator!=(const RangeContainer& rhs) const
     {
         return !((*this) == rhs);
     }
 
-  private:
+    private:
     /// An iterator pointing to the first element
     iterator start_;
 

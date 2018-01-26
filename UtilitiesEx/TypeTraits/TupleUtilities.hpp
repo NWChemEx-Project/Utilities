@@ -64,8 +64,8 @@ using recursing = std::enable_if<recursion_not_done<I, tuple_type>::value, int>;
 
 /// Actually implements the apply_functor_to_tuple function
 template<typename tuple_type, typename functor_type, std::size_t... I>
-auto apply_functor_to_tuple_impl(tuple_type && tuple,
-                                 functor_type && functor,
+auto apply_functor_to_tuple_impl(tuple_type&& tuple,
+                                 functor_type&& functor,
                                  std::index_sequence<I...>)
 {
     return std::make_tuple(
@@ -78,7 +78,7 @@ template<std::size_t I,
          typename functor_type,
          typename return_type,
          typename done_recursing<I, tuple_type>::type = 0>
-return_type reduce_tuple_impl(tuple_type &&, functor_type &&, return_type val)
+return_type reduce_tuple_impl(tuple_type&&, functor_type&&, return_type val)
 {
     return val;
 };
@@ -89,8 +89,8 @@ template<std::size_t I,
          typename functor_type,
          typename return_type,
          typename recursing<I, tuple_type>::type = 0>
-return_type reduce_tuple_impl(tuple_type && tuple,
-                              functor_type && functor,
+return_type reduce_tuple_impl(tuple_type&& tuple,
+                              functor_type&& functor,
                               return_type val)
 {
     auto new_val = functor(val, std::get<I>(std::forward<tuple_type>(tuple)));
@@ -104,9 +104,9 @@ template<typename lhs_type,
          typename rhs_type,
          typename functor_type,
          std::size_t... I>
-auto combine_tuples_impl(lhs_type && lhs,
-                         rhs_type && rhs,
-                         functor_type && functor,
+auto combine_tuples_impl(lhs_type&& lhs,
+                         rhs_type&& rhs,
+                         functor_type&& functor,
                          std::index_sequence<I...>)
 {
     return std::make_tuple(
@@ -131,7 +131,7 @@ auto combine_tuples_impl(lhs_type && lhs,
  *
  */
 template<typename tuple_type, typename functor_type>
-auto apply_functor_to_tuple(tuple_type && tuple, functor_type && functor)
+auto apply_functor_to_tuple(tuple_type&& tuple, functor_type&& functor)
 {
     constexpr std::size_t nelems =
         std::tuple_size<std::decay_t<tuple_type>>::value;
@@ -166,8 +166,8 @@ auto apply_functor_to_tuple(tuple_type && tuple, functor_type && functor)
  *              Throw guarantee is same as that of functor.
  */
 template<typename tuple_type, typename functor_type, typename return_type>
-return_type reduce_tuple(tuple_type && tuple,
-                         functor_type && functor,
+return_type reduce_tuple(tuple_type&& tuple,
+                         functor_type&& functor,
                          return_type val)
 {
     return detail_::reduce_tuple_impl<0>(std::forward<tuple_type>(tuple),
@@ -176,7 +176,7 @@ return_type reduce_tuple(tuple_type && tuple,
 };
 
 template<typename lhs_type, typename rhs_type, typename functor_type>
-auto combine_tuples(lhs_type && lhs, rhs_type && rhs, functor_type && functor)
+auto combine_tuples(lhs_type&& lhs, rhs_type&& rhs, functor_type&& functor)
 {
     constexpr std::size_t size = std::tuple_size<std::decay_t<lhs_type>>::value;
     static_assert(size == std::tuple_size<std::decay_t<rhs_type>>::value);

@@ -20,16 +20,15 @@ namespace detail_ {
  */
 template<typename element_type>
 class RangeItr
-  : public RandomAccessIteratorBase<RangeItr<element_type>, element_type>
-{
-  private:
+  : public RandomAccessIteratorBase<RangeItr<element_type>, element_type> {
+    private:
     /// Typedef of the base type for sanity
     using base_type =
         detail_::RandomAccessIteratorBase<RangeItr<element_type>, element_type>;
 
-  public:
+    public:
     /// Pulls the const_reference typedef into scope
-    using const_reference = const element_type &;
+    using const_reference = const element_type&;
 
     /// Pulls the difference_type typedef into scope
     using typename base_type::difference_type;
@@ -52,7 +51,7 @@ class RangeItr
      * @throw ??? If either element_type's or difference_type's copy
      * constructors throw.  Strong throw guarantee.
      */
-    RangeItr(const RangeItr & /*rhs*/) = default;
+    RangeItr(const RangeItr& /*rhs*/) = default;
 
     /**
      * @brief Takes ownership of another RangeItr instance's state.
@@ -61,7 +60,7 @@ class RangeItr
      * @throw ??? Throws if either element_type's or difference_type's copy
      * constructors throw.  Strong throw guarantee.
      */
-    RangeItr(RangeItr && /*rhs*/) = default;
+    RangeItr(RangeItr&& /*rhs*/) = default;
 
     /**
      * @brief Frees up memory associated with this iterator.
@@ -77,7 +76,7 @@ class RangeItr
      * @throw ??? Throws if element_type's or difference_type's copy
      * constructors throw.  Strong throw guarantee.
      */
-    RangeItr & operator=(const RangeItr & /*rhs*/) = default;
+    RangeItr& operator=(const RangeItr& /*rhs*/) = default;
 
     /**
      * @brief Assigns a deep copy of another RangeItr to the current instance.
@@ -88,7 +87,7 @@ class RangeItr
      * @throw ??? Throws if element_type's or difference_type's move assignment
      * operator throws.  Strong throw guarantee.
      */
-    RangeItr & operator=(RangeItr && /*rhs*/) = default;
+    RangeItr& operator=(RangeItr&& /*rhs*/) = default;
 
     /**
      * @brief The primary constructor for the RangItr class.
@@ -103,45 +102,36 @@ class RangeItr
      * @throw ??? If copying element_type or difference_type throws.  Strong
      * throw guarantee.
      */
-    RangeItr(element_type start, element_type stop, difference_type increment)
-      : start_(start)
-      , stop_(stop)
-      , increment_(increment)
-      , value_(start_)
+    RangeItr(element_type start, element_type stop, difference_type increment) :
+      start_(start),
+      stop_(stop),
+      increment_(increment),
+      value_(start_)
     {
     }
 
-  private:
+    private:
     /// Allows base class to implement random access iterator
     friend base_type;
 
     /// Implements operator*()
-    const_reference dereference() const override
-    {
-        return value_;
-    }
+    const_reference dereference() const override { return value_; }
 
     /// Implements operator++
-    RangeItr & increment() override
-    {
-        return advance(increment_);
-    }
+    RangeItr& increment() override { return advance(increment_); }
 
     /// Implements operator--
-    RangeItr & decrement() override
-    {
-        return advance(-1 * increment_);
-    }
+    RangeItr& decrement() override { return advance(-1 * increment_); }
 
     /// Implements operator+=
-    RangeItr & advance(difference_type adv) override
+    RangeItr& advance(difference_type adv) override
     {
         adv > 0 ? value_ += adv : value_ -= -1 * adv;
         return *this;
     }
 
     /// Implements itr1 - itr2
-    difference_type distance_to(const RangeItr & rhs) const noexcept
+    difference_type distance_to(const RangeItr& rhs) const noexcept
     {
         const bool is_positive = rhs.value_ > value_;
         difference_type abs_diff =
@@ -160,7 +150,7 @@ class RangeItr
      *  otherwise.
      *  @throw None. No throw guarantee.
      */
-    bool are_equal(const RangeItr & rhs) const noexcept
+    bool are_equal(const RangeItr& rhs) const noexcept
     {
         return value_ == rhs.value_;
     }
@@ -207,13 +197,12 @@ class RangeItr
  */
 template<typename element_type = std::size_t>
 class RangeImpl
-  : public detail_::RangeContainer<detail_::RangeItr<element_type>>
-{
-  private:
+  : public detail_::RangeContainer<detail_::RangeItr<element_type>> {
+    private:
     /// Typedef of base class for sanity
     using base_type = detail_::RangeContainer<detail_::RangeItr<element_type>>;
 
-  public:
+    public:
     using typename base_type::difference_type;
 
     /**
@@ -232,7 +221,7 @@ class RangeImpl
      * @throw ??? Throws if the copy constructor of the iterator throws. Strong
      * throw guarantee.
      */
-    RangeImpl(const RangeImpl & /*rhs*/) = default;
+    RangeImpl(const RangeImpl& /*rhs*/) = default;
 
     /**
      * @brief Takes ownership of another RangeImpl instance.
@@ -241,7 +230,7 @@ class RangeImpl
      * instance is in a valid, but otherwise undefined state.
      * @throw ??? Throws if the move constructor of the iterator throws.
      */
-    RangeImpl(RangeImpl && /*rhs*/) = default;
+    RangeImpl(RangeImpl&& /*rhs*/) = default;
 
     /**
      * @brief Frees up memory associated with the current RangeImpl instance.
@@ -261,7 +250,7 @@ class RangeImpl
      * @throw ??? Throws if the copy constructor of the iterator throws.  Strong
      * throw guarantee.
      */
-    RangeImpl & operator=(const RangeImpl & /*rhs*/) = default;
+    RangeImpl& operator=(const RangeImpl& /*rhs*/) = default;
 
     /**
      * @brief Takes ownership of another RangeImpl instance's state.
@@ -273,7 +262,7 @@ class RangeImpl
      * @throw ??? Throws if the move constructor of the iterator throws.  Strong
      * throw guarantee.
      */
-    RangeImpl & operator=(RangeImpl && /*rhs*/) noexcept = default;
+    RangeImpl& operator=(RangeImpl&& /*rhs*/) noexcept = default;
 
     /**
      * @brief The most useful constructor for the RangeContainer class.
@@ -291,11 +280,11 @@ class RangeImpl
      */
     RangeImpl(element_type start,
               element_type stop,
-              difference_type increment = 1)
-      : base_type(RangeItr<element_type>(start, stop, increment),
-                  RangeItr<element_type>(stop, stop, increment),
-                  stop > start ? (stop - start) / increment
-                               : (start - stop) / (-1 * increment))
+              difference_type increment = 1) :
+      base_type(RangeItr<element_type>(start, stop, increment),
+                RangeItr<element_type>(stop, stop, increment),
+                stop > start ? (stop - start) / increment :
+                               (start - stop) / (-1 * increment))
     {
     }
 };

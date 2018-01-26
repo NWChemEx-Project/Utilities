@@ -13,27 +13,23 @@ class ZipImpl;
 
 /// Struct which contains value==false if T is not a ZipImpl instance
 template<typename T>
-struct IsZipImpl : std::false_type
-{
+struct IsZipImpl : std::false_type {
 };
 
 /// Specialization of IsZipImpl to trigger value == true
 template<typename... Args>
-struct IsZipImpl<ZipImpl<Args...>> : std::true_type
-{
+struct IsZipImpl<ZipImpl<Args...>> : std::true_type {
 };
 
 /// This will allow us to use iterators which are actually raw pointers
 template<typename T>
-struct GetValueType
-{
+struct GetValueType {
     using type = typename T::value_type;
 };
 
 /// Partial specialization to catch raw pointers
 template<typename T>
-struct GetValueType<T *>
-{
+struct GetValueType<T*> {
     using type = T;
 };
 
@@ -90,15 +86,13 @@ struct GetValueType<T *>
  *                       together.
  */
 template<typename... ContainerTypes>
-class ZipImpl
-{
-  private:
+class ZipImpl {
+    private:
     /// Forward declaration of the actual iterator type
     class ZipIterator;
 
     /// Functor for calling the size member of each container.
-    struct SizeFunctor
-    {
+    struct SizeFunctor {
         template<typename T>
         auto operator()(std::size_t curr_min, T container) const
         {
@@ -106,14 +100,14 @@ class ZipImpl
         }
     };
 
-  public:
+    public:
     /// The type of an element in this container.
     using value_type = std::tuple<
         typename GetValueType<typename ContainerTypes::iterator>::type...>;
     /// The type of a reference to an element of this container
-    using reference = value_type &;
+    using reference = value_type&;
     /// The type of a read-only element of this container
-    using const_reference = const value_type &;
+    using const_reference = const value_type&;
     /// The type of an iterator to this container (can't actually modify)
     using iterator = ZipIterator;
     /// The type of a read-only iterator to this container
@@ -133,9 +127,7 @@ class ZipImpl
     template<typename InputType,
              typename X =
                  typename std::enable_if<!IsZipImpl<InputType>::value>::type>
-    ZipImpl(InputType && container)
-      : itrs_(&container)
-      , size_(container.size())
+    ZipImpl(InputType&& container) : itrs_(&container), size_(container.size())
     {
     }
 
@@ -154,13 +146,13 @@ class ZipImpl
      *            will also throw.  Strong throw guarantee.
      */
     template<typename InputType1, typename InputType2, typename... InputTypes>
-    ZipImpl(InputType1 && container1,
-            InputType2 && container2,
-            InputTypes &&... containers)
-      : itrs_(&container1, &container2, (&containers)...)
-      , size_(reduce_tuple(itrs_,
-                           SizeFunctor(),
-                           std::numeric_limits<size_type>::max()))
+    ZipImpl(InputType1&& container1,
+            InputType2&& container2,
+            InputTypes&&... containers) :
+      itrs_(&container1, &container2, (&containers)...),
+      size_(reduce_tuple(itrs_,
+                         SizeFunctor(),
+                         std::numeric_limits<size_type>::max()))
     {
     }
 
@@ -177,7 +169,7 @@ class ZipImpl
      *  constructor is not noexcept; however,
      *
      */
-    ZipImpl(const ZipImpl & /*rhs*/) = default;
+    ZipImpl(const ZipImpl& /*rhs*/) = default;
 
     /** @brief Takes ownership of another container.
      *
@@ -186,7 +178,7 @@ class ZipImpl
      *  @throw None. No throw guarantee.
      *
      */
-    ZipImpl(ZipImpl && /*rhs*/) noexcept = default;
+    ZipImpl(ZipImpl&& /*rhs*/) noexcept = default;
 
     /** @brief Deletes the current instance.
      *
@@ -206,7 +198,7 @@ class ZipImpl
      *  @throw None. No throw guarantee. Can't be marked as noexcept because
      *  tuple copy constructor is not noexcept
      */
-    ZipImpl & operator=(const ZipImpl & /*rhs*/) = default;
+    ZipImpl& operator=(const ZipImpl& /*rhs*/) = default;
 
     /** @brief Assigns another ZipImpl's state to this one.
      *
@@ -215,7 +207,7 @@ class ZipImpl
      *  @return The current instance containing @p rhs 's state.
      *  @throw None. No throw guarantee.
      */
-    ZipImpl & operator=(ZipImpl && /*rhs*/) noexcept = default;
+    ZipImpl& operator=(ZipImpl&& /*rhs*/) noexcept = default;
 
     /** @brief Returns the number of tuples in this container.
      *
@@ -226,10 +218,7 @@ class ZipImpl
      *  @return The number of tuples in this container.
      *  @throw None. No throw guarantee.
      */
-    size_type size() const noexcept
-    {
-        return size_;
-    }
+    size_type size() const noexcept { return size_; }
 
     /** @brief Returns the maximum number of elements this container can
      *  possibly hold ignoring hardware considerations.
@@ -253,10 +242,7 @@ class ZipImpl
      *         holds even one element.
      * @throw None. No throw guarantee.
      */
-    bool empty() const noexcept
-    {
-        return !size_;
-    }
+    bool empty() const noexcept { return !size_; }
 
     /**
      * @brief Creates an iterator that points to the first tuple of elements in
@@ -272,10 +258,7 @@ class ZipImpl
     }
 
     ///@copydoc begin()
-    const_iterator cbegin() const
-    {
-        return const_iterator(itrs_, !size_);
-    }
+    const_iterator cbegin() const { return const_iterator(itrs_, !size_); }
 
     /**
      * @brief Creates an iterator that points to just past the last tuple of
@@ -284,16 +267,10 @@ class ZipImpl
      * @return An iterator pointing to just past the last tuple of elements
      * inside the zipped container.
      */
-    iterator end()
-    {
-        return iterator(itrs_, true);
-    }
+    iterator end() { return iterator(itrs_, true); }
 
     ///@copydoc end()
-    const_iterator cend() const
-    {
-        return const_iterator(itrs_, true);
-    }
+    const_iterator cend() const { return const_iterator(itrs_, true); }
 
     /**
      * @brief Determines if two ZipImpl instances are zipping the same
@@ -311,7 +288,7 @@ class ZipImpl
      * @throw None. No throw guarantee.
      */
     template<typename... OtherContainers>
-    bool operator==(const ZipImpl<OtherContainers...> & rhs) const noexcept
+    bool operator==(const ZipImpl<OtherContainers...>& rhs) const noexcept
     {
         return std::tie(itrs_, size_) == std::tie(rhs.itrs_, rhs.size_);
     }
@@ -332,17 +309,17 @@ class ZipImpl
      * @throw None. No throw guarantee.
      */
     template<typename... OtherContainers>
-    bool operator!=(const ZipImpl<OtherContainers...> & rhs) const noexcept
+    bool operator!=(const ZipImpl<OtherContainers...>& rhs) const noexcept
     {
         return !((*this) == rhs);
     }
 
-  private:
+    private:
     /// The number of containers we are zipping together
     constexpr static std::size_t ncontainers_ = sizeof...(ContainerTypes);
 
     /// The type of the tuple holding pointers to our containers
-    using tuple_type = std::tuple<ContainerTypes *...>;
+    using tuple_type = std::tuple<ContainerTypes*...>;
 
     /// The type of a tuple holding iterators to the containers
     using iterator_tuple = std::tuple<typename ContainerTypes::iterator...>;
@@ -363,9 +340,8 @@ class ZipImpl
      *
      */
     class ZipIterator
-      : public detail_::InputIteratorBase<ZipIterator, value_type>
-    {
-      private:
+      : public detail_::InputIteratorBase<ZipIterator, value_type> {
+        private:
         /// Allows ZipImpl to create an iterator
         friend class ZipImpl<ContainerTypes...>;
         /// Allows the base class to call the implementation functions
@@ -383,36 +359,30 @@ class ZipImpl
          * iterator just past the last element, otherwise it's pointing to
          * the first element.
          */
-        ZipIterator(tuple_type containers, bool at_end)
-          : start_(apply_functor_to_tuple(containers, CallBegin()))
-          , end_(apply_functor_to_tuple(containers, CallEnd()))
-          , value_(!at_end ? start_ : end_)
-          , buffer_(!at_end ? apply_functor_to_tuple(value_, Derefer())
-                            : value_type())
+        ZipIterator(tuple_type containers, bool at_end) :
+          start_(apply_functor_to_tuple(containers, CallBegin())),
+          end_(apply_functor_to_tuple(containers, CallEnd())),
+          value_(!at_end ? start_ : end_),
+          buffer_(!at_end ? apply_functor_to_tuple(value_, Derefer()) :
+                            value_type())
         {
         }
 
         /// Implements the means by which this class can be dereferenced
-        reference dereference()
-        {
-            return buffer_;
-        }
+        reference dereference() { return buffer_; }
 
         /// Implements the mechanism for dereferencing a read-only iterator
-        const_reference dereference() const
-        {
-            return buffer_;
-        }
+        const_reference dereference() const { return buffer_; }
 
         /// Implements the mechansim for incrementing this iterator
-        ZipIterator & increment() noexcept
+        ZipIterator& increment() noexcept
         {
             return increment_imp(std::make_index_sequence<ncontainers_>());
         }
 
         /// Implements the mechanism for checking if this iterator equals
         /// another
-        bool are_equal(const ZipIterator & rhs) const noexcept
+        bool are_equal(const ZipIterator& rhs) const noexcept
         {
             return value_ == rhs.value_;
         }
@@ -421,13 +391,13 @@ class ZipImpl
         void check_itrs()
         {
             auto at_end = combine_tuples(value_, end_, Comparer());
-            bool done = reduce_tuple(at_end, AnyTrue(), false);
+            bool done   = reduce_tuple(at_end, AnyTrue(), false);
             if(done)
                 value_ = end_;
         }
 
         template<std::size_t... I>
-        ZipIterator & increment_imp(std::index_sequence<I...>)
+        ZipIterator& increment_imp(std::index_sequence<I...>)
         {
             value_ = std::make_tuple((++std::get<I>(value_))...);
             check_itrs();
@@ -449,8 +419,7 @@ class ZipImpl
         value_type buffer_;
 
         /// Functor for calling begin() on all containers
-        struct CallBegin
-        {
+        struct CallBegin {
             template<typename T>
             auto operator()(T container)
             {
@@ -459,8 +428,7 @@ class ZipImpl
         };
 
         /// Functor for calling end() on all containers
-        struct CallEnd
-        {
+        struct CallEnd {
             template<typename T>
             auto operator()(T container) const
             {
@@ -469,8 +437,7 @@ class ZipImpl
         };
 
         /// Functor for derefrencing an argument
-        struct Derefer
-        {
+        struct Derefer {
             template<typename T>
             auto operator()(T itr) const
             {
@@ -479,8 +446,7 @@ class ZipImpl
         };
 
         /// Functor for comparing two arguments
-        struct Comparer
-        {
+        struct Comparer {
             template<typename lhs_type, typename rhs_type>
             auto operator()(lhs_type lhs, rhs_type rhs) const
             {
@@ -489,8 +455,7 @@ class ZipImpl
         };
 
         /// Functor for finding if any element is true via reduction
-        struct AnyTrue
-        {
+        struct AnyTrue {
             template<typename T>
             bool operator()(bool val, T element) const
             {
@@ -514,7 +479,7 @@ class ZipImpl
  *             guarantee.
  */
 template<typename... ContainerTypes>
-auto Zip(ContainerTypes &&... containers)
+auto Zip(ContainerTypes&&... containers)
 {
     return detail_::ZipImpl<std::decay_t<ContainerTypes>...>(
         std::forward<ContainerTypes>(containers)...);
