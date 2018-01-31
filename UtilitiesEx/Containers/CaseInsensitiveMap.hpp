@@ -1,88 +1,76 @@
 #pragma once
 #include <map>
 #include <string>
+#include <cctype>  // For tolower
+#include <algorithm> // For lexicographical_compare
 
 namespace UtilitiesEx {
+namespace detail_ {
 
-template<typename value_type>
-class CaseInsensitiveMap {
-public:
-    using key
-
-    /**
-     * @brief
-     * @throw None. No throw guarantee.
-     */
-    CaseInsensitiveMap()noexcept = default;
-
-    /**
-     * @brief Makes a deep copy of another instance.
-     * @param[in] rhs The instance to copy.
-     * @throw std::bad_alloc if there is insufficient memory for the copy. Strong
-     *        throw guarantee.
-     */
-    CaseInsensitiveMap(const CaseInsensitiveMap& /*rhs*/) = default;
-
-    /**
-     * @brief Takes ownership of another instance.
-     * @param[in] rhs The instance to take ownership of.  After this call @p rhs
-     *            is in a valid, but otherwise undefined state.
-     * @throw None. No throw guarantee.
-     */
-    CaseInsensitiveMap(CaseInsensitiveMap&& /*rhs*/)noexcept = default;
-
-    /**
-     * @brief Cleans up any memory held by the current instance.
-     * @throw None. No throw guarantee.
-     *
-     */
-    ~CaseInsensitiveMap()noexcept = default;
-
-    /**
-     * @brief Assigns a deep copy of another instance's state to the current
-     *        instance.
-     * @param[in] rhs The instance to copy.
-     * @return The current instance containing a deep-copy of @p rhs's state.
-     * @throw std::bad_alloc if there is insufficient memory for the copy. Strong
-     *        throw guarantee.
-     */
-    CaseInsensitiveMap& operator=(const CaseInsensitiveMap& /*rhs*/)= default;
-
-    /**
-     * @brief Takes ownership of another instance.
-     * @param[in] rhs The instance to take ownership of.  After this call @p rhs
-     *            is in a valid, but otherwise undefined state.
-     * @return The current instance containing @p rhs's state.
-     * @throw None. No throw guarantee.
-     */
-    CaseInsensitiveMap&
-    operator=(CaseInsensitiveMap&& /*rhs*/)noexcept= default;
-
-private:
-    /**
-     * @brief Implements a case insensitive less-than operation for two
-     * std::strings.
-     *
-     * @note This is shamelessly stolen from StackOverflow's topic:
-     * "Making mapfind operation case insensitive"
-     */
-    struct CaseInsensitiveLess_
+/**
+ * @brief Implements a case insensitive less-than operation for two
+ * std::strings.
+ *
+ * @note This is shamelessly stolen from StackOverflow's topic:
+ * "Making map find operation case insensitive"
+ */
+struct CaseInsensitiveLess_
+{
+    ///Letter by letter case-insensitive functor
+    struct LetterComparer_
     {
-        // case-independent (ci) compare_less binary function
-        struct nocase_compare
+        /**
+         * @brief Compares two characters in a case-insensitive way.
+         * @param c1 The first
+         * @param c2
+         * @return True if lowercase @p c1 is less than lowercase @p c2 and
+         * false otherwise
+         * @throw ??? Throws if the locale backend throws (I am unable to
+         * find a list of what could cause that).  Strong throw guarantee.
+         */
+        bool operator() (const unsigned char& c1,
+                         const unsigned char& c2) const
         {
-            bool operator() (const unsigned char& c1, const unsigned char& c2) const {
-                return tolower (c1) < tolower (c2);
-            }
-        };
-        bool operator() (const std::string & s1, const std::string & s2) const {
-            return std::lexicographical_compare
-                    (s1.begin (), s1.end (),   // source range
-                     s2.begin (), s2.end (),   // dest range
-                     nocase_compare ());  // comparison
+            return std::tolower(c1) < std::tolower(c2);
         }
     };
 
+    /**
+     * @brief Compares two strings in a case insensitive manner.
+     *
+     * Ultimately this will use LetterComparer_ to compare the strings
+     * lexicographically letter by letter.
+     * @param s1 The first string
+     * @param s2 The second string
+     * @return True if lowercase s1 comes before lowercase s2.  False otherwise.
+     * @throw ??? Throws if LetterComparer_'s operator() throws.  Strong throw
+     * guarantee.
+     */
+    bool operator() (const std::string & s1,
+                     const std::string & s2) const
+    {
+        return std::lexicographical_compare(
+                 s1.begin (), s1.end (),
+                 s2.begin (), s2.end (),
+                 LetterComparer_());
+    }
 };
 
-}
+} //End detail_
+
+/**
+ * @brief A case-insensitive std::map (the keys are assumed to be
+ * std::string otherwise it doesn't make a whole lot of sense to do a
+ * case-insensitive compare...)
+ *
+ * This class is really just a partial specialization of std::map so it's
+ * API is simply that of std::map.
+ *
+ * @tparam T the type of values you are putting into the map
+ */
+template<typename T>
+using CaseInsensitiveMap =
+    std::map<std::string, T, detail_::CaseInsensitiveLess_>;
+
+
+} //End UtilitiesEx
