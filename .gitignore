@@ -6,7 +6,8 @@ IterTools.includes
 .idea/
 
 docs/
-cmake-debug-build/
+cmake-build-debug/
+cmake-build-release/
 Debug/
 Release/
 
