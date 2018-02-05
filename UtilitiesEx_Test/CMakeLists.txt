@@ -4,6 +4,7 @@ include(TargetMacros)
 
 add_cxx_unit_test(TestAny)
 add_cxx_unit_test(Testtype_traitsExtensions)
+add_cxx_unit_test(TestCaseInsensitiveMap)
 add_cxx_unit_test(TestCombinations)
 add_cxx_unit_test(TestCombinatorics)
 add_cxx_unit_test(TestIteratorTypes)

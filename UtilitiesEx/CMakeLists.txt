@@ -3,6 +3,7 @@ project(UtilitiesEx-SRC VERSION 0.0.0 LANGUAGES CXX)
 include(TargetMacros)
 set(UtilitiesEx_SRCS Mathematician/Combinatorics.cpp)
 set(UtilitiesEx_INCLUDES Any.hpp
+                         Containers/CaseInsensitiveMap.hpp
                          Mathematician/Combinatorics.hpp
                          IterTools/Combinations.hpp
                          TypeTraits/IteratorTypes.hpp
