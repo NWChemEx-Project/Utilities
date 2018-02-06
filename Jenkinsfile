@@ -5,7 +5,7 @@ node {
             def depend_name = dependencies[i]
             dir(depend_name){
                 git credentialsId:'422b0eed-700d-444d-961c-1e58cc75cda2',
-                url:'https://github.com/NWChemEx-Project/$depend_name.git',
+                url:'https://github.com/NWChemEx-Project/" + depend_name '.git',
                 branch: 'master'
             }
             sh '''
@@ -13,7 +13,7 @@ node {
             source /etc/profile
             module load gcc/7.1.0
             module load cmake
-            echo 'Building ${project_name}'
+            echo 'Building ${depend_name}'
             mkdir -p root
             cd ${depend_name}
             cmake -H. -Bbuild -DCMAKE_INSTALL_PREFIX=${PWD}/root\
