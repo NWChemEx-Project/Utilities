@@ -1,49 +1,47 @@
-node {
-    stage('Build dependencies') {
-        def dependencies = [ "NWChemExBase" ]
-        for(int i=0; i<dependencies.size(); i++) {
-            def depend_name = dependencies[i]
-            dir(depend_name){
-                git credentialsId:'422b0eed-700d-444d-961c-1e58cc75cda2',
-                url:'https://github.com/NWChemEx-Project/NWChemExBase.git',
-                branch: 'master'
-            }
-            sh '''
-            set +x
-            source /etc/profile
-            module load gcc/7.1.0
-            module load cmake
-            mkdir -p root
-            cd NWChemExBase
-            cmake -H. -Bbuild -DCMAKE_INSTALL_PREFIX=${PWD}/root\
-                              -DCMAKE_PREFIX_PATH=${PWD}/root
-            cd build && make install
-            '''
-        }
-    }
-    stage('Build UtilitiesEx') {
-        sh '''
+def repo_name="UtilitiesEx"
+def depends = ['NWChemExBase']
+
+def compile_repo(depend_name, install_root, do_install) {
+    sh """
         set +x
         source /etc/profile
         module load gcc/7.1.0
         module load cmake
-        cmake -H. -Bbuild -DCMAKE_INSTALL_PREFIX=${PWD}/root\
-                          -DCMAKE_PREFIX_PATH=${PWD}/root
-        cd build && make
-        '''
-    }
-    stage('Test') {
-        echo 'Testing..'
-	  	sh'''
-		set +x
-     	source /etc/profile
-	    module load cmake
-	    cd build
-	    ctest
-	    '''
-    }
+        build_tests="True"
+        make_command=""
+        if [ ${do_install} == "True" ];then
+            build_tests="False"
+            make_command="install"
+        fi
+        cmake -H. -Bbuild -DBUILD_TESTS=\${build_tests} \
+                          -DCMAKE_INSTALL_PREFIX=${install_root}\
+                          -DCMAKE_PREFIX_PATH=${install_root}
+        cd build && make \${make_command}
+    """
 }
 
-
-
-
+node {
+    def install_root="${WORKSPACE}/install"
+    stage('Build Dependencies') {
+        for(int i=0; i<depends.size(); i++) {
+            dir("${depends[i]}"){
+                git credentialsId:'3c9f2cd160107a318310e73ec420216344b85bdd',
+                    url:"https://github.com/NWChemEx-Project/${depends[i]}.git",
+                    branch: 'master'
+                compile_repo("${depends[i]}", "${install_root}", "True")
+            }
+        }
+    }
+    stage('Build Repo') {
+        checkout scm
+        compile_repo("${repo_name}", "${install_root}", "False")
+    }
+    stage('Test Repo') {
+        sh """
+        set +x
+        source /etc/profile
+        module load cmake
+        cd build && ctest
+        """
+    }
+}
