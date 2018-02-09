@@ -25,7 +25,7 @@ node {
     stage('Build Dependencies') {
         for(int i=0; i<depends.size(); i++) {
             dir("${depends[i]}"){
-                git credentialsId:'3c9f2cd160107a318310e73ec420216344b85bdd',
+                git credentialsId:'422b0eed-700d-444d-961c-1e58cc75cda2',
                     url:"https://github.com/NWChemEx-Project/${depends[i]}.git",
                     branch: 'master'
                 compile_repo("${depends[i]}", "${install_root}", "True")
