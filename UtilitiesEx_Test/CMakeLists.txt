@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.1)
-project(UtilitiesEx-Test VERSION 0.0.0 LANGUAGES CXX)
+project(UtilitiesEx-Test VERSION ${PROJECT_VERSION} LANGUAGES CXX)
 include(TargetMacros)
 
 add_cxx_unit_test(TestAny)
