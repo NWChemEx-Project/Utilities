@@ -22,6 +22,9 @@ def compile_repo(depend_name, install_root, do_install) {
 
 node {
     def install_root="${WORKSPACE}/install"
+    stage('Clean Workspace') {
+        deleteDir()
+    }
     stage('Build Dependencies') {
         for(int i=0; i<depends.size(); i++) {
             dir("${depends[i]}"){
