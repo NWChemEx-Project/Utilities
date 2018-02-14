@@ -4,8 +4,7 @@
 
 using namespace UtilitiesEx;
 
-TEST_CASE("Defaulted Any and Basic operations")
-{
+TEST_CASE("Defaulted Any and Basic operations") {
     Any defaulted{};
     REQUIRE(!defaulted.has_value());
     defaulted.emplace<int>(2);
@@ -16,64 +15,55 @@ TEST_CASE("Defaulted Any and Basic operations")
     REQUIRE(!defaulted.has_value());
 }
 
-TEST_CASE("Test non-defaulted Any construction")
-{
-    int two=2,three=3;
-    Any wrapped_two=MakeAny<int>(2);
+TEST_CASE("Test non-defaulted Any construction") {
+    int two = 2, three = 3;
+    Any wrapped_two = MakeAny<int>(2);
     Any wrapped_three(three);
-    int* ptr_2_two = &(AnyCast<int>(wrapped_two));
+    int* ptr_2_two   = &(AnyCast<int>(wrapped_two));
     int* ptr_2_three = &(AnyCast<int>(wrapped_three));
 
-    SECTION("Copy constructor")
-    {
+    SECTION("Copy constructor") {
         Any copied_three(wrapped_three);
         int* ptr_2_three2 = &(AnyCast<int>(copied_three));
         REQUIRE(ptr_2_three2 != ptr_2_three);
         REQUIRE(*ptr_2_three2 == 3);
     }
 
-    SECTION("Move constructor")
-    {
+    SECTION("Move constructor") {
         Any moved_three(std::move(wrapped_three));
         REQUIRE(&(AnyCast<int>(moved_three)) == ptr_2_three);
     }
 
-    SECTION("Copy assignment")
-    {
+    SECTION("Copy assignment") {
         Any* ptr = &(wrapped_two = wrapped_three);
         REQUIRE(ptr == &wrapped_two);
-        int* ptr_2_three2=&(AnyCast<int>(wrapped_two));
+        int* ptr_2_three2 = &(AnyCast<int>(wrapped_two));
         REQUIRE(ptr_2_three != ptr_2_three2);
         REQUIRE(*ptr_2_three2 == 3);
     }
 
-    SECTION("Move assignment")
-    {
+    SECTION("Move assignment") {
         Any* ptr = &(wrapped_two = std::move(wrapped_three));
         REQUIRE(ptr == &wrapped_two);
         REQUIRE(&(AnyCast<int>(wrapped_two)) == ptr_2_three);
     }
 
-    SECTION("Swap")
-    {
+    SECTION("Swap") {
         wrapped_two.swap(wrapped_three);
         REQUIRE(&(AnyCast<int>(wrapped_two)) == ptr_2_three);
         REQUIRE(&(AnyCast<int>(wrapped_three)) == ptr_2_two);
     }
-
 }
 
-TEST_CASE("Wrapping Pointers")
-{
-    std::vector<int> vals({1,2,3});
-    int* ptr =vals.data();
+TEST_CASE("Wrapping Pointers") {
+    std::vector<int> vals({1, 2, 3});
+    int* ptr = vals.data();
     Any wrapped_vals(ptr);
-    REQUIRE(AnyCast<int *>(wrapped_vals) == ptr);
+    REQUIRE(AnyCast<int*>(wrapped_vals) == ptr);
 }
 
-TEST_CASE("MakeAny function")
-{
-    auto an_any = MakeAny<std::vector<int>>(3,4);
-    std::vector<int> corr(3,4);
+TEST_CASE("MakeAny function") {
+    auto an_any = MakeAny<std::vector<int>>(3, 4);
+    std::vector<int> corr(3, 4);
     REQUIRE(AnyCast<std::vector<int>>(an_any) == corr);
 }

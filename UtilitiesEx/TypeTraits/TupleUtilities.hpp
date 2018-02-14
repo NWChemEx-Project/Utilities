@@ -32,9 +32,9 @@ namespace detail_ {
  */
 template<std::size_t I, typename tuple_type>
 using recursion_done = std::is_same<
-    std::integral_constant<std::size_t, I>,
-    std::integral_constant<std::size_t,
-                           std::tuple_size<std::decay_t<tuple_type>>::value>>;
+  std::integral_constant<std::size_t, I>,
+  std::integral_constant<std::size_t,
+                         std::tuple_size<std::decay_t<tuple_type>>::value>>;
 
 /** @brief Type that will tell us if we are not done iterating over all
  * elements of a tuple.
@@ -56,7 +56,7 @@ using recursion_not_done = Negation<recursion_done<I, tuple_type>>;
 /// Enables a function via SFINAE if recursion through a tuple has finished
 template<std::size_t I, typename tuple_type>
 using done_recursing =
-    std::enable_if<recursion_done<I, tuple_type>::value, int>;
+  std::enable_if<recursion_done<I, tuple_type>::value, int>;
 
 /// Enables a function via SFINAE if recursion through a tuple is still going
 template<std::size_t I, typename tuple_type>
@@ -64,35 +64,24 @@ using recursing = std::enable_if<recursion_not_done<I, tuple_type>::value, int>;
 
 /// Actually implements the apply_functor_to_tuple function
 template<typename tuple_type, typename functor_type, std::size_t... I>
-auto apply_functor_to_tuple_impl(tuple_type&& tuple,
-                                 functor_type&& functor,
-                                 std::index_sequence<I...>)
-{
+auto apply_functor_to_tuple_impl(tuple_type&& tuple, functor_type&& functor,
+                                 std::index_sequence<I...>) {
     return std::make_tuple(
-        functor(std::get<I>(std::forward<tuple_type>(tuple)))...);
+      functor(std::get<I>(std::forward<tuple_type>(tuple)))...);
 };
 
 /// End-point for reducing a tuple
-template<std::size_t I,
-         typename tuple_type,
-         typename functor_type,
-         typename return_type,
-         typename done_recursing<I, tuple_type>::type = 0>
-return_type reduce_tuple_impl(tuple_type&&, functor_type&&, return_type val)
-{
+template<std::size_t I, typename tuple_type, typename functor_type,
+         typename return_type, typename done_recursing<I, tuple_type>::type = 0>
+return_type reduce_tuple_impl(tuple_type&&, functor_type&&, return_type val) {
     return val;
 };
 
 /// The guts of the recursive process for reducing a tuple
-template<std::size_t I,
-         typename tuple_type,
-         typename functor_type,
-         typename return_type,
-         typename recursing<I, tuple_type>::type = 0>
-return_type reduce_tuple_impl(tuple_type&& tuple,
-                              functor_type&& functor,
-                              return_type val)
-{
+template<std::size_t I, typename tuple_type, typename functor_type,
+         typename return_type, typename recursing<I, tuple_type>::type = 0>
+return_type reduce_tuple_impl(tuple_type&& tuple, functor_type&& functor,
+                              return_type val) {
     auto new_val = functor(val, std::get<I>(std::forward<tuple_type>(tuple)));
     return reduce_tuple_impl<I + 1>(std::forward<tuple_type>(tuple),
                                     std::forward<functor_type>(functor),
@@ -100,18 +89,13 @@ return_type reduce_tuple_impl(tuple_type&& tuple,
 };
 
 /// The guts behind actually combining tuples via a functor
-template<typename lhs_type,
-         typename rhs_type,
-         typename functor_type,
+template<typename lhs_type, typename rhs_type, typename functor_type,
          std::size_t... I>
-auto combine_tuples_impl(lhs_type&& lhs,
-                         rhs_type&& rhs,
-                         functor_type&& functor,
-                         std::index_sequence<I...>)
-{
+auto combine_tuples_impl(lhs_type&& lhs, rhs_type&& rhs, functor_type&& functor,
+                         std::index_sequence<I...>) {
     return std::make_tuple(
-        functor(std::get<I>(std::forward<lhs_type>(lhs)),
-                std::get<I>(std::forward<rhs_type>(rhs)))...);
+      functor(std::get<I>(std::forward<lhs_type>(lhs)),
+              std::get<I>(std::forward<rhs_type>(rhs)))...);
 };
 
 } // namespace detail_
@@ -131,14 +115,12 @@ auto combine_tuples_impl(lhs_type&& lhs,
  *
  */
 template<typename tuple_type, typename functor_type>
-auto apply_functor_to_tuple(tuple_type&& tuple, functor_type&& functor)
-{
+auto apply_functor_to_tuple(tuple_type&& tuple, functor_type&& functor) {
     constexpr std::size_t nelems =
-        std::tuple_size<std::decay_t<tuple_type>>::value;
+      std::tuple_size<std::decay_t<tuple_type>>::value;
     return detail_::apply_functor_to_tuple_impl(
-        std::forward<tuple_type>(tuple),
-        std::forward<functor_type>(functor),
-        std::make_index_sequence<nelems>());
+      std::forward<tuple_type>(tuple), std::forward<functor_type>(functor),
+      std::make_index_sequence<nelems>());
 };
 
 /** @brief Applies a reduction to a tuple
@@ -166,23 +148,19 @@ auto apply_functor_to_tuple(tuple_type&& tuple, functor_type&& functor)
  *              Throw guarantee is same as that of functor.
  */
 template<typename tuple_type, typename functor_type, typename return_type>
-return_type reduce_tuple(tuple_type&& tuple,
-                         functor_type&& functor,
-                         return_type val)
-{
+return_type reduce_tuple(tuple_type&& tuple, functor_type&& functor,
+                         return_type val) {
     return detail_::reduce_tuple_impl<0>(std::forward<tuple_type>(tuple),
                                          std::forward<functor_type>(functor),
                                          val);
 };
 
 template<typename lhs_type, typename rhs_type, typename functor_type>
-auto combine_tuples(lhs_type&& lhs, rhs_type&& rhs, functor_type&& functor)
-{
+auto combine_tuples(lhs_type&& lhs, rhs_type&& rhs, functor_type&& functor) {
     constexpr std::size_t size = std::tuple_size<std::decay_t<lhs_type>>::value;
     static_assert(size == std::tuple_size<std::decay_t<rhs_type>>::value);
-    return detail_::combine_tuples_impl(std::forward<lhs_type>(lhs),
-                                        std::forward<rhs_type>(rhs),
-                                        std::forward<functor_type>(functor),
-                                        std::make_index_sequence<size>());
+    return detail_::combine_tuples_impl(
+      std::forward<lhs_type>(lhs), std::forward<rhs_type>(rhs),
+      std::forward<functor_type>(functor), std::make_index_sequence<size>());
 };
 } // namespace UtilitiesEx

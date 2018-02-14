@@ -8,6 +8,7 @@ set(UtilitiesEx_INCLUDES Any.hpp
                          Containers/RangeContainer.hpp
                          Mathematician/Combinatorics.hpp
                          IterTools/Combinations.hpp
+                         IterTools/Enumerate.hpp
                          IterTools/Permutations.hpp
                          IterTools/Range.hpp
                          IterTools/Zip.hpp

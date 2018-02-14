@@ -86,9 +86,7 @@ class Permutations {
      */
     Permutations(const_reference input_set) :
       original_set_(input_set),
-      size_(n_permutations(input_set))
-    {
-    }
+      size_(n_permutations(input_set)) {}
 
     /** @brief Deep copies another Permutations instance.
      *
@@ -198,12 +196,9 @@ class Permutations {
      *               permutations.
      *  @throws None No throw guarantee.
      */
-    bool operator==(const my_type& other) const noexcept
-    {
-        if(size_ != other.size_)
-            return false;
-        return std::is_permutation(original_set_.begin(),
-                                   original_set_.end(),
+    bool operator==(const my_type& other) const noexcept {
+        if(size_ != other.size_) return false;
+        return std::is_permutation(original_set_.begin(), original_set_.end(),
                                    other.original_set_.begin());
     }
 
@@ -215,8 +210,7 @@ class Permutations {
      *  @throws None No throw guarantee.
      *
      */
-    bool operator!=(const my_type& other) const noexcept
-    {
+    bool operator!=(const my_type& other) const noexcept {
         return !((*this) == other);
     }
 
@@ -233,8 +227,7 @@ class Permutations {
      *          operation.
      *
      */
-    value_type operator[](size_type perm) const
-    {
+    value_type operator[](size_type perm) const {
         return decimal_to_permutation(perm, original_set_);
     }
 
@@ -243,8 +236,7 @@ class Permutations {
      *  @param[in] other The container to swap contents with
      *  @throws None No throw guarantee.
      */
-    void swap(my_type& other) noexcept
-    {
+    void swap(my_type& other) noexcept {
         std::swap(original_set_, other.original_set_);
         std::swap(size_, other.size_);
     }
@@ -261,8 +253,7 @@ class Permutations {
      *  Since this container does not actually contain its elements, so long as
      *  the number of unique permutations is expressible as a size_type integer
      */
-    constexpr size_type max_size() const noexcept
-    {
+    constexpr size_type max_size() const noexcept {
         return std::numeric_limits<size_type>::max();
     }
 
@@ -314,9 +305,7 @@ class Permutations {
         PermutationItr(const value_type& input_set, size_type offset) :
           orig_set_(input_set),
           set_(input_set),
-          offset_(offset)
-        {
-        }
+          offset_(offset) {}
 
         /// Trivial destructor
         ~PermutationItr() = default;
@@ -341,8 +330,7 @@ class Permutations {
          *  @return The iterator after incrementing
          *  @throws None No throw guarantee.
          */
-        PermutationItr& increment() noexcept
-        {
+        PermutationItr& increment() noexcept {
             std::next_permutation(set_.begin(), set_.end());
             ++offset_;
             return *this;
@@ -358,10 +346,9 @@ class Permutations {
          *  @return True if this iterator is exactly the same as @p rhs
          *  @throws None No throw guarantee.
          */
-        bool are_equal(const PermutationItr& rhs) const noexcept
-        {
-            return std::tie(orig_set_, set_, offset_)
-                   == std::tie(rhs.orig_set_, rhs.set_, rhs.offset_);
+        bool are_equal(const PermutationItr& rhs) const noexcept {
+            return std::tie(orig_set_, set_, offset_) ==
+                   std::tie(rhs.orig_set_, rhs.set_, rhs.offset_);
         }
 
         /** @brief Makes the iterator point to the previous permutation.
@@ -376,8 +363,7 @@ class Permutations {
          *  @return The iterator after decrementing
          *  @throws None No throw guarantee.
          */
-        PermutationItr& decrement() noexcept
-        {
+        PermutationItr& decrement() noexcept {
             std::prev_permutation(set_.begin(), set_.end());
             --offset_;
             return *this;
@@ -393,8 +379,7 @@ class Permutations {
          *          memory to complete
          *
          */
-        PermutationItr& advance(difference_type n)
-        {
+        PermutationItr& advance(difference_type n) {
             offset_ += n;
             set_ = decimal_to_permutation(offset_, orig_set_);
             return *this;
@@ -407,12 +392,11 @@ class Permutations {
          * @return The number of permutations between this and other
          * @throws None. No throw guarantee
          * */
-        difference_type distance_to(const PermutationItr& other) const noexcept
-        {
+        difference_type distance_to(const PermutationItr& other) const
+          noexcept {
             const bool is_greater = (offset_ >= other.offset_);
             const difference_type abs_val =
-                (is_greater ? offset_ - other.offset_ :
-                              other.offset_ - offset_);
+              (is_greater ? offset_ - other.offset_ : other.offset_ - offset_);
             return (is_greater ? -abs_val : abs_val);
         }
 

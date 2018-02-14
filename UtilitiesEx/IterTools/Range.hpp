@@ -24,7 +24,7 @@ class RangeItr
     private:
     /// Typedef of the base type for sanity
     using base_type =
-        detail_::RandomAccessIteratorBase<RangeItr<element_type>, element_type>;
+      detail_::RandomAccessIteratorBase<RangeItr<element_type>, element_type>;
 
     public:
     /// Pulls the const_reference typedef into scope
@@ -106,9 +106,7 @@ class RangeItr
       start_(start),
       stop_(stop),
       increment_(increment),
-      value_(start_)
-    {
-    }
+      value_(start_) {}
 
     private:
     /// Allows base class to implement random access iterator
@@ -124,18 +122,16 @@ class RangeItr
     RangeItr& decrement() override { return advance(-1 * increment_); }
 
     /// Implements operator+=
-    RangeItr& advance(difference_type adv) override
-    {
+    RangeItr& advance(difference_type adv) override {
         adv > 0 ? value_ += adv : value_ -= -1 * adv;
         return *this;
     }
 
     /// Implements itr1 - itr2
-    difference_type distance_to(const RangeItr& rhs) const noexcept
-    {
+    difference_type distance_to(const RangeItr& rhs) const noexcept {
         const bool is_positive = rhs.value_ > value_;
         difference_type abs_diff =
-            is_positive ? rhs.value_ - value_ : value_ - rhs.value_;
+          is_positive ? rhs.value_ - value_ : value_ - rhs.value_;
         return is_positive ? abs_diff : -1 * abs_diff;
     }
 
@@ -150,8 +146,7 @@ class RangeItr
      *  otherwise.
      *  @throw None. No throw guarantee.
      */
-    bool are_equal(const RangeItr& rhs) const noexcept
-    {
+    bool are_equal(const RangeItr& rhs) const noexcept {
         return value_ == rhs.value_;
     }
 
@@ -278,15 +273,12 @@ class RangeImpl
      * @param increment The number to add to generate the next value in the
      *                  sequence.  Can be negative to make a sequence countdown.
      */
-    RangeImpl(element_type start,
-              element_type stop,
+    RangeImpl(element_type start, element_type stop,
               difference_type increment = 1) :
       base_type(RangeItr<element_type>(start, stop, increment),
                 RangeItr<element_type>(stop, stop, increment),
                 stop > start ? (stop - start) / increment :
-                               (start - stop) / (-1 * increment))
-    {
-    }
+                               (start - stop) / (-1 * increment)) {}
 };
 
 } // namespace detail_
@@ -304,8 +296,7 @@ class RangeImpl
  * @throw ??? Throws if RangeImpl's constructor throws.  Strong throw guarantee.
  */
 template<typename element_type>
-auto Range(element_type stop)
-{
+auto Range(element_type stop) {
     return detail_::RangeImpl<element_type>(0, stop, 1);
 }
 
@@ -325,8 +316,7 @@ auto Range(element_type stop)
  * @throw ??? Throws if RangeImpl's constructor throws.  Strong throw guarantee.
  */
 template<typename element_type>
-auto Range(element_type start, element_type stop, element_type increment = 1)
-{
+auto Range(element_type start, element_type stop, element_type increment = 1) {
     return detail_::RangeImpl<element_type>(start, stop, increment);
 }
 

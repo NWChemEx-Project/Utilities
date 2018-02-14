@@ -143,8 +143,7 @@ class Combinations {
      *  @throws std::bad_alloc if there is not enough memory to copy the set to
      *          the iterator.  Strong throw guarantee.
      */
-    iterator begin() const
-    {
+    iterator begin() const {
         return CombinationItr(original_set_, k_, defaulted_);
     }
 
@@ -177,10 +176,9 @@ class Combinations {
      *               Combinations.
      *  @throws None No throw guarantee.
      */
-    bool operator==(const my_type& rhs) const noexcept
-    {
-        return std::tie(size_, original_set_)
-               == std::tie(rhs.size_, rhs.original_set_);
+    bool operator==(const my_type& rhs) const noexcept {
+        return std::tie(size_, original_set_) ==
+               std::tie(rhs.size_, rhs.original_set_);
     }
 
     /** @brief True if this contains different combinations from @p rhs.
@@ -194,8 +192,7 @@ class Combinations {
      *  @throws None No throw guarantee.
      *
      */
-    bool operator!=(const my_type& rhs) const noexcept
-    {
+    bool operator!=(const my_type& rhs) const noexcept {
         return !((*this) == rhs);
     }
 
@@ -204,8 +201,7 @@ class Combinations {
      *  @param[in] rhs The container to swap contents with
      *  @throws None No throw guarantee.
      */
-    void swap(my_type& rhs) noexcept
-    {
+    void swap(my_type& rhs) noexcept {
         std::swap(original_set_, rhs.original_set_);
         std::swap(size_, rhs.size_);
         std::swap(k_, rhs.k_);
@@ -235,8 +231,7 @@ class Combinations {
      *  it may not actually be possible to instantiate an object with that many
      *  elements.
      */
-    constexpr size_type max_size() const noexcept
-    {
+    constexpr size_type max_size() const noexcept {
         return std::numeric_limits<size_type>::max();
     }
 
@@ -348,8 +343,7 @@ class Combinations {
          *  @return The iterator after incrementing
          *  @throws None No throw guarantee.
          */
-        CombinationItr& increment() noexcept
-        {
+        CombinationItr& increment() noexcept {
             ++current_perm_;
             update_comb();
             return *this;
@@ -367,8 +361,7 @@ class Combinations {
          *  @return The iterator after decrementing
          *  @throws None No throw guarantee.
          */
-        CombinationItr& decrement() noexcept
-        {
+        CombinationItr& decrement() noexcept {
             --current_perm_;
             update_comb();
             return *this;
@@ -384,8 +377,7 @@ class Combinations {
          *  insufficient memory to complete the request
          *
          */
-        CombinationItr& advance(difference_type n)
-        {
+        CombinationItr& advance(difference_type n) {
             current_perm_ += n;
             update_comb();
             return *this;
@@ -401,10 +393,9 @@ class Combinations {
          *  @return True if this iterator is exactly the same as @p other
          *  @throws None No throw guarantee.
          */
-        bool are_equal(const CombinationItr& other) const noexcept
-        {
-            return std::tie(set_, current_perm_)
-                   == std::tie(other.set_, other.current_perm_);
+        bool are_equal(const CombinationItr& other) const noexcept {
+            return std::tie(set_, current_perm_) ==
+                   std::tie(other.set_, other.current_perm_);
         }
 
         /** @brief Returns the distance between this iterator and another
@@ -412,8 +403,7 @@ class Combinations {
          * @param[in] rhs The iterator we want the distance to.
          * @returns the distance between the two iterators
          */
-        difference_type distance_to(const CombinationItr& rhs) const noexcept
-        {
+        difference_type distance_to(const CombinationItr& rhs) const noexcept {
             return current_perm_ - rhs.current_perm_;
         }
 
@@ -439,23 +429,18 @@ class Combinations {
 
 template<typename container_type, bool repeat>
 Combinations<container_type, repeat>::Combinations(
-    const container_type& input_set,
-    std::size_t k) :
+  const container_type& input_set, std::size_t k) :
   original_set_(input_set),
   k_(k),
   size_(!repeat ?
-            binomial_coefficient<size_type>(input_set.size(), k) :
-            binomial_coefficient<size_type>((input_set.size() + k) - 1, k)),
-  defaulted_(false)
-{
-}
+          binomial_coefficient<size_type>(input_set.size(), k) :
+          binomial_coefficient<size_type>((input_set.size() + k) - 1, k)),
+  defaulted_(false) {}
 
 template<typename container_type, bool repeat>
-void Combinations<container_type, repeat>::CombinationItr::update_comb()
-{
+void Combinations<container_type, repeat>::CombinationItr::update_comb() {
     const auto& p = *current_perm_;
-    for(size_type i = 0, counter = 0, bar_count = 0; i < p.size(); ++i)
-    {
+    for(size_type i = 0, counter = 0, bar_count = 0; i < p.size(); ++i) {
         if(!p[i])
             comb_[counter++] = set_[!repeat ? i : bar_count];
         else
@@ -467,19 +452,15 @@ void Combinations<container_type, repeat>::CombinationItr::update_comb()
 
 template<typename container_type, bool repeat>
 Combinations<container_type, repeat>::CombinationItr::CombinationItr(
-    const container_type& input_set,
-    std::size_t k,
-    bool at_end) :
+  const container_type& input_set, std::size_t k, bool at_end) :
   set_(input_set),
   comb_(k),
-  current_perm_()
-{
+  current_perm_() {
     const size_type n = input_set.size();
     // k==n==0 is possible and leads to -1 (technically ok, -1 choose 0=1...)
     const size_type eff_size = (n || k ? n + k - 1 : 0);
     std::vector<bool> temp(!repeat ? n : eff_size, true);
-    for(size_t i = 0; i < k; ++i)
-        temp[i] = false;
+    for(size_t i = 0; i < k; ++i) temp[i] = false;
     Permutations<std::vector<bool>> perms(temp);
     current_perm_ = (at_end ? perms.end() : perms.begin());
     update_comb();
