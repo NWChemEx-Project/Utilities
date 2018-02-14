@@ -30,9 +30,8 @@ namespace UtilitiesEx {
  *  over the copy constructor, hence the meta-template programming.
  *
  */
-class Any
-{
-  private:
+class Any {
+    private:
     /** @brief Class for determining whether or not a type is derived from Any.
      *
      *  If @p T is derived from Any (or is an Any), then the resulting typedef,
@@ -60,7 +59,7 @@ class Any
     using disable_if_related =
         typename std::enable_if<!is_related<T>::value>::type;
 
-  public:
+    public:
     /** @brief Makes an empty Any instance.
      *
      *  The resulting Any instance wraps no object.  An object can be added to
@@ -82,10 +81,7 @@ class Any
      * @throw std::bad_alloc if there is insufficient memory to copy the
      * instance stored in @p rhs.  Strong throw guarantee.
      */
-    Any(const Any & rhs)
-      : ptr_(std::move(rhs.ptr_->clone()))
-    {
-    }
+    Any(const Any& rhs) : ptr_(std::move(rhs.ptr_->clone())) {}
 
     /**
      * @brief Sets the current instance to a deep copy of another instance.
@@ -98,7 +94,7 @@ class Any
      * @throws std::bad_alloc if there is insufficient memory to copy the
      * instance stored in @p rhs.  Strong throw guarantee.
      */
-    Any & operator=(const Any & rhs)
+    Any& operator=(const Any& rhs)
     {
         if(this != &rhs)
             ptr_ = std::move(rhs.ptr_->clone());
@@ -114,7 +110,7 @@ class Any
      *
      * @throws None. No throw guarantee.
      */
-    Any(Any && rhs) noexcept = default;
+    Any(Any&& rhs) noexcept = default;
 
     /**
      * @brief Sets the current instance to the state of another Any instance.
@@ -125,7 +121,12 @@ class Any
      * @return The current instance possessing the state of @p rhs.
      * @throw None. No throw guarantee.
      */
-    Any & operator=(Any && rhs) noexcept = default;
+    Any& operator=(Any&& rhs) noexcept = default;
+
+    /** @brief Frees up the memory wrapped by the Any instance.
+     *  @throw None. No throw guarantee.
+     */
+    ~Any() noexcept = default;
 
     /**
      * @brief Used to construct an Any instance holding a particular value.
@@ -143,8 +144,8 @@ class Any
      * Same guarantee as T's constructor.
      */
     template<typename T, typename X = disable_if_related<T>>
-    explicit Any(T && value)
-      : ptr_(std::move(wrap_ptr<T>(std::forward<T>(value))))
+    explicit Any(T&& value) :
+      ptr_(std::move(wrap_ptr<T>(std::forward<T>(value))))
     {
     }
 
@@ -157,10 +158,7 @@ class Any
      *
      * @throw None. No throw guarantee.
      */
-    void reset() noexcept
-    {
-        ptr_.reset();
-    }
+    void reset() noexcept { ptr_.reset(); }
 
     /**
      * @brief Swaps the state of two Any instances.
@@ -168,10 +166,7 @@ class Any
      * @param other The Any instance to swap contents with.
      * @throw None. No throw guarantee.
      */
-    void swap(Any & other) noexcept
-    {
-        ptr_.swap(other.ptr_);
-    }
+    void swap(Any& other) noexcept { ptr_.swap(other.ptr_); }
 
     /**
      * @brief Returns true if the current Any instance is presently wrapping a
@@ -181,10 +176,7 @@ class Any
      * otherwise.
      * @throw None. No throw guarantee.
      */
-    bool has_value() const noexcept
-    {
-        return static_cast<bool>(ptr_);
-    }
+    bool has_value() const noexcept { return static_cast<bool>(ptr_); }
 
     /**
      * @brief Initializes the wrapped value by forwarding the provided arguments
@@ -201,21 +193,35 @@ class Any
      * as T's constructor.
      */
     template<typename T, typename... Args>
-    std::decay_t<T> & emplace(Args &&... args)
+    std::decay_t<T>& emplace(Args&&... args)
     {
         using no_cv = std::decay_t<T>;
-        ptr_ = wrap_ptr<no_cv>(std::forward<Args>(args)...);
+        ptr_        = wrap_ptr<no_cv>(std::forward<Args>(args)...);
         return cast<no_cv>();
     };
 
-  private:
+    private:
     /// Allows AnyCast to return the wrapped value
     template<typename T>
-    friend T & AnyCast(Any &);
+    friend T& AnyCast(Any&);
 
     /// Defines API for handling the data
-    struct AnyBase_
-    {
+    struct AnyBase_ {
+        /// Trivial class does nothing
+        AnyBase_() noexcept = default;
+
+        /// No state to copy
+        AnyBase_(const AnyBase_& /*rhs*/) noexcept = default;
+
+        /// No state to move
+        AnyBase_(AnyBase_&& /*rhs*/) noexcept = default;
+
+        /// No state to copy
+        AnyBase_& operator=(const AnyBase_& /*rhs*/) noexcept = default;
+
+        /// No state to move
+        AnyBase_& operator=(AnyBase_&& /*rhs*/) noexcept = default;
+
         /// Ensures the data gets deleted correctly
         virtual ~AnyBase_() = default;
         /// Ensures we can copy without slicing
@@ -224,19 +230,12 @@ class Any
 
     /// Implements AnyBase_ for type T
     template<typename T>
-    struct AnyWrapper_ : public AnyBase_
-    {
+    struct AnyWrapper_ : public AnyBase_ {
         /// Constructor copies the value
-        AnyWrapper_(const T & value_in)
-          : value(value_in)
-        {
-        }
+        AnyWrapper_(const T& value_in) : value(value_in) {}
 
         /// Constructor simply moves the value
-        AnyWrapper_(T && value_in)
-          : value(std::move(value_in))
-        {
-        }
+        AnyWrapper_(T&& value_in) : value(std::move(value_in)) {}
 
         /// The actual wrapped value
         T value;
@@ -246,7 +245,7 @@ class Any
          *
          *  @throw std::bad_alloc if there is insufficient memory to copy.
          *  Strong throw guarantee.
-         *  @throw ??? If @param T's copy constructor throws.  Same guarantee as
+         *  @throw ??? If @p T's copy constructor throws.  Same guarantee as
          *  T's copy constructor.
          */
         std::unique_ptr<AnyBase_> clone() override
@@ -257,7 +256,7 @@ class Any
 
     /// Code factorization for the internal process of wrapping a value
     template<typename T, typename... Args>
-    std::unique_ptr<AnyBase_> wrap_ptr(Args &&... args)
+    std::unique_ptr<AnyBase_> wrap_ptr(Args&&... args)
     {
         using no_cv = std::decay_t<T>;
         static_assert(std::is_copy_constructible<no_cv>::value,
@@ -270,9 +269,9 @@ class Any
 
     /// Actually implements the cast, private to match STL API
     template<typename T>
-    T & cast()
+    T& cast()
     {
-        return dynamic_cast<Any::AnyWrapper_<T> &>(*ptr_).value;
+        return dynamic_cast<Any::AnyWrapper_<T>&>(*ptr_).value;
     }
 
     /// The actual type-erased value
@@ -289,16 +288,24 @@ class Any
  * convertible to type @p T.  Strong throw guarantee.
  */
 template<typename T>
-T & AnyCast(Any & wrapped_value)
+T& AnyCast(Any& wrapped_value)
 {
     return wrapped_value.cast<T>();
 }
 
-///@copydoc T& AnyCast(Any&)
+/**
+ * @brief Provides access to the value wrapped in a read-only Any instance.
+ * @relates Any
+ * @tparam T The type to cast the Any instance to.
+ * @param wrapped_value An any instance containing a value.
+ * @return The value, in a read-only state, that is wrapped by @p wrapped_value.
+ * @throw std::bad_cast if the value wrapped by @p wrapped_value is not
+ * convertible to type @p T.  Strong throw guarantee.
+ */
 template<typename T>
-const T & AnyCast(const Any & wrapped_type)
+const T& AnyCast(const Any& wrapped_value)
 {
-    return const_cast<Any &>(wrapped_type).cast<T>();
+    return const_cast<Any&>(wrapped_value).cast<T>(); // NOLINT
 }
 
 /** @brief Makes an Any instance by forwarding the arguments to the wrapped
@@ -311,8 +318,8 @@ const T & AnyCast(const Any & wrapped_type)
  *  @relates Any
  *
  *  @param args The arguments to forward to @p T's constructor.
- *  @param T The type of the object we are going to wrap.
- *  @param Args The types of the arguments that are being forwarded.
+ *  @tparam T The type of the object we are going to wrap.
+ *  @tparam Args The types of the arguments that are being forwarded.
  *  @return An any instance constructed with the current arguments.
  *
  *  @throw std::bad_alloc if there is insufficient memory for the resulting
@@ -321,7 +328,7 @@ const T & AnyCast(const Any & wrapped_type)
  *
  */
 template<typename T, typename... Args>
-Any MakeAny(Args &&... args)
+Any MakeAny(Args&&... args)
 {
     return Any(std::move(T(std::forward<Args>(args)...)));
 };

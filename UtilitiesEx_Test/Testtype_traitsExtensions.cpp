@@ -30,6 +30,8 @@ struct Struct2{
 
 TEST_CASE("type_traits library extensions")
 {
+    REQUIRE( Negation<std::false_type>::value);
+
     SECTION("Has types check")
     {
         const bool has_type_false=has_type_value_type<Struct1>::value;

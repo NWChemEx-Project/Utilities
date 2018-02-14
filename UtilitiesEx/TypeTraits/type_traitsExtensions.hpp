@@ -1,8 +1,11 @@
 #pragma once
 #include <type_traits>
 #include <utility>
-/** @file This file contains functions that should be viewed as extensions of
- *        the STL's type_traits library.
+
+/** @file type_traitsExtensions.hpp
+ *
+ *  This file contains functions that should be viewed as extensions of
+ *  the STL's type_traits library.
  *
  *  The main intent of this file is so people can ensure their classes adhere
  *  to the STL concepts.  Heavy usage of them is likely to balloon compile time
@@ -78,9 +81,18 @@ namespace UtilitiesEx {
  *  @tparam T An arbitrary type
  */
 template<typename /*T*/>
-struct VoidType
-{
+struct VoidType {
     using type = void;
+};
+
+/** @brief Sets the member value to the opposite of the input value
+ *
+ * @tparam T the class containing the value to negate
+ * @todo C++17 provides this type
+ */
+template<typename T>
+struct Negation {
+    constexpr static bool value = !T::value;
 };
 
 /** @brief Returns true if all the types are true too.
@@ -89,17 +101,14 @@ struct VoidType
  *
  */
 template<typename...>
-struct Conjunction : std::true_type
-{
+struct Conjunction : std::true_type {
 };
 template<typename B1>
-struct Conjunction<B1> : B1
-{
+struct Conjunction<B1> : B1 {
 };
 template<typename B1, typename... Bn>
 struct Conjunction<B1, Bn...>
-  : std::conditional_t<bool(B1::value), Conjunction<Bn...>, B1>
-{
+  : std::conditional_t<bool(B1::value), Conjunction<Bn...>, B1> {
 };
 
 /** @brief This macro will define a class gas_xxx for determining if a
@@ -128,13 +137,11 @@ struct Conjunction<B1, Bn...>
  */
 #define HAS_TYPE(NAME)                                                         \
     template<typename, typename = void>                                        \
-    struct has_type_##NAME : std::false_type                                   \
-    {                                                                          \
+    struct has_type_##NAME : std::false_type {                                 \
     };                                                                         \
     template<typename T>                                                       \
     struct has_type_##NAME<T, typename VoidType<typename T::NAME>::type>       \
-      : std::true_type                                                         \
-    {                                                                          \
+      : std::true_type {                                                       \
     }
 
 HAS_TYPE(value_type);
@@ -159,15 +166,13 @@ HAS_TYPE(iterator_category);
  */
 #define HAS_MEMBER(NAME)                                                       \
     template<typename T, typename = void>                                      \
-    struct has_##NAME : std::false_type                                        \
-    {                                                                          \
+    struct has_##NAME : std::false_type {                                      \
     };                                                                         \
     template<typename T>                                                       \
     struct has_##NAME<                                                         \
         T,                                                                     \
         typename VoidType<decltype(std::declval<T>().NAME())>::type>           \
-      : std::true_type                                                         \
-    {                                                                          \
+      : std::true_type {                                                       \
     }
 
 HAS_MEMBER(begin);
@@ -188,16 +193,14 @@ HAS_MEMBER(empty);
  */
 #define HAS_OPERATOR(NAME, symbol)                                             \
     template<typename T, typename U, typename = void>                          \
-    struct has_##NAME : std::false_type                                        \
-    {                                                                          \
+    struct has_##NAME : std::false_type {                                      \
     };                                                                         \
     template<typename T, typename U>                                           \
     struct has_##NAME<T,                                                       \
                       U,                                                       \
                       typename VoidType<decltype(                              \
                           std::declval<T>() symbol std::declval<U>())>::type>  \
-      : std::true_type                                                         \
-    {                                                                          \
+      : std::true_type {                                                       \
     }
 
 HAS_OPERATOR(equal_to, ==);
@@ -216,13 +219,11 @@ HAS_OPERATOR(minus, -);
  * @tparam T the type to check.
  */
 template<typename T, typename = void>
-struct has_dereference : std::false_type
-{
+struct has_dereference : std::false_type {
 };
 template<typename T>
 struct has_dereference<T, typename VoidType<decltype(*std::declval<T>())>::type>
-  : std::true_type
-{
+  : std::true_type {
 };
 
 /** @brief Checks if a type has the arrow operator
@@ -230,15 +231,13 @@ struct has_dereference<T, typename VoidType<decltype(*std::declval<T>())>::type>
  * @tparam T the type to check.
  */
 template<typename T, typename = void>
-struct has_arrow : std::false_type
-{
+struct has_arrow : std::false_type {
 };
 template<typename T>
 struct has_arrow<
     T,
     typename VoidType<decltype(std::declval<T>().operator->())>::type>
-  : std::true_type
-{
+  : std::true_type {
 };
 
 /** @brief Checks if a type implements the prefix increment operator
@@ -246,14 +245,12 @@ struct has_arrow<
  * @tparam T The type to check
  */
 template<typename T, typename = void>
-struct has_prefix_increment : std::false_type
-{
+struct has_prefix_increment : std::false_type {
 };
 template<typename T>
 struct has_prefix_increment<
     T,
-    typename VoidType<decltype(++std::declval<T>())>::type> : std::true_type
-{
+    typename VoidType<decltype(++std::declval<T>())>::type> : std::true_type {
 };
 
 /** @brief Checks if a type implements the postfix increment operator
@@ -261,14 +258,12 @@ struct has_prefix_increment<
  * @tparam T The type to check
  */
 template<typename T, typename = void>
-struct has_postfix_increment : std::false_type
-{
+struct has_postfix_increment : std::false_type {
 };
 template<typename T>
 struct has_postfix_increment<
     T,
-    typename VoidType<decltype(std::declval<T>()++)>::type> : std::true_type
-{
+    typename VoidType<decltype(std::declval<T>()++)>::type> : std::true_type {
 };
 
 /** @brief Checks if a type implements the prefix decrement operator
@@ -276,14 +271,12 @@ struct has_postfix_increment<
  * @tparam T The type to check
  */
 template<typename T, typename = void>
-struct has_prefix_decrement : std::false_type
-{
+struct has_prefix_decrement : std::false_type {
 };
 template<typename T>
 struct has_prefix_decrement<
     T,
-    typename VoidType<decltype(--std::declval<T>())>::type> : std::true_type
-{
+    typename VoidType<decltype(--std::declval<T>())>::type> : std::true_type {
 };
 
 /** @brief Checks if a type implements the postfix decrement operator
@@ -291,14 +284,12 @@ struct has_prefix_decrement<
  * @tparam T The type to check
  */
 template<typename T, typename = void>
-struct has_postfix_decrement : std::false_type
-{
+struct has_postfix_decrement : std::false_type {
 };
 template<typename T>
 struct has_postfix_decrement<
     T,
-    typename VoidType<decltype(std::declval<T>()--)>::type> : std::true_type
-{
+    typename VoidType<decltype(std::declval<T>()--)>::type> : std::true_type {
 };
 
 /** @brief Checks if a type implements the index operator
@@ -306,13 +297,11 @@ struct has_postfix_decrement<
  * @tparam T The type to check
  */
 template<typename T, typename = void>
-struct is_indexable : std::false_type
-{
+struct is_indexable : std::false_type {
 };
 template<typename T>
 struct is_indexable<T, typename VoidType<decltype(std::declval<T>()[0])>::type>
-  : std::true_type
-{
+  : std::true_type {
 };
 
 #undef HAS_OPERATOR
@@ -348,8 +337,7 @@ struct is_container : Conjunction<has_type_value_type<T>,
                                   has_not_equal_to<T, T>,
                                   has_size<T>,
                                   has_max_size<T>,
-                                  has_empty<T>>
-{
+                                  has_empty<T>> {
 };
 
 /** @brief This struct will contain a value true if the type satisfies the C++
@@ -373,8 +361,7 @@ struct is_iterator : Conjunction<has_type_value_type<T>,
                                  has_prefix_increment<T, void>,
                                  std::is_copy_constructible<T>,
                                  std::is_assignable<T, T>,
-                                 std::is_destructible<T>>
-{
+                                 std::is_destructible<T>> {
 };
 
 /** @brief This struct will contain a value true if the type satisfies the C++
@@ -393,8 +380,7 @@ struct is_input_iterator : Conjunction<is_iterator<T>,
                                        has_equal_to<T, T>,
                                        has_not_equal_to<T, T>,
                                        has_postfix_increment<T>,
-                                       has_arrow<T>>
-{
+                                       has_arrow<T>> {
 };
 
 /** @brief This struct will contain a value true if the type satisfies the C++
@@ -432,8 +418,7 @@ using is_forward_iterator = is_input_iterator<T>;
 template<typename T>
 struct is_bidirectional_iterator : Conjunction<is_forward_iterator<T>,
                                                has_prefix_decrement<T>,
-                                               has_postfix_decrement<T>>
-{
+                                               has_postfix_decrement<T>> {
 };
 
 /** @brief This struct will contain a value true if the type satisfies the C++
@@ -460,8 +445,7 @@ struct is_random_access_iterator : Conjunction<is_bidirectional_iterator<T>,
                                                has_less_than<T, T>,
                                                has_greater_than<T, T>,
                                                has_less_than_equal<T, T>,
-                                               has_greater_than_equal<T, T>>
-{
+                                               has_greater_than_equal<T, T>> {
 };
 
 } // namespace UtilitiesEx

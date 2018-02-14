@@ -14,15 +14,15 @@ std::size_t BCImpl<std::size_t>::eval(std::size_t n, std::size_t k)
         return 0;
     // Guaranteed to fit in size_t,VER use pascal's rule
     if(n < sizeof(std::size_t) * 8)
-        return BCImpl<std::size_t>::eval(n - 1, k - 1) +
-               BCImpl<std::size_t>::eval(n - 1, k);
+        return BCImpl<std::size_t>::eval(n - 1, k - 1)
+               + BCImpl<std::size_t>::eval(n - 1, k);
     throw std::overflow_error("I haven't coded up n>64");
 }
 
 template<>
-std::size_t MCImpl<std::size_t>::eval(const std::vector<std::size_t> & ks)
+std::size_t MCImpl<std::size_t>::eval(const std::vector<std::size_t>& ks)
 {
-    std::size_t result = 1;
+    std::size_t result    = 1;
     std::size_t numerator = std::accumulate(ks.begin(), ks.end(), 0);
     for(auto k : ks)
     {

@@ -45,7 +45,7 @@ TEST_CASE("InputIterator base class")
     }
     SECTION("Can be dereferenced in a const state")
     {
-        const int& value=*const_cast<const Iterator&>(itr);
+        const int& value=*const_cast<const Iterator&>(itr); // NOLINT
         REQUIRE(value == 0);
         REQUIRE(&value == &itr.value_);
     }

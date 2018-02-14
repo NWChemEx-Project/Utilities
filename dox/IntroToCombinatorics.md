@@ -28,7 +28,7 @@ combinations of \f$n\f$ objects, taken \f$k\f$ at a time, by iterating over all
 unique permutations of \f$k\f$ 1s and \f$n-k\f$ 0s.  The resulting algorithm 
 will then scale the same as the STL permutation routines. 
 
-1. Fill a vector, \f$P\F$ with \f$k\f$ 1s followed by \f$n-k\f$ 0s.
+1. Fill a vector, \f$P\f$ with \f$k\f$ 1s followed by \f$n-k\f$ 0s.
 2. First combination is the first \f$k\f$ elements
    - Time: 0 (it's the input)
 3. Compute next permutation of \f$P\f$
@@ -43,7 +43,7 @@ all combinations with repetitions of an \f$n\f$ element sequence \f$S\f$,
 such that we take \f$k\f$ elements at a time.  As with our analysis of 
 combinations without repeats, for a given combination with repetition, \f$C\f$,
 we can again define an \f$n\f$ element sequence \f$P\equiv\left[ x_1,x_2,
-\ldots,x_N\right]\f$ where $f$x_i\f$ is now the number of times the 
+\ldots,x_N\right]\f$ where \f$x_i\f$ is now the number of times the 
 \f$i\f$-th element of \f$S\f$ appears in \f$C\f$ (technically a 
 generalization of above).  Of course this again implies the sum of the 
 \f$x_i\f$s is equal to \f$k\f$; however, now they are not restricted to 0s 
@@ -61,7 +61,7 @@ unique permutations of \f$k\f$ 1s and \f$n-1\f$ separators (say 0s) then can be
 used to generate the set of combinations with repetition.
 
 1. Fill a vector, \f$P\f$ with \f$k\f$ 1s and \f$n-1\f$ 0s
-   - Time \f$\mathcal{O}(n+k)
+   - Time \f$\mathcal{O}(n+k)\f$
 2. First combination is first element \f$k\f$ times
    - Time \f$\mathcal{O}(k)\f$
 3. Next permutation of \f$P\f$
