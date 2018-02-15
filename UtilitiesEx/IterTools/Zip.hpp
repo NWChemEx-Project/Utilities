@@ -104,8 +104,8 @@ class ZipImpl {
 
     public:
     /// The type of an element in this container.
-    using value_type = std::tuple<
-      typename GetValueType<detail_::IteratorType<ContainerTypes>>::type...>;
+    using value_type = std::tuple<std::remove_cv_t<
+      typename GetValueType<detail_::IteratorType<ContainerTypes>>::type>...>;
     /// The type of a reference to an element of this container
     using reference = value_type&;
     /// The type of a read-only element of this container
