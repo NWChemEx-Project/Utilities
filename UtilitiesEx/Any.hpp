@@ -43,7 +43,7 @@ class Any {
      */
     template<typename T>
     using is_related =
-        std::is_base_of<Any, typename std::remove_reference<T>::type>;
+      std::is_base_of<Any, typename std::remove_reference<T>::type>;
 
     /** @brief Class for disabling a function via SFINAE if the input is derived
      *  from Any.
@@ -57,7 +57,7 @@ class Any {
      */
     template<typename T>
     using disable_if_related =
-        typename std::enable_if<!is_related<T>::value>::type;
+      typename std::enable_if<!is_related<T>::value>::type;
 
     public:
     /** @brief Makes an empty Any instance.
@@ -94,10 +94,8 @@ class Any {
      * @throws std::bad_alloc if there is insufficient memory to copy the
      * instance stored in @p rhs.  Strong throw guarantee.
      */
-    Any& operator=(const Any& rhs)
-    {
-        if(this != &rhs)
-            ptr_ = std::move(rhs.ptr_->clone());
+    Any& operator=(const Any& rhs) {
+        if(this != &rhs) ptr_ = std::move(rhs.ptr_->clone());
         return *this;
     }
 
@@ -145,9 +143,7 @@ class Any {
      */
     template<typename T, typename X = disable_if_related<T>>
     explicit Any(T&& value) :
-      ptr_(std::move(wrap_ptr<T>(std::forward<T>(value))))
-    {
-    }
+      ptr_(std::move(wrap_ptr<T>(std::forward<T>(value)))) {}
 
     /**
      * @brief Releases the wrapped memory associated with the present Any
@@ -193,8 +189,7 @@ class Any {
      * as T's constructor.
      */
     template<typename T, typename... Args>
-    std::decay_t<T>& emplace(Args&&... args)
-    {
+    std::decay_t<T>& emplace(Args&&... args) {
         using no_cv = std::decay_t<T>;
         ptr_        = wrap_ptr<no_cv>(std::forward<Args>(args)...);
         return cast<no_cv>();
@@ -248,29 +243,26 @@ class Any {
          *  @throw ??? If @p T's copy constructor throws.  Same guarantee as
          *  T's copy constructor.
          */
-        std::unique_ptr<AnyBase_> clone() override
-        {
+        std::unique_ptr<AnyBase_> clone() override {
             return std::move(std::make_unique<AnyWrapper_<T>>(value));
         }
     };
 
     /// Code factorization for the internal process of wrapping a value
     template<typename T, typename... Args>
-    std::unique_ptr<AnyBase_> wrap_ptr(Args&&... args)
-    {
+    std::unique_ptr<AnyBase_> wrap_ptr(Args&&... args) {
         using no_cv = std::decay_t<T>;
         static_assert(std::is_copy_constructible<no_cv>::value,
                       "Only copy constructable objects may be assigned to Any"
                       " instances");
         using result_t = AnyWrapper_<no_cv>;
         return std::move(
-            std::make_unique<result_t>(std::forward<Args>(args)...));
+          std::make_unique<result_t>(std::forward<Args>(args)...));
     }
 
     /// Actually implements the cast, private to match STL API
     template<typename T>
-    T& cast()
-    {
+    T& cast() {
         return dynamic_cast<Any::AnyWrapper_<T>&>(*ptr_).value;
     }
 
@@ -288,8 +280,7 @@ class Any {
  * convertible to type @p T.  Strong throw guarantee.
  */
 template<typename T>
-T& AnyCast(Any& wrapped_value)
-{
+T& AnyCast(Any& wrapped_value) {
     return wrapped_value.cast<T>();
 }
 
@@ -303,8 +294,7 @@ T& AnyCast(Any& wrapped_value)
  * convertible to type @p T.  Strong throw guarantee.
  */
 template<typename T>
-const T& AnyCast(const Any& wrapped_value)
-{
+const T& AnyCast(const Any& wrapped_value) {
     return const_cast<Any&>(wrapped_value).cast<T>(); // NOLINT
 }
 
@@ -328,8 +318,7 @@ const T& AnyCast(const Any& wrapped_value)
  *
  */
 template<typename T, typename... Args>
-Any MakeAny(Args&&... args)
-{
+Any MakeAny(Args&&... args) {
     return Any(std::move(T(std::forward<Args>(args)...)));
 };
 

@@ -156,8 +156,7 @@ class MathSet {
     const_iterator cend() const { return elements_.cend(); }
 
     template<typename input_element>
-    auto insert(input_element&& ei)
-    {
+    auto insert(input_element&& ei) {
         return elements_.insert(std::forward<input_element>(ei));
     }
 
@@ -175,8 +174,7 @@ class MathSet {
      * @throw None. No throw guarantee.
      *
      */
-    bool count(const element_type& ei) const noexcept
-    {
+    bool count(const element_type& ei) const noexcept {
         return elements_.count(ei);
     }
 
@@ -220,11 +218,9 @@ class MathSet {
      * @throw std::bad_alloc if there is insufficient memory to copy elements
      * over.  Weak throw guarantee.
      */
-    MathSet& union_assign(const MathSet& rhs)
-    {
+    MathSet& union_assign(const MathSet& rhs) {
         auto end_itr = end();
-        for(const auto& x : rhs)
-            end_itr = elements_.insert(end_itr, x);
+        for(const auto& x : rhs) end_itr = elements_.insert(end_itr, x);
         return *this;
     }
 
@@ -241,8 +237,7 @@ class MathSet {
      * elements of this and @p rhs to a common container.  Strong throw
      * guarantee.
      */
-    MathSet take_union(const MathSet& rhs) const
-    {
+    MathSet take_union(const MathSet& rhs) const {
         return MathSet(*this).union_assign(rhs);
     }
 
@@ -258,8 +253,7 @@ class MathSet {
      * @throw std::bad_alloc if there is insufficient memory to copy common
      * elements.  Strong throw guarantee.
      */
-    MathSet& intersection_assign(const MathSet& rhs)
-    {
+    MathSet& intersection_assign(const MathSet& rhs) {
         container_type temp;
         auto inserter = std::inserter(temp, temp.end());
         std::set_intersection(begin(), end(), rhs.begin(), rhs.end(), inserter);
@@ -278,8 +272,7 @@ class MathSet {
      * @throw std::bad_alloc if there is insufficient memory to make the new
      * set.  Strong throw guarantee.
      */
-    MathSet intersection(const MathSet& rhs) const
-    {
+    MathSet intersection(const MathSet& rhs) const {
         return MathSet(*this).intersection_assign(rhs);
     }
 
@@ -294,8 +287,7 @@ class MathSet {
      * @throw std::bad_alloc if there is insufficient memory to copy common
      * elements over.
      */
-    MathSet& difference_assign(const MathSet& rhs)
-    {
+    MathSet& difference_assign(const MathSet& rhs) {
         container_type temp;
         auto inserter = std::inserter(temp, temp.end());
         std::set_difference(begin(), end(), rhs.begin(), rhs.end(), inserter);
@@ -314,8 +306,7 @@ class MathSet {
      * not in @p rhs.
      * @throw std::bad_alloc if there is insufficient memory to copy.
      */
-    MathSet difference(const MathSet& rhs) const
-    {
+    MathSet difference(const MathSet& rhs) const {
         return MathSet(*this).difference_assign(rhs);
     }
 
@@ -331,12 +322,11 @@ class MathSet {
      * @throw std::bad_alloc if there is insufficient memory to copy common
      * elements over.
      */
-    MathSet& symmetric_difference_assign(const MathSet& rhs)
-    {
+    MathSet& symmetric_difference_assign(const MathSet& rhs) {
         container_type temp;
         auto inserter = std::inserter(temp, temp.end());
-        std::set_symmetric_difference(
-            begin(), end(), rhs.begin(), rhs.end(), inserter);
+        std::set_symmetric_difference(begin(), end(), rhs.begin(), rhs.end(),
+                                      inserter);
         elements_.swap(temp);
         return *this;
     }
@@ -352,8 +342,7 @@ class MathSet {
      * not in @p rhs.
      * @throw std::bad_alloc if there is insufficient memory to copy.
      */
-    MathSet symmetric_difference(const MathSet& rhs) const
-    {
+    MathSet symmetric_difference(const MathSet& rhs) const {
         return MathSet(*this).symmetric_difference_assign(rhs);
     }
 
@@ -371,10 +360,9 @@ class MathSet {
      * @return True if the current instance is a proper subset of @p rhs.
      * @throw None. No throw guarantee.
      */
-    bool operator<(const MathSet& rhs) const noexcept
-    {
-        if(size()
-           >= rhs.size()) // Can't be subset if we don't have less elements
+    bool operator<(const MathSet& rhs) const noexcept {
+        if(size() >=
+           rhs.size()) // Can't be subset if we don't have less elements
             return false;
         return operator<=(rhs);
     }
@@ -392,8 +380,7 @@ class MathSet {
      * otherwise.
      * @throw None. No throw guarantee.
      */
-    bool operator>(const MathSet& rhs) const noexcept
-    {
+    bool operator>(const MathSet& rhs) const noexcept {
         return rhs < *this; // X superset Y means Y subset of X
     }
 
@@ -409,13 +396,11 @@ class MathSet {
      * there is at least one element that is not in @p rhs.
      * @throw None. No throw guarantee.
      */
-    bool operator<=(const MathSet& rhs) const noexcept
-    {
+    bool operator<=(const MathSet& rhs) const noexcept {
         if(size() > rhs.size()) // Can't be subset with more elements
             return false;
         for(auto& x : *this)
-            if(!rhs.count(x))
-                return false;
+            if(!rhs.count(x)) return false;
         return true;
     }
 
@@ -432,8 +417,7 @@ class MathSet {
      * instance.
      * @throw None. No throw guarantee.
      */
-    bool operator>=(const MathSet& rhs) const noexcept
-    {
+    bool operator>=(const MathSet& rhs) const noexcept {
         return rhs <= (*this);
     }
 
@@ -447,8 +431,7 @@ class MathSet {
      * @return True if all elements in this set are in @p rhs and vice versa.
      * @throw None. No throw guarantee.
      */
-    bool operator==(const MathSet& rhs) const noexcept
-    {
+    bool operator==(const MathSet& rhs) const noexcept {
         return elements_ == rhs.elements_;
     }
 
@@ -463,8 +446,7 @@ class MathSet {
      * the other.
      * @throw None. No throw guarantee.
      */
-    bool operator!=(const MathSet& rhs) const noexcept
-    {
+    bool operator!=(const MathSet& rhs) const noexcept {
         return !((*this) == rhs);
     }
 

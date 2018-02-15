@@ -1,8 +1,8 @@
 #pragma once
+#include <algorithm> // For lexicographical_compare
+#include <cctype>    // For tolower
 #include <map>
 #include <string>
-#include <cctype>  // For tolower
-#include <algorithm> // For lexicographical_compare
 
 namespace UtilitiesEx {
 namespace detail_ {
@@ -14,11 +14,9 @@ namespace detail_ {
  * @note This is shamelessly stolen from StackOverflow's topic:
  * "Making map find operation case insensitive"
  */
-struct CaseInsensitiveLess_
-{
-    ///Letter by letter case-insensitive functor
-    struct LetterComparer_
-    {
+struct CaseInsensitiveLess_ {
+    /// Letter by letter case-insensitive functor
+    struct LetterComparer_ {
         /**
          * @brief Compares two characters in a case-insensitive way.
          * @param c1 The first
@@ -28,9 +26,8 @@ struct CaseInsensitiveLess_
          * @throw ??? Throws if the locale backend throws (I am unable to
          * find a list of what could cause that).  Strong throw guarantee.
          */
-        bool operator() (const unsigned char& c1,
-                         const unsigned char& c2) const
-        {
+        bool operator()(const unsigned char& c1,
+                        const unsigned char& c2) const {
             return std::tolower(c1) < std::tolower(c2);
         }
     };
@@ -46,17 +43,13 @@ struct CaseInsensitiveLess_
      * @throw ??? Throws if LetterComparer_'s operator() throws.  Strong throw
      * guarantee.
      */
-    bool operator() (const std::string & s1,
-                     const std::string & s2) const
-    {
-        return std::lexicographical_compare(
-                 s1.begin (), s1.end (),
-                 s2.begin (), s2.end (),
-                 LetterComparer_());
+    bool operator()(const std::string& s1, const std::string& s2) const {
+        return std::lexicographical_compare(s1.begin(), s1.end(), s2.begin(),
+                                            s2.end(), LetterComparer_());
     }
 };
 
-} //End detail_
+} // namespace detail_
 
 /**
  * @brief A case-insensitive std::map (the keys are assumed to be
@@ -70,7 +63,6 @@ struct CaseInsensitiveLess_
  */
 template<typename T>
 using CaseInsensitiveMap =
-    std::map<std::string, T, detail_::CaseInsensitiveLess_>;
+  std::map<std::string, T, detail_::CaseInsensitiveLess_>;
 
-
-} //End UtilitiesEx
+} // namespace UtilitiesEx

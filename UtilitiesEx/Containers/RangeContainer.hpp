@@ -93,9 +93,7 @@ class RangeContainer {
     RangeContainer(iterator start_itr, iterator end_itr, size_type size_in) :
       start_(start_itr),
       end_(end_itr),
-      size_(size_in)
-    {
-    }
+      size_(size_in) {}
 
     /**
      * @brief Assigns a deep copy of another RangeContainer to the current
@@ -184,8 +182,7 @@ class RangeContainer {
      *
      * @throw None. No throw guarantee.
      */
-    size_type max_size() const noexcept
-    {
+    size_type max_size() const noexcept {
         return std::numeric_limits<size_type>::max();
     }
 
@@ -212,8 +209,7 @@ class RangeContainer {
      * @throw ??? Throws if the equality comparison operator of the iterator
      * throws.  Strong throw guarantee.
      */
-    bool operator==(const RangeContainer& rhs) const
-    {
+    bool operator==(const RangeContainer& rhs) const {
         return std::tie(start_, end_) == std::tie(rhs.start_, rhs.end_);
     }
 
@@ -229,8 +225,7 @@ class RangeContainer {
      * @throw ??? Throws if operator==() of the iterators throws.  Strong throw
      * guarantee.
      */
-    bool operator!=(const RangeContainer& rhs) const
-    {
+    bool operator!=(const RangeContainer& rhs) const {
         return !((*this) == rhs);
     }
 

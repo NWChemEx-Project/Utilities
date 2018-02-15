@@ -39,10 +39,8 @@ namespace detail_ {
  *  @tparam DifferenceType The type of the difference between two SizeType
  *          instances.  Default: long int.
  */
-template<typename ParentType,
-         typename ValueType,
-         typename SizeType       = std::size_t,
-         typename DifferenceType = long int>
+template<typename ParentType, typename ValueType,
+         typename SizeType = std::size_t, typename DifferenceType = long int>
 struct InputIteratorBase {
     /// The type of an element returned by this iterator.
     using value_type = ValueType;
@@ -82,7 +80,7 @@ struct InputIteratorBase {
 
     /// Trivial move assignment
     InputIteratorBase& operator=(InputIteratorBase&& /*rhs*/) noexcept =
-        default;
+      default;
 
     /// Trivial destructor
     virtual ~InputIteratorBase() noexcept = default;
@@ -107,8 +105,7 @@ struct InputIteratorBase {
     const_reference operator*() const { return dereference(); }
 
     ///@copydoc operator*()const
-    reference operator*()
-    {
+    reference operator*() {
         const_reference temp = dereference();
         return const_cast<reference>(temp); // NOLINT
     }
@@ -156,8 +153,7 @@ struct InputIteratorBase {
      *  operator throw.
      *
      */
-    ParentType operator++(int)
-    {
+    ParentType operator++(int) {
         ParentType copy_of_me(static_cast<ParentType&>(*this));
         ++(*this);
         return copy_of_me;
@@ -172,8 +168,7 @@ struct InputIteratorBase {
      * @return true if the two iterators are equal
      * @throws None. No throw guarantee
      */
-    bool operator==(const ParentType& rhs) const noexcept
-    {
+    bool operator==(const ParentType& rhs) const noexcept {
         return are_equal(rhs);
     }
 
@@ -187,8 +182,7 @@ struct InputIteratorBase {
      *  @returns True if the current iterator is not identical to @p rhs.
      *  @throws None. No throw guarantee.
      */
-    bool operator!=(const ParentType& rhs) const noexcept
-    {
+    bool operator!=(const ParentType& rhs) const noexcept {
         return !((*this) == rhs);
     }
 };
@@ -216,10 +210,8 @@ struct InputIteratorBase {
  *  @tparam DifferenceType The type of the difference between two SizeType
  *          instances.  Default: long int.
  */
-template<typename ParentType,
-         typename ValueType,
-         typename SizeType       = std::size_t,
-         typename DifferenceType = long int>
+template<typename ParentType, typename ValueType,
+         typename SizeType = std::size_t, typename DifferenceType = long int>
 struct BidirectionalIteratorBase
   : public InputIteratorBase<ParentType, ValueType, SizeType, DifferenceType> {
     using iterator_category = std::bidirectional_iterator_tag;
@@ -229,19 +221,19 @@ struct BidirectionalIteratorBase
 
     /// Trivial copy constructor
     BidirectionalIteratorBase(const BidirectionalIteratorBase& /*rhs*/) =
-        default;
+      default;
 
     /// Trivial assignment operator
-    BidirectionalIteratorBase& operator           =(
-        const BidirectionalIteratorBase& /*rhs*/) = default;
+    BidirectionalIteratorBase& operator         =(
+      const BidirectionalIteratorBase& /*rhs*/) = default;
 
     /// Trivial move constructor
     BidirectionalIteratorBase(BidirectionalIteratorBase&& /*rhs*/) noexcept =
-        default;
+      default;
 
     /// Trivial move assignment
-    BidirectionalIteratorBase& operator               =(
-        BidirectionalIteratorBase&& /*rhs*/) noexcept = default;
+    BidirectionalIteratorBase& operator             =(
+      BidirectionalIteratorBase&& /*rhs*/) noexcept = default;
 
     /// Trivial destructor
     ~BidirectionalIteratorBase() noexcept = default;
@@ -267,8 +259,7 @@ struct BidirectionalIteratorBase
      *  @throws exception if either the copy constructor or prefix decrement
      *  operator throws.
      */
-    ParentType operator--(int)
-    {
+    ParentType operator--(int) {
         ParentType& up_me = static_cast<ParentType&>(*this);
         ParentType copy_of_me(up_me);
         --(*this);
@@ -301,14 +292,10 @@ struct BidirectionalIteratorBase
  *  @tparam DifferenceType The type of the difference between two SizeType
  *          instances.  Default: long int.
  */
-template<typename ParentType,
-         typename ValueType,
-         typename SizeType       = std::size_t,
-         typename DifferenceType = long int>
+template<typename ParentType, typename ValueType,
+         typename SizeType = std::size_t, typename DifferenceType = long int>
 struct RandomAccessIteratorBase
-  : public BidirectionalIteratorBase<ParentType,
-                                     ValueType,
-                                     SizeType,
+  : public BidirectionalIteratorBase<ParentType, ValueType, SizeType,
                                      DifferenceType> {
     using iterator_category = std::random_access_iterator_tag;
 
@@ -320,14 +307,14 @@ struct RandomAccessIteratorBase
 
     /// Trivial assignment operator
     RandomAccessIteratorBase& operator=(const RandomAccessIteratorBase&) =
-        default;
+      default;
 
     /// Trivial move constructor
     RandomAccessIteratorBase(RandomAccessIteratorBase&&) noexcept = default;
 
     /// Trivial move assignment
     RandomAccessIteratorBase& operator=(RandomAccessIteratorBase&&) noexcept =
-        default;
+      default;
 
     /// Trivial destructor
     ~RandomAccessIteratorBase() noexcept = default;
@@ -337,7 +324,7 @@ struct RandomAccessIteratorBase
 
     /// Implement to provide ordering
     virtual DifferenceType distance_to(const ParentType& rhs) const
-        noexcept = 0;
+      noexcept = 0;
 
     /** @brief Provides random access to any element in the container relative
      *  to the element currently pointed to by this iterator.
@@ -362,8 +349,7 @@ struct RandomAccessIteratorBase
      *  earlier then the element pointed to by @p rhs.
      *  @throws None. No throw guarantee.
      */
-    bool operator<(const ParentType& rhs) const noexcept
-    {
+    bool operator<(const ParentType& rhs) const noexcept {
         return distance_to(rhs) > 0;
     }
 
@@ -380,8 +366,7 @@ struct RandomAccessIteratorBase
      *  earlier than or the same as the element pointed to by @p rhs.
      *  @throws None. No throw guarantee.
      */
-    bool operator<=(const ParentType& rhs) const noexcept
-    {
+    bool operator<=(const ParentType& rhs) const noexcept {
         return (*this) < rhs || (*this) == rhs;
     }
 
@@ -395,8 +380,7 @@ struct RandomAccessIteratorBase
      *  @returns True if the current element is indexed after that of @p rhs.
      *  @throws None. No throw guarantee.
      */
-    bool operator>(const ParentType& rhs) const noexcept
-    {
+    bool operator>(const ParentType& rhs) const noexcept {
         return rhs < static_cast<const ParentType&>(*this);
     }
 
@@ -413,8 +397,7 @@ struct RandomAccessIteratorBase
      *  later in the sequence than @p rhs.
      *  @throws None. No throw guarantee.
      */
-    bool operator>=(const ParentType& rhs) const noexcept
-    {
+    bool operator>=(const ParentType& rhs) const noexcept {
         return rhs <= static_cast<const ParentType&>(*this);
     }
 
@@ -440,8 +423,7 @@ struct RandomAccessIteratorBase
      *  iterations away.
      *  @throws exception if either the copy constructor or operator+= throw.
      */
-    ParentType operator+(DifferenceType n) const
-    {
+    ParentType operator+(DifferenceType n) const {
         ParentType copy_of_me(static_cast<const ParentType&>(*this));
         copy_of_me += n;
         return copy_of_me;
@@ -471,8 +453,7 @@ struct RandomAccessIteratorBase
      *  iterations away.
      *  @throws exception if either the copy constructor or operator-= throw.
      */
-    ParentType operator-(DifferenceType n) const
-    {
+    ParentType operator-(DifferenceType n) const {
         ParentType copy_of_me(static_cast<const ParentType&>(*this));
         copy_of_me -= n;
         return copy_of_me;
@@ -486,15 +467,13 @@ struct RandomAccessIteratorBase
      * @returns The distance between this and rhs.
      * @throws exception if distance_to throws.
      */
-    DifferenceType operator-(const ParentType& rhs) const
-    {
+    DifferenceType operator-(const ParentType& rhs) const {
         return distance_to(rhs);
     }
 };
 
 template<typename ParentType, typename ValueType, typename iterator_type>
-struct Iterator2Base {
-};
+struct Iterator2Base {};
 
 template<typename ParentType, typename ValueType>
 struct Iterator2Base<ParentType, ValueType, std::input_iterator_tag> {

@@ -61,8 +61,7 @@ struct MCImpl {
  *         held in the requested return type.
  */
 template<typename T>
-T binomial_coefficient(std::size_t n, std::size_t k)
-{
+T binomial_coefficient(std::size_t n, std::size_t k) {
     return detail_::BCImpl<T>().eval(n, k);
 }
 
@@ -82,8 +81,7 @@ T binomial_coefficient(std::size_t n, std::size_t k)
  */
 
 template<typename T>
-T multinomial_coefficient(const std::vector<std::size_t>& ks) noexcept
-{
+T multinomial_coefficient(const std::vector<std::size_t>& ks) noexcept {
     return detail_::MCImpl<T>().eval(ks);
 }
 
@@ -213,8 +211,7 @@ std::deque<std::size_t> decimal_to_fns(std::size_t D,
  */
 template<typename container_type>
 std::size_t permutation_to_decimal(const container_type& perm,
-                                   const container_type& original)
-{
+                                   const container_type& original) {
     auto fns    = permutation_to_fns(perm, original);
     auto values = fns_place_values(perm);
     return std::inner_product(fns.begin(), fns.end(), values.begin(), 0);
@@ -236,23 +233,20 @@ std::size_t permutation_to_decimal(const container_type& perm,
  */
 template<typename container_type>
 container_type decimal_to_permutation(std::size_t n,
-                                      const container_type& original)
-{
+                                      const container_type& original) {
     return fns_to_permutation(decimal_to_fns(n, original), original);
 }
 
 ////////////////////////////////// Implementations /////////////////////////////
 
 template<typename container_type>
-std::size_t n_permutations(const container_type& seq)
-{
+std::size_t n_permutations(const container_type& seq) {
     container_type temp(seq);
     std::vector<std::size_t> counts;
     counts.reserve(seq.size());
     std::sort(temp.begin(), temp.end());
     auto ei = temp.begin();
-    while(ei != temp.end())
-    {
+    while(ei != temp.end()) {
         const auto n_ei = std::count(ei, temp.end(), *ei);
         counts.push_back(n_ei);
         ei += n_ei;
@@ -263,13 +257,10 @@ std::size_t n_permutations(const container_type& seq)
 // Note: Without assuming a container type we have to rely on iterators
 template<typename container_type>
 std::deque<std::size_t> permutation_to_fns(const container_type& perm,
-                                           const container_type& original)
-{
+                                           const container_type& original) {
     // Recursion end
-    if(perm.size() == 0)
-        return std::deque<std::size_t>({});
-    if(perm.size() == 1)
-        return std::deque<std::size_t>({0});
+    if(perm.size() == 0) return std::deque<std::size_t>({});
+    if(perm.size() == 1) return std::deque<std::size_t>({0});
 
     // Strip off 1st element and put remaining elements in new container
     auto perm_itr = perm.begin();
@@ -280,14 +271,11 @@ std::deque<std::size_t> permutation_to_fns(const container_type& perm,
     std::size_t digit = 0;
     container_type new_orig;
     auto orig_itr = original.begin();
-    for(std::size_t i = 0; i < original.size(); ++i)
-    {
+    for(std::size_t i = 0; i < original.size(); ++i) {
         auto ej = *orig_itr++;
-        if(ej == ei)
-        {
+        if(ej == ei) {
             digit = i;
-            while(orig_itr != original.end())
-            {
+            while(orig_itr != original.end()) {
                 new_orig.insert(new_orig.end(), *orig_itr++);
             }
             break;
@@ -301,16 +289,13 @@ std::deque<std::size_t> permutation_to_fns(const container_type& perm,
 
 template<typename container_type>
 container_type fns_to_permutation(const std::deque<std::size_t>& fns,
-                                  const container_type& original)
-{
+                                  const container_type& original) {
     container_type temp(original);
     container_type rv;
-    for(auto x : fns)
-    {
+    for(auto x : fns) {
         auto ei_itr = temp.begin();
         container_type temp2;
-        for(std::size_t i = 0; i < temp.size(); ++i)
-        {
+        for(std::size_t i = 0; i < temp.size(); ++i) {
             if(i != x)
                 temp2.insert(temp2.end(), *ei_itr);
             else
@@ -323,15 +308,11 @@ container_type fns_to_permutation(const std::deque<std::size_t>& fns,
 }
 
 template<typename container_type>
-std::deque<std::size_t> fns_place_values(const container_type& perm)
-{
+std::deque<std::size_t> fns_place_values(const container_type& perm) {
     // Recursion end
-    if(perm.size() == 0)
-        return std::deque<std::size_t>({});
-    if(perm.size() == 1)
-        return std::deque<std::size_t>({1});
-    if(perm.size() == 2)
-        return std::deque<std::size_t>({1, 1});
+    if(perm.size() == 0) return std::deque<std::size_t>({});
+    if(perm.size() == 1) return std::deque<std::size_t>({1});
+    if(perm.size() == 2) return std::deque<std::size_t>({1, 1});
 
     // Strip off 1st element and put remaining elements in new container
     auto perm_itr = perm.begin();
@@ -345,20 +326,18 @@ std::deque<std::size_t> fns_place_values(const container_type& perm)
 
 template<typename container_type>
 std::deque<std::size_t> decimal_to_fns(std::size_t D,
-                                       const container_type& orig)
-{
+                                       const container_type& orig) {
     container_type new_orig(orig.begin(), orig.end());
     std::sort(new_orig.begin(), new_orig.end());
     std::deque<std::size_t> rv;
 
-    while(new_orig.begin()
-          != new_orig.end()) // We pop an element out per iteration
+    while(new_orig.begin() !=
+          new_orig.end()) // We pop an element out per iteration
     {
         auto curr_guess         = new_orig.begin();
         std::size_t total_perms = 0;
         std::size_t digit_i     = 0;
-        while(curr_guess != new_orig.end())
-        {
+        while(curr_guess != new_orig.end()) {
             auto ei = *curr_guess;
             // New container w/o element i
             container_type temp(new_orig.begin(), curr_guess++);
@@ -366,8 +345,7 @@ std::deque<std::size_t> decimal_to_fns(std::size_t D,
 
             const auto P_ei = n_permutations(temp);
             total_perms += P_ei;
-            if(D < total_perms)
-            {
+            if(D < total_perms) {
                 rv.push_back(digit_i);
                 new_orig.swap(temp);
                 D = D - (total_perms - P_ei);
