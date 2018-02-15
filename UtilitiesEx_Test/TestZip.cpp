@@ -25,7 +25,7 @@ TEST_CASE("Empty zip") {
 }
 
 TEST_CASE("Single container") {
-    std::vector<int> numbers({1, 2});
+    std::vector<int> numbers{1, 2};
     auto test_container = Zip(numbers);
     check_state(test_container, 2);
 
@@ -82,3 +82,20 @@ TEST_CASE("Different size arrays (one empty)") {
     auto test_container = Zip(numbers, letters);
     check_state(test_container, 0);
 }
+
+TEST_CASE("Const containers") {
+    const std::vector<int> numbers{1, 2, 3};
+    const std::vector<char> letters{'a', 'b','c'};
+    auto test_container = Zip(numbers, letters);
+    check_state(test_container, 3);
+}
+
+//TEST_CASE("References to elements"){
+//    const std::vector<int> numbers{1, 2, 3};
+//    const std::vector<char> letters{'a', 'b', 'c'};
+//    std::size_t counter = 0;
+//    for(auto& i : Zip(numbers, letters)){
+//        REQUIRE(&(std::get<0>(i)) == &(numbers[counter]));
+//        REQUIRE(&(std::get<1>(i)) == &(letters[counter]));
+//    }
+//}
