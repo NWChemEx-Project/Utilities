@@ -3,6 +3,7 @@
 #include "UtilitiesEx/TypeTraits/TupleUtilities.hpp" //Includes tuple always
 #include <algorithm>                                 //For std::min
 #include <limits>                                    //For numeric_limits
+#include <type_traits>
 
 namespace UtilitiesEx {
 namespace detail_ {
@@ -30,6 +31,12 @@ template<typename T>
 struct GetValueType<T*> {
     using type = T;
 };
+
+template<typename T>
+using IteratorType = std::conditional_t<
+                       std::is_same<T, std::remove_cv_t<T>>::value,
+                       typename T::iterator,
+                       typename T::const_iterator>;
 
 /** @brief Simulates a container filled with all tuples of the elements in a
  *         series of iterators.
@@ -67,19 +74,13 @@ struct GetValueType<T*> {
  *  }
  *  @endcode
  *
- *  @note It is not possible to directly store references in a tuple (need to
- *  use reference_wrapper).  Consequentially, to avoid needing to access members
- *  like:
- *  @code
- *  auto& x;
- *  std::get<0>(x).get();
- *  @endcode
- *  we have opted to copy the elements out of the iterators.
- *
  *  @note If the lengths of the iterators are unequal iteration will stop when
  *  the shortest iterator runs out of elements.
  *
- *
+ *  @note At the moment the values returned in the tuples are copies and not the
+ *        actual ones in the zipped containers.  Everything is by reference
+ *        until apply_functor_to_tuple is called to modify the buffer of the
+ *        iterator.
  * @tparam ContainerTypes The types of the containers that will be zipped
  *                       together.
  */
@@ -92,15 +93,19 @@ class ZipImpl {
     /// Functor for calling the size member of each container.
     struct SizeFunctor {
         template<typename T>
-        auto operator()(std::size_t curr_min, T container) const {
-            return std::min(curr_min, container->size());
+        auto operator()(std::size_t curr_min, T&& container) const {
+            return std::min(curr_min, container.size());
         }
     };
 
+    /// The type of a tuple holding iterators to the containers
+    using iterator_tuple =
+    std::tuple<detail_::IteratorType<ContainerTypes>...>;
+
     public:
     /// The type of an element in this container.
-    using value_type = std::tuple<
-      typename GetValueType<typename ContainerTypes::iterator>::type...>;
+    using value_type = std::tuple<std::remove_cv_t<
+      typename GetValueType<detail_::IteratorType<ContainerTypes>>::type>...>;
     /// The type of a reference to an element of this container
     using reference = value_type&;
     /// The type of a read-only element of this container
@@ -121,33 +126,46 @@ class ZipImpl {
      */
     ZipImpl() noexcept = default;
 
+    ///Same as variadic template version, except for one container
     template<typename InputType, typename X = typename std::enable_if<
                                    !IsZipImpl<InputType>::value>::type>
     ZipImpl(InputType&& container) :
       size_(container.size()),
-      begin_(tuple_type(&container), !size_),
-      end_(tuple_type(&container), true) {}
+      begin_(!size_, std::forward<InputType>(container)),
+      end_(true, std::forward<InputType>(container)) {}
 
-    /** @brief Constructs a new ZipImpl by capturing all containers by reference
-     *         or constant reference as appropriate.
+    /** @brief Constructs a new ZipImpl by grabbing the begin and end iterators
+     *         of a container
      *
      * @tparam InputTypes The types of the containers.
-     * @param containers The actual container instances to capture.  If any of
+     * @param containers The actual container instances to zip.  If any of
      *        the containers are freed the resulting ZipImpl is invalidated.
      *
-     * @note This constructor also serves as the default constructor.
-     *
-     * @throw ??? This constructor will call the size() member of each container
-     *            if any of those member functions throw, then this constructor
-     *            will also throw.  Strong throw guarantee.
+     * @throw ??? This constructor will call the size(), begin() and end()
+     *            members of each container if any of those member functions
+     *            throw, then this constructor will also throw.  Strong throw
+     *            guarantee.
      */
     template<typename InputType1, typename InputType2, typename... InputTypes>
     ZipImpl(InputType1&& container1, InputType2&& container2,
             InputTypes&&... containers) :
-      size_(reduce_tuple(tuple_type(&container1, &container2, (&containers)...),
-                         SizeFunctor(), std::numeric_limits<size_type>::max())),
-      begin_(tuple_type(&container1, &container2, (&containers)...), !size_),
-      end_(tuple_type(&container1, &container2, (&containers)...), true)
+      size_(
+        reduce_tuple(
+          std::tie(std::forward<InputType1>(container1),
+                   std::forward<InputType2>(container2),
+                   std::forward<InputTypes>(containers)...),
+          SizeFunctor(),
+          std::numeric_limits<size_type>::max())
+      ),
+      begin_(!size_,
+             std::forward<InputType1>(container1),
+             std::forward<InputType2>(container2),
+             std::forward<InputTypes>(containers)...
+      ),
+      end_(true, std::forward<InputType1>(container1),
+                 std::forward<InputType2>(container2),
+                 std::forward<InputTypes>(containers)...
+      )
 
     {}
 
@@ -307,12 +325,6 @@ class ZipImpl {
     /// The number of containers we are zipping together
     constexpr static std::size_t ncontainers_ = sizeof...(ContainerTypes);
 
-    /// The type of the tuple holding pointers to our containers
-    using tuple_type = std::tuple<ContainerTypes*...>;
-
-    /// The type of a tuple holding iterators to the containers
-    using iterator_tuple = std::tuple<typename ContainerTypes::iterator...>;
-
     /// The number of iterations in this container
     std::size_t size_ = 0;
 
@@ -351,9 +363,16 @@ class ZipImpl {
          * iterator just past the last element, otherwise it's pointing to
          * the first element.
          */
-        ZipIterator(tuple_type containers, bool at_end) :
-          start_(apply_functor_to_tuple(containers, CallBegin())),
-          end_(apply_functor_to_tuple(containers, CallEnd())),
+        template<typename...InputTypes>
+        ZipIterator(bool at_end, InputTypes&&...containers) :
+          start_(
+            apply_functor_to_tuple(
+              std::tie(std::forward<InputTypes>(containers)...), CallBegin())
+          ),
+          end_(
+            apply_functor_to_tuple(
+              std::tie(std::forward<InputTypes>(containers)...), CallEnd())
+          ),
           value_(!at_end ? start_ : end_),
           buffer_(!at_end ? apply_functor_to_tuple(value_, Derefer()) :
                             value_type()) {}
@@ -406,23 +425,23 @@ class ZipImpl {
         /// Functor for calling begin() on all containers
         struct CallBegin {
             template<typename T>
-            auto operator()(T container) {
-                return container->begin();
+            auto operator()(T&& container) {
+                return container.begin();
             }
         };
 
         /// Functor for calling end() on all containers
         struct CallEnd {
             template<typename T>
-            auto operator()(T container) const {
-                return container->end();
+            auto operator()(T&& container) const {
+                return container.end();
             }
         };
 
         /// Functor for derefrencing an argument
         struct Derefer {
             template<typename T>
-            auto operator()(T itr) const {
+            auto& operator()(T&& itr) const {
                 return *itr;
             }
         };
@@ -430,7 +449,7 @@ class ZipImpl {
         /// Functor for comparing two arguments
         struct Comparer {
             template<typename lhs_type, typename rhs_type>
-            auto operator()(lhs_type lhs, rhs_type rhs) const {
+            auto operator()(lhs_type&& lhs, rhs_type&& rhs) const {
                 return lhs == rhs;
             }
         };
@@ -438,7 +457,7 @@ class ZipImpl {
         /// Functor for finding if any element is true via reduction
         struct AnyTrue {
             template<typename T>
-            bool operator()(bool val, T element) const {
+            bool operator()(bool val, T&& element) const {
                 return val || element;
             }
         };
@@ -463,7 +482,7 @@ class ZipImpl {
  */
 template<typename... ContainerTypes>
 auto Zip(ContainerTypes&&... containers) {
-    return detail_::ZipImpl<std::decay_t<ContainerTypes>...>(
+    return detail_::ZipImpl<std::remove_reference_t<ContainerTypes>...>(
       std::forward<ContainerTypes>(containers)...);
 }
 
