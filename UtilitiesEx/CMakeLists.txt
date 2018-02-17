@@ -5,12 +5,14 @@ set(UtilitiesEx_SRCS Mathematician/Combinatorics.cpp)
 set(UtilitiesEx_INCLUDES Any.hpp
                          Containers/CaseInsensitiveMap.hpp
                          Containers/MathSet.hpp
-                         Containers/RangeContainer.hpp
                          Mathematician/Combinatorics.hpp
+                         IterTools/CartesianProduct.hpp
                          IterTools/Combinations.hpp
                          IterTools/Enumerate.hpp
                          IterTools/Permutations.hpp
                          IterTools/Range.hpp
+                         IterTools/RangeContainer.hpp
+                         IterTools/TupleContainer.hpp
                          IterTools/Zip.hpp
                          TypeTraits/IteratorTypes.hpp
                          TypeTraits/TupleUtilities.hpp
