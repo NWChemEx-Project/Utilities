@@ -4,10 +4,6 @@
 
 using namespace UtilitiesEx;
 
-TEST_CASE("Zip is a container") {
-    REQUIRE(is_container<detail_::ZipImpl<>>::value);
-}
-
 template<typename T>
 void check_state(T& zipper, std::size_t size) {
     REQUIRE(zipper.size() == size);
