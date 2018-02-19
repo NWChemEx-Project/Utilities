@@ -17,9 +17,8 @@ struct IsTupleContainerImpl : std::false_type {};
 
 /// Specialization of IsTupleContainerImpl to trigger value == true
 template<typename IncrementFunctor, typename... Args>
-struct IsTupleContainerImpl<TupleContainerImpl<IncrementFunctor, Args...>> :
-  std::true_type
-{};
+struct IsTupleContainerImpl<TupleContainerImpl<IncrementFunctor, Args...>>
+  : std::true_type {};
 
 /// This will allow us to use iterators which are actually raw pointers
 template<typename T>
@@ -34,10 +33,9 @@ struct GetValueType<T*> {
 };
 
 template<typename T>
-using IteratorType = std::conditional_t<
-  std::is_same<T, std::remove_cv_t<T>>::value,
-typename T::iterator,
-typename T::const_iterator>;
+using IteratorType =
+  std::conditional_t<std::is_same<T, std::remove_cv_t<T>>::value,
+                     typename T::iterator, typename T::const_iterator>;
 
 /** @brief Simulates a container filled with some set of tuples formed from a
  *         series of containers.
@@ -45,11 +43,14 @@ typename T::const_iterator>;
  *  This class is primarily code factorization for iterating over a series
  *  of containers.
  *
- *  @note This class is the implementation of the innards of the TupleContainer function,
- * but for all intents and purposes it is TupleContainer.  The TupleContainer function only exists so
+ *  @note This class is the implementation of the innards of the TupleContainer
+ function,
+ * but for all intents and purposes it is TupleContainer.  The TupleContainer
+ function only exists so
  *  the usage syntax is not:
  *  @code
- *  for(auto& x : TupleContainer<iterator_t1,iterator_t2,...>(iterator1,iterator2,...))
+ *  for(auto& x :
+ TupleContainer<iterator_t1,iterator_t2,...>(iterator1,iterator2,...))
  *  {
  *      ...
  *  }
@@ -84,8 +85,7 @@ class TupleContainerImpl {
     class TupleContainerIterator;
 
     /// The type of a tuple holding iterators to the containers
-    using iterator_tuple =
-    std::tuple<detail_::IteratorType<ContainerTypes>...>;
+    using iterator_tuple = std::tuple<detail_::IteratorType<ContainerTypes>...>;
 
     public:
     /// The type of an element in this container.
@@ -137,20 +137,21 @@ class TupleContainerImpl {
      */
     template<typename SizeFunctor, typename... InputTypes>
     TupleContainerImpl(SizeFunctor f, InputTypes&&... containers) :
-      size_(sizeof...(InputTypes) ?
-            tuple_accumulate(std::tie(std::forward<InputTypes>(containers)...),
-                             f, SizeFunctor::initial_value) : 0L),
+      size_(
+        sizeof...(InputTypes) ?
+          tuple_accumulate(std::tie(std::forward<InputTypes>(containers)...), f,
+                           SizeFunctor::initial_value) :
+          0L),
       begin_(!size_, std::forward<InputTypes>(containers)...),
-      end_(true, std::forward<InputTypes>(containers)...)
-    {}
+      end_(true, std::forward<InputTypes>(containers)...) {}
 
     /** @brief Makes a copy of the current container.
      *
-     *  It should be noted that this is a deep copy of the TupleContainerImpl container,
-     *  which means that all internal state will be deep copied.  The internal
-     *  state will not be copied recursively though (which in turn means
-     *  that the tuple copies will still be filled with shallow copies of the
-     *  input containers).
+     *  It should be noted that this is a deep copy of the TupleContainerImpl
+     * container, which means that all internal state will be deep copied.  The
+     * internal state will not be copied recursively though (which in turn
+     * means that the tuple copies will still be filled with shallow copies of
+     * the input containers).
      *
      *  @param rhs The container to copy.
      *  @throw None. No throw guarantee. Can't be noexcept b/c tuple copy
@@ -190,8 +191,8 @@ class TupleContainerImpl {
 
     /** @brief Assigns another TupleContainerImpl's state to this one.
      *
-     *  @param rhs The TupleContainerImpl to take the state of.  After this call @p rhs is
-     * in a valid, but otherwise undefined state.
+     *  @param rhs The TupleContainerImpl to take the state of.  After this call
+     * @p rhs is in a valid, but otherwise undefined state.
      *  @return The current instance containing @p rhs 's state.
      *  @throw None. No throw guarantee.
      */
@@ -271,7 +272,8 @@ class TupleContainerImpl {
      * @throw None. No throw guarantee.
      */
     template<typename... OtherContainers>
-    bool operator==(const TupleContainerImpl<OtherContainers...>& rhs) const noexcept {
+    bool operator==(const TupleContainerImpl<OtherContainers...>& rhs) const
+      noexcept {
         return std::tie(begin_, end_, size_) ==
                std::tie(rhs.begin_, rhs.end_, rhs.size_);
     }
@@ -290,7 +292,8 @@ class TupleContainerImpl {
      * @throw None. No throw guarantee.
      */
     template<typename... OtherContainers>
-    bool operator!=(const TupleContainerImpl<OtherContainers...>& rhs) const noexcept {
+    bool operator!=(const TupleContainerImpl<OtherContainers...>& rhs) const
+      noexcept {
         return !((*this) == rhs);
     }
 
@@ -310,10 +313,11 @@ class TupleContainerImpl {
     /** @brief The class responsible for iterating over the containers stored in
      *  a TupleContainerImpl instance.
      *
-     *  TupleContainerIterator instances store iterators to the zipped containers and are
-     *  only valid so long as said containers are in scope.  Since the actual
-     *  iterators are stored within the TupleContainerIterator instance, TupleContainerIterators
-     *  remain valid even if the creating TupleContainerImpl goes out of scope.
+     *  TupleContainerIterator instances store iterators to the zipped
+     * containers and are only valid so long as said containers are in scope.
+     * Since the actual iterators are stored within the TupleContainerIterator
+     * instance, TupleContainerIterators remain valid even if the creating
+     * TupleContainerImpl goes out of scope.
      *
      */
     class TupleContainerIterator
@@ -322,32 +326,30 @@ class TupleContainerImpl {
         /// Allows TupleContainerImpl to create an iterator
         friend class TupleContainerImpl<IncrementFunctor, ContainerTypes...>;
         /// Allows the base class to call the implementation functions
-        friend class detail_::InputIteratorBase<TupleContainerIterator, value_type>;
+        friend class detail_::InputIteratorBase<TupleContainerIterator,
+                                                value_type>;
 
         /** @brief Creates a TupleContainerIterator instance.
          *
-         *  The TupleContainerIterator keeps a copy of the iterators internally and thus is
-         *  valid even if the TupleContainerImpl goes out of scope.  If any of the
-         *  containers being iterated over go out of scope the TupleContainerIterator
-         *  is invalidated.
+         *  The TupleContainerIterator keeps a copy of the iterators internally
+         * and thus is valid even if the TupleContainerImpl goes out of scope.
+         * If any of the containers being iterated over go out of scope the
+         * TupleContainerIterator is invalidated.
          *
          * @param containers The tuple of containers to iterate over.
          * @param at_end If true the resulting iterator will represent an
          * iterator just past the last element, otherwise it's pointing to
          * the first element.
          */
-        template<typename...InputTypes>
-        TupleContainerIterator(bool at_end, InputTypes&&...containers) :
-          start_(
-            tuple_transform(
-              std::tie(std::forward<InputTypes>(containers)...), CallBegin())
-          ),
-          end_(
-            tuple_transform(
-              std::tie(std::forward<InputTypes>(containers)...), CallEnd())
-          ),
+        template<typename... InputTypes>
+        TupleContainerIterator(bool at_end, InputTypes&&... containers) :
+          start_(tuple_transform(
+            std::tie(std::forward<InputTypes>(containers)...), CallBegin())),
+          end_(tuple_transform(
+            std::tie(std::forward<InputTypes>(containers)...), CallEnd())),
           value_(!at_end ? start_ : end_),
-          buffer_(!at_end ? tuple_transform(value_, Derefer()) : value_type()) {}
+          buffer_(!at_end ? tuple_transform(value_, Derefer()) : value_type()) {
+        }
 
         /// Implements the means by which this class can be dereferenced
         reference dereference() { return buffer_; }
@@ -359,9 +361,8 @@ class TupleContainerImpl {
         TupleContainerIterator& increment() noexcept {
             IncrementFunctor f;
             f.run(start_, end_, value_,
-              std::make_index_sequence<ncontainers_>());
-            if(value_ != end_)
-                buffer_ = tuple_transform(value_, Derefer());
+                  std::make_index_sequence<ncontainers_>());
+            if(value_ != end_) buffer_ = tuple_transform(value_, Derefer());
             return *this;
         }
 
@@ -385,7 +386,7 @@ class TupleContainerImpl {
 
         /// Functor for calling begin() on all containers
         struct CallBegin {
-            template<std::size_t,typename T>
+            template<std::size_t, typename T>
             auto run(T&& container) {
                 return container.begin();
             }
@@ -393,7 +394,7 @@ class TupleContainerImpl {
 
         /// Functor for calling end() on all containers
         struct CallEnd {
-            template<std::size_t,typename T>
+            template<std::size_t, typename T>
             auto run(T&& container) const {
                 return container.end();
             }
@@ -401,7 +402,7 @@ class TupleContainerImpl {
 
         /// Functor for derefrencing an argument
         struct Derefer {
-            template<std::size_t,typename T>
+            template<std::size_t, typename T>
             auto& run(T&& itr) const {
                 return *itr;
             }
@@ -412,7 +413,5 @@ class TupleContainerImpl {
     };
 };
 } // End namespace detail_
-
-
 
 } // namespace UtilitiesEx

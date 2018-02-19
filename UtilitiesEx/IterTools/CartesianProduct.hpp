@@ -2,85 +2,83 @@
 #include "UtilitiesEx/IterTools/TupleContainer.hpp"
 
 namespace UtilitiesEx {
-namespace detail_{
+namespace detail_ {
 
-///Functor that computes the number of elements in the CartesianProduct
+/// Functor that computes the number of elements in the CartesianProduct
 struct CartSizeFunctor {
-    ///Empty case is caught by base class
-    static constexpr std::size_t initial_value =1L;
+    /// Empty case is caught by base class
+    static constexpr std::size_t initial_value = 1L;
 
-    template<std::size_t,typename T>
+    template<std::size_t, typename T>
     auto run(std::size_t curr_min, T&& container) const {
         return curr_min * container.size();
     }
 };
 
-///Functor used to increment the CartesianProduct iterator
+/// Functor used to increment the CartesianProduct iterator
 struct CartIncrementFunctor {
-    ///Functor that returns true if an iterator is at the end
+    /// Functor that returns true if an iterator is at the end
     template<typename iterator_type>
     struct AtEnd {
         const iterator_type& end;
-        AtEnd(const iterator_type& da_end):end(da_end){}
+        AtEnd(const iterator_type& da_end) : end(da_end) {}
 
-        template<std::size_t I,typename T>
-        bool run(T&& elem)const noexcept{
+        template<std::size_t I, typename T>
+        bool run(T&& elem) const noexcept {
             return elem == std::get<I>(end);
         }
     };
 
-    ///Functor that resets all indices starting with @p turn_on
+    /// Functor that resets all indices starting with @p turn_on
     template<typename iterator_type>
     struct Reseter {
         const iterator_type& start;
-        std::size_t turn_on=0;
-        Reseter(const iterator_type& da_start,
-                std::size_t on):start(da_start), turn_on(on){}
+        std::size_t turn_on = 0;
+        Reseter(const iterator_type& da_start, std::size_t on) :
+          start(da_start),
+          turn_on(on) {}
 
         template<std::size_t I, typename T>
-        auto run(T&& itr){
-            return (I >= turn_on) ? std::get<I>(start) : itr ;
+        auto run(T&& itr) {
+            return (I >= turn_on) ? std::get<I>(start) : itr;
         }
     };
 
-    ///Functor that increments @p turn_on
+    /// Functor that increments @p turn_on
     struct Incrementer {
-        std::size_t turn_on=0;
-        Incrementer(std::size_t on):turn_on(on){}
+        std::size_t turn_on = 0;
+        Incrementer(std::size_t on) : turn_on(on) {}
 
         template<std::size_t I, typename T>
-        auto run(T&& itr){
+        auto run(T&& itr) {
             return (I == turn_on) ? ++itr : itr;
         }
     };
 
-    ///The function called by TupleContainer
+    /// The function called by TupleContainer
     template<typename IteratorType, std::size_t... I>
     void run(const IteratorType& start, const IteratorType& end,
-                       IteratorType& value,
-                       std::index_sequence<I...>) {
+             IteratorType& value, std::index_sequence<I...>) {
         constexpr std::size_t nelems = sizeof...(I);
-        std::size_t idx = nelems;
+        std::size_t idx              = nelems;
         while(true) {
-            if(!idx)break;//idx==0 means we have no indices left to try
-            //Increment the right most element that we know isn't at end
-            auto temp_value =
-              tuple_transform(value, Incrementer(idx - 1));
-            //Now get first index at end
+            if(!idx) break; // idx==0 means we have no indices left to try
+            // Increment the right most element that we know isn't at end
+            auto temp_value = tuple_transform(value, Incrementer(idx - 1));
+            // Now get first index at end
             auto new_idx = tuple_find_if(temp_value, AtEnd<IteratorType>(end));
-            //If new_idx hasn't changed (i.e. is still idx) that was a good inc
-            if(new_idx == idx ) {
+            // If new_idx hasn't changed (i.e. is still idx) that was a good inc
+            if(new_idx == idx) {
                 value = tuple_transform(temp_value,
                                         Reseter<IteratorType>(start, idx));
                 break;
             }
-            idx = new_idx;//not good means new_idx has moved down one
+            idx = new_idx; // not good means new_idx has moved down one
         }
     }
 };
 
-}
-
+} // namespace detail_
 
 /** @brief Wrapper function that makes a CartesianProduct container.
  *
@@ -117,11 +115,11 @@ struct CartIncrementFunctor {
  *             guarantee.
  */
 template<typename... ContainerTypes>
-auto CartesianProduct(ContainerTypes&& ... containers) {
-    return detail_::TupleContainerImpl <detail_::CartIncrementFunctor,
-                                        std::remove_reference_t <ContainerTypes >...>(
-      detail_::CartSizeFunctor{},
-        std::forward<ContainerTypes>(containers)...);
+auto CartesianProduct(ContainerTypes&&... containers) {
+    return detail_::TupleContainerImpl<
+      detail_::CartIncrementFunctor,
+      std::remove_reference_t<ContainerTypes>...>(
+      detail_::CartSizeFunctor{}, std::forward<ContainerTypes>(containers)...);
 }
 
-}
+} // namespace UtilitiesEx

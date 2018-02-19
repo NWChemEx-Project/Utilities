@@ -69,26 +69,26 @@ using recursing = std::enable_if<recursion_not_done<I, tuple_type>::value, int>;
 /// Actually implements the tuple_transform function
 template<typename tuple_type, typename functor_type, std::size_t... I>
 auto tuple_transform_impl(tuple_type&& tuple, functor_type&& functor,
-                                 std::index_sequence<I...>) {
+                          std::index_sequence<I...>) {
     return std::make_tuple(
-      functor.template run<I>(std::get<I>(std::forward<tuple_type>
-                                                 (tuple)))...);
+      functor.template run<I>(std::get<I>(std::forward<tuple_type>(tuple)))...);
 };
 
 /// The guts behind actually combining tuples via a functor
 template<typename lhs_type, typename rhs_type, typename functor_type,
-  std::size_t... I>
-auto tuple_transform_impl(lhs_type&& lhs, rhs_type&& rhs, functor_type&& functor,
-                          std::index_sequence<I...>) {
+         std::size_t... I>
+auto tuple_transform_impl(lhs_type&& lhs, rhs_type&& rhs,
+                          functor_type&& functor, std::index_sequence<I...>) {
     return std::make_tuple(
       functor.template run<I>(std::get<I>(std::forward<lhs_type>(lhs)),
-              std::get<I>(std::forward<rhs_type>(rhs)))...);
+                              std::get<I>(std::forward<rhs_type>(rhs)))...);
 };
 
 /// End-point for reducing a tuple
 template<std::size_t I, typename tuple_type, typename functor_type,
          typename return_type, typename done_recursing<I, tuple_type>::type = 0>
-return_type tuple_accumulate_impl(tuple_type&&, functor_type&&, return_type val) {
+return_type tuple_accumulate_impl(tuple_type&&, functor_type&&,
+                                  return_type val) {
     return val;
 };
 
@@ -96,17 +96,16 @@ return_type tuple_accumulate_impl(tuple_type&&, functor_type&&, return_type val)
 template<std::size_t I, typename tuple_type, typename functor_type,
          typename return_type, typename recursing<I, tuple_type>::type = 0>
 return_type tuple_accumulate_impl(tuple_type&& tuple, functor_type&& functor,
-                              return_type val) {
-    auto new_val = functor.template run<I>(val, std::get<I>
-      (std::forward<tuple_type>
-                                                 (tuple)));
+                                  return_type val) {
+    auto new_val = functor.template run<I>(
+      val, std::get<I>(std::forward<tuple_type>(tuple)));
     return tuple_accumulate_impl<I + 1>(std::forward<tuple_type>(tuple),
-                                    std::forward<functor_type>(functor),
-                                    new_val);
+                                        std::forward<functor_type>(functor),
+                                        new_val);
 };
 
 template<std::size_t I, typename tuple_type, typename functor_type,
-  typename done_recursing<I, tuple_type>::type = 0>
+         typename done_recursing<I, tuple_type>::type = 0>
 std::size_t tuple_find_if_impl(tuple_type&& t, functor_type&& functor) {
     return I;
 }
@@ -114,11 +113,11 @@ std::size_t tuple_find_if_impl(tuple_type&& t, functor_type&& functor) {
 template<std::size_t I, typename tuple_type, typename functor_type,
          typename recursing<I, tuple_type>::type = 0>
 std::size_t tuple_find_if_impl(tuple_type&& t, functor_type&& functor) {
-    return functor.template run<I>(std::get<I>(t)) ? I :
-           tuple_find_if_impl<I + 1>(std::forward<tuple_type>(t),
-                                     std::forward<functor_type>(functor));
+    return functor.template run<I>(std::get<I>(t)) ?
+             I :
+             tuple_find_if_impl<I + 1>(std::forward<tuple_type>(t),
+                                       std::forward<functor_type>(functor));
 }
-
 
 } // namespace detail_
 
@@ -140,9 +139,9 @@ template<typename tuple_type, typename functor_type>
 auto tuple_transform(tuple_type&& tuple, functor_type&& functor) {
     constexpr std::size_t nelems =
       std::tuple_size<std::decay_t<tuple_type>>::value;
-    return detail_::tuple_transform_impl(
-      std::forward<tuple_type>(tuple), std::forward<functor_type>(functor),
-      std::make_index_sequence<nelems>());
+    return detail_::tuple_transform_impl(std::forward<tuple_type>(tuple),
+                                         std::forward<functor_type>(functor),
+                                         std::make_index_sequence<nelems>());
 };
 
 /**
@@ -193,10 +192,10 @@ auto tuple_transform(lhs_type&& lhs, rhs_type&& rhs, functor_type&& functor) {
  */
 template<typename tuple_type, typename functor_type, typename return_type>
 return_type tuple_accumulate(tuple_type&& tuple, functor_type&& functor,
-                         return_type val) {
-    return detail_::tuple_accumulate_impl<0>(std::forward<tuple_type>(tuple),
-                                         std::forward<functor_type>(functor),
-                                         val);
+                             return_type val) {
+    return detail_::tuple_accumulate_impl<0>(
+      std::forward<tuple_type>(tuple), std::forward<functor_type>(functor),
+      val);
 };
 
 /**

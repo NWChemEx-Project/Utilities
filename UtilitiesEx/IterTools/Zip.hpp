@@ -1,16 +1,16 @@
 #pragma once
 #include "UtilitiesEx/IterTools/TupleContainer.hpp"
 #include <limits>
-                                   //For numeric_limits
+// For numeric_limits
 namespace UtilitiesEx {
-namespace detail_{
+namespace detail_ {
 
 /// Functor for calling the size member of each container.
 struct ZipSizeFunctor {
     static constexpr std::size_t initial_value =
       std::numeric_limits<std::size_t>::max();
 
-    template<std::size_t,typename T>
+    template<std::size_t, typename T>
     auto run(std::size_t curr_min, T&& container) const {
         return std::min(curr_min, container.size());
     }
@@ -19,31 +19,28 @@ struct ZipSizeFunctor {
 struct ZipIncrementFunctor {
     /// Functor for finding if any element is true via reduction
     struct AnyTrue {
-        template<std::size_t,typename T>
+        template<std::size_t, typename T>
         bool run(bool val, T&& element) const {
             return val || element;
         }
     };
     struct Comparer {
-        template<std::size_t,typename lhs_type, typename rhs_type>
+        template<std::size_t, typename lhs_type, typename rhs_type>
         auto run(lhs_type&& lhs, rhs_type&& rhs) const {
             return lhs == rhs;
         }
     };
     template<typename IteratorType, std::size_t... I>
     void run(const IteratorType& start, const IteratorType& end,
-                       IteratorType& value,
-                       std::index_sequence<I...>) {
-        value = std::make_tuple((++std::get<I>(value))...);
+             IteratorType& value, std::index_sequence<I...>) {
+        value       = std::make_tuple((++std::get<I>(value))...);
         auto at_end = tuple_transform(value, end, Comparer());
         bool done   = tuple_accumulate(at_end, AnyTrue(), false);
-        if(done)
-            value = end;
+        if(done) value = end;
     }
 };
 
-}
-
+} // namespace detail_
 
 /** @brief Wrapper function that makes a Zip container.
  *
@@ -82,11 +79,10 @@ struct ZipIncrementFunctor {
  *             guarantee.
  */
 template<typename... ContainerTypes>
-auto Zip(ContainerTypes&& ... containers) {
-    return detail_::TupleContainerImpl <detail_::ZipIncrementFunctor,
-        std::remove_reference_t <ContainerTypes >...>(
-      detail_::ZipSizeFunctor{},
-        std::forward<ContainerTypes>(containers)...);
+auto Zip(ContainerTypes&&... containers) {
+    return detail_::TupleContainerImpl<
+      detail_::ZipIncrementFunctor, std::remove_reference_t<ContainerTypes>...>(
+      detail_::ZipSizeFunctor{}, std::forward<ContainerTypes>(containers)...);
 }
 
-}
+} // namespace UtilitiesEx
