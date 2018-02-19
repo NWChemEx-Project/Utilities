@@ -4,7 +4,9 @@
 namespace UtilitiesEx {
 namespace detail_{
 
+///Functor that computes the number of elements in the CartesianProduct
 struct CartSizeFunctor {
+    ///Empty case is caught by base class
     static constexpr std::size_t initial_value =1L;
 
     template<std::size_t,typename T>
@@ -13,6 +15,7 @@ struct CartSizeFunctor {
     }
 };
 
+///Functor used to increment the CartesianProduct iterator
 struct CartIncrementFunctor {
     ///Functor that returns true if an iterator is at the end
     template<typename iterator_type>
@@ -53,23 +56,25 @@ struct CartIncrementFunctor {
 
     ///The function called by TupleContainer
     template<typename IteratorType, std::size_t... I>
-    void increment_imp(const IteratorType& start, const IteratorType& end,
+    void run(const IteratorType& start, const IteratorType& end,
                        IteratorType& value,
                        std::index_sequence<I...>) {
         constexpr std::size_t nelems = sizeof...(I);
         std::size_t idx = nelems;
-        bool done = (idx == 0);
-        while(!done) { //no entry if we don't have elements
+        while(true) {
+            if(!idx)break;//idx==0 means we have no indices left to try
             //Increment the right most element that we know isn't at end
             auto temp_value =
               tuple_transform(value, Incrementer(idx - 1));
-            //check if that index is now at end
+            //Now get first index at end
             auto new_idx = tuple_find_if(temp_value, AtEnd<IteratorType>(end));
-            if(new_idx != idx - 1) { //It was good so reset all indices to right
+            //If new_idx hasn't changed (i.e. is still idx) that was a good inc
+            if(new_idx == idx ) {
                 value = tuple_transform(temp_value,
                                         Reseter<IteratorType>(start, idx));
-                done = true;
+                break;
             }
+            idx = new_idx;//not good means new_idx has moved down one
         }
     }
 };

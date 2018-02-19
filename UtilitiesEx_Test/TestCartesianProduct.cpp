@@ -4,18 +4,30 @@
 
 using namespace UtilitiesEx;
 
+template<typename CP_t, typename vector_type>
+void check_state(CP_t& c, vector_type&& corr){
+    REQUIRE(c.size() == corr.size());
+    if(c.size())
+        REQUIRE(c.begin() != c.end());
+    else
+        REQUIRE(c.begin() == c.end());
+    for(auto x : Enumerate(c)){
+        auto i = std::get<0>(x);
+        auto val = std::get<1>(x);
+        REQUIRE(corr[i] == val);
+    }
+}
+
 TEST_CASE("Empty") {
     auto c = CartesianProduct();
-    REQUIRE(c.size() == 0);
-    REQUIRE(c.begin() == c.end());
+    check_state(c,std::vector<std::tuple<>>{});
 }
 
 TEST_CASE("Single container") {
     std::vector<int> l{1, 2, 3};
+    std::vector<std::tuple<int>> corr{{1}, {2}, {3}};
     auto c = CartesianProduct(l);
-    REQUIRE(c.size() == 3);
-    for(auto x : Enumerate(c))
-        REQUIRE(l[std::get<0>(x)] == std::get<0>(std::get<1>(x)));
+    check_state(c, corr);
 }
 
 TEST_CASE("Two containers") {
@@ -24,12 +36,16 @@ TEST_CASE("Two containers") {
                                           {2,1}, {2,2}, {2,3},
                                           {3,1}, {3,2}, {3,3} };
     auto c = CartesianProduct(l, l);
-    REQUIRE(c.size() == 9);
-    for(auto x : Enumerate(c)){
-        const auto itr = std::get<0>(x);
-        const auto val = std::get<1>(x);
-        REQUIRE(std::get<0>(corr[itr]) == std::get<0>(val));
-        REQUIRE(std::get<1>(corr[itr]) == std::get<1>(val));
-    }
+    check_state(c, corr);
 
+}
+
+TEST_CASE("Two different containers") {
+    std::vector<int> l{1, 2, 3};
+    std::vector<int> l2{1, 3};
+    std::vector<std::tuple<int,int>> corr{{1,1}, {1,3},
+                                      {2,1}, {2,3},
+                                      {3,1}, {3,3} };
+    auto c = CartesianProduct(l, l2);
+    check_state(c, corr);
 }

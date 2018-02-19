@@ -31,7 +31,7 @@ struct ZipIncrementFunctor {
         }
     };
     template<typename IteratorType, std::size_t... I>
-    void increment_imp(const IteratorType& start, const IteratorType& end,
+    void run(const IteratorType& start, const IteratorType& end,
                        IteratorType& value,
                        std::index_sequence<I...>) {
         value = std::make_tuple((++std::get<I>(value))...);
