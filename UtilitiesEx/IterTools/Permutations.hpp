@@ -6,7 +6,7 @@
 #include <tuple>     //For std::tie
 
 namespace UtilitiesEx {
-
+namespace detail_ {
 /** @brief Simulates a non-mutable container filled with all unique
            permutations of a sequence.
  *
@@ -38,19 +38,19 @@ namespace UtilitiesEx {
  *          The type must satisfy sequence container concept.
  */
 template<typename SequenceType>
-class Permutations {
+class PermutationsImpl {
     private:
     /// Forward declaration of the iterator type
     class PermutationItr;
 
     public:
     /// Type of this class
-    using my_type = Permutations<SequenceType>;
+    using my_type = PermutationsImpl<SequenceType>;
 
     /// Type of an element of this container
     using value_type = SequenceType;
 
-    /// Permutations are non-mutable so same as const_reference
+    /// PermutationsImpl are non-mutable so same as const_reference
     using reference = const value_type&;
 
     /// Type of a const reference to an element of this container
@@ -75,7 +75,7 @@ class Permutations {
      *
      *  @throws None No throw guarantee.
      */
-    Permutations() noexcept = default;
+    PermutationsImpl() noexcept = default;
 
     /** @brief Fills container with all permutations of \p input_set
      *
@@ -84,26 +84,26 @@ class Permutations {
      *  @throws std::bad_alloc If there is not enough memory to copy the input.
      *          Strong throw guarantee.
      */
-    Permutations(const_reference input_set) :
+    PermutationsImpl(const_reference input_set) :
       original_set_(input_set),
       size_(n_permutations(input_set)) {}
 
-    /** @brief Deep copies another Permutations instance.
+    /** @brief Deep copies another PermutationsImpl instance.
      *
      *  @param[in] rhs The instance to copy.
      *  @throws std::bad_alloc if there is not enough memory to copy \p rhs.
      *          Strong throw guarantee.
      */
-    Permutations(const my_type& /*rhs*/) = default;
+    PermutationsImpl(const my_type& /*rhs*/) = default;
 
-    /** @copybrief Permutations(const Permutations&)
+    /** @copybrief PermutationsImpl(const PermutationsImpl&)
      *
      *  @param[in] rhs the instance to copy.
      *  @return The current instance containing a deep copy of @p rhs
      *  @throws std::bad_alloc if there is not enough memory to copy @p rhs.
      *          Strong throw guarantee.
      */
-    Permutations& operator=(const my_type& /*rhs*/) = default;
+    PermutationsImpl& operator=(const my_type& /*rhs*/) = default;
 
     /** @brief Takes ownership of another container
      *
@@ -112,7 +112,7 @@ class Permutations {
      *  @param[in] rhs The set of permutations to take ownership of
      *  @throws None No throw guarantee.
      */
-    Permutations(my_type&& /*rhs*/) noexcept = default;
+    PermutationsImpl(my_type&& /*rhs*/) noexcept = default;
 
     /** @brief Assigns ownership of another container to this container
      *
@@ -131,7 +131,7 @@ class Permutations {
      *
      *  @throws None No throw guarantee.
      */
-    ~Permutations() noexcept = default;
+    ~PermutationsImpl() noexcept = default;
 
     /** @brief Creates an iterator for this container that points to the first
      *         element of the container.
@@ -275,7 +275,7 @@ class Permutations {
     /// This is the number of permutations in the container
     size_type size_ = 0;
 
-    /** @brief The iterator actually returned by the Permutations class
+    /** @brief The iterator actually returned by the PermutationsImpl class
      *
      *  This class is written in terms of next/prev permutation which wrap
      *  around on themselves.  When they wrap they return the first element.
@@ -290,9 +290,12 @@ class Permutations {
          */
         PermutationItr() noexcept = default;
 
-        PermutationItr(const PermutationItr& /*rhs*/)     = default;
+        PermutationItr(const PermutationItr& /*rhs*/) = default;
+
         PermutationItr(PermutationItr&& /*rhs*/) noexcept = default;
+
         PermutationItr& operator=(const PermutationItr& /*rhs*/) = default;
+
         PermutationItr& operator=(PermutationItr&& /*rhs*/) noexcept = default;
 
         /** @brief Makes a usable PermutationItr.
@@ -320,7 +323,7 @@ class Permutations {
 
         /** @brief Makes the iterator point to the next permutation.
          *
-         *  Permutations are ordered lexicographically and "next" follows from
+         *  PermutationsImpl are ordered lexicographically and "next" follows from
          *  this convention.
          *
          *  @warning Incrementing beyond the end of the container is allowed;
@@ -353,7 +356,7 @@ class Permutations {
 
         /** @brief Makes the iterator point to the previous permutation.
          *
-         *  Permutations are ordered lexicographically and "previous" follows
+         *  PermutationsImpl are ordered lexicographically and "previous" follows
          *  from this convention.
          *
          *  @warning Decrementing beyond the beginning of the container is
@@ -393,7 +396,7 @@ class Permutations {
          * @throws None. No throw guarantee
          * */
         difference_type distance_to(const PermutationItr& other) const
-          noexcept {
+        noexcept {
             const bool is_greater = (offset_ >= other.offset_);
             const difference_type abs_val =
               (is_greater ? offset_ - other.offset_ : other.offset_ - offset_);
@@ -411,6 +414,13 @@ class Permutations {
         size_type offset_ = 0;
 
     }; // End class PermutationItr
-};     // End class Permutations
+};     // End class PermutationsImpl
+} // namespace detail_
+
+template<typename container_type>
+auto Permutations(container_type&& container) {
+    return detail_::PermutationsImpl<container_type>(
+      std::forward<container_type>(container));
+}
 
 } // namespace UtilitiesEx

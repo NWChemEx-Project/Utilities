@@ -4,7 +4,7 @@
 
 using namespace UtilitiesEx;
 using set_type  = std::vector<int>;
-using perm_type = Permutations<set_type>;
+using perm_type = detail_::PermutationsImpl<set_type>;
 using iterator  = typename perm_type::iterator;
 
 TEST_CASE("Satisfy STL concepts") {
@@ -183,4 +183,8 @@ TEST_CASE("Permutations instance {1,2,2} (i.e. duplicates)") {
             }
         }
     }
+}
+
+TEST_CASE("foreach syntax") {
+
 }
