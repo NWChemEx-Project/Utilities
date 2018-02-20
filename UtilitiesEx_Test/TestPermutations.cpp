@@ -25,8 +25,8 @@ TEST_CASE("Empty Permutation") {
     REQUIRE(begin_itr == end_itr);
 
     SECTION("Iterator is copyable") {
-        typename detail_::PermutationsImpl<set_type>::const_iterator copy_itr
-          (begin_itr);
+        typename detail_::PermutationsImpl<set_type>::const_iterator copy_itr(
+          begin_itr);
         auto pbegin = &(*begin_itr);
         auto pcopy  = &(*copy_itr);
         REQUIRE(copy_itr == begin_itr);
@@ -186,6 +186,4 @@ TEST_CASE("Permutations instance {1,2,2} (i.e. duplicates)") {
     }
 }
 
-TEST_CASE("foreach syntax") {
-
-}
+TEST_CASE("foreach syntax") {}

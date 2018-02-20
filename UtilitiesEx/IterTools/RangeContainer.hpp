@@ -56,31 +56,6 @@ class RangeContainer {
      */
     RangeContainer() = default;
 
-    /**
-     * @brief Makes a copy of another RangeContainer by deep copying its stored
-     * iterators.
-     *
-     * The exact copy semantics depend on the iterator, but generally speaking
-     * the result is a container that is disjoint from the copied instance.
-     *
-     * @param[in] rhs The RangeContainer instance to copy.
-     *
-     * @throw ??? Throws if the iterator's copy constructor throws.  Strong
-     * throw guarantee.
-     */
-    RangeContainer(const RangeContainer& /*rhs*/) = default;
-
-    /** @brief Makes a new RangeContainer instance by taking over the state of
-     *  another instance.
-     *
-     *  @param rhs The container whose state is being taken.  After this call
-     *  it is in a valid, but otherwise undefined state.
-     *
-     *  @throw ??? Throws if iterator's move constructor throws.  Strong throw
-     *  guarantee.
-     */
-    RangeContainer(RangeContainer&& /*rhs*/) = default;
-
     /** @brief The primarily useful constructor capable of making a container
      *         holding the specified range.
      *
@@ -89,6 +64,8 @@ class RangeContainer {
      * @param end_itr An iterator pointing to just past the last element in the
      *        container.
      * @param size_in The number of elements between end_itr and start_itr.
+     * @throw ??? If IteratorType's copy constructor throws.  Strong throw
+     *        guarantee.
      */
     RangeContainer(iterator start_itr, iterator end_itr, size_type size_in) :
       start_(start_itr),
@@ -96,35 +73,12 @@ class RangeContainer {
       size_(size_in) {}
 
     /**
-     * @brief Assigns a deep copy of another RangeContainer to the current
-     * instance.
-     *
-     * @param[in] rhs The RangeContainer instance to copy.
-     * @return The current instance set to a copy of @p rhs 's state.
-     * @throw ??? Throws if the iterator's copy constructors throw.  Strong
-     * throw guarantee.
+     * @brief Returns the @p i -th element of the container.
+     * @param i the index of the desired element.
+     * @return a copy of the @p i -th element.
+     * @throw ??? if either the copy constructor or std::advance throw.  Same
+     *        guarantee as IteratorType's copy ctor.
      */
-    RangeContainer& operator=(const RangeContainer& /*rhs*/) = default;
-
-    /** @brief Causes the current container to take ownership of another
-     *  instance's state.
-     *
-     *  @param[in] rhs The instance whose state to steal.  After this call @p
-     *  rhs is in a valid, but otherwise undefined state.
-     *
-     *  @return The current instance containing @p rhs's state.
-     *  @throw ??? Throws if the iterator's move constructor throws.  Strong
-     *  throw guarantee.
-     */
-    RangeContainer& operator=(RangeContainer&& /*rhs*/) = default;
-
-    /** @brief Frees up memory associated with the current container.
-     *
-     *  @throw None. No throw guarantee.
-     *
-     */
-    ~RangeContainer() noexcept = default;
-
     value_type operator[](size_type i) const {
         const_iterator copy_of_start(start_);
         std::advance(copy_of_start, i);
@@ -137,7 +91,8 @@ class RangeContainer {
      *  the iterator remains valid even if the container goes out of scope.
      *
      *  @return An iterator pointing to the first element of this container.
-     *  @throw ??? Throws if the iterator's copy constructor throws.
+     *  @throw ??? Throws if the iterator's copy constructor throws. Same
+     *         guarantee as IteratorType's copy constructor.
      */
     iterator begin() { return start_; }
 
@@ -157,8 +112,8 @@ class RangeContainer {
      * @return An iterator set to the element just past the last element of the
      * array.
      *
-     * @throw ??? Throws if the iterator's copy constructor throws.  Strong
-     * throw guarantee.
+     * @throw ??? Throws if the iterator's copy constructor throws.  Same
+     * guarantee as IteratorType's copy ctor.
      */
     iterator end() { return end_; }
 
@@ -200,9 +155,10 @@ class RangeContainer {
      * iterators is non-empty.
      *
      * @return True if the container is empty and false otherwise.
-     * @throw None. No throw guarantee.
+     * @throw ??? if the equality operator of IteratorType throws.  Same
+     * guarantee as IteratorType's equality operator.
      */
-    bool empty() const noexcept { return begin() == end(); }
+    bool empty() const { return start_ == end_; }
 
     /**
      * @brief Compares two RangeContainer instances for equality.
@@ -228,13 +184,22 @@ class RangeContainer {
      * @param rhs The container to compare to.
      * @return True if either iterator in this class differs from the
      * corresponding iterator in @p rhs.
-     * @throw ??? Throws if operator==() of the iterators throws.  Strong throw
-     * guarantee.
+     * @throw ??? Throws if operator==() of the iterators throws.  Same
+     * guarantee as equality operator.
      */
     bool operator!=(const RangeContainer& rhs) const {
         return !((*this) == rhs);
     }
 
+    /**
+     * @brief Swaps the contents of two RangeContainer instances.
+     *
+     * @param rhs The container to swap this one with.  After the swap @p rhs
+     *        will contain the contents of the current instance.
+     * @throw ??? if std::swap(IteratorType, IteratorType) throws. Is no throw
+     *        guarantee if swapping IteratorType instances is no throw,
+     *        otherwise it's weak at best.
+     */
     void swap(RangeContainer& rhs) {
         std::swap(start_, rhs.start_);
         std::swap(end_, rhs.end_);

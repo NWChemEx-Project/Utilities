@@ -4,7 +4,7 @@
 
 using namespace UtilitiesEx;
 using set_type  = std::vector<int>;
-using comb_type = detail_::CombinationsImpl<set_type,false>;
+using comb_type = detail_::CombinationsImpl<set_type, false>;
 using iterator  = typename comb_type::iterator;
 
 /* General note: testing of the Permutations class really amounts to testing its

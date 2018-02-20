@@ -9,11 +9,15 @@
 namespace UtilitiesEx {
 namespace detail_ {
 
-/** @brief The iterator actually returned by the PermutationsImpl class
+/** @brief The class actually implementing the guts of generating permutations.
  *
  *  This class is written in terms of next/prev permutation which wrap
  *  around on themselves.  When they wrap they return the first element.
  *  This class satisfies the concept of a random access iterator.
+ *
+ *  @tparam SequenceType the type of the input sequence and the resulting
+ *  permutations.  Should satisfy the concept of sequence.
+ *  @todo C++17 allows for inheriting default ctors.
  */
 template<typename SequenceType>
 class PermutationItr
@@ -30,40 +34,33 @@ class PermutationItr
 
     /** @brief Makes a place-holder PermutationItr
      *
-     *  @throws None No throw guarantee.
+     *  @throws ??? if SequenceType's default ctor throws.  Same guarantee as
+     *          SequenceType's default ctor.
      */
     PermutationItr() = default;
 
-    PermutationItr(const PermutationItr& /*rhs*/) = default;
-
-    PermutationItr(PermutationItr&& /*rhs*/) = default;
-
-    PermutationItr& operator=(const PermutationItr& /*rhs*/) = default;
-
-    PermutationItr& operator=(PermutationItr&& /*rhs*/) = default;
-
-    /** @brief Makes a usable PermutationItr.
+    /** @brief Makes an instance that points to a (possibly) non-empty container
+     *  filled with permutations.
      *
+     *  Note that all state is stored in this iterator.
      *
      * @param input_set The set to iterate over.
      * @param offset  Which permutation to start with.
-     * @throws std::bad_alloc if the any of the copies fail.
+     * @throws ??? If SequenceType's copy constructor throws.  Strong throw
+     *         guarantee.
      */
     PermutationItr(const_reference input_set, size_type offset) :
       orig_set_(input_set),
       set_(input_set),
       offset_(offset) {}
 
-    /// Trivial destructor
-    ~PermutationItr() = default;
-
     /** @brief Returns the element of the parent container currently pointed
      *         to by this iterator.
      *
      *  @return The element being pointed to.
-     *  @throws None No throw guarantee.
+     *  @throws None. No throw guarantee.
      */
-    const_reference dereference() const { return set_; }
+    const_reference dereference() const override { return set_; }
 
     /** @brief Makes the iterator point to the next permutation.
      *
@@ -75,9 +72,11 @@ class PermutationItr
      *           undefined behavior.
      *
      *  @return The iterator after incrementing
-     *  @throws None No throw guarantee.
+     *  @throws ??? if SequenceType's begin() or end() function throws or if
+     *          std::next_permutation throws given the resulting iterators.
+     *          Same throw guarantee.
      */
-    PermutationItr& increment() noexcept {
+    PermutationItr& increment() {
         std::next_permutation(set_.begin(), set_.end());
         ++offset_;
         return *this;
@@ -108,9 +107,11 @@ class PermutationItr
      *           is undefined behavior.
      *
      *  @return The iterator after decrementing
-     *  @throws None No throw guarantee.
+     *  @throws ??? if SequenceType's begin() or end() member functions throw or
+     *          if prev_permutation throws with the resulting iterators.  Same
+     *          guarantee as throwing function.
      */
-    PermutationItr& decrement() noexcept {
+    PermutationItr& decrement() {
         std::prev_permutation(set_.begin(), set_.end());
         --offset_;
         return *this;
@@ -146,6 +147,16 @@ class PermutationItr
         return (is_greater ? -abs_val : abs_val);
     }
 
+    /**
+     * @brief Swaps the state of the current instance with that of another.
+     *
+     *
+     * @param rhs the instance to swap with.  After the operation it will
+     * contain the state of the current instance.
+     * @throw ??? if SequenceType's swap function throws.  Guarantee is no throw
+     *        if SequenceType's swap is also no throw.  Otherwise it is weak at
+     *        best.
+     */
     void swap(PermutationItr& rhs) {
         std::swap(orig_set_, rhs.orig_set_);
         std::swap(set_, rhs.set_);
@@ -164,314 +175,69 @@ class PermutationItr
 
 }; // End class PermutationItr
 
+/**
+ * @brief A container that simulates being filled with all unique permutations
+ * of a sequence.
+ * @tparam SequenceType The type of the original sequence as well as the
+ * resulting permuations.
+ */
 template<typename SequenceType>
 class PermutationsImpl : public RangeContainer<PermutationItr<SequenceType>> {
     using base_type = RangeContainer<PermutationItr<SequenceType>>;
 
     public:
-    PermutationsImpl()                        = default;
-    PermutationsImpl(const PermutationsImpl&) = default;
-    PermutationsImpl(PermutationsImpl&&)      = default;
+    /**
+     * @brief Makes a container with no permutations in it.
+     * @throw ??? if SequenceType's default ctor throws.  Strong throw
+     * guarantee if SequenceType's ctor can throw otherwise no throw guarantee.
+     */
+    PermutationsImpl() = default;
+
     /** @brief Fills container with all permutations of \p input_set
      *
      *  @param[in] input_set The sequence whose permutations will grace this
      *             container.
      *  @throws std::bad_alloc If there is not enough memory to copy the input.
      *          Strong throw guarantee.
+     *  @throws ??? If the copy constructor of SequenceType throws.  Strong
+     *  throw guarantee.
+     *
      */
     PermutationsImpl(typename base_type::const_reference input_set) :
       base_type(
         PermutationItr<SequenceType>{input_set, 0},
         PermutationItr<SequenceType>{input_set, n_permutations(input_set)},
         n_permutations(input_set)) {}
-
-    ~PermutationsImpl()       = default;
-    PermutationsImpl& operator=(const PermutationsImpl&) = default;
-    PermutationsImpl& operator=(PermutationsImpl&&) = default;
 };
-
-///** @brief Simulates a non-mutable container filled with all unique
-//           permutations of a sequence.
-// *
-// *  This class simulates a container filled with all unique  permutations of a
-// *  sequence.  The STL provides next_permutation and prev_permutation for this
-// *  purpose; however, these are generators and not containers.  Much of the
-// STL
-// *  (as well as foreach loops) assumes a container like syntax, hence the need
-// *  for this class.
-// *
-// *  For a sequence of @f$N@f$ elements there are @f$N!@f$ permutations. If
-// *  @f$M@f$ of these elements are unique the number of unique permutations is
-// *  much less (but still typically a lot) and given by:
-// *  @f[
-// *  {{N}\choose{n_1,n_2,\ldots,n_i,\ldots,n_M}}=\frac{N!}{\prod_{i=1}^Mn_i!}
-// *  @f]
-// *  where @f$n_i@f$ is the number of times the @f$i@f$-th unique element
-// appears
-// *  in the sequence.  Hence there are in theory a lot of elements in this
-// *  container.  This class doesn't actually store them, but generates them on
-// *  the fly.
-// *
-// *  @note This container contains @b all the unique permutations.  The STL
-// *  variants, on the other hand, stop at the lexicographically largest
-// *  (next_permutation) or lexicographically smallest (prev_permutation)
-// *  permutation.  For numbering purposes whatever sequence you provide is the
-// *  0th element of this container, even if it's not the lexicographically
-// *  smallest permutation.
-// *
-// *  @tparam sequence_type The type of the container used to hold the sequence.
-// *          The type must satisfy sequence container concept.
-// */
-// template<typename SequenceType>
-// class PermutationsImpl {
-//    private:
-//    /// Forward declaration of the iterator type
-//    class PermutationItr;
-//
-//    public:
-//    /// Type of this class
-//    using my_type = PermutationsImpl<SequenceType>;
-//
-//    /// Type of an element of this container
-//    using value_type = SequenceType;
-//
-//    /// PermutationsImpl are non-mutable so same as const_reference
-//    using reference = const value_type&;
-//
-//    /// Type of a const reference to an element of this container
-//    using const_reference = const value_type&;
-//
-//    /// Non-mutable container so same as const_iterator
-//    using iterator = PermutationItr;
-//
-//    /// Type of a non-mutating iterator to this container
-//    using const_iterator = PermutationItr;
-//
-//    /// Type of the difference between two iterators
-//    using difference_type = long int;
-//
-//    /// The type of an offset
-//    using size_type = std::size_t;
-//
-//    /** @brief Constructs an empty container.
-//     *
-//     *  This container is truly empty, that is to say its not even the set of
-//     *  permutations of the empty set.
-//     *
-//     *  @throws None No throw guarantee.
-//     */
-//    PermutationsImpl() noexcept = default;
-//
-
-//
-//    /** @brief Deep copies another PermutationsImpl instance.
-//     *
-//     *  @param[in] rhs The instance to copy.
-//     *  @throws std::bad_alloc if there is not enough memory to copy \p rhs.
-//     *          Strong throw guarantee.
-//     */
-//    PermutationsImpl(const my_type& /*rhs*/) = default;
-//
-//    /** @copybrief PermutationsImpl(const PermutationsImpl&)
-//     *
-//     *  @param[in] rhs the instance to copy.
-//     *  @return The current instance containing a deep copy of @p rhs
-//     *  @throws std::bad_alloc if there is not enough memory to copy @p rhs.
-//     *          Strong throw guarantee.
-//     */
-//    PermutationsImpl& operator=(const my_type& /*rhs*/) = default;
-//
-//    /** @brief Takes ownership of another container
-//     *
-//     *  @note After this operation @p rhs is in a valid, but undefined state
-//     *
-//     *  @param[in] rhs The set of permutations to take ownership of
-//     *  @throws None No throw guarantee.
-//     */
-//    PermutationsImpl(my_type&& /*rhs*/) noexcept = default;
-//
-//    /** @brief Assigns ownership of another container to this container
-//     *
-//     *  @note After this operation @p rhs is in a valid, but undefined state.
-//     *
-//     *  @param[in] rhs The set of permutations to take ownership of
-//     *  @returns This instance after taking ownership
-//     *  @throws None No throw guarantee.
-//     */
-//    my_type& operator=(my_type&& /*rhs*/) noexcept = default;
-//
-//    /** @brief Frees memory associated with container.
-//     *
-//     *  Although it is not recommended to do this (for clarity purposes),
-//     *  iterators remain valid even after the container's destruction.
-//     *
-//     *  @throws None No throw guarantee.
-//     */
-//    ~PermutationsImpl() noexcept = default;
-//
-//    /** @brief Creates an iterator for this container that points to the first
-//     *         element of the container.
-//     *
-//     *  The returned iterator's state is decoupled from the container.
-//     *  This is done because next_permutation and prev_permutation actually
-//     *  modify the contents of the container they operate on.  This in turn
-//     *  actually makes the iterators to this container thread-safe.
-//     *
-//     *  @return An iterator pointing to the first element of the container.
-//     *  @throws std::bad_alloc if there is not enough memory to copy the set
-//     to
-//     *          the iterator.  Strong throw guarantee.
-//     */
-//    iterator begin() const { return PermutationItr(original_set_, 0); }
-//
-//    /** @brief Creates an iterator just past the last element of this
-//    container.
-//     *
-//     *  The returned iterator is decoupled from the current container.  This
-//     is
-//     *  done because next/prev permutation actually modify the contents of the
-//     *  container they operate on.
-//     *
-//     *  @return An iterator set to just past the last element of this
-//     container.
-//     *  @throws std::bad_alloc if there is not enough memory to copy the set
-//     to
-//     *          the iterator.  Strong throw guarantee.
-//     */
-//    iterator end() const { return PermutationItr(original_set_, size_); }
-//
-//    /** @brief Creates an iterator for this container that points to the first
-//     *         element of the container.
-//     *
-//     *  The returned iterator's state is decoupled from the container.
-//     *  This is done because next_permutation and prev_permutation actually
-//     *  modify the contents of the container they operate on.  This in turn
-//     *  actually makes the iterators to this container thread-safe.
-//     *
-//     *  @return An iterator pointing to the first element of the container.
-//     *  @throws std::bad_alloc if there is not enough memory to copy the set
-//     to
-//     *          the iterator.  Strong throw guarantee.
-//     */
-//    const_iterator cbegin() const { return begin(); }
-//
-//    /** @brief Creates an iterator just past the last element of this
-//    container.
-//     *
-//     *  The returned iterator is decoupled from the current container.  This
-//     is
-//     *  done because next/prev permutation actually modify the contents of the
-//     *  container they operate on.
-//     *
-//     *  @return An iterator set to just past the last element of this
-//     container.
-//     *  @throws std::bad_alloc if there is not enough memory to copy the set
-//     to
-//     *          the iterator.  Strong throw guarantee.
-//     */
-//    const_iterator cend() const { return end(); }
-//
-//    /** @brief True if this contains the same permutations as @p other.
-//     *
-//     *  Since we don't actually store all the permutations this function
-//     *  actually works by determining if this and \p other contain sets that
-//     *  are permutations of one another.
-//     *
-//     *  @param[in] other The container to compare to.
-//     *  @return True if this container and @p other contain the same
-//     *               permutations.
-//     *  @throws None No throw guarantee.
-//     */
-//    bool operator==(const my_type& other) const noexcept {
-//        if(size_ != other.size_) return false;
-//        return std::is_permutation(original_set_.begin(), original_set_.end(),
-//                                   other.original_set_.begin());
-//    }
-//
-//    /** @brief True if this contains different permutations from @p other.
-//     *
-//     *  Syntactic sugar that simply negates the result of operator==.
-//     *
-//     *  @return True if this container holds different permutations.
-//     *  @throws None No throw guarantee.
-//     *
-//     */
-//    bool operator!=(const my_type& other) const noexcept {
-//        return !((*this) == other);
-//    }
-//
-//    /** @brief Returns a copy of the requested permutation
-//     *
-//     *  @section Memory
-//     *  This call ultimately amounts to calls to decimal_to_fns and
-//     *  fns_to_permutation and thus has the same memory footprints.
-//     *
-//     *  @param[in] perm The value of the requested permutation.  Must be in
-//     the
-//     *                  range [0,size())
-//     *  @return The requested permutation
-//     *  @throws std::bad_alloc if there is insufficient memory to compute the
-//     *          operation.
-//     *
-//     */
-//    value_type operator[](size_type perm) const {
-//        return decimal_to_permutation(perm, original_set_);
-//    }
-//
-//    /** @brief Swaps the contents of this container with another
-//     *
-//     *  @param[in] other The container to swap contents with
-//     *  @throws None No throw guarantee.
-//     */
-//    void swap(my_type& other) noexcept {
-//        std::swap(original_set_, other.original_set_);
-//        std::swap(size_, other.size_);
-//    }
-//
-//    /** @brief Returns the number of elements in this container.
-//     *
-//     *  @return The number of permutations in this container
-//     *  @throws None No throw guarantee.
-//     */
-//    size_type size() const noexcept { return size_; }
-//
-//    /** @brief Returns the maximum possible size of this container.
-//     *
-//     *  Since this container does not actually contain its elements, so long
-//     as
-//     *  the number of unique permutations is expressible as a size_type
-//     integer
-//     */
-//    constexpr size_type max_size() const noexcept {
-//        return std::numeric_limits<size_type>::max();
-//    }
-//
-//    /** @brief Returns true if the container is empty.
-//     *
-//     *  This function will only return true if this container was default
-//     *  constructed.  If it was provided any set, even the empty set, this
-//     class
-//     *  will contain at least one member.
-//     *
-//     *  @returns true if the container is empty.
-//     *  @throws None No throw guarantee.
-//     */
-//    bool empty() const noexcept { return cbegin() == cend(); }
-//
-//    private:
-//    /// This is the set we are generating all unique permutations of
-//    value_type original_set_;
-//
-//    /// This is the number of permutations in the container
-//    size_type size_ = 0;
-//
-//
-//};     // End class PermutationsImpl
 } // namespace detail_
 
+/**
+ * @brief Makes a container "filled" with all unique permutations of a given
+ * sequence.
+ *
+ * This is a convenience function for making a container filled with all
+ * unique permutations of a given sequence such that the types of the container
+ * (and consequentially the returned permutations) are inferred automatically.
+ * It should be noted that the returned container does not actually contain all
+ * unique permutations of the sequence, rather permutations are generated on
+ * the fly.  Ultimately it relies on std::next_permutation/std::prev_permutation
+ * and thus can only generate unique permutations.
+ *
+ * @note If for some reason you want all permutations of a sequence (and not
+ * just the unique ones) it suffices to put the numbers 0 to the length of your
+ * sequence minus 1 in a container and treat the resulting permutations as the
+ * indices.
+ *
+ * @tparam container_type The type of the original sequence and also the type of
+ *         the generated permutations.
+ * @param container The container to form all unique permutations of.
+ * @return A container filled with all unique permutations of @p container.
+ * @throw ??? If @p container_type 's copy ctor throws.
+ */
 template<typename container_type>
 auto Permutations(container_type&& container) {
-    return detail_::PermutationsImpl<std::decay_t<container_type>>(
+    using raw_container_t = std::decay_t<container_type>;
+    return detail_::PermutationsImpl<raw_container_t>(
       std::forward<container_type>(container));
 }
 

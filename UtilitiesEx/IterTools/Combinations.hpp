@@ -18,6 +18,8 @@ namespace detail_ {
  *
  *  @tparam SequenceType The type of a generated combination.
  *  @tparam repeat Should we allow repeated elements while forming combinations?
+ *
+ *  @todo C++17 allows inheriting default ctors.
  */
 template<typename SequenceType, bool repeat>
 class CombinationItr : public detail_::RandomAccessIteratorBase<
@@ -36,6 +38,15 @@ class CombinationItr : public detail_::RandomAccessIteratorBase<
     using difference_type = typename base_type::difference_type;
     ///@}
 
+    /**
+     * @brief Makes an instance that points to an empty container.
+     *
+     *
+     * @throw ??? Throws if SequenceType's default ctor throws.  Strong throw
+     *            guarantee.
+     */
+    CombinationItr() = default;
+
     /** @brief Makes a new combination iterator over a given sequence.
      *
      *  @param[in] input_set The set to iterate over.
@@ -45,6 +56,7 @@ class CombinationItr : public detail_::RandomAccessIteratorBase<
      *  @param[in] at_end True if this is the end iterator
      *  @throws std::bad_alloc If the copy fails because of lack of memory.
      *          Strong throw guarantee.
+     *  @throws ??? If SequenceType's copy constructor throws.
      */
     CombinationItr(const_reference input_set, size_type k, bool at_end) :
       set_(input_set),
@@ -61,50 +73,9 @@ class CombinationItr : public detail_::RandomAccessIteratorBase<
         update_comb();
     }
 
-    CombinationItr() = default;
-
-    /** @brief Makes a deep copy of the current instance.
+    /** @brief Returns a read-only version of the element currently pointed to
+     *         by this iterator.
      *
-     *  Since the original instance is not tied to its parent container
-     *  neither is the resulting iterator.
-     *
-     *  @param[in] rhs The Combination to copy.
-     *  @throws std:bad_alloc if copying fails.  Strong throw guarantee.
-     */
-    CombinationItr(const CombinationItr& /*rhs*/) = default;
-
-    /** @brief Assigns a deep copy to the current instance.
-     *
-     *  @param[in] rhs The Combination to copy.
-     *  @returns The current iterator after the copy
-     *  @throws std::bad_alloc if the underlying copy fails.  Strong throw
-     *  guarantee.
-     */
-    CombinationItr& operator=(const CombinationItr& /*rhs*/) = default;
-
-    /** @brief Takes ownership of another iterator
-     *
-     *  After the operation @p rhs is in a valid, but otherwise unspecified
-     *  state.
-     *
-     *  @param[in] rhs The iterator we are going to own
-     *  @throws None No throw guarantee.
-     */
-    CombinationItr(CombinationItr&& /*rhs*/) = default;
-
-    /** @brief Takes ownership of another CombinationItr instance
-     *
-     *  @param[in] rhs The iterator to take ownership of.
-     *  @return The current instance containing @p rhs 's state.
-     *  @throws None No throw guarantee.
-     */
-    CombinationItr& operator=(CombinationItr&& /*rhs*/) = default;
-
-    /// Trivial destructor
-    ~CombinationItr() noexcept = default;
-
-    /** @brief Returns the element of the parent container currently pointed
-     *         to by this iterator.
      *
      *  @return The element being pointed to.
      *  @throws None No throw guarantee.
@@ -153,8 +124,7 @@ class CombinationItr : public detail_::RandomAccessIteratorBase<
      *             be either forward or backward.
      *  @returns The current iterator pointing at the element @p n
      *           iterations away.
-     *  @throws std::bad_alloc if the underlying PermutationItr has
-     *  insufficient memory to complete the request
+     *  @throws ??? if update_comb() throws same throw guarantee.
      *
      */
     CombinationItr& advance(difference_type n) {
@@ -171,7 +141,8 @@ class CombinationItr : public detail_::RandomAccessIteratorBase<
      *
      *  @param[in] other The iterator to compare to.
      *  @return True if this iterator is exactly the same as @p other
-     *  @throws None No throw guarantee.
+     *  @throws None No throw guarantee.  We assume that SequenceType's equality
+     *          operator is also no throw.
      */
     bool are_equal(const CombinationItr& other) const noexcept {
         return std::tie(set_, current_perm_) ==
@@ -182,11 +153,22 @@ class CombinationItr : public detail_::RandomAccessIteratorBase<
      *
      * @param[in] rhs The iterator we want the distance to.
      * @returns the distance between the two iterators
+     * @throw None No throw guarantee
      */
     difference_type distance_to(const CombinationItr& rhs) const noexcept {
         return current_perm_ - rhs.current_perm_;
     }
 
+    /**
+     * @brief Exchanges the current iterator's state with that of another
+     * instance.
+     *
+     * @param rhs The iterator to exchange state with.  After this call @p rhs
+     *        will contain the current iterator's state.
+     * @throw ??? throws if swapping SequenceType instances throws.  If a
+     *        throw occurs the guarantee is weak at best.  If SequenceType is
+     *        no throw this function is no throw.
+     */
     void swap(CombinationItr& rhs) {
         std::swap(set_, rhs.set_);
         std::swap(comb_, rhs.comb_);
@@ -203,7 +185,13 @@ class CombinationItr : public detail_::RandomAccessIteratorBase<
     /// The current permutation
     typename PermutationsImpl<std::vector<bool>>::const_iterator current_perm_;
 
-    /// Updates @p comb_ to be consistent with current_perm_
+    /**
+     * @brief Updates comb_ to be consistent with current_perm_
+     *
+     * @throw ??? Throws if SequenceType's operator[] or size() member
+     *        function throws.  Guarantee is weak unless both member functions
+     *        are no throw, then it is also no throw.
+     */
     void update_comb() {
         const auto& p = *current_perm_;
         for(size_type i = 0, counter = 0, bar_count = 0; i < p.size(); ++i) {
@@ -218,28 +206,35 @@ class CombinationItr : public detail_::RandomAccessIteratorBase<
 
 }; // End class CombinationItr
 
-template<typename SequenceType, bool repeat>
+/**
+ * @brief A class that simulates being filled with all possible combinations of
+ * an input sequence.
+ *
+ * @tparam SequenceType the type of the original container as well as the
+ * generated combinations.  Should be a random access container.
+ * @tparam repeat true if we are allowed to repeat values within the
+ * combination and false if we are not. Default is false.
+ */
+template<typename SequenceType, bool repeat = false>
 class CombinationsImpl
   : public RangeContainer<CombinationItr<SequenceType, repeat>> {
     using base_type = RangeContainer<CombinationItr<SequenceType, repeat>>;
 
     public:
+    /// Forwarding of types from the base class
+    ///@{
     using size_type       = typename base_type::size_type;
     using const_reference = typename base_type::const_reference;
-
-    CombinationsImpl() = default;
-
-    CombinationsImpl(const CombinationsImpl&) = default;
+    ///@}
 
     /**
-     *  @brief Takes ownership of another CombinationsImpl instance.
+     * @brief Makes a container which holds no combinations.
      *
-     *  @param rhs The instance to take ownership of.  After this call it will
-     *  be in a valid, but otherwise undefined state.
-     *  @throw ??? throws if SequenceType's move constructor throws.  Same
-     *  guarantee as SequenceType's move constructor.
+     * @throw ??? if SequenceType's default ctor throws.  Strong throw guarantee
+     *        if SequenceType's default ctor can throw and no throw guarantee if
+     *        it is also no throw.
      */
-    CombinationsImpl(CombinationsImpl&& /*rhs*/) = default;
+    CombinationsImpl() = default;
 
     /** @brief Fills container with all combinations of @p input_set
      *
@@ -249,6 +244,8 @@ class CombinationsImpl
      *             be in the range [0, input_set.size()).
      *  @throws std::bad_alloc If there is not enough memory to copy the input.
      *          Strong throw guarantee.
+     *  @throws std::overflow_error if there are too many combinations to
+     *  enumerate. Strong throw guarantee.
      *  @throws ??? If copying input_set throws.  Strong throw guarantee.
      */
     CombinationsImpl(const_reference input_set, size_type k) :
@@ -257,15 +254,6 @@ class CombinationsImpl
                 !repeat ? binomial_coefficient<size_type>(input_set.size(), k) :
                           binomial_coefficient<size_type>(
                             (input_set.size() + k) - 1, k)) {}
-
-    /**
-     * @brief Frees
-     */
-    ~CombinationsImpl() = default;
-
-    CombinationsImpl& operator=(const CombinationsImpl&) = default;
-
-    CombinationsImpl& operator=(CombinationsImpl&&) = default;
 };
 
 } // End namespace detail_
