@@ -125,6 +125,12 @@ class RangeContainer {
      */
     ~RangeContainer() noexcept = default;
 
+    value_type operator[](size_type i) const {
+        const_iterator copy_of_start(start_);
+        std::advance(copy_of_start, i);
+        return *copy_of_start;
+    }
+
     /** @brief Returns an iterator to first element of the container.
      *
      *  All the state of the container is contained within the iterator and thus
@@ -227,6 +233,12 @@ class RangeContainer {
      */
     bool operator!=(const RangeContainer& rhs) const {
         return !((*this) == rhs);
+    }
+
+    void swap(RangeContainer& rhs) {
+        std::swap(start_, rhs.start_);
+        std::swap(end_, rhs.end_);
+        std::swap(size_, rhs.size_);
     }
 
     private:

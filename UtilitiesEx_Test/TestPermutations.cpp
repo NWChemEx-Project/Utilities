@@ -15,7 +15,7 @@ TEST_CASE("Satisfy STL concepts") {
 }
 
 TEST_CASE("Empty Permutation") {
-    Permutations<set_type> p0;
+    detail_::PermutationsImpl<set_type> p0;
     auto begin_itr = p0.cbegin();
     auto end_itr   = p0.cend();
     REQUIRE(p0.size() == 0);
@@ -25,7 +25,8 @@ TEST_CASE("Empty Permutation") {
     REQUIRE(begin_itr == end_itr);
 
     SECTION("Iterator is copyable") {
-        typename Permutations<set_type>::const_iterator copy_itr(begin_itr);
+        typename detail_::PermutationsImpl<set_type>::const_iterator copy_itr
+          (begin_itr);
         auto pbegin = &(*begin_itr);
         auto pcopy  = &(*copy_itr);
         REQUIRE(copy_itr == begin_itr);
@@ -38,7 +39,7 @@ TEST_CASE("Empty Permutation") {
     }
 
     SECTION("Iterator is move constructable") {
-        typename Permutations<set_type>::const_iterator move_itr(
+        typename detail_::PermutationsImpl<set_type>::const_iterator move_itr(
           std::move(begin_itr));
         REQUIRE(move_itr == p0.begin());
     }
@@ -51,7 +52,7 @@ TEST_CASE("Empty Permutation") {
 }
 
 TEST_CASE("Permutations of empty set") {
-    Permutations<set_type> p0(set_type({}));
+    detail_::PermutationsImpl<set_type> p0(set_type({}));
     auto begin_itr = p0.cbegin();
     auto end_itr   = p0.cend();
     REQUIRE(p0.size() == 1);
@@ -73,7 +74,7 @@ TEST_CASE("Permutations of empty set") {
 
 TEST_CASE("Permutations instance {1,2,3} (i.e. no duplicates)") {
     set_type numbers({1, 2, 3});
-    Permutations<set_type> p0(numbers);
+    detail_::PermutationsImpl<set_type> p0(numbers);
     auto begin_itr = p0.cbegin();
     auto end_itr   = p0.cend();
     REQUIRE(p0.size() == 6);
@@ -82,22 +83,22 @@ TEST_CASE("Permutations instance {1,2,3} (i.e. no duplicates)") {
     REQUIRE(begin_itr != end_itr);
 
     SECTION("Permutations is copyable") {
-        Permutations<set_type> p1(p0);
+        detail_::PermutationsImpl<set_type> p1(p0);
         REQUIRE(p1 == p0);
 
         SECTION("Permutation is swappable") {
-            Permutations<set_type> p2;
+            detail_::PermutationsImpl<set_type> p2;
             p2.swap(p0);
             REQUIRE(p2 == p1);
         }
 
         SECTION("Permutations is movable") {
-            Permutations<set_type> p2(std::move(p0));
+            detail_::PermutationsImpl<set_type> p2(std::move(p0));
             REQUIRE(p1 == p2);
         }
 
         SECTION("Permutations is move assignable") {
-            Permutations<set_type> p2;
+            detail_::PermutationsImpl<set_type> p2;
             REQUIRE(p2 != p1);
             auto& pp2 = (p2 = std::move(p0));
             REQUIRE(&p2 == &pp2);
@@ -106,7 +107,7 @@ TEST_CASE("Permutations instance {1,2,3} (i.e. no duplicates)") {
     }
 
     SECTION("Permutations is assignable") {
-        Permutations<set_type> p1;
+        detail_::PermutationsImpl<set_type> p1;
         REQUIRE(p1 != p0);
         auto& pp1 = (p1 = p0); // Grabs the return value
         REQUIRE(&p1 == &pp1);
@@ -155,7 +156,7 @@ TEST_CASE("Permutations instance {1,2,3} (i.e. no duplicates)") {
 
 TEST_CASE("Permutations instance {1,2,2} (i.e. duplicates)") {
     set_type numbers({1, 2, 2});
-    Permutations<set_type> p0(numbers);
+    detail_::PermutationsImpl<set_type> p0(numbers);
     auto begin_itr = p0.cbegin();
     auto end_itr   = p0.cend();
     REQUIRE(p0.size() == 3);
