@@ -39,12 +39,13 @@ node {
         then
         rm clang_format.patch
         else
+        echo 'Code Formatting Check Failed!'
+        echo 'Please Apply the Following Patch File:'
         gem install gist
         ~/bin/gist -p clang_format.patch
-        return 1
+        exit 1
         fi
         """
-            
     }
     stage('Build Dependencies') {
         for(int i=0; i<depends.size(); i++) {
