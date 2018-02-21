@@ -1,6 +1,7 @@
+#include <vector>
 #include <UtilitiesEx/Any.hpp>
 #include <catch/catch.hpp>
-#include <vector>
+
 
 using namespace UtilitiesEx;
 
