@@ -5,7 +5,7 @@ using namespace UtilitiesEx;
 
 // Just returns the value given to it
 struct functor1 {
-    template<std::size_t,typename T>
+    template<std::size_t, typename T>
     T run(T in) const noexcept {
         return in;
     }
@@ -13,7 +13,7 @@ struct functor1 {
 
 // Returns the value of calling size()
 struct functor2 {
-    template<std::size_t,typename T>
+    template<std::size_t, typename T>
     auto run(T in) const noexcept {
         return in.size();
     }
@@ -21,7 +21,7 @@ struct functor2 {
 
 // Sums the second element of each input
 struct functor3 {
-    template<std::size_t,typename T>
+    template<std::size_t, typename T>
     int run(int val, T in) const noexcept {
         return val + in[1];
     }
@@ -29,7 +29,7 @@ struct functor3 {
 
 // Sums the second element of each element
 struct functor4 {
-    template<std::size_t,typename lhs_type, typename rhs_type>
+    template<std::size_t, typename lhs_type, typename rhs_type>
     auto run(lhs_type lhs, rhs_type rhs) const noexcept {
         return lhs[1] + rhs[1];
     }
@@ -37,8 +37,8 @@ struct functor4 {
 
 // Returns true if the element is an 'a'
 struct functor5 {
-    template<std::size_t,typename tuple_type>
-    bool run(tuple_type in)const noexcept {
+    template<std::size_t, typename tuple_type>
+    bool run(tuple_type in) const noexcept {
         return in == 'a';
     }
 };
@@ -116,7 +116,7 @@ TEST_CASE("combine_tuples") {
 }
 
 TEST_CASE("find if") {
-    SECTION("Empty tuple"){
+    SECTION("Empty tuple") {
         auto t = std::make_tuple();
         REQUIRE(tuple_find_if(t, functor5{}) == 0);
     }
