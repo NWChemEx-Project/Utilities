@@ -35,8 +35,11 @@ node {
         find . -type f -iname *.h -o -iname *.c -o -iname *.cpp -o -iname *.hpp | xargs clang-format -style=file -i -fallback-style=none
         rm .clang-format
         git diff >clang_format.patch
-        if [ -s clang_format.patch]
+        if [ ! -s clang_format.patch]
         then
+        rm clang_format.patch
+        exit 0
+        else
         gem install gist
         echo 'Code Formatting Check Failed!'
         echo 'Please Apply the Following Patch File:'
