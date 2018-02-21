@@ -40,7 +40,7 @@ node {
         rm clang_format.patch
         exit 0
         else
-        gem install gist
+        //gem install gist
         echo '##########################################################'
         echo 'Code Formatting Check Failed!'
         echo 'Please "git apply" the Following Patch File:'
