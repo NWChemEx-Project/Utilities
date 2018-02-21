@@ -81,12 +81,12 @@ TEST_CASE("Different size arrays (one empty)") {
 
 TEST_CASE("Const containers") {
     const std::vector<int> numbers{1, 2, 3};
-    const std::vector<char> letters{'a', 'b','c'};
+    const std::vector<char> letters{'a', 'b', 'c'};
     auto test_container = Zip(numbers, letters);
     check_state(test_container, 3);
 }
 
-//TEST_CASE("References to elements"){
+// TEST_CASE("References to elements"){
 //    const std::vector<int> numbers{1, 2, 3};
 //    const std::vector<char> letters{'a', 'b', 'c'};
 //    std::size_t counter = 0;
