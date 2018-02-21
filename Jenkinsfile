@@ -28,7 +28,7 @@ node {
     }
     stage('Check Code Formatting'){
         sh """
-        wget https://github.com/NWChemEx-Project/NWChemExBase/blob/master/tools/lint/.clang-format
+        wget https://gist.githubusercontent.com/keipertk/e040f26162c420cc7fe235fef586b14f/raw/3d935edcbbf4b5983c586705bd4a2d545a2e3b42/.clang-format
         find . -type f -name '*.c' -o -name '*.cc' -o -name '*.cpp' -o -name '*.h' -o -name '*.hh' -o -name '*.hpp'\
         | xargs clang-format -style=file -i 
         rm .clang-format
