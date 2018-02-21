@@ -40,7 +40,7 @@ node {
         rm clang_format.patch
         else
         gem install gist
-        gist -p clang_format.patch
+        ~/bin/gist -p clang_format.patch
         return 1
         fi
         """
