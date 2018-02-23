@@ -30,7 +30,7 @@ namespace detail_ {
  *  - increment
  *  - dereference
  *  - are_equal
- *   *
+ *
  *  @tparam ParentType The type of the iterator we are implementing.
  *  @tparam ValueType The type of the elements you are storing in your
  *          container.
@@ -65,25 +65,6 @@ struct InputIteratorBase {
 
     /// The concept tag this iterator obeys
     using iterator_category = std::input_iterator_tag;
-
-    /// Trivial default constructor
-    InputIteratorBase() noexcept = default;
-
-    /// Trivial copy constructor
-    InputIteratorBase(const InputIteratorBase& /*rhs*/) = default;
-
-    /// Trivial assignment operator
-    InputIteratorBase& operator=(const InputIteratorBase& /*rhs*/) = default;
-
-    /// Trivial move constructor
-    InputIteratorBase(InputIteratorBase&& /*rhs*/) noexcept = default;
-
-    /// Trivial move assignment
-    InputIteratorBase& operator=(InputIteratorBase&& /*rhs*/) noexcept =
-      default;
-
-    /// Trivial destructor
-    virtual ~InputIteratorBase() noexcept = default;
 
     /// Implement this so we can increment your iterator
     virtual ParentType& increment() = 0;
@@ -216,28 +197,6 @@ struct BidirectionalIteratorBase
   : public InputIteratorBase<ParentType, ValueType, SizeType, DifferenceType> {
     using iterator_category = std::bidirectional_iterator_tag;
 
-    /// Trivial default constructor
-    BidirectionalIteratorBase() noexcept = default;
-
-    /// Trivial copy constructor
-    BidirectionalIteratorBase(const BidirectionalIteratorBase& /*rhs*/) =
-      default;
-
-    /// Trivial assignment operator
-    BidirectionalIteratorBase& operator         =(
-      const BidirectionalIteratorBase& /*rhs*/) = default;
-
-    /// Trivial move constructor
-    BidirectionalIteratorBase(BidirectionalIteratorBase&& /*rhs*/) noexcept =
-      default;
-
-    /// Trivial move assignment
-    BidirectionalIteratorBase& operator             =(
-      BidirectionalIteratorBase&& /*rhs*/) noexcept = default;
-
-    /// Trivial destructor
-    ~BidirectionalIteratorBase() noexcept = default;
-
     /// Implement to provide decrement functionality
     virtual ParentType& decrement() = 0;
 
@@ -298,26 +257,6 @@ struct RandomAccessIteratorBase
   : public BidirectionalIteratorBase<ParentType, ValueType, SizeType,
                                      DifferenceType> {
     using iterator_category = std::random_access_iterator_tag;
-
-    /// Trivial default constructor
-    RandomAccessIteratorBase() noexcept = default;
-
-    /// Trivial copy constructor
-    RandomAccessIteratorBase(const RandomAccessIteratorBase& /*rhs*/) = default;
-
-    /// Trivial assignment operator
-    RandomAccessIteratorBase& operator=(const RandomAccessIteratorBase&) =
-      default;
-
-    /// Trivial move constructor
-    RandomAccessIteratorBase(RandomAccessIteratorBase&&) noexcept = default;
-
-    /// Trivial move assignment
-    RandomAccessIteratorBase& operator=(RandomAccessIteratorBase&&) noexcept =
-      default;
-
-    /// Trivial destructor
-    ~RandomAccessIteratorBase() noexcept = default;
 
     /// Implement to provide advance
     virtual ParentType& advance(DifferenceType n) = 0;
@@ -472,6 +411,11 @@ struct RandomAccessIteratorBase
     }
 };
 
+/**
+ * Template meta-programming to select the correct base type given the iterator
+ * tag type.
+ */
+///@{
 template<typename ParentType, typename ValueType, typename iterator_type>
 struct Iterator2Base {};
 
@@ -489,6 +433,7 @@ template<typename ParentType, typename ValueType>
 struct Iterator2Base<ParentType, ValueType, std::random_access_iterator_tag> {
     using type = RandomAccessIteratorBase<ParentType, ValueType>;
 };
+///@}
 
 } // namespace detail_
 } // namespace UtilitiesEx

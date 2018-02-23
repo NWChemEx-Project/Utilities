@@ -4,7 +4,7 @@
 
 using namespace UtilitiesEx;
 using set_type  = std::vector<int>;
-using comb_type = Combinations<set_type>;
+using comb_type = detail_::CombinationsImpl<set_type, false>;
 using iterator  = typename comb_type::iterator;
 
 /* General note: testing of the Permutations class really amounts to testing its
@@ -148,14 +148,14 @@ TEST_CASE("Combinations instance {1,2,3} (i.e. no duplicates)") {
 TEST_CASE("Multicombinations") {
     SECTION("n==k==0") {
         set_type elems;
-        Combinations<set_type, true> c0(elems, 0);
+        detail_::CombinationsImpl<set_type, true> c0(elems, 0);
         REQUIRE(c0.size() == 1);
         REQUIRE(c0[0] == elems);
     }
 
     SECTION("n>0 k<n") {
         set_type elems({1, 2, 3});
-        Combinations<set_type, true> c0(elems, 2);
+        detail_::CombinationsImpl<set_type, true> c0(elems, 2);
         REQUIRE(c0.size() == 6);
         REQUIRE(c0[0] == set_type({1, 1}));
         REQUIRE(c0[1] == set_type({1, 2}));
@@ -167,7 +167,7 @@ TEST_CASE("Multicombinations") {
 
     SECTION("n>0 k>n") {
         set_type elems({1, 2});
-        Combinations<set_type, true> c0(elems, 3);
+        detail_::CombinationsImpl<set_type, true> c0(elems, 3);
         REQUIRE(c0.size() == 4);
         REQUIRE(c0[0] == set_type({1, 1, 1}));
         REQUIRE(c0[1] == set_type({1, 1, 2}));
