@@ -176,7 +176,7 @@ public:
      */
     PermutationItr& advance(difference_type n) {
         set_ = decimal_to_permutation(offset_ + n, orig_set_);
-        offset_ += n; //After above call for strong throw guarantee
+        offset_ += n; // After above call for strong throw guarantee
         return *this;
     }
 
@@ -199,13 +199,13 @@ public:
      */
     difference_type distance_to(const PermutationItr& rhs) const {
         difference_type dy = 0, dx = 0;
-        const bool base_is_less =
-          std::lexicographical_compare(orig_set_.begin(), orig_set_.end(),
-                                 rhs.orig_set_.begin(), rhs.orig_set_.end());
+        const bool base_is_less = std::lexicographical_compare(
+          orig_set_.begin(), orig_set_.end(), rhs.orig_set_.begin(),
+          rhs.orig_set_.end());
         if(base_is_less)
             dy = permutation_to_decimal(rhs.orig_set_, orig_set_);
         else
-            dy -=permutation_to_decimal(orig_set_, rhs.orig_set_);
+            dy -= permutation_to_decimal(orig_set_, rhs.orig_set_);
         const bool off_is_less = offset_ < rhs.offset_;
         if(off_is_less)
             dx = rhs.offset_ - offset_;
@@ -269,7 +269,7 @@ private:
 template<typename container_type>
 auto Permutations(container_type&& container) {
     using raw_container_t = std::decay_t<container_type>;
-    using iterator_type = detail_::PermutationItr<raw_container_t>;
+    using iterator_type   = detail_::PermutationItr<raw_container_t>;
     const auto nperms = n_permutations(std::forward<container_type>(container));
     return detail_::RangeContainer<iterator_type>{
       iterator_type{std::forward<container_type>(container), 0},
