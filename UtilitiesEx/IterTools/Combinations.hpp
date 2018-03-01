@@ -29,7 +29,7 @@ class CombinationItr : public detail_::RandomAccessIteratorBase<
     /// The type of the base class, again for sanity.
     using base_type = detail_::RandomAccessIteratorBase<my_type, SequenceType>;
 
-    public:
+public:
     /// Typedefs forwarded from the base class
     ///@{
     using value_type      = typename base_type::value_type;
@@ -175,7 +175,7 @@ class CombinationItr : public detail_::RandomAccessIteratorBase<
         std::swap(current_perm_, rhs.current_perm_);
     }
 
-    private:
+private:
     /// A copy of the parent's set
     value_type set_;
 
@@ -183,7 +183,7 @@ class CombinationItr : public detail_::RandomAccessIteratorBase<
     value_type comb_;
 
     /// The current permutation
-    typename PermutationsImpl<std::vector<bool>>::const_iterator current_perm_;
+    PermutationItr<std::vector<bool>> current_perm_;
 
     /**
      * @brief Updates comb_ to be consistent with current_perm_
@@ -220,7 +220,7 @@ class CombinationsImpl
   : public RangeContainer<CombinationItr<SequenceType, repeat>> {
     using base_type = RangeContainer<CombinationItr<SequenceType, repeat>>;
 
-    public:
+public:
     /// Forwarding of types from the base class
     ///@{
     using size_type       = typename base_type::size_type;

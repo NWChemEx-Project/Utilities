@@ -19,11 +19,11 @@ namespace UtilitiesEx {
  */
 template<typename element_type>
 class MathSet {
-    private:
+private:
     /// Typedef of implementing container for easy modification later
     using container_type = std::set<element_type>;
 
-    public:
+public:
     /// The type of an element inside this set
     using value_type = typename container_type::value_type;
 
@@ -450,7 +450,7 @@ class MathSet {
         return !((*this) == rhs);
     }
 
-    private:
+private:
     /// The actual set of elements
     std::set<element_type> elements_ = {};
 };
