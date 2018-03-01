@@ -1,9 +1,10 @@
 ## Status
-
-- [] Ready to go
+<!--- Please check this box when your PR is ready--->
+- [ ] Ready to go
 
 ## Brief Description
 
 ## Detailed Description
 
 ## TODOs and/or Questions
+<!--- When starting a PR early please add a list of things you plan on doing--->

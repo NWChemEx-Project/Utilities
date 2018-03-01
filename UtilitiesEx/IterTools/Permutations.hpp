@@ -1,6 +1,7 @@
 #pragma once
 #include "UtilitiesEx/IterTools/RangeContainer.hpp"
 #include "UtilitiesEx/Mathematician/Combinatorics.hpp"
+#include "UtilitiesEx/Mathematician/IntegerUtils.hpp"
 #include "UtilitiesEx/TypeTraits/IteratorTypes.hpp"
 #include <algorithm> //For is_permutation, next/prev permutation
 #include <limits>    //For maximum value of size_t
@@ -22,6 +23,7 @@ namespace detail_ {
  *  - next/prev permutation wrap around on themselves.  For this reason we
  *    need to maintain how many times we've iterated so as to know when we have
  *    finished.
+ *
  *
  *  @tparam SequenceType the type of the input sequence and the resulting
  *  permutations.  Should satisfy the concept of sequence.
@@ -75,11 +77,18 @@ public:
      *        the original sequence is regenerated.
      * @throws ??? If SequenceType's copy constructor throws.  Strong throw
      *         guarantee.
+     * @throws ??? If permutation_to_decimal throws. Strong throw guarantee.
      */
     PermutationItr(const_reference input_set, size_type offset) :
       orig_set_(input_set),
+      sorted_orig_([&]() {
+          value_type temp(input_set); // I guess by value is still const...
+          std::sort(temp.begin(), temp.end());
+          return temp;
+      }()),
       set_(input_set),
-      offset_(offset) {}
+      offset_(offset),
+      dx_(permutation_to_decimal(input_set, sorted_orig_)) {}
 
     /** @brief Allows access to the current permutation.
      *
@@ -126,6 +135,11 @@ public:
      *  3. Having both wrapped or not wrapped.
      *     - Relevant for comparing the first permutation to the one just past
      *       the end (which is the same permutation)
+     *
+     *  @par Implementation Notes
+     *  - It suffices to check orig_set_ and not dx_ and sorted_orig_
+     *    as the latter two are determined by orig_set_ and are not changed
+     *    during the course of the iterator's lifetime.
      *
      *  @param[in] rhs The iterator to compare to.
      *  @return True if this iterator is exactly the same as @p rhs
@@ -175,19 +189,26 @@ public:
      *
      */
     PermutationItr& advance(difference_type n) {
-        set_ = decimal_to_permutation(offset_ + n, orig_set_);
+        set_ = decimal_to_permutation(offset_ + dx_ + n, sorted_orig_);
         offset_ += n; // After above call for strong throw guarantee
         return *this;
     }
 
     /** @brief Returns the number of permutations between this and @p rhs
      *
-     *  If both this iterator and @p rhs started from the same sequence then
-     *  @f$\Delta X = rhs.offset_ - offset_ @f$ is the distance between them.
-     *  However, if they did not start from the same sequence we additionally
-     *  have to account for this.  Specifically if we let @f$\Delta Y@f$ be the
-     *  distance from this iterator's original sequence to @p rhs's original
-     *  sequence the distance to other is @f$\Delta Y + \Delta X@f$.
+     *  This is actually a lot more complicated then it sounds owing to the fact
+     *  that permutations are allowed to start from sequences that are not
+     *  sorted lexicographically.  To that end, we need to get the absolute
+     *  offset (relative to the lexicographically least permutation) for both
+     *  this iterator and @p rhs.  If we let @f$\Delta X@f$ be the offset of
+     *  this iterator's initial permutation and @f$\Delta X'@f$ be the offset of
+     *  @p rhs's initial permutation, then the total shift of this iterator is
+     *  @f$\Delta Y = \Delta X + offset_@f$ and that of @p rhs is @f$\Delta
+     *  Y' = \Delta X' + rhs.offset_@f$.  Consequentially the total distance
+     *  from this iterator to @p rhs is:
+     *  @f[
+     *  \Delta Y' - \Delta Y =\Delta X'- \Delta X+ rhs.offset_ -offset_
+     *  @f]
      *
      *  @param[in] rhs The iterator to compare against.  It is assumed that
      *             @p rhs's state is contained with this instance's range.
@@ -198,20 +219,9 @@ public:
      *
      */
     difference_type distance_to(const PermutationItr& rhs) const {
-        difference_type dy = 0, dx = 0;
-        const bool base_is_less = std::lexicographical_compare(
-          orig_set_.begin(), orig_set_.end(), rhs.orig_set_.begin(),
-          rhs.orig_set_.end());
-        if(base_is_less)
-            dy = permutation_to_decimal(rhs.orig_set_, orig_set_);
-        else
-            dy -= permutation_to_decimal(orig_set_, rhs.orig_set_);
-        const bool off_is_less = offset_ < rhs.offset_;
-        if(off_is_less)
-            dx = rhs.offset_ - offset_;
-        else
-            dx -= offset_ - rhs.offset_;
-        return dx + dy;
+        difference_type ddx  = UnsignedSubtract(rhs.dx_, dx_);
+        difference_type doff = UnsignedSubtract(rhs.offset_, offset_);
+        return ddx + doff;
     }
 
     /**
@@ -226,19 +236,27 @@ public:
      */
     void swap(PermutationItr& rhs) {
         std::swap(orig_set_, rhs.orig_set_);
+        std::swap(sorted_orig_, rhs.sorted_orig_);
         std::swap(set_, rhs.set_);
         std::swap(offset_, rhs.offset_);
+        std::swap(dx_, rhs.dx_);
     }
 
 private:
     /// A copy of the parent's set, doesn't get modified
     value_type orig_set_;
 
+    /// A copy of the set, sorted lexicographically
+    value_type sorted_orig_;
+
     /// A copy of the parent's set, modified by next/prev permutation
     value_type set_;
 
     /// The number of increments from the first call
     size_type offset_ = 0;
+
+    /// Number of increments orig_set_ is from lexicographically lowest seq.
+    size_type dx_ = 0;
 
 }; // End class PermutationItr
 } // namespace detail_
@@ -254,6 +272,9 @@ private:
  * unique permutations of the sequence, rather permutations are generated on
  * the fly.  Ultimately it relies on std::next_permutation/std::prev_permutation
  * and thus can only generate unique permutations.
+ *
+ * @note Permutations are generated in lexicographical order, wrapping around
+ * when necessary, until the original sequence is regenerated.
  *
  * @note If for some reason you want all permutations of a sequence (and not
  * just the unique ones) it suffices to put the numbers 0 to the length of your

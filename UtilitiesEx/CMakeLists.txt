@@ -6,6 +6,7 @@ set(UtilitiesEx_INCLUDES Any.hpp
                          Containers/CaseInsensitiveMap.hpp
                          Containers/MathSet.hpp
                          Mathematician/Combinatorics.hpp
+                         Mathematician/IntegerUtils.hpp
                          IterTools/CartesianProduct.hpp
                          IterTools/Combinations.hpp
                          IterTools/Enumerate.hpp
