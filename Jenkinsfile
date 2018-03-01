@@ -31,7 +31,7 @@ node {
         set +x
         source /etc/profile
         module load llvm
-        wget https://gist.githubusercontent.com/keipertk/c9ba20bfd92ce63a965c9c718abe9f5b/raw/1111f97432091d37d800cdef474bd0de778c1d82/.clang-format
+        wget https://gist.githubusercontent.com/keipertk/c9ba20bfd92ce63a965c9c718abe9f5b/raw/1111f97432091d37d800cdef474bd0de778c1d82/.clang-format -O .clang-format
         find . -type f -iname *.h -o -iname *.c -o -iname *.cpp -o -iname *.hpp | xargs clang-format -style=file -i -fallback-style=none
         rm .clang-format
         git diff >clang_format.patch
