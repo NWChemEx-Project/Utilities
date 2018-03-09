@@ -20,32 +20,33 @@ def compile_repo(depend_name, install_root, do_install) {
     """
 }
 
+def format_code(){
+    sh """
+    set +x
+    source /etc/profile
+    module load llvm
+    wget https://gist.githubusercontent.com/keipertk/2cd83ea37abed98a09ba9b989b03dbf6/raw/f8f0ed3443d93ad80dbc69acc19ff3f3df9b3ba2/.clang-format -O .clang-format
+    find . -type f -iname *.h -o -iname *.c -o -iname *.cpp -o -iname *.hpp | xargs clang-format -style=file -i -fallback-style=none
+    rm .clang-format
+    git diff >clang_format.patch
+    if [ -s clang_format.patch ]
+    then
+    gem install gist
+    echo '##########################################################'
+    echo 'Code Formatting Check Failed!'
+    echo 'Please "git apply" the Following Patch File:'
+    ~/bin/gist -p clang_format.patch
+    echo '##########################################################'
+    exit 1
+    fi
+    """
+}
+
 node {
     def install_root="${WORKSPACE}/install"
     stage('Set-Up Workspace') {
         deleteDir()
         checkout scm
-    }
-    stage('Check Code Formatting'){
-        sh """
-        set +x
-        source /etc/profile
-        module load llvm
-        wget https://raw.githubusercontent.com/NWChemEx-Project/NWChemExBase/master/tools/lint/.clang-format?token=AGFCCip7lZqXWoespbaW28yUFtwIf_2Yks5alyA_wA%3D%3D -O .clang-format
-        find . -type f -iname *.h -o -iname *.c -o -iname *.cpp -o -iname *.hpp | xargs clang-format -style=file -i -fallback-style=none
-        rm .clang-format
-        git diff >clang_format.patch
-        if [ -s clang_format.patch ]
-        then
-        gem install gist
-        echo '##########################################################'
-        echo 'Code Formatting Check Failed!'
-        echo 'Please "git apply" the Following Patch File:'
-        ~/bin/gist -p clang_format.patch
-        echo '##########################################################'
-        exit 1
-        fi
-        """
     }
     stage('Build Dependencies') {
         for(int i=0; i<depends.size(); i++) {

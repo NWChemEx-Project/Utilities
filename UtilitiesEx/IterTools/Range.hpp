@@ -21,12 +21,12 @@ namespace detail_ {
 template<typename element_type>
 class RangeItr
   : public RandomAccessIteratorBase<RangeItr<element_type>, element_type> {
-    private:
+private:
     /// Typedef of the base type for sanity
     using base_type =
       detail_::RandomAccessIteratorBase<RangeItr<element_type>, element_type>;
 
-    public:
+public:
     /// Pulls the const_reference typedef into scope
     using const_reference = const element_type&;
 
@@ -108,7 +108,7 @@ class RangeItr
       increment_(increment),
       value_(start_) {}
 
-    private:
+private:
     /// Allows base class to implement random access iterator
     friend base_type;
 
@@ -193,11 +193,11 @@ class RangeItr
 template<typename element_type = std::size_t>
 class RangeImpl
   : public detail_::RangeContainer<detail_::RangeItr<element_type>> {
-    private:
+private:
     /// Typedef of base class for sanity
     using base_type = detail_::RangeContainer<detail_::RangeItr<element_type>>;
 
-    public:
+public:
     using typename base_type::difference_type;
 
     /**

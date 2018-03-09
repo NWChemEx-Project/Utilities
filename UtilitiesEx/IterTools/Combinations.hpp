@@ -16,7 +16,8 @@ namespace detail_ {
  *  alone as a generator, but is intended to be used with a RangeContainer
  *  instance so that it can be used in a range-based for loop.
  *
- *  @tparam SequenceType The type of a generated combination.
+ *  @tparam SequenceType The type of a generated combination.  Should satisfy
+ *          the concept of random access container.
  *  @tparam repeat Should we allow repeated elements while forming combinations?
  *
  *  @todo C++17 allows inheriting default ctors.
@@ -29,7 +30,7 @@ class CombinationItr : public detail_::RandomAccessIteratorBase<
     /// The type of the base class, again for sanity.
     using base_type = detail_::RandomAccessIteratorBase<my_type, SequenceType>;
 
-    public:
+public:
     /// Typedefs forwarded from the base class
     ///@{
     using value_type      = typename base_type::value_type;
@@ -41,6 +42,9 @@ class CombinationItr : public detail_::RandomAccessIteratorBase<
     /**
      * @brief Makes an instance that points to an empty container.
      *
+     * The resulting iterator will iterate over all combinations of the empty
+     * range, of which there are none.  This is different than iterating over
+     * all empty combinations, of which there is 1.
      *
      * @throw ??? Throws if SequenceType's default ctor throws.  Strong throw
      *            guarantee.
@@ -175,7 +179,7 @@ class CombinationItr : public detail_::RandomAccessIteratorBase<
         std::swap(current_perm_, rhs.current_perm_);
     }
 
-    private:
+private:
     /// A copy of the parent's set
     value_type set_;
 
@@ -183,7 +187,7 @@ class CombinationItr : public detail_::RandomAccessIteratorBase<
     value_type comb_;
 
     /// The current permutation
-    typename PermutationsImpl<std::vector<bool>>::const_iterator current_perm_;
+    PermutationItr<std::vector<bool>> current_perm_;
 
     /**
      * @brief Updates comb_ to be consistent with current_perm_
@@ -205,56 +209,6 @@ class CombinationItr : public detail_::RandomAccessIteratorBase<
     }
 
 }; // End class CombinationItr
-
-/**
- * @brief A class that simulates being filled with all possible combinations of
- * an input sequence.
- *
- * @tparam SequenceType the type of the original container as well as the
- * generated combinations.  Should be a random access container.
- * @tparam repeat true if we are allowed to repeat values within the
- * combination and false if we are not. Default is false.
- */
-template<typename SequenceType, bool repeat = false>
-class CombinationsImpl
-  : public RangeContainer<CombinationItr<SequenceType, repeat>> {
-    using base_type = RangeContainer<CombinationItr<SequenceType, repeat>>;
-
-    public:
-    /// Forwarding of types from the base class
-    ///@{
-    using size_type       = typename base_type::size_type;
-    using const_reference = typename base_type::const_reference;
-    ///@}
-
-    /**
-     * @brief Makes a container which holds no combinations.
-     *
-     * @throw ??? if SequenceType's default ctor throws.  Strong throw guarantee
-     *        if SequenceType's default ctor can throw and no throw guarantee if
-     *        it is also no throw.
-     */
-    CombinationsImpl() = default;
-
-    /** @brief Fills container with all combinations of @p input_set
-     *
-     *  @param[in] input_set The sequence whose combinations will grace this
-     *             container.
-     *  @param[in] k The number of elements in each combination.  @p k should
-     *             be in the range [0, input_set.size()).
-     *  @throws std::bad_alloc If there is not enough memory to copy the input.
-     *          Strong throw guarantee.
-     *  @throws std::overflow_error if there are too many combinations to
-     *  enumerate. Strong throw guarantee.
-     *  @throws ??? If copying input_set throws.  Strong throw guarantee.
-     */
-    CombinationsImpl(const_reference input_set, size_type k) :
-      base_type(CombinationItr<SequenceType, repeat>{input_set, k, false},
-                CombinationItr<SequenceType, repeat>{input_set, k, true},
-                !repeat ? binomial_coefficient<size_type>(input_set.size(), k) :
-                          binomial_coefficient<size_type>(
-                            (input_set.size() + k) - 1, k)) {}
-};
 
 } // End namespace detail_
 
@@ -286,8 +240,12 @@ class CombinationsImpl
  */
 template<typename container_type>
 auto CombinationsWithRepeat(container_type&& container, std::size_t k) {
-    return detail_::CombinationsImpl<std::decay_t<container_type>, true>(
-      std::forward<container_type>(container), k);
+    using iterator_type =
+      detail_::CombinationItr<std::decay_t<container_type>, true>;
+    return detail_::RangeContainer<iterator_type>{
+      iterator_type{std::forward<container_type>(container), k, false},
+      iterator_type{std::forward<container_type>(container), k, true},
+      binomial_coefficient<std::size_t>(container.size() + k - 1, k)};
 }
 
 /** @brief Makes a container for holding all combinations of a sequence of
@@ -320,8 +278,12 @@ auto CombinationsWithRepeat(container_type&& container, std::size_t k) {
  */
 template<typename container_type>
 auto Combinations(container_type&& container, std::size_t k) {
-    return detail_::CombinationsImpl<std::decay_t<container_type>, false>(
-      std::forward<container_type>(container), k);
+    using iterator_type =
+      detail_::CombinationItr<std::decay_t<container_type>, false>;
+    return detail_::RangeContainer<iterator_type>{
+      iterator_type{std::forward<container_type>(container), k, false},
+      iterator_type{std::forward<container_type>(container), k, true},
+      binomial_coefficient<std::size_t>(container.size(), k)};
 }
 
 } // End namespace UtilitiesEx

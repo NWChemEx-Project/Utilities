@@ -31,7 +31,7 @@ namespace UtilitiesEx {
  *
  */
 class Any {
-    private:
+private:
     /** @brief Class for determining whether or not a type is derived from Any.
      *
      *  If @p T is derived from Any (or is an Any), then the resulting typedef,
@@ -59,7 +59,7 @@ class Any {
     using disable_if_related =
       typename std::enable_if<!is_related<T>::value>::type;
 
-    public:
+public:
     /** @brief Makes an empty Any instance.
      *
      *  The resulting Any instance wraps no object.  An object can be added to
@@ -195,7 +195,7 @@ class Any {
         return cast<no_cv>();
     };
 
-    private:
+private:
     /// Allows AnyCast to return the wrapped value
     template<typename T>
     friend T& AnyCast(Any&);

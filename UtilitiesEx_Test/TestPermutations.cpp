@@ -3,187 +3,103 @@
 #include <UtilitiesEx/TypeTraits/type_traitsExtensions.hpp>
 
 using namespace UtilitiesEx;
-using set_type  = std::vector<int>;
-using perm_type = detail_::PermutationsImpl<set_type>;
-using iterator  = typename perm_type::iterator;
+using set_type = std::vector<int>;
+using perm_itr = detail_::PermutationItr<set_type>;
 
-TEST_CASE("Satisfy STL concepts") {
-    bool is_cont = is_container<perm_type>::value;
-    bool is_rai  = is_random_access_iterator<iterator>::value;
-    REQUIRE(is_cont);
-    REQUIRE(is_rai);
+void check_state(perm_itr& b, const perm_itr& end,
+                 const std::vector<set_type>& corr, size_t off = 0) {
+    if(corr.empty())
+        REQUIRE(b == end);
+    else
+        REQUIRE(b != end);
+    long counter = 0;
+    while(b != end) {
+        // Check that from each permutation the distance to every other perm
+        // is good (subtract off cause logic won't work if temp starts less
+        // than b)
+        for(size_t pstart = 0; pstart < corr.size() - off; ++pstart) {
+            perm_itr temp{corr[pstart], 0};
+            long dx = static_cast<long>(pstart) - counter;
+
+            REQUIRE(b.distance_to(temp) == dx);
+            perm_itr copyb{b};
+            REQUIRE(*(copyb.advance(dx)) == *temp);
+        }
+        REQUIRE(*b++ == corr[counter++]);
+    }
+    // b is at end, this gets it to point at the last permutation
+    --b;
+    for(size_t i = corr.size(); i > 0; --i) { REQUIRE(*b-- == corr[i - 1]); }
 }
 
 TEST_CASE("Empty Permutation") {
-    detail_::PermutationsImpl<set_type> p0;
-    auto begin_itr = p0.cbegin();
-    auto end_itr   = p0.cend();
-    REQUIRE(p0.size() == 0);
-    REQUIRE(p0.max_size() == std::numeric_limits<std::size_t>::max());
-    REQUIRE(p0.empty());
-    REQUIRE(begin_itr.are_equal(end_itr));
-    REQUIRE(begin_itr == end_itr);
-
-    SECTION("Iterator is copyable") {
-        typename detail_::PermutationsImpl<set_type>::const_iterator copy_itr(
-          begin_itr);
-        auto pbegin = &(*begin_itr);
-        auto pcopy  = &(*copy_itr);
-        REQUIRE(copy_itr == begin_itr);
-        REQUIRE(pbegin != pcopy);
-    }
-
-    SECTION("Iterator is assignable") {
-        end_itr = begin_itr;
-        REQUIRE(end_itr == begin_itr);
-    }
-
-    SECTION("Iterator is move constructable") {
-        typename detail_::PermutationsImpl<set_type>::const_iterator move_itr(
-          std::move(begin_itr));
-        REQUIRE(move_itr == p0.begin());
-    }
-
-    SECTION("Iterator is move assignable") {
-        auto& pend_itr = (end_itr = std::move(begin_itr));
-        REQUIRE(&pend_itr == &end_itr);
-        REQUIRE(end_itr == p0.begin());
-    }
+    perm_itr p0;
+    check_state(p0, perm_itr{}, {});
 }
 
 TEST_CASE("Permutations of empty set") {
-    detail_::PermutationsImpl<set_type> p0(set_type({}));
-    auto begin_itr = p0.cbegin();
-    auto end_itr   = p0.cend();
-    REQUIRE(p0.size() == 1);
-    REQUIRE(!p0.empty());
-    REQUIRE(!begin_itr.are_equal(end_itr));
-    REQUIRE(begin_itr != end_itr);
+    set_type empty{};
+    perm_itr p0{empty, 0};
+    perm_itr p1{empty, 1};
+    check_state(p0, p1, {empty});
+}
 
-    SECTION("One prefix increment ends and doesn't copy") {
-        auto& pbegin_itr = begin_itr.increment();
-        REQUIRE(&pbegin_itr == &begin_itr);
-        REQUIRE(begin_itr == end_itr);
+TEST_CASE("Permutations of set of unique elements") {
+    set_type s0{1, 2, 3};
+    perm_itr p0{s0, 0};
+    perm_itr p1{s0, 6};
+    SECTION("Correctness") {
+        check_state(p0, p1,
+                    {set_type{1, 2, 3}, set_type{1, 3, 2}, set_type{2, 1, 3},
+                     set_type{2, 3, 1}, set_type{3, 1, 2}, set_type{3, 2, 1}});
     }
-    SECTION("Adding one to iterator terminates") {
-        auto& new_itr = begin_itr.advance(1);
-        REQUIRE(&new_itr == &begin_itr);
-        REQUIRE(begin_itr == end_itr);
+    SECTION("Copy Ctor") {
+        perm_itr p2{p0};
+        REQUIRE(p2 == p0);
+    }
+    SECTION("Copy Assignment") {
+        perm_itr p2;
+        REQUIRE(p2 != p0);
+        p2 = p0;
+        REQUIRE(p2 == p0);
+    }
+    SECTION("Move Ctor") {
+        perm_itr corr{p0};
+        perm_itr p2{std::move(p0)};
+        REQUIRE(p2 == corr);
+    }
+    SECTION("Move Assignment") {
+        perm_itr p2;
+        perm_itr corr{p0};
+        REQUIRE(p2 != p0);
+        p2 = std::move(p0);
+        REQUIRE(p2 == corr);
     }
 }
 
-TEST_CASE("Permutations instance {1,2,3} (i.e. no duplicates)") {
-    set_type numbers({1, 2, 3});
-    detail_::PermutationsImpl<set_type> p0(numbers);
-    auto begin_itr = p0.cbegin();
-    auto end_itr   = p0.cend();
-    REQUIRE(p0.size() == 6);
-    REQUIRE(p0[0] == numbers);
-    REQUIRE(*begin_itr == numbers);
-    REQUIRE(begin_itr != end_itr);
-
-    SECTION("Permutations is copyable") {
-        detail_::PermutationsImpl<set_type> p1(p0);
-        REQUIRE(p1 == p0);
-
-        SECTION("Permutation is swappable") {
-            detail_::PermutationsImpl<set_type> p2;
-            p2.swap(p0);
-            REQUIRE(p2 == p1);
-        }
-
-        SECTION("Permutations is movable") {
-            detail_::PermutationsImpl<set_type> p2(std::move(p0));
-            REQUIRE(p1 == p2);
-        }
-
-        SECTION("Permutations is move assignable") {
-            detail_::PermutationsImpl<set_type> p2;
-            REQUIRE(p2 != p1);
-            auto& pp2 = (p2 = std::move(p0));
-            REQUIRE(&p2 == &pp2);
-            REQUIRE(p2 == p1);
-        }
-    }
-
-    SECTION("Permutations is assignable") {
-        detail_::PermutationsImpl<set_type> p1;
-        REQUIRE(p1 != p0);
-        auto& pp1 = (p1 = p0); // Grabs the return value
-        REQUIRE(&p1 == &pp1);
-        REQUIRE(p1 == p0);
-    }
-
-    SECTION("prefix increment leads to {1,3,2} and no copy") {
-        set_type next_perm({1, 3, 2});
-        ++begin_itr;
-        REQUIRE(p0[1] == next_perm);
-        REQUIRE(*begin_itr == next_perm);
-        REQUIRE(begin_itr != end_itr);
-
-        SECTION("postfix increment leads to {2,1,3} and copy") {
-            auto rv = begin_itr++;
-            set_type next_next_perm({2, 1, 3});
-            REQUIRE(p0[2] == next_next_perm);
-            REQUIRE(*begin_itr == next_next_perm);
-            REQUIRE(rv.distance_to(begin_itr) == 1);
-            REQUIRE(begin_itr != end_itr);
-
-            SECTION("incrementing 3 more times leads to {3,2,1}") {
-                ++begin_itr;
-                ++begin_itr;
-                ++begin_itr;
-                set_type last_perm({3, 2, 1});
-                REQUIRE(p0[5] == last_perm);
-                REQUIRE(*begin_itr == last_perm);
-                REQUIRE(begin_itr != end_itr);
-
-                SECTION("Next increment ends") {
-                    ++begin_itr;
-                    REQUIRE(begin_itr == end_itr);
-                }
-            }
-        }
-
-        SECTION("Decrement leads to {1,2,3} and no copy") {
-            auto& pbegin_itr = begin_itr.decrement();
-            REQUIRE(*pbegin_itr == numbers);
-            REQUIRE(&pbegin_itr == &begin_itr);
-            REQUIRE(begin_itr != end_itr);
-        }
-    }
+TEST_CASE("Permutations of set of non-unique elements") {
+    set_type s0{1, 2, 2};
+    perm_itr p0{s0, 0};
+    perm_itr p1{s0, 3};
+    check_state(p0, p1,
+                {set_type{1, 2, 2}, set_type{2, 1, 2}, set_type{2, 2, 1}});
 }
 
-TEST_CASE("Permutations instance {1,2,2} (i.e. duplicates)") {
-    set_type numbers({1, 2, 2});
-    detail_::PermutationsImpl<set_type> p0(numbers);
-    auto begin_itr = p0.cbegin();
-    auto end_itr   = p0.cend();
-    REQUIRE(p0.size() == 3);
-    REQUIRE(p0[0] == numbers);
-    REQUIRE(*begin_itr == numbers);
-    REQUIRE(begin_itr != end_itr);
-
-    SECTION("prefix increment leads to {2,1,2}") {
-        ++begin_itr;
-        set_type next_perm({2, 1, 2});
-        REQUIRE(p0[1] == next_perm);
-        REQUIRE(*begin_itr == next_perm);
-        REQUIRE(begin_itr != end_itr);
-
-        SECTION("prefix increment leads to {2,2,1}") {
-            ++begin_itr;
-            set_type last_perm({2, 2, 1});
-            REQUIRE(p0[2] == last_perm);
-            REQUIRE(*begin_itr == last_perm);
-            REQUIRE(begin_itr != end_itr);
-
-            SECTION("Next increment ends") {
-                ++begin_itr;
-                REQUIRE(begin_itr == end_itr);
-            }
-        }
-    }
+TEST_CASE("Permutations from not lexicographically smallest") {
+    set_type s0{1, 3, 2};
+    perm_itr p0{s0, 0};
+    perm_itr p1{s0, 6};
+    check_state(p0, p1,
+                {set_type{1, 3, 2}, set_type{2, 1, 3}, set_type{2, 3, 1},
+                 set_type{3, 1, 2}, set_type{3, 2, 1}, set_type{1, 2, 3}},
+                1);
 }
 
-TEST_CASE("foreach syntax") {}
+TEST_CASE("Permutations of set of non-unique elements from not "
+          "lexicographically smallest") {
+    set_type s0{2, 1, 2};
+    perm_itr p0{s0, 0};
+    perm_itr p1{s0, 3};
+    check_state(p0, p1,
+                {set_type{2, 1, 2}, set_type{2, 2, 1}, set_type{1, 2, 2}}, 1);
+}

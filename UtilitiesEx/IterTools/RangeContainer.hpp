@@ -27,7 +27,7 @@ namespace detail_ {
  */
 template<typename IteratorType>
 class RangeContainer {
-    public:
+public:
     /// The type of the elements contained within this container
     using value_type = typename IteratorType::value_type;
 
@@ -132,18 +132,20 @@ class RangeContainer {
     size_type size() const noexcept { return size_; }
 
     /**
-     * @brief The theoretical maximum size of the container regardless of
-     * hardware limitations.
+     * @brief The theoretical maximum size of the container as determined by
+     * known software and hardware limitations.
      *
-     * For now the maximum size of the container is limited only by the maximum
-     * value @p size_type can hold.
+     * Since this container does not actually store its contents, but rather
+     * generates them on the fly, the maximum number of elements this container
+     * can hold is only bound by the requirement that the size of the container
+     * be indexable, which is the same as the maximum value of size_t.
      *
      * @return The theoretical maximum number of elements this container can
      * hold.
      *
      * @throw None. No throw guarantee.
      */
-    size_type max_size() const noexcept {
+    static constexpr size_type max_size() {
         return std::numeric_limits<size_type>::max();
     }
 
@@ -206,7 +208,7 @@ class RangeContainer {
         std::swap(size_, rhs.size_);
     }
 
-    private:
+private:
     /// An iterator pointing to the first element
     iterator start_;
 

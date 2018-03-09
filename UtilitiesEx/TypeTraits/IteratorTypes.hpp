@@ -262,8 +262,7 @@ struct RandomAccessIteratorBase
     virtual ParentType& advance(DifferenceType n) = 0;
 
     /// Implement to provide ordering
-    virtual DifferenceType distance_to(const ParentType& rhs) const
-      noexcept = 0;
+    virtual DifferenceType distance_to(const ParentType& rhs) const = 0;
 
     /** @brief Provides random access to any element in the container relative
      *  to the element currently pointed to by this iterator.
