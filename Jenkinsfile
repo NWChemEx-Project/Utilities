@@ -20,7 +20,7 @@ def compile_repo(depend_name, install_root, do_install) {
     """
 }
 
-def format_code():
+def format_code(){
     sh """
     set +x
     source /etc/profile
@@ -40,6 +40,7 @@ def format_code():
     exit 1
     fi
     """
+}
 
 node {
     def install_root="${WORKSPACE}/install"
