@@ -1,6 +1,7 @@
 #include <Utilities/Containers/MathSet.hpp>
 #include <Utilities/IterTools/Zip.hpp>
 #include <Utilities/TypeTraits/type_traitsExtensions.hpp>
+#include <array>
 #include <catch/catch.hpp>
 
 using namespace Utilities;
