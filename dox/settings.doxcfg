@@ -4,7 +4,7 @@
 # title of most generated pages and in a few other places.
 # The default value is: My Project.
 
-PROJECT_NAME           = "UtilitiesEx"
+PROJECT_NAME           = "Utilities"
 
 # The PROJECT_NUMBER tag can be used to enter a project or revision number. This
 # could be handy for archiving the generated documentation or if some version
@@ -24,7 +24,7 @@ PROJECT_BRIEF          = "Utilities for NWChemEx"
 # spaces.
 # Note: If this tag is empty the current directory is searched.
 
-INPUT                  = . UtilitiesEx UtilitiesEx/IterTools \
-                           UtilitiesEx/Mathematician UtilitiesEx/TypeTraits \
+INPUT                  = . Utilities Utilities/IterTools \
+                           Utilities/Mathematician Utilities/TypeTraits \
                            dox/IntroToCombinatorics.md \
                            dox/mainpage.md

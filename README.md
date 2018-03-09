@@ -1,4 +1,4 @@
-UtilitiesEx Repository
+Utilities Repository
 ======================
 
 The C++ standard library as well as the STL are great for providing many of the
@@ -20,8 +20,8 @@ sub libraries:
 - TypeTraits : Structs to make meta-template programming easier
   - Extended type intraspection (*i.e.* determining if a type has a member)
 
-Building UtilitiesEx
+Building Utilities
 --------------------
 
-UtilitiesEx piggy-backs off of NWChemExBase so see 
-[here](NWChemExBase/dox/Building.md) for instructions on building this library.
+Utilities piggy-backs off of CMakeBuild so see 
+[here](CMakeBuild/dox/Building.md) for instructions on building this library.
