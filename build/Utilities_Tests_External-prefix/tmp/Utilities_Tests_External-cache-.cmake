@@ -1,0 +1,6 @@
+
+set(CMAKE_PREFIX_PATH "/Users/wadejong/Desktop/NWChemEx_Project/NWChemEx-Project/Working/Utilities/build/stage/Users/wadejong/Desktop/NWChemEx_Project/NWChemEx-Project/NWChemEx" CACHE LIST "Initial cache" FORCE)
+set(CMAKE_INSTALL_RPATH "" CACHE LIST "Initial cache" FORCE)
+set(CMAKE_MODULE_PATH "/Users/wadejong/Desktop/NWChemEx_Project/NWChemEx-Project/Working/Utilities/build/stage/Users/wadejong/Desktop/NWChemEx_Project/NWChemEx-Project/NWChemEx;/Users/wadejong/Desktop/NWChemEx_Project/NWChemEx-Project/NWChemEx/share/cmake/CMakeBuild/macros;/Users/wadejong/Desktop/NWChemEx_Project/NWChemEx-Project/NWChemEx/share/cmake/CMakeBuild/find_external;/Users/wadejong/Desktop/NWChemEx_Project/NWChemEx-Project/NWChemEx/share/cmake/CMakeBuild/build_external;/Users/wadejong/Desktop/NWChemEx_Project/NWChemEx-Project/NWChemEx/share/cmake/CMakeBuild/macros;/Users/wadejong/Desktop/NWChemEx_Project/NWChemEx-Project/NWChemEx/share/cmake/CMakeBuild/find_external;/Users/wadejong/Desktop/NWChemEx_Project/NWChemEx-Project/NWChemEx/share/cmake/CMakeBuild/build_external" CACHE LIST "Initial cache" FORCE)
+set(CMAKE_CXX_FLAGS_DEBUG "-g -Wall" CACHE STRING "Initial cache" FORCE)
+set(NWX_DEPENDENCIES "CMakeBuild;Utilities" CACHE LIST "Initial cache" FORCE)
