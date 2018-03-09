@@ -1,1 +1,0 @@
-subdirs(test_stage/Users/wadejong/Desktop/NWChemEx_Project/NWChemEx-Project/NWChemEx/tests)
