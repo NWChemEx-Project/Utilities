@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.6)
-project(UtilitiesEx VERSION 0.0.0 LANGUAGES CXX)
-set(UtilitiesEx_DEPENDENCIES )
-find_package(NWChemExBase REQUIRED)
+project(Utilities VERSION 0.0.0 LANGUAGES CXX)
+set(Utilities_DEPENDENCIES )
+find_package(CMakeBuild REQUIRED)
 build_nwchemex_module(${CMAKE_CURRENT_LIST_DIR})

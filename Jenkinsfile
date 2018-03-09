@@ -1,5 +1,5 @@
-def repo_name="UtilitiesEx"
-def depends = ['NWChemExBase']
+def repo_name="Utilities"
+def depends = ['CMakeBuild']
 
 def compile_repo(depend_name, install_root, do_install) {
     sh """
