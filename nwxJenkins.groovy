@@ -58,8 +58,7 @@ def buildDependencies(String[] depends, cmakeCommand){
 
 for (int i=0; i<depends.size(); i++){
     dir("${depends[i]}"){
-//proper nwx credentials        git credentialsId:'422b0eed-700d-444d-961c-1e58cc75cda2',
-        git credentialsId:'28f08db3-853b-4d83-8dca-350277fc605a',
+        git credentialsId:'422b0eed-700d-444d-961c-1e58cc75cda2',
         url:"https://github.com/NWChemEx-Project/${depends[i]}.git",
         branch: 'master'
         compileRepo("${depends[i]}", "True", cmakeCommand)
