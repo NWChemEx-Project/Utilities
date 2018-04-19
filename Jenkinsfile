@@ -3,7 +3,7 @@ def depends = ["CMakeBuild"] as String[]
 def commonModules = "cmake llvm "
 def buildModuleMatrix = [
     		   "GCC":(commonModules + "gcc/7.1.0"),
-		   "Intel":(commonModules + "intel/17.0.5")
+		   "Intel":(commonModules + "gcc/7.1.0 intel-parallel-studio/cluster.2017.5-uxhpib5")
 		  ]
 def cmakeCommandMatrix = [
     		   "GCC":"-DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++",
