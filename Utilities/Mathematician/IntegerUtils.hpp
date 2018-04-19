@@ -31,8 +31,9 @@ namespace Utilities {
 template<typename SignedType = long, typename UnsignedType = std::size_t>
 SignedType UnsignedSubtract(const UnsignedType& lhs,
                             const UnsignedType& rhs) noexcept {
-    static_assert(std::is_integral<UnsignedType>::value);
-    static_assert(std::is_integral<SignedType>::value);
+    static_assert(std::is_integral<UnsignedType>::value, "Must be integral "
+                                                         "type");
+    static_assert(std::is_integral<SignedType>::value, "Must be integral type");
     if(lhs > rhs) return static_cast<SignedType>(lhs - rhs);
     SignedType negative1{-1};
     return negative1 * static_cast<SignedType>(rhs - lhs);

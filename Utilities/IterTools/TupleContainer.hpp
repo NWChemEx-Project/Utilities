@@ -1,7 +1,7 @@
 #pragma once
 #include "Utilities/TypeTraits/IteratorTypes.hpp"
 #include "Utilities/TypeTraits/TupleUtilities.hpp" //Includes tuple always
-#include <algorithm>                                 //For std::min
+#include <algorithm>                               //For std::min
 #include <type_traits>
 
 namespace Utilities {
@@ -80,14 +80,14 @@ using IteratorType =
  */
 template<typename IncrementFunctor, typename... ContainerTypes>
 class TupleContainerImpl {
-private:
+    private:
     /// Forward declaration of the actual iterator type
     class TupleContainerIterator;
 
     /// The type of a tuple holding iterators to the containers
     using iterator_tuple = std::tuple<detail_::IteratorType<ContainerTypes>...>;
 
-public:
+    public:
     /// The type of an element in this container.
     using value_type = std::tuple<std::remove_cv_t<
       typename GetValueType<detail_::IteratorType<ContainerTypes>>::type>...>;
@@ -297,7 +297,7 @@ public:
         return !((*this) == rhs);
     }
 
-private:
+    private:
     /// The number of containers we are zipping together
     constexpr static std::size_t ncontainers_ = sizeof...(ContainerTypes);
 
@@ -322,7 +322,7 @@ private:
      */
     class TupleContainerIterator
       : public detail_::InputIteratorBase<TupleContainerIterator, value_type> {
-    private:
+        private:
         /// Allows TupleContainerImpl to create an iterator
         friend class TupleContainerImpl<IncrementFunctor, ContainerTypes...>;
         /// Allows the base class to call the implementation functions
@@ -408,7 +408,7 @@ private:
             }
         };
 
-    public:
+        public:
         TupleContainerIterator() noexcept = default;
     };
 };

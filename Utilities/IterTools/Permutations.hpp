@@ -39,7 +39,7 @@ class PermutationItr
     /// Type of the base class (to simplify scoping types)
     using base_type = detail_::RandomAccessIteratorBase<my_type, SequenceType>;
 
-public:
+    public:
     /// Brings some of base class's typedefs into scope
     ///@{
     using value_type      = typename base_type::value_type;
@@ -242,7 +242,7 @@ public:
         std::swap(dx_, rhs.dx_);
     }
 
-private:
+    private:
     /// A copy of the parent's set, doesn't get modified
     value_type orig_set_;
 

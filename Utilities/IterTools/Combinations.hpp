@@ -30,7 +30,7 @@ class CombinationItr : public detail_::RandomAccessIteratorBase<
     /// The type of the base class, again for sanity.
     using base_type = detail_::RandomAccessIteratorBase<my_type, SequenceType>;
 
-public:
+    public:
     /// Typedefs forwarded from the base class
     ///@{
     using value_type      = typename base_type::value_type;
@@ -179,7 +179,7 @@ public:
         std::swap(current_perm_, rhs.current_perm_);
     }
 
-private:
+    private:
     /// A copy of the parent's set
     value_type set_;
 

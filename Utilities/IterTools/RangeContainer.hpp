@@ -27,7 +27,7 @@ namespace detail_ {
  */
 template<typename IteratorType>
 class RangeContainer {
-public:
+    public:
     /// The type of the elements contained within this container
     using value_type = typename IteratorType::value_type;
 
@@ -208,7 +208,7 @@ public:
         std::swap(size_, rhs.size_);
     }
 
-private:
+    private:
     /// An iterator pointing to the first element
     iterator start_;
 
