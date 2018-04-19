@@ -161,7 +161,7 @@ template<typename lhs_type, typename rhs_type, typename functor_type>
 auto tuple_transform(lhs_type&& lhs, rhs_type&& rhs, functor_type&& functor) {
     constexpr std::size_t size = std::tuple_size<std::decay_t<lhs_type>>::value;
     static_assert(size == std::tuple_size<std::decay_t<rhs_type>>::value,
-                  "LHS size != RHS size" );
+                  "LHS size != RHS size");
     return detail_::tuple_transform_impl(
       std::forward<lhs_type>(lhs), std::forward<rhs_type>(rhs),
       std::forward<functor_type>(functor), std::make_index_sequence<size>());
