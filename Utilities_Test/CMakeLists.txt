@@ -2,7 +2,6 @@ cmake_minimum_required(VERSION 3.1)
 project(Utilities-Test VERSION ${PROJECT_VERSION} LANGUAGES CXX)
 include(TargetMacros)
 
-add_cxx_unit_test(TestAny)
 add_cxx_unit_test(Testtype_traitsExtensions)
 add_cxx_unit_test(TestCartesianProduct)
 add_cxx_unit_test(TestCaseInsensitiveMap)
