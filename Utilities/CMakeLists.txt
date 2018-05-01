@@ -2,8 +2,7 @@ cmake_minimum_required(VERSION ${CMAKE_VERSION})
 project(Utilities-SRC VERSION ${PROJECT_VERSION} LANGUAGES CXX)
 include(TargetMacros)
 set(Utilities_SRCS Mathematician/Combinatorics.cpp)
-set(Utilities_INCLUDES Any.hpp
-                         Containers/CaseInsensitiveMap.hpp
+set(Utilities_INCLUDES   Containers/CaseInsensitiveMap.hpp
                          Containers/MathSet.hpp
                          Mathematician/Combinatorics.hpp
                          Mathematician/IntegerUtils.hpp
