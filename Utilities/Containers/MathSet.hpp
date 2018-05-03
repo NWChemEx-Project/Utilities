@@ -49,7 +49,7 @@ class MathSet {
      *
      *  @throw None. No throw guarantee.
      */
-    MathSet() noexcept = default;
+    MathSet() = default;
 
     /**
      * @brief Deep copies another MathSet instance.
