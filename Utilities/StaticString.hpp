@@ -1,5 +1,6 @@
 #pragma once
 #include <cstddef>
+#include <iostream>
 
 namespace Utilities {
 
@@ -226,3 +227,26 @@ private:
 }; // StaticString
 
 } // namespace Utilities
+
+/**
+ * @brief Overloads the std::ostream so that it can print the string
+ *
+ * It should be noted that this function is **NOT** constexpr.  That is to say
+ * the string will not be printed at compile-time, but at run-time.
+ *
+ * @param[in,out] os The ostream to add @p str to.
+ * @param[in] str The StaticString instance to print out.
+ * @return @p os in a manner ammenable for operator chaining.
+ * @throw std::failure if writing to the stream fails for any reason.  Weak
+ * throw guarantee regarding the state of @p os.
+ * @par Complexity:
+ * Presumably linear in the length of the string, but not certain.
+ * @par Data Races:
+ * Modifies @p os and data races may ensure if @p os is concurrently modified or
+ * accessed.  @p str can is a compile-time constant and thus is immune to data
+ * races.
+ */
+std::ostream& operator<<(std::ostream& os, const Utilities::StaticString& str) {
+    for(std::size_t i = 0; i < str.size(); ++i) os << str[i];
+    return os;
+}

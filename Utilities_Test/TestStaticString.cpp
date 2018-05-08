@@ -1,6 +1,8 @@
 #include <Utilities/StaticString.hpp>
 #include <cassert>
 #include <catch/catch.hpp>
+#include <sstream>
+
 // Note we use static_assert to assert that it's working at compile-time and we
 // have to use assert in the check_string function because REQUIRE is not
 // constexpr
@@ -48,4 +50,9 @@ TEST_CASE("Spaces StaticString") {
     constexpr StaticString hello_world{"hello world"};
     static_assert(check_string(hello_world, "hello world"));
     REQUIRE(check_string(hello_world, "hello world"));
+    std::stringstream ss_corr;
+    ss_corr << "hello world";
+    std::stringstream ss;
+    ss << hello_world;
+    REQUIRE(ss.str() == ss_corr.str());
 }
