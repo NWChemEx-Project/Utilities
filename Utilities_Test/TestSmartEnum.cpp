@@ -6,24 +6,35 @@ using namespace Utilities;
 
 DECLARE_SmartEnum(Fruit, apple, pear);
 
+/* I'm not sure if it's a compiler bug with Intel, but it won't let me use
+ * the enums as constexpr despite them being initialized as such...
+ */
+
 TEST_CASE("SmartEnum") {
+    /* Intel no like-y
     constexpr Fruit fuji = Fruit::apple;
     constexpr Fruit gala = Fruit::apple;
     constexpr Fruit bosc = Fruit::pear;
-
     static_assert(fuji == gala);
-    REQUIRE(fuji == gala);
     static_assert(fuji != bosc);
+    static_assert(fuji < bosc);
+    static_assert(fuji <= gala);
+    static_assert(bosc > fuji);
+    static_assert(fuji >= gala);
+    */
+
+    Fruit fuji = Fruit::apple;
+    Fruit gala = Fruit::apple;
+    Fruit bosc = Fruit::pear;
+
+    REQUIRE(fuji == gala);
     REQUIRE(fuji != bosc);
 
     // This uses the fact that enums are sorted alphabetically by the instance
-    static_assert(fuji < bosc);
+
     REQUIRE(fuji < bosc);
-    static_assert(fuji <= gala);
     REQUIRE(fuji <= gala);
-    static_assert(bosc > fuji);
     REQUIRE(bosc > fuji);
-    static_assert(fuji >= gala);
     REQUIRE(fuji >= gala);
 
     std::stringstream ss;
