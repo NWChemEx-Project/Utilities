@@ -227,7 +227,7 @@ protected:
 #define DECLARE_SmartEnum(enum_name, ...)                             \
     template<typename T>                                              \
     class enum_name##Impl : public SmartEnum<T> {                     \
-    protected:                                                        \
+    public:                                                           \
         using SmartEnum<T>::SmartEnum;                                \
                                                                       \
     public:                                                           \
@@ -235,6 +235,6 @@ protected:
     };                                                                \
     CALL_MACRO_X_FOR_EACH1(_DEFINE_SMARTENUM, enum_name, __VA_ARGS__) \
     class enum_name : public enum_name##Impl<enum_name> {             \
-    protected:                                                        \
+    public:                                                           \
         using enum_name##Impl<enum_name>::enum_name##Impl;            \
     }
