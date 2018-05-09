@@ -2,9 +2,12 @@ cmake_minimum_required(VERSION ${CMAKE_VERSION})
 project(Utilities-SRC VERSION ${PROJECT_VERSION} LANGUAGES CXX)
 include(TargetMacros)
 set(Utilities_SRCS Mathematician/Combinatorics.cpp)
-set(Utilities_INCLUDES   StaticString.hpp
+set(Utilities_INCLUDES
+        SmartEnum.hpp
+        StaticString.hpp
                          Containers/CaseInsensitiveMap.hpp
                          Containers/MathSet.hpp
+                         Macros/ForEach.hpp
                          Mathematician/Combinatorics.hpp
                          Mathematician/IntegerUtils.hpp
                          IterTools/CartesianProduct.hpp

@@ -218,6 +218,21 @@ public:
         return rhs <= *this;
     }
 
+    /**
+     * @brief Implicitly casts the current instance to a C-style string.
+     *
+     * This user-defined conversion allows the current instance to be used
+     * anywhere a C-style string could be.
+     *
+     * @return The current instance as a C-style string.
+     * @throws None. No throw guarantee.
+     * @par Complexity:
+     * Constant.
+     * @par Data Races:
+     * None.
+     */
+    constexpr operator const char*() const noexcept { return begin_; }
+
 private:
     /// A pointer to the start of the string
     const char* begin_;
@@ -228,25 +243,27 @@ private:
 
 } // namespace Utilities
 
-/**
- * @brief Overloads the std::ostream so that it can print the string
- *
- * It should be noted that this function is **NOT** constexpr.  That is to say
- * the string will not be printed at compile-time, but at run-time.
- *
- * @param[in,out] os The ostream to add @p str to.
- * @param[in] str The StaticString instance to print out.
- * @return @p os in a manner ammenable for operator chaining.
- * @throw std::failure if writing to the stream fails for any reason.  Weak
- * throw guarantee regarding the state of @p os.
- * @par Complexity:
- * Presumably linear in the length of the string, but not certain.
- * @par Data Races:
- * Modifies @p os and data races may ensure if @p os is concurrently modified or
- * accessed.  @p str can is a compile-time constant and thus is immune to data
- * races.
- */
-std::ostream& operator<<(std::ostream& os, const Utilities::StaticString& str) {
-    for(std::size_t i = 0; i < str.size(); ++i) os << str[i];
-    return os;
-}
+///**
+// * @brief Overloads the std::ostream so that it can print the string
+// *
+// * It should be noted that this function is **NOT** constexpr.  That is to say
+// * the string will not be printed at compile-time, but at run-time.
+// *
+// * @param[in,out] os The ostream to add @p str to.
+// * @param[in] str The StaticString instance to print out.
+// * @return @p os in a manner ammenable for operator chaining.
+// * @throw std::failure if writing to the stream fails for any reason.  Weak
+// * throw guarantee regarding the state of @p os.
+// * @par Complexity:
+// * Presumably linear in the length of the string, but not certain.
+// * @par Data Races:
+// * Modifies @p os and data races may ensure if @p os is concurrently modified
+// or
+// * accessed.  @p str can is a compile-time constant and thus is immune to data
+// * races.
+// */
+// std::ostream& operator<<(std::ostream& os, const Utilities::StaticString&
+// str) {
+//    for(std::size_t i = 0; i < str.size(); ++i) os << str[i];
+//    return os;
+//}
