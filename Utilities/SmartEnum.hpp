@@ -21,6 +21,10 @@ private:
     using my_type = SmartEnum<T>;
 
 public:
+    /// Intel won't let this be private
+    template<std::size_t N>
+    constexpr explicit SmartEnum(const char (&str)[N]) : value_(str) {}
+
     /**
      * @brief Compares two SmartEnums for equality.
      *
@@ -184,8 +188,6 @@ private:
 protected:
     /// Constructor, protected cause you won't ever call it outside derived
     /// class
-    template<std::size_t N>
-    constexpr explicit SmartEnum(const char (&str)[N]) : value_(str) {}
 };
 
 } // namespace Utilities
