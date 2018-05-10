@@ -4,7 +4,7 @@
 
 using namespace Utilities;
 
-DECLARE_SmartEnum(Fruit, apple, pear);
+DECLARE_SmartEnum(Fruit, apple, pear, banana, grape);
 
 /* I'm not sure if it's a compiler bug with Intel, but it won't let me use
  * the enums as constexpr despite them being initialized as such...

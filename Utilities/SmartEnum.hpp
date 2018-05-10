@@ -228,9 +228,9 @@ protected:
  */
 #define DECLARE_SmartEnum(enum_name, ...)                             \
     template<typename T>                                              \
-    class enum_name##Impl : public SmartEnum<T> {                     \
+    class enum_name##Impl : public Utilities::SmartEnum<T> {          \
     public:                                                           \
-        using SmartEnum<T>::SmartEnum;                                \
+        using Utilities::SmartEnum<T>::SmartEnum;                     \
                                                                       \
     public:                                                           \
         CALL_MACRO_X_FOR_EACH(_ADD_SMARTENUM, __VA_ARGS__)            \
