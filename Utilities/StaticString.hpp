@@ -137,6 +137,7 @@ public:
     constexpr bool operator>=(const StaticString& rhs) const noexcept {
         return rhs <= *this;
     }
+    ///@}
 
     /**
      * @brief Implicitly casts the current instance to a C-style string.
