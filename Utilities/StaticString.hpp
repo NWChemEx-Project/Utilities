@@ -20,6 +20,8 @@ namespace Utilities {
  *  dynamically allocated strings).  For this reason all function documentation
  *  is written assuming it will be called at compile-time.  In particular this
  *  means that all functions are thread-safe and noexcept.
+ *
+ *  @nosubgrouping
  */
 class StaticString {
 public:
@@ -45,7 +47,7 @@ public:
       size_(Length - 1) {}
 
     /**
-     * @brief Returns the i-th character of the
+     * @brief Returns the i-th character of the string.
      *
      * This function assumes that @p i is in bounds.  If @p i is not in bounds
      * you're likely to get a compiler error; however, this is not guaranteed.
@@ -75,46 +77,11 @@ public:
     constexpr std::size_t size() const noexcept { return size_; }
 
     /**
-     * @brief Determines if two strings are equal.
+     * @name String comparisons
+     * @brief Functions for determining if strings are equal, less than, ...
      *
      * Two strings are equal if they are the same length and the i-th character
      * is the same for both strings, for all i.
-     *
-     * @param rhs The string to compare to.
-     * @return True if the strings are the same and false otherwise.
-     * @par Complexity:
-     * Worst case linear in the length of the string.
-     * @par Data Races:
-     * None.
-     * @throws None. No throw guarantee.
-     */
-    constexpr bool operator==(const StaticString& rhs) const noexcept {
-        if(size_ != rhs.size()) return false;
-        for(std::size_t i = 0; i < size_; ++i) // know they are same size
-            if((*this)[i] != rhs[i]) return false;
-        return true;
-    }
-
-    /**
-     * @brief Determines if two strings are not equal.
-     *
-     * Two strings are equal if they are the same length and the i-th character
-     * is the same for both strings, for all i.
-     *
-     * @param rhs The string to compare to.
-     * @return True if the strings are not the same and false otherwise.
-     * @par Complexity:
-     * Worst case linear in the length of the string.
-     * @par Data Races:
-     * None.
-     * @throws None. No throw guarantee.
-     */
-    constexpr bool operator!=(const StaticString& rhs) const noexcept {
-        return !((*this) == rhs);
-    }
-
-    /**
-     * @brief Determines if the current string is less than another string
      *
      * A string is less than another string if it compares lexicographically
      * lower than the other string.  Note this comparison is done character by
@@ -123,13 +90,25 @@ public:
      * "alphabetically".
      *
      * @param rhs The string to compare to.
-     * @return True if the current string is less than @p rhs.
+     * @return True if the comparison is true and false otherwise.
      * @par Complexity:
      * Worst case linear in the length of the string.
      * @par Data Races:
      * None.
-     * @throws None. No throw guarantee.
+     * @throws None. All comparisons offer the no throw guarantee.
      */
+    ///@{
+    constexpr bool operator==(const StaticString& rhs) const noexcept {
+        if(size_ != rhs.size()) return false;
+        for(std::size_t i = 0; i < size_; ++i) // know they are same size
+            if((*this)[i] != rhs[i]) return false;
+        return true;
+    }
+
+    constexpr bool operator!=(const StaticString& rhs) const noexcept {
+        return !((*this) == rhs);
+    }
+
     constexpr bool operator<(const StaticString& rhs) const noexcept {
         const bool am_smaller      = (size() < rhs.size());
         const std::size_t min_size = (am_smaller ? size_ : rhs.size());
@@ -147,73 +126,14 @@ public:
         return am_smaller;
     }
 
-    /**
-     * @brief Determines if the current string is greater than another string
-     *
-     * A string is greater than another string if it compares lexicographically
-     * greater than the other string.  Note this comparison is done character by
-     * character and will only be alphabetic if all characters have the same
-     * case.  In ASCII upper case numbers are first and thus will come first
-     * "alphabetically".
-     *
-     * @param rhs The string to compare to.
-     * @return True if the current string is greater than @p rhs.
-     * @par Complexity:
-     * Worst case linear in the length of the string.
-     * @par Data Races:
-     * None.
-     * @throws None. No throw guarantee.
-     */
     constexpr bool operator>(const StaticString& rhs) const {
         return rhs < *this;
     }
 
-    /**
-     * @brief Determines if the current string is less than or equal to another
-     * string
-     *
-     * A string is less than another string if it compares lexicographically
-     * lower than the other string.  Note this comparison is done character by
-     * character and will only be alphabetic if all characters have the same
-     * case.  In ASCII upper case numbers are first and thus will come first
-     * "alphabetically".
-     *
-     * Two strings are equal if they are the same length and the i-th character
-     * is the same for both strings, for all i.
-     *
-     * @param rhs The string to compare to.
-     * @return True if the current string is less than or equal to @p rhs.
-     * @par Complexity:
-     * Worst case linear in the length of the string.
-     * @par Data Races:
-     * None.
-     * @throws None. No throw guarantee.
-     */
     constexpr bool operator<=(const StaticString& rhs) const {
         return (*this) < rhs || (*this) == rhs;
     }
 
-    /**
-     * @brief Determines if the current string is greater than or equal to
-     *        another string
-     *
-     * A string is greater than another string if it compares lexicographically
-     * greater than the other string.  Note this comparison is done character by
-     * character and will only be alphabetic if all characters have the same
-     * case.  In ASCII upper case numbers are first and thus will come first
-     * "alphabetically".
-     *
-     * Two strings are equal if they are the same length and the i-th character
-     * is the same for both strings, for all i.
-     *
-     * @param rhs The string to compare to.
-     * @return True if the current string is greater than or equal to @p rhs.
-     * @par Complexity:
-     * Worst case linear in the length of the string.
-     * @par Data Races:
-     * None.
-     * @throws None. No throw guarantee.
-     */
     constexpr bool operator>=(const StaticString& rhs) const noexcept {
         return rhs <= *this;
     }
