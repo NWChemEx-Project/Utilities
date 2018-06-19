@@ -1,6 +1,5 @@
-#define CATCH_CONFIG_MAIN
-#include "catch.hpp"
 #include <Utilities/Mathematician/Combinatorics.hpp>
+#include <catch.hpp>
 
 using namespace Utilities;
 using set_type = std::vector<size_t>;

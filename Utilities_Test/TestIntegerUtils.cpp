@@ -1,5 +1,5 @@
 #include <Utilities/Mathematician/IntegerUtils.hpp>
-#include <catch/catch.hpp>
+#include <catch.hpp>
 
 using namespace Utilities;
 

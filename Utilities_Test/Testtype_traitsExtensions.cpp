@@ -1,6 +1,7 @@
-#include "catch/catch.hpp"
 #include <Utilities/TypeTraits/type_traitsExtensions.hpp>
+#include <catch.hpp>
 #include <vector>
+
 using namespace Utilities;
 
 struct Struct1 {

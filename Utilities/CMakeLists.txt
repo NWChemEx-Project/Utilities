@@ -1,30 +1,30 @@
-cmake_minimum_required(VERSION ${CMAKE_VERSION})
-project(Utilities-SRC VERSION ${PROJECT_VERSION} LANGUAGES CXX)
-include(TargetMacros)
-set(Utilities_SRCS Mathematician/Combinatorics.cpp)
-set(Utilities_INCLUDES IterTools.hpp
-        SmartEnum.hpp
-        StaticString.hpp
-                         Containers/CaseInsensitiveMap.hpp
-                         Containers/MathSet.hpp
-                         Macros/ForEach.hpp
-                         Mathematician/Combinatorics.hpp
-                         Mathematician/IntegerUtils.hpp
-                         IterTools/CartesianProduct.hpp
-                         IterTools/Combinations.hpp
-                         IterTools/Enumerate.hpp
-                         IterTools/Permutations.hpp
-                         IterTools/Range.hpp
-                         IterTools/RangeContainer.hpp
-                         IterTools/TupleContainer.hpp
-                         IterTools/Zip.hpp
-                         TypeTraits/IteratorTypes.hpp
-                         TypeTraits/TupleUtilities.hpp
-                         TypeTraits/type_traitsExtensions.hpp
+set(
+    UTILITIES_HEADERS Containers/CaseInsensitiveMap.hpp
+                      Containers/MathSet.hpp
+                      IterTools/CartesianProduct.hpp
+                      IterTools/Combinations.hpp
+                      IterTools/Enumerate.hpp
+                      IterTools/Permutations.hpp
+                      IterTools/Range.hpp
+                      IterTools/RangeContainer.hpp
+                      IterTools/TupleContainer.hpp
+                      IterTools/Zip.hpp
+                      Macros/ForEach.hpp
+                      Mathematician/Combinatorics.hpp
+                      Mathematician/IntegerUtils.hpp
+                      TypeTraits/IteratorTypes.hpp
+                      TypeTraits/TupleUtilities.hpp
+                      TypeTraits/type_traitsExtensions.hpp
+                      IterTools.hpp
+                      SmartEnum.hpp
+                      StaticString.hpp
 )
-set(Utilities_DEFINITIONS )
-set(Utilities_LINK_FLAGS )
-nwchemex_add_library(Utilities Utilities_SRCS
-                                 Utilities_INCLUDES
-                                 Utilities_DEFINITIONS
-                                 Utilities_LINK_FLAGS)
+make_full_paths(UTILITIES_HEADERS)
+set(UTILITIES_HEADERS ${UTILITIES_HEADERS} PARENT_SCOPE)
+
+
+set(UTILITIES_SRCS Mathematician/Combinatorics.cpp)
+
+add_library(utilities ${UTILITIES_SRCS})
+target_compile_features(utilities PUBLIC cxx_std_14)
+install_targets("utilities" "${UTILITIES_HEADERS}")
