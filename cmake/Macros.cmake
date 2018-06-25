@@ -83,7 +83,7 @@ function(install_targets __targets __headers)
     )
 
     install(
-            FILES "${__headers}"
+            FILES ${__headers}
             DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
     )
 
