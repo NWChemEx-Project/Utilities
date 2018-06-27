@@ -1,6 +1,6 @@
 #include <Utilities/IterTools/CartesianProduct.hpp>
 #include <Utilities/IterTools/Enumerate.hpp>
-#include <catch/catch.hpp>
+#include <catch.hpp>
 
 using namespace Utilities;
 
@@ -18,31 +18,34 @@ void check_state(CP_t& c, vector_type&& corr) {
     }
 }
 
-TEST_CASE("Empty") {
-    auto c = CartesianProduct();
-    check_state(c, std::vector<std::tuple<>>{});
-}
+TEST_CASE("CartesianProduct") {
+    SECTION("Empty") {
+        auto c = CartesianProduct();
+        check_state(c, std::vector<std::tuple<>>{});
+    }
 
-TEST_CASE("Single container") {
-    std::vector<int> l{1, 2, 3};
-    std::vector<std::tuple<int>> corr{{1}, {2}, {3}};
-    auto c = CartesianProduct(l);
-    check_state(c, corr);
-}
+    SECTION("Single container") {
+        std::vector<int> l{1, 2, 3};
+        std::vector<std::tuple<int>> corr{{1}, {2}, {3}};
+        auto c = CartesianProduct(l);
+        check_state(c, corr);
+    }
 
-TEST_CASE("Two containers") {
-    std::vector<int> l{1, 2, 3};
-    std::vector<std::tuple<int, int>> corr{
-      {1, 1}, {1, 2}, {1, 3}, {2, 1}, {2, 2}, {2, 3}, {3, 1}, {3, 2}, {3, 3}};
-    auto c = CartesianProduct(l, l);
-    check_state(c, corr);
-}
+    SECTION("Two containers") {
+        std::vector<int> l{1, 2, 3};
+        std::vector<std::tuple<int, int>> corr{{1, 1}, {1, 2}, {1, 3},
+                                               {2, 1}, {2, 2}, {2, 3},
+                                               {3, 1}, {3, 2}, {3, 3}};
+        auto c = CartesianProduct(l, l);
+        check_state(c, corr);
+    }
 
-TEST_CASE("Two different containers") {
-    std::vector<int> l{1, 2, 3};
-    std::vector<int> l2{1, 3};
-    std::vector<std::tuple<int, int>> corr{{1, 1}, {1, 3}, {2, 1},
-                                           {2, 3}, {3, 1}, {3, 3}};
-    auto c = CartesianProduct(l, l2);
-    check_state(c, corr);
+    SECTION("Two different containers") {
+        std::vector<int> l{1, 2, 3};
+        std::vector<int> l2{1, 3};
+        std::vector<std::tuple<int, int>> corr{{1, 1}, {1, 3}, {2, 1},
+                                               {2, 3}, {3, 1}, {3, 3}};
+        auto c = CartesianProduct(l, l2);
+        check_state(c, corr);
+    }
 }

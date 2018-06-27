@@ -1,5 +1,5 @@
 #include <Utilities/IterTools/Enumerate.hpp>
-#include <catch/catch.hpp>
+#include <catch.hpp>
 #include <vector>
 
 using namespace Utilities;

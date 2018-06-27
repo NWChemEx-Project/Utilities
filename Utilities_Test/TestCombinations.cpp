@@ -1,5 +1,5 @@
 #include <Utilities/IterTools/Combinations.hpp>
-#include <catch/catch.hpp>
+#include <catch.hpp>
 
 using namespace Utilities;
 using vector_t = std::vector<int>;
@@ -42,88 +42,89 @@ void check_state(comb_itr<repeat> start, const comb_itr<repeat>& end,
         REQUIRE(*start++ == corr[counter++]);
     }
 }
-
-TEST_CASE("Default Ctor w/o Repeat") {
-    comb_itr<false> c0;
-    check_state(c0, c0, {}, {});
-}
-
-TEST_CASE("Default Ctor w Repeat") {
-    comb_itr<true> c0;
-    check_state(c0, c0, {}, {});
-}
-
 TEST_CASE("Combinations") {
-    std::vector<int> s0{1, 2, 3};
-    for(size_t k = 0; k < 4; ++k) {
-        SECTION("{1, 2, 3} choose " + std::to_string(k)) {
-            comb_itr<false> c0(s0, k, false);
-            comb_itr<false> c1(s0, k, true);
-            check_state<false>(c0, c1, s0, corr_combs[k]);
+    SECTION("Default Ctor w/o Repeat") {
+        comb_itr<false> c0;
+        check_state(c0, c0, {}, {});
+    }
+
+    SECTION("Default Ctor w Repeat") {
+        comb_itr<true> c0;
+        check_state(c0, c0, {}, {});
+    }
+
+    SECTION("Combinations") {
+        std::vector<int> s0{1, 2, 3};
+        for(size_t k = 0; k < 4; ++k) {
+            SECTION("{1, 2, 3} choose " + std::to_string(k)) {
+                comb_itr<false> c0(s0, k, false);
+                comb_itr<false> c1(s0, k, true);
+                check_state<false>(c0, c1, s0, corr_combs[k]);
+            }
         }
     }
-}
-TEST_CASE("Ctors w/o Repeat") {
-    std::vector<int> s0{1, 2, 3};
-    comb_itr<false> c0(s0, 2, false);
-    SECTION("Copy Ctor") {
-        comb_itr<false> c2{c0};
-        REQUIRE(c2 == c0);
-    }
-    SECTION("Copy assignment") {
-        comb_itr<false> c2;
-        REQUIRE(c2 != c0);
-        c2 = c0;
-        REQUIRE(c2 == c0);
-    }
-    SECTION("Move Ctor") {
-        comb_itr<false> c2{c0};
-        comb_itr<false> c3{std::move(c0)};
-        REQUIRE(c3 == c2);
-    }
-    SECTION("Move assignment") {
-        comb_itr<false> c2;
-        REQUIRE(c2 != c0);
-        comb_itr<false> c3{c0};
-        c2 = std::move(c3);
-        REQUIRE(c2 == c0);
-    }
-}
-
-TEST_CASE("Combinations With Repeat") {
-    std::vector<int> s0{1, 2};
-    for(size_t k = 0; k <= 4; ++k) {
-        SECTION("{1, 2} multichoose " + std::to_string(k)) {
-            comb_itr<true> c0(s0, k, false);
-            comb_itr<true> c1(s0, k, true);
-            check_state<true>(c0, c1, s0, corr_combs_wr[k]);
+    SECTION("Ctors w/o Repeat") {
+        std::vector<int> s0{1, 2, 3};
+        comb_itr<false> c0(s0, 2, false);
+        SECTION("Copy Ctor") {
+            comb_itr<false> c2{c0};
+            REQUIRE(c2 == c0);
+        }
+        SECTION("Copy assignment") {
+            comb_itr<false> c2;
+            REQUIRE(c2 != c0);
+            c2 = c0;
+            REQUIRE(c2 == c0);
+        }
+        SECTION("Move Ctor") {
+            comb_itr<false> c2{c0};
+            comb_itr<false> c3{std::move(c0)};
+            REQUIRE(c3 == c2);
+        }
+        SECTION("Move assignment") {
+            comb_itr<false> c2;
+            REQUIRE(c2 != c0);
+            comb_itr<false> c3{c0};
+            c2 = std::move(c3);
+            REQUIRE(c2 == c0);
         }
     }
-}
 
-TEST_CASE("Ctors w/Repeat") {
-    std::vector<int> s0{1, 2};
-    comb_itr<true> c0(s0, 2, false);
-    SECTION("Copy Ctor") {
-        comb_itr<true> c2{c0};
-        REQUIRE(c2 == c0);
+    SECTION("Combinations With Repeat") {
+        std::vector<int> s0{1, 2};
+        for(size_t k = 0; k <= 4; ++k) {
+            SECTION("{1, 2} multichoose " + std::to_string(k)) {
+                comb_itr<true> c0(s0, k, false);
+                comb_itr<true> c1(s0, k, true);
+                check_state<true>(c0, c1, s0, corr_combs_wr[k]);
+            }
+        }
     }
-    SECTION("Copy assignment") {
-        comb_itr<true> c2;
-        REQUIRE(c2 != c0);
-        c2 = c0;
-        REQUIRE(c2 == c0);
-    }
-    SECTION("Move Ctor") {
-        comb_itr<true> c2{c0};
-        comb_itr<true> c3{std::move(c0)};
-        REQUIRE(c3 == c2);
-    }
-    SECTION("Move assignment") {
-        comb_itr<true> c2;
-        REQUIRE(c2 != c0);
-        comb_itr<true> c3{c0};
-        c2 = std::move(c3);
-        REQUIRE(c2 == c0);
+
+    SECTION("Ctors w/Repeat") {
+        std::vector<int> s0{1, 2};
+        comb_itr<true> c0(s0, 2, false);
+        SECTION("Copy Ctor") {
+            comb_itr<true> c2{c0};
+            REQUIRE(c2 == c0);
+        }
+        SECTION("Copy assignment") {
+            comb_itr<true> c2;
+            REQUIRE(c2 != c0);
+            c2 = c0;
+            REQUIRE(c2 == c0);
+        }
+        SECTION("Move Ctor") {
+            comb_itr<true> c2{c0};
+            comb_itr<true> c3{std::move(c0)};
+            REQUIRE(c3 == c2);
+        }
+        SECTION("Move assignment") {
+            comb_itr<true> c2;
+            REQUIRE(c2 != c0);
+            comb_itr<true> c3{c0};
+            c2 = std::move(c3);
+            REQUIRE(c2 == c0);
+        }
     }
 }

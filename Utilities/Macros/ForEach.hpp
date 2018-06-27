@@ -109,12 +109,12 @@
  * @param[in] ... The list of arguments to apply @p x to
  */
 #define CALL_MACRO_X_FOR_EACH(_call, ...)                                     \
-    \ 
-  _GET_NTH_ARG("ignored", __VA_ARGS__, _fe0_24, _fe0_23, _fe0_22, _fe0_21,    \
-               _fe0_20, _fe0_19, _fe0_18, _fe0_17, _fe0_16, _fe0_15, _fe0_14, \
-               _fe0_13, _fe0_12, _fe0_11, _fe0_10, _fe0_9, _fe0_8, _fe0_7,    \
-               _fe0_6, _fe0_5, _fe0_4, _fe0_3, _fe0_2,                        \
-               _fe0_0)(_call, __VA_ARGS__)
+                                                                              \
+    _GET_NTH_ARG("ignored", __VA_ARGS__, _fe0_24, _fe0_23, _fe0_22, _fe0_21,  \
+                 _fe0_20, _fe0_19, _fe0_18, _fe0_17, _fe0_16, _fe0_15,        \
+                 _fe0_14, _fe0_13, _fe0_12, _fe0_11, _fe0_10, _fe0_9, _fe0_8, \
+                 _fe0_7, _fe0_6, _fe0_5, _fe0_4, _fe0_3, _fe0_2, _fe0_0)      \
+    (_call, __VA_ARGS__)
 /**
  * @brief Applies a macro to each argument in a list
  *
@@ -123,9 +123,9 @@
  * @param[in] ... The list of arguments to apply @p x to
  */
 #define CALL_MACRO_X_FOR_EACH1(_call, _0, ...)                                \
-    \ 
-  _GET_NTH_ARG("ignored", __VA_ARGS__, _fe1_24, _fe1_23, _fe1_22, _fe1_21,    \
-               _fe1_20, _fe1_19, _fe1_18, _fe1_17, _fe1_16, _fe1_15, _fe1_14, \
-               _fe1_13, _fe1_12, _fe1_11, _fe1_10, _fe1_9, _fe1_8, _fe1_7,    \
-               _fe1_6, _fe1_5, _fe1_4, _fe1_3, _fe1_2,                        \
-               _fe1_0)(_call, _0, __VA_ARGS__)
+                                                                              \
+    _GET_NTH_ARG("ignored", __VA_ARGS__, _fe1_24, _fe1_23, _fe1_22, _fe1_21,  \
+                 _fe1_20, _fe1_19, _fe1_18, _fe1_17, _fe1_16, _fe1_15,        \
+                 _fe1_14, _fe1_13, _fe1_12, _fe1_11, _fe1_10, _fe1_9, _fe1_8, \
+                 _fe1_7, _fe1_6, _fe1_5, _fe1_4, _fe1_3, _fe1_2, _fe1_0)      \
+    (_call, _0, __VA_ARGS__)

@@ -1,6 +1,6 @@
 #include <Utilities/StaticString.hpp>
 #include <cassert>
-#include <catch/catch.hpp>
+#include <catch.hpp>
 #include <sstream>
 
 // Note we use static_assert to assert that it's working at compile-time and we

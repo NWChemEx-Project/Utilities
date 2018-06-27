@@ -1,6 +1,6 @@
 #include <Utilities/TypeTraits/TupleUtilities.hpp>
 #include <array>
-#include <catch/catch.hpp>
+#include <catch.hpp>
 
 using namespace Utilities;
 

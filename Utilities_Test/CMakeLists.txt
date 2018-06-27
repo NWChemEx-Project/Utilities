@@ -1,20 +1,21 @@
-cmake_minimum_required(VERSION 3.1)
-project(Utilities-Test VERSION ${PROJECT_VERSION} LANGUAGES CXX)
-include(TargetMacros)
+set(
+    UTILITIES_TESTS test_main.cpp
+                    Testtype_traitsExtensions.cpp
+                    TestCartesianProduct.cpp
+                    TestCaseInsensitiveMap.cpp
+                    TestCombinations.cpp
+                    TestCombinatorics.cpp
+                    TestEnumerate.cpp
+                    TestIntegerUtils.cpp
+                    TestIteratorTypes.cpp
+                    TestPermutations.cpp
+                    TestRange.cpp
+                    TestRangeContainer.cpp
+                    TestMathSet.cpp
+                    TestSmartEnum.cpp
+                    TestStaticString.cpp
+                    TestTupleUtilities.cpp
+                    TestZip.cpp
+)
 
-add_cxx_unit_test(Testtype_traitsExtensions)
-add_cxx_unit_test(TestCartesianProduct)
-add_cxx_unit_test(TestCaseInsensitiveMap)
-add_cxx_unit_test(TestCombinations)
-add_cxx_unit_test(TestCombinatorics)
-add_cxx_unit_test(TestEnumerate)
-add_cxx_unit_test(TestIntegerUtils)
-add_cxx_unit_test(TestIteratorTypes)
-add_cxx_unit_test(TestPermutations)
-add_cxx_unit_test(TestRange)
-add_cxx_unit_test(TestRangeContainer)
-add_cxx_unit_test(TestMathSet)
-add_cxx_unit_test(TestSmartEnum)
-add_cxx_unit_test(TestStaticString)
-add_cxx_unit_test(TestTupleUtilities)
-add_cxx_unit_test(TestZip)
+add_catch_cxx_tests(test_utilities "${UTILITIES_TESTS}" utilities)
