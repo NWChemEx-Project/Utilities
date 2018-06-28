@@ -1,0 +1,29 @@
+language: C++
+sudo: required
+os:
+  - linux
+addons:
+  apt:
+    sources:
+      - deadsnakes
+      - ubuntu-toolchain-r-test
+    packages:
+      - python3.6
+      - gcc-7
+      - g++-7
+      - gfortran-7
+compiler:
+  - mpicxx
+before_script:
+  - ./travis/build_env.sh
+  - lsb_release -a
+  - gcc --version
+  - g++ --version
+  - gfortran --version
+  - mpicc -show
+  - mpicxx -show
+  - mpif90 -show
+  - python3 --version
+  - ./travis/build_openblas.sh
+script:
+  - ./travis/build_and_test.sh
