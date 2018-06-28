@@ -19,9 +19,6 @@ set(
                       SmartEnum.hpp
                       StaticString.hpp
 )
-make_full_paths(UTILITIES_HEADERS)
-set(UTILITIES_HEADERS ${UTILITIES_HEADERS} PARENT_SCOPE)
-
 
 set(UTILITIES_SRCS Mathematician/Combinatorics.cpp)
 

@@ -19,5 +19,3 @@ if(${BUILD_TESTS})
     enable_testing()
     add_subdirectory(Utilities_Test)
 endif()
-
-

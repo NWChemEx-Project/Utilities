@@ -1,13 +1,23 @@
+#This file contains macros that are useful for taking care of boilerplate in
+#CMakeLists.txt.  They may require tweaking to satisfy your particular
+#situation.
+
+# Wraps the boilerplate for starting Hunter.  Must be a macro and not a function
+# because Hunter introduces some variables it needs into the global namespace.
+# To force Hunter to use a hunter/Config.cmake file for your project add "LOCAL"
+# to the end of the HunterGate command.
 macro(start_hunter)
-    include("cmake/HunterGate.cmake")
-    set(__HUNTER_VERSION "0.22.14")
-    set(GH_URL "https://github.com/ruslo/hunter/archive/")
-    set(GH_URL "${GH_URL}${__HUNTER_VERSION}.tar.gz")
+    #Change this and the next line to change the version of hunter used
+    set(__HUNTER_VERSION "v0.22.14")
     set(__HUNTER_SHA1 "f194eab02248f7d8792f7fc0158f6194d005bf86")
-    HunterGate(
-            URL  "${GH_URL}"
-            SHA1 "${HUNTER_SHA1}"
-    )
+
+    #Assemble the GitHub URL to use
+    set(__GH_URL "https://github.com/ruslo/hunter/archive/")
+    set(__GH_URL "${__GH_URL}${__HUNTER_VERSION}.tar.gz")
+
+    #Include and call Hunter
+    include("cmake/HunterGate.cmake")
+    HunterGate(URL "${__GH_URL}" SHA1 "${__HUNTER_SHA1}")
 endmacro()
 
 function(prefix_paths __prefix __list)
@@ -86,12 +96,24 @@ function(install_targets __targets __headers)
             INCLUDES DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
     )
 
-    install(
-            FILES ${__headers}
-            DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}"
-    )
+    #Install headers
+    #
+    #This next part can be a bit tricky.  We assume that ${__headers} is a list
+    #of header files relative to the directory this function was called from.
+    #The tricky part is that relative path may contain subdirectories.  If we
+    #just tell CMake to install the headers it won't make the subdirectories.
+    #To avoid this, we loop over the files, grabbing the directories (if they
+    #exist) and append them to the path.
+    foreach(__header ${__headers})
+        get_filename_component(__dir ${__header} DIRECTORY)
+        message(STATUS "${__dir} ${__header}")
+        install(
+            FILES ${__header}
+            DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}/${__dir}"
+        )
+    endforeach()
 
-    # Signal the need to install the config files
+    # Signal the need to install the config files we just made
     install(
             FILES "${project_config}" "${version_config}"
             DESTINATION "${config_install_dir}"
