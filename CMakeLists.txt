@@ -1,20 +1,28 @@
 cmake_minimum_required(VERSION 3.6)
-include(cmake/Macros.cmake)
+file(
+     DOWNLOAD
+      https://github.com/NWChemEx-Project/DeveloperTools/raw/master/cmake.tar.gz
+     ${CMAKE_BINARY_DIR}/cmake.tar.gz)
+execute_process(
+        COMMAND ${CMAKE_COMMAND} -E tar xzf ${CMAKE_BINARY_DIR}/cmake.tar.gz
+        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
+)
+include(${CMAKE_BINARY_DIR}/cmake/Macros.cmake)
 start_hunter() #Must be before project command
 
-project(utilities VERSION 0.0.0 LANGUAGES CXX)
+project(Utilities VERSION 0.0.0 LANGUAGES CXX)
 
-### Dependencies ####
-hunter_add_package(Catch)
-find_package(Catch2 CONFIG REQUIRED)
+### Options ###
+option(BUILD_TESTS "Should we build the tests?" ON)
+
+### Dependencies ###
+
 
 ### Target ###
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 add_subdirectory(Utilities)
 
 ### Testing ###
-enable_testing()
-add_subdirectory(Utilities_Test)
-
-
-
+if(${BUILD_TESTS})
+    enable_testing()
+    add_subdirectory(Utilities_Test)
+endif()

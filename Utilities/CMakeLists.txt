@@ -19,12 +19,7 @@ set(
                       SmartEnum.hpp
                       StaticString.hpp
 )
-make_full_paths(UTILITIES_HEADERS)
-set(UTILITIES_HEADERS ${UTILITIES_HEADERS} PARENT_SCOPE)
-
 
 set(UTILITIES_SRCS Mathematician/Combinatorics.cpp)
+add_nwx_library(utilities "${UTILITIES_SRCS}" "${UTILITIES_HEADERS}")
 
-add_library(utilities ${UTILITIES_SRCS})
-target_compile_features(utilities PUBLIC cxx_std_14)
-install_targets("utilities" "${UTILITIES_HEADERS}")
