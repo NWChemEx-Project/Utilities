@@ -4,17 +4,20 @@ start_hunter() #Must be before project command
 
 project(utilities VERSION 0.0.0 LANGUAGES CXX)
 
-### Dependencies ####
+### Options ###
+option(BUILD_TESTS "Should we build the tests?" ON)
+
+### Dependencies ###
 hunter_add_package(Catch)
 find_package(Catch2 CONFIG REQUIRED)
 
 ### Target ###
-include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 add_subdirectory(Utilities)
 
 ### Testing ###
-enable_testing()
-add_subdirectory(Utilities_Test)
-
+if(${BUILD_TESTS})
+    enable_testing()
+    add_subdirectory(Utilities_Test)
+endif()
 
 

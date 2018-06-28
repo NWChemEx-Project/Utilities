@@ -26,5 +26,8 @@ set(UTILITIES_HEADERS ${UTILITIES_HEADERS} PARENT_SCOPE)
 set(UTILITIES_SRCS Mathematician/Combinatorics.cpp)
 
 add_library(utilities ${UTILITIES_SRCS})
+target_include_directories(utilities PUBLIC
+        $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
+        $<INSTALL_INTERFACE:include>)
 target_compile_features(utilities PUBLIC cxx_std_14)
 install_targets("utilities" "${UTILITIES_HEADERS}")
