@@ -20,19 +20,12 @@ macro(start_hunter)
     HunterGate(URL "${__GH_URL}" SHA1 "${__HUNTER_SHA1}")
 endmacro()
 
-function(prefix_paths __prefix __list)
-    foreach(__file ${${__list}})
-        list(APPEND __temp_list ${__prefix}/${__file})
-    endforeach()
-    set(${__list} ${__temp_list} PARENT_SCOPE)
-endfunction()
-
-function(make_full_paths __list)
-    set(__prefix "${CMAKE_CURRENT_LIST_DIR}")
-    prefix_paths(${__prefix} ${__list})
-    set(${__list} ${${__list}} PARENT_SCOPE)
-endfunction()
-
+#Wraps the boilerplate associated with making a Catch test.
+#Arguments:
+# - __name : A string that will be used for the name of the test and the binary
+# - __srcs : A list of  source files that should be compiled together to produce
+#            the binary
+# - __targets: A list of targets that the tests need to link to
 function(add_catch_cxx_tests __name __srcs __targets)
     enable_testing()
     add_executable(${__name} "${__srcs}")
@@ -41,7 +34,13 @@ function(add_catch_cxx_tests __name __srcs __targets)
 endfunction()
 
 
-#Writes the files needed for find_package(XXX CONFIG)
+#Writes the files needed for find_package(${PROJECT_NAME} CONFIG)
+#Resulting target can be linked against as ${PROJECT_NAME}::${__target}
+#Header files will be installed in ${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}
+#Arguments:
+#   - __target: The name of the target to install
+#   - __headers: A list of headers with paths relative to the invocation of this
+#                function.
 #Uses the variables:
 #   - PROJECT_NAME
 #   - PROJECT_VERSION
@@ -58,6 +57,7 @@ function(install_targets __targets __headers)
     #   * <prefix>/include/
     set(config_install_dir "${CMAKE_INSTALL_LIBDIR}/cmake/${PROJECT_NAME}")
 
+    # Directory where the generated files will be stored.
     set(generated_dir "${CMAKE_CURRENT_BINARY_DIR}/generated")
 
     # Configuration
