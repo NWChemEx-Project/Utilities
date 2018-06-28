@@ -144,6 +144,6 @@ function(add_nwx_library __name __srcs __headers)
             $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
             $<INSTALL_INTERFACE:include>
     )
-    target_compile_features(utilities PUBLIC cxx_std_14)
+    target_compile_features(${__name} PUBLIC cxx_std_14)
     install_targets(${__name} "${__headers}")
 endfunction()
