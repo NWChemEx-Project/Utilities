@@ -28,6 +28,8 @@ endmacro()
 # - __targets: A list of targets that the tests need to link to
 function(add_catch_cxx_tests __name __srcs __targets)
     enable_testing()
+    hunter_add_package(Catch)
+    find_package(Catch2 CONFIG REQUIRED)
     add_executable(${__name} "${__srcs}")
     target_link_libraries(${__name} PRIVATE Catch2::Catch ${__targets})
     add_test(NAME "${__name}" COMMAND ${__name})
@@ -122,6 +124,26 @@ function(install_targets __targets __headers)
             NAMESPACE "${namespace}"
             DESTINATION "${config_install_dir}"
     )
+endfunction()
 
-
+#Wraps the boilerplate associated with making a library.
+#This function assumes that your sources and includes are all contained in some
+#directory, call it "root".  Within "root" there may be additional directory
+#structure.  Furthermore, it is assumed that all source files include header
+#files relative to "root".
+#Arguments:
+#    - __name: The name of the target, will also be used to name the library
+#    - __srcs: A list of the src files associated with the library
+#    - __headers: A list of the header files to install
+#Uses the variables:
+#    - PROJECT_SOURCE_DIR: Used as build include path
+function(add_nwx_library __name __srcs __headers)
+    add_library(${__name} "${__srcs}")
+    target_include_directories(
+            ${__name} PUBLIC
+            $<BUILD_INTERFACE:${PROJECT_SOURCE_DIR}>
+            $<INSTALL_INTERFACE:include>
+    )
+    target_compile_features(utilities PUBLIC cxx_std_14)
+    install_targets(${__name} "${__headers}")
 endfunction()

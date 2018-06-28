@@ -8,8 +8,7 @@ project(Utilities VERSION 0.0.0 LANGUAGES CXX)
 option(BUILD_TESTS "Should we build the tests?" ON)
 
 ### Dependencies ###
-hunter_add_package(Catch)
-find_package(Catch2 CONFIG REQUIRED)
+
 
 ### Target ###
 add_subdirectory(Utilities)
