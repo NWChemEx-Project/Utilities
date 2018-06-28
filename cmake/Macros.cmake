@@ -1,12 +1,12 @@
 macro(start_hunter)
     include("cmake/HunterGate.cmake")
-    set(HUNTER_VERSION "v0.22.14")
+    set(__HUNTER_VERSION "v0.22.14")
     set(GH_URL "https://github.com/ruslo/hunter/archive/")
-    set(GH_URL "${GH_URL}${HUNTER_VERSION}.tar.gz")
-    set(HUNTER_SHA1 "f194eab02248f7d8792f7fc0158f6194d005bf86")
+    set(GH_URL "${GH_URL}${__HUNTER_VERSION}.tar.gz")
+    set(__HUNTER_SHA1 "f194eab02248f7d8792f7fc0158f6194d005bf86")
     HunterGate(
             URL  "${GH_URL}"
-            SHA1 "${HUNTER_SHA1}"
+            SHA1 "${__HUNTER_SHA1}"
     )
 endmacro()
 

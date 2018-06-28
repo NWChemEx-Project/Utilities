@@ -7,7 +7,7 @@ project(utilities VERSION 0.0.0 LANGUAGES CXX)
 ### Options ###
 option(BUILD_TESTS "Should we build the tests?" ON)
 
-### Dependencies ###
+### Dependencies ####
 hunter_add_package(Catch)
 find_package(Catch2 CONFIG REQUIRED)
 
@@ -19,5 +19,3 @@ if(${BUILD_TESTS})
     enable_testing()
     add_subdirectory(Utilities_Test)
 endif()
-
-
