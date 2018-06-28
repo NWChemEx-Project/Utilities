@@ -106,7 +106,6 @@ function(install_targets __targets __headers)
     #exist) and append them to the path.
     foreach(__header ${__headers})
         get_filename_component(__dir ${__header} DIRECTORY)
-        message(STATUS "${__dir} ${__header}")
         install(
             FILES ${__header}
             DESTINATION "${CMAKE_INSTALL_INCLUDEDIR}/${PROJECT_NAME}/${__dir}"
