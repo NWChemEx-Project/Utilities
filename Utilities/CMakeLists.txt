@@ -27,6 +27,6 @@ add_nwx_library(
 )
 install_targets(
         TARGETS utilities
-        INCLUDES ${UTILITIES_INCLUDES}
+        INCLUDES ${UTILITIES_HEADERS}
 )
 
