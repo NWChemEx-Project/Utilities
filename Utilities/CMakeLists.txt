@@ -21,5 +21,12 @@ set(
 )
 
 set(UTILITIES_SRCS Mathematician/Combinatorics.cpp)
-add_nwx_library(utilities "${UTILITIES_SRCS}" "${UTILITIES_HEADERS}")
+add_nwx_library(
+        NAME utilities
+        SOURCES ${UTILITIES_SRCS}
+)
+install_targets(
+        TARGETS utilities
+        INCLUDES ${UTILITIES_INCLUDES}
+)
 
