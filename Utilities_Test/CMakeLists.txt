@@ -18,4 +18,8 @@ set(
                     TestZip.cpp
 )
 
-add_catch_cxx_tests(test_utilities "${UTILITIES_TESTS}" utilities)
+add_catch_cxx_tests(
+        NAME test_utilities
+        SOURCES ${UTILITIES_TESTS}
+        DEPENDS utilities
+)
