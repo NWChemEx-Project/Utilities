@@ -21,12 +21,12 @@ namespace detail_ {
 template<typename element_type>
 class RangeItr
   : public RandomAccessIteratorBase<RangeItr<element_type>, element_type> {
-    private:
+private:
     /// Typedef of the base type for sanity
     using base_type =
       detail_::RandomAccessIteratorBase<RangeItr<element_type>, element_type>;
 
-    public:
+public:
     /// Pulls the const_reference typedef into scope
     using const_reference = const element_type&;
 
@@ -108,7 +108,7 @@ class RangeItr
       increment_(increment),
       value_(start_) {}
 
-    private:
+private:
     /// Allows base class to implement random access iterator
     friend base_type;
 
@@ -128,7 +128,7 @@ class RangeItr
     }
 
     /// Implements itr1 - itr2
-    difference_type distance_to(const RangeItr& rhs) const noexcept {
+    difference_type distance_to(const RangeItr& rhs) const noexcept override {
         const bool is_positive = rhs.value_ > value_;
         difference_type abs_diff =
           is_positive ? rhs.value_ - value_ : value_ - rhs.value_;
@@ -146,7 +146,7 @@ class RangeItr
      *  otherwise.
      *  @throw None. No throw guarantee.
      */
-    bool are_equal(const RangeItr& rhs) const noexcept {
+    bool are_equal(const RangeItr& rhs) const noexcept override {
         return value_ == rhs.value_;
     }
 
@@ -193,11 +193,11 @@ class RangeItr
 template<typename element_type = std::size_t>
 class RangeImpl
   : public detail_::RangeContainer<detail_::RangeItr<element_type>> {
-    private:
+private:
     /// Typedef of base class for sanity
     using base_type = detail_::RangeContainer<detail_::RangeItr<element_type>>;
 
-    public:
+public:
     using typename base_type::difference_type;
 
     /**
