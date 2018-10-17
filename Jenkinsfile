@@ -1,12 +1,10 @@
 def repoName= "Utilities"
 def commonModules = "cmake llvm "
 def buildModuleMatrix = [
-    		   "GCC":(commonModules + "gcc/7.1.0"),
-		   "Intel":(commonModules + "gcc/7.1.0 intel-parallel-studio/cluster.2018.0-tpfbvga")
+    		   "GCC":(commonModules + "gcc/7.1.0")
 		  ]
 def cmakeCommandMatrix = [
-    		   "GCC":"-DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++",
-		   "Intel":"-DCMAKE_C_COMPILER=icc -DCMAKE_CXX_COMPILER=icpc"
+    		   "GCC":"-DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++"
 		   ]
 
 def credentialsID = "422b0eed-700d-444d-961c-1e58cc75cda2"
@@ -43,6 +41,19 @@ for (int i=0; i<buildTypeList.size(); i++){
 
     stage('Check Code Formatting'){
         nwxJenkins.formatCode()
+    }
+
+    stage('Get CMakePackagingProject') {
+        sh """
+           set +x
+           source /etc/profile
+           module load git cmake
+           git clone https://github.com/CMakePackagingProject/CMakePackagingProject
+           cd CMakePackagingProject
+           cmake -H. -Bbuild -DBUILD_TESTS=OFF \
+                             -DCMAKE_INSTALL_PREFIX=${WORKSPACE}/install
+           cd build && cmake --build --target install
+           """
     }
 
     stage('Build Repo'){
