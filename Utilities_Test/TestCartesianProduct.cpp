@@ -1,6 +1,6 @@
 #include <Utilities/IterTools/CartesianProduct.hpp>
 #include <Utilities/IterTools/Enumerate.hpp>
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 using namespace Utilities;
 

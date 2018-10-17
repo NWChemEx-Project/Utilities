@@ -1,5 +1,5 @@
 #include <Utilities/IterTools/Combinations.hpp>
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 using namespace Utilities;
 using vector_t = std::vector<int>;

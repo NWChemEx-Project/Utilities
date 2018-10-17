@@ -1,7 +1,7 @@
 #include <Utilities/IterTools/Range.hpp>
 #include <Utilities/IterTools/Zip.hpp>
 #include <Utilities/TypeTraits/type_traitsExtensions.hpp>
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 using namespace Utilities;
 
