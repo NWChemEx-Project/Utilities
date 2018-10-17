@@ -52,7 +52,7 @@ for (int i=0; i<buildTypeList.size(); i++){
            cd CMakePackagingProject
            cmake -H. -Bbuild -DBUILD_TESTS=OFF \
                              -DCMAKE_INSTALL_PREFIX=${WORKSPACE}/install
-           cd build && cmake --build --target install
+           cmake --build build --target install
            """
     }
 
