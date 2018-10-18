@@ -1,5 +1,5 @@
 #include <Utilities/Mathematician/Combinatorics.hpp>
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 using namespace Utilities;
 using set_type = std::vector<size_t>;

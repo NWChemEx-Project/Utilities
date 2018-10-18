@@ -1,6 +1,6 @@
 #include <Utilities/TypeTraits/IteratorTypes.hpp>
 #include <Utilities/TypeTraits/type_traitsExtensions.hpp>
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 using namespace Utilities;
 using namespace detail_;

@@ -1,6 +1,6 @@
 #include <Utilities/IterTools/Permutations.hpp>
 #include <Utilities/TypeTraits/type_traitsExtensions.hpp>
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 
 using namespace Utilities;
 using set_type = std::vector<int>;

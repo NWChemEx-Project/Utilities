@@ -1,28 +1,13 @@
-cmake_minimum_required(VERSION 3.6)
-file(
-     DOWNLOAD
-      https://github.com/NWChemEx-Project/DeveloperTools/raw/master/cmake.tar.gz
-     ${CMAKE_BINARY_DIR}/cmake.tar.gz)
-execute_process(
-        COMMAND ${CMAKE_COMMAND} -E tar xzf ${CMAKE_BINARY_DIR}/cmake.tar.gz
-        WORKING_DIRECTORY ${CMAKE_BINARY_DIR}
-)
-include(${CMAKE_BINARY_DIR}/cmake/Macros.cmake)
-start_hunter() #Must be before project command
+cmake_minimum_required(VERSION 3.8)
+project(utilities VERSION 1.0.0)
+find_package(cpp REQUIRED)
 
-project(Utilities VERSION 0.0.0 LANGUAGES CXX)
+cpp_option(BUILD_TESTS ON)
+cpp_find_or_build_dependency(Catch2 URL github.com/catchorg/Catch2)
 
-### Options ###
-option(BUILD_TESTS "Should we build the tests?" ON)
-
-### Dependencies ###
-
-
-### Target ###
 add_subdirectory(Utilities)
 
-### Testing ###
-if(${BUILD_TESTS})
+if(BUILD_TESTS)
     enable_testing()
     add_subdirectory(Utilities_Test)
 endif()

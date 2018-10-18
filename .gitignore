@@ -1,14 +1,16 @@
-IterTools.config
-IterTools.files
-IterTools.includes
+#Files that are temporary
+*.tmp
 *.autosave
 
+#IDE Settings
 .idea/
 
+#Build directories
 docs/
-cmake-build-debug/
-cmake-build-release/
+*-build-*/
 Debug/
 Release/
 
+#Generated files not part of project
 .clang-format
+toolchain.cmake

@@ -1,5 +1,5 @@
 #include <Utilities/SmartEnum.hpp>
-#include <catch.hpp>
+#include <catch2/catch.hpp>
 #include <sstream>
 
 using namespace Utilities;
