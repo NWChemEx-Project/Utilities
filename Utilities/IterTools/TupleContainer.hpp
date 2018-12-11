@@ -352,13 +352,10 @@ class TupleContainerImpl {
         }
 
         /// Implements the means by which this class can be dereferenced
-        reference dereference() { return buffer_; }
-
-        /// Implements the mechanism for dereferencing a read-only iterator
-        const_reference dereference() const { return buffer_; }
+        reference dereference_() override { return buffer_; }
 
         /// Implements the mechansim for incrementing this iterator
-        TupleContainerIterator& increment() noexcept {
+        TupleContainerIterator& increment_() override {
             IncrementFunctor f;
             f.run(start_, end_, value_,
                   std::make_index_sequence<ncontainers_>());
@@ -368,7 +365,8 @@ class TupleContainerImpl {
 
         /// Implements the mechanism for checking if this iterator equals
         /// another
-        bool are_equal(const TupleContainerIterator& rhs) const noexcept {
+        bool are_equal_(const TupleContainerIterator& rhs) const noexcept
+        override {
             return value_ == rhs.value_;
         }
 

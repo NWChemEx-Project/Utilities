@@ -43,6 +43,7 @@ class PermutationItr
     /// Brings some of base class's typedefs into scope
     ///@{
     using value_type      = typename base_type::value_type;
+    using reference = typename base_type::reference;
     using const_reference = typename base_type::const_reference;
     using difference_type = typename base_type::difference_type;
     using size_type       = typename base_type::size_type;
@@ -90,19 +91,37 @@ class PermutationItr
       offset_(offset),
       dx_(permutation_to_decimal(input_set, sorted_orig_)) {}
 
-    /** @brief Allows access to the current permutation.
+    /**
+     * @brief Swaps the state of the current instance with that of another.
      *
-     *  In accordance with usual C++ practice the element is returned by
-     *  reference.  However, any changes made to the element will be overridden
-     *  when the iterator is incremented or decremented.
      *
-     *  @note The base class will use this function to implement both the
-     *  read-only and the read/write dereference operation via const_cast.
-     *
-     *  @return The element being pointed to.
-     *  @throws None. No throw guarantee.
+     * @param rhs the instance to swap with.  After the operation it will
+     *        contain the state of the current instance.
+     * @throw ??? if SequenceType's swap function throws.  Guarantee is no throw
+     *        if SequenceType's swap is also no throw.  Otherwise it is weak at
+     *        best.
      */
-    const_reference dereference() const override { return set_; }
+    void swap(PermutationItr& rhs) {
+        std::swap(orig_set_, rhs.orig_set_);
+        std::swap(sorted_orig_, rhs.sorted_orig_);
+        std::swap(set_, rhs.set_);
+        std::swap(offset_, rhs.offset_);
+        std::swap(dx_, rhs.dx_);
+    }
+protected:
+    /** @brief Allows access to the current permutation.
+ *
+ *  In accordance with usual C++ practice the element is returned by
+ *  reference.  However, any changes made to the element will be overridden
+ *  when the iterator is incremented or decremented.
+ *
+ *  @note The base class will use this function to implement both the
+ *  read-only and the read/write dereference operation via const_cast.
+ *
+ *  @return The element being pointed to.
+ *  @throws None. No throw guarantee.
+ */
+    reference dereference_() override { return set_; }
 
     /** @brief Makes the iterator point to the next permutation.
      *
@@ -121,7 +140,7 @@ class PermutationItr
      *          std::next_permutation throws given the resulting iterators.
      *          Same throw guarantee as the throwing function.
      */
-    PermutationItr& increment() {
+    PermutationItr& increment_() override {
         std::next_permutation(set_.begin(), set_.end());
         ++offset_;
         return *this;
@@ -145,7 +164,7 @@ class PermutationItr
      *  @return True if this iterator is exactly the same as @p rhs
      *  @throws None No throw guarantee.
      */
-    bool are_equal(const PermutationItr& rhs) const noexcept {
+    bool are_equal_(const PermutationItr& rhs) const noexcept override {
         return std::tie(orig_set_, set_, offset_) ==
                std::tie(rhs.orig_set_, rhs.set_, rhs.offset_);
     }
@@ -167,7 +186,7 @@ class PermutationItr
      *          if prev_permutation throws with the resulting iterators.  Same
      *          guarantee as the throwing function.
      */
-    PermutationItr& decrement() {
+    PermutationItr& decrement_() override {
         std::prev_permutation(set_.begin(), set_.end());
         --offset_;
         return *this;
@@ -188,7 +207,7 @@ class PermutationItr
      *          memory to complete.  Strong throw guarantee.
      *
      */
-    PermutationItr& advance(difference_type n) {
+    PermutationItr& advance_(difference_type n) override {
         set_ = decimal_to_permutation(offset_ + dx_ + n, sorted_orig_);
         offset_ += n; // After above call for strong throw guarantee
         return *this;
@@ -218,31 +237,13 @@ class PermutationItr
      *
      *
      */
-    difference_type distance_to(const PermutationItr& rhs) const {
+    difference_type distance_to_(const PermutationItr& rhs) const override {
         difference_type ddx  = UnsignedSubtract(rhs.dx_, dx_);
         difference_type doff = UnsignedSubtract(rhs.offset_, offset_);
         return ddx + doff;
     }
 
-    /**
-     * @brief Swaps the state of the current instance with that of another.
-     *
-     *
-     * @param rhs the instance to swap with.  After the operation it will
-     *        contain the state of the current instance.
-     * @throw ??? if SequenceType's swap function throws.  Guarantee is no throw
-     *        if SequenceType's swap is also no throw.  Otherwise it is weak at
-     *        best.
-     */
-    void swap(PermutationItr& rhs) {
-        std::swap(orig_set_, rhs.orig_set_);
-        std::swap(sorted_orig_, rhs.sorted_orig_);
-        std::swap(set_, rhs.set_);
-        std::swap(offset_, rhs.offset_);
-        std::swap(dx_, rhs.dx_);
-    }
-
-    private:
+private:
     /// A copy of the parent's set, doesn't get modified
     value_type orig_set_;
 

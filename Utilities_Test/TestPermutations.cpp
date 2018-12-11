@@ -21,9 +21,9 @@ void check_state(perm_itr& b, const perm_itr& end,
             perm_itr temp{corr[pstart], 0};
             long dx = static_cast<long>(pstart) - counter;
 
-            REQUIRE(b.distance_to(temp) == dx);
+            REQUIRE(b - temp == dx);
             perm_itr copyb{b};
-            REQUIRE(*(copyb.advance(dx)) == *temp);
+            REQUIRE(*(copyb+=dx) == *temp);
         }
         REQUIRE(*b++ == corr[counter++]);
     }

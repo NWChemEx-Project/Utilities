@@ -8,14 +8,15 @@ using namespace detail_;
 struct Iterator : public InputIteratorBase<Iterator, int> {
     int value_ = 0;
 
-    Iterator& increment() {
+protected:
+    Iterator& increment_() {
         ++value_;
         return *this;
     }
 
-    const int& dereference() const { return value_; }
+    int& dereference_() { return value_; }
 
-    bool are_equal(const Iterator& other) const noexcept {
+    bool are_equal_(const Iterator& other) const noexcept {
         return value_ == other.value_;
     }
 };
@@ -62,20 +63,20 @@ TEST_CASE("InputIterator base class") {
 struct BidirectionalIterator
   : public BidirectionalIteratorBase<BidirectionalIterator, int> {
     int value_ = 0;
-
-    BidirectionalIterator& increment() {
+protected:
+    BidirectionalIterator& increment_() {
         ++value_;
         return *this;
     }
 
-    BidirectionalIterator& decrement() {
+    BidirectionalIterator& decrement_() {
         --value_;
         return *this;
     }
 
-    const int& dereference() const { return value_; }
+    int& dereference_() { return value_; }
 
-    bool are_equal(const BidirectionalIterator& other) const noexcept {
+    bool are_equal_(const BidirectionalIterator& other) const noexcept {
         return value_ == other.value_;
     }
 };
@@ -102,28 +103,28 @@ TEST_CASE("BidirectionalIterator base class") {
 struct RandomAccessIterator
   : public RandomAccessIteratorBase<RandomAccessIterator, int> {
     int value_ = 0;
-
-    RandomAccessIterator& increment() {
+protected:
+    RandomAccessIterator& increment_() {
         ++value_;
         return *this;
     }
 
-    RandomAccessIterator& decrement() {
+    RandomAccessIterator& decrement_() {
         --value_;
         return *this;
     }
 
-    const int& dereference() const { return value_; }
+    int& dereference_() { return value_; }
 
-    bool are_equal(const RandomAccessIterator& other) const noexcept {
+    bool are_equal_(const RandomAccessIterator& other) const noexcept {
         return value_ == other.value_;
     }
 
-    long int distance_to(const RandomAccessIterator& other) const noexcept {
+    long int distance_to_(const RandomAccessIterator& other) const noexcept {
         return other.value_ - value_;
     }
 
-    RandomAccessIterator& advance(long int n) {
+    RandomAccessIterator& advance_(long int n) {
         value_ += n;
         return *this;
     }

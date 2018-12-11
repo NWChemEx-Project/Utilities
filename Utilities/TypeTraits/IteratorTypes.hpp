@@ -4,7 +4,7 @@
 /** @file IteratorTypes.hpp
  *
  *  This file contains base classes that will remove much of the boiler
- *  plate associated with iterators.
+ *  plate associated with making iterators.
  *
  *  How to use these classes is probably best exhibited by example.  For that
  *  purpose see TestIteratorTypes.cpp.  These classes are implemented in a
@@ -12,7 +12,6 @@
  *  Boost has similar implementations available and is trying to actively get
  *  their implementations into the STL. If that happens we likely will want to
  *  switch.
- *
  *
  *  Contents:
  *  - InputIteratorBase : Base class for an input iterator
@@ -66,15 +65,6 @@ struct InputIteratorBase {
     /// The concept tag this iterator obeys
     using iterator_category = std::input_iterator_tag;
 
-    /// Implement this so we can increment your iterator
-    virtual ParentType& increment() = 0;
-
-    /// Implement this so we can dereference your iterator
-    virtual const_reference dereference() const = 0;
-
-    /// Implement to provide equality comparisons
-    virtual bool are_equal(const ParentType& rhs) const noexcept = 0;
-
     /** @brief Allows access to the element currently pointed at by this
      *  iterator.
      *
@@ -83,13 +73,14 @@ struct InputIteratorBase {
      *  @return The element this iterator currently points to.
      *  @throws exception if dereference throws.
      */
-    const_reference operator*() const { return dereference(); }
+    const_reference operator*() const {
+        using my_type =
+            InputIteratorBase<ParentType, ValueType, SizeType, DifferenceType>;
+        return const_cast<my_type&>(*this).dereference_();
+    }
 
     ///@copydoc operator*()const
-    reference operator*() {
-        const_reference temp = dereference();
-        return const_cast<reference>(temp); // NOLINT
-    }
+    reference operator*() { return dereference_(); }
 
     /** @brief Provides access to an element's member functions directly.
      *
@@ -120,7 +111,7 @@ struct InputIteratorBase {
      *  @throws exception if increment throws
      *
      */
-    ParentType& operator++() { return increment(); }
+    ParentType& operator++() { return increment_(); }
 
     /** @brief Implements postfix increment.
      *
@@ -150,7 +141,7 @@ struct InputIteratorBase {
      * @throws None. No throw guarantee
      */
     bool operator==(const ParentType& rhs) const noexcept {
-        return are_equal(rhs);
+        return are_equal_(rhs);
     }
 
     /** @brief Check to ensure two iterators are not identical.
@@ -166,6 +157,16 @@ struct InputIteratorBase {
     bool operator!=(const ParentType& rhs) const noexcept {
         return !((*this) == rhs);
     }
+protected:
+
+    /// Implement this so we can increment your iterator
+    virtual ParentType& increment_() = 0;
+
+    /// Implement this so we can dereference your iterator
+    virtual reference dereference_()  = 0;
+
+    /// Implement to provide equality comparisons
+    virtual bool are_equal_(const ParentType& rhs) const noexcept = 0;
 };
 
 /** @brief This class is designed to facilitate making your own bidirectional
@@ -197,9 +198,6 @@ struct BidirectionalIteratorBase
   : public InputIteratorBase<ParentType, ValueType, SizeType, DifferenceType> {
     using iterator_category = std::bidirectional_iterator_tag;
 
-    /// Implement to provide decrement functionality
-    virtual ParentType& decrement() = 0;
-
     /** @brief Decrements the current iterator before returning the value.
      *
      *  This operator relies on decrement for its functionality.
@@ -207,7 +205,7 @@ struct BidirectionalIteratorBase
      *  @returns The current iterator after decrementing it.
      *  @throws exception if decrement throws.
      */
-    ParentType& operator--() { return decrement(); }
+    ParentType& operator--() { return decrement_(); }
 
     /** @brief Decrements the current iterator after returning the value.
      *
@@ -224,6 +222,10 @@ struct BidirectionalIteratorBase
         --(*this);
         return copy_of_me;
     }
+
+protected:
+    /// Implement to provide decrement functionality
+    virtual ParentType& decrement_() = 0;
 };
 
 /** @brief This class is designed to facilitate making your own random access
@@ -258,12 +260,6 @@ struct RandomAccessIteratorBase
                                      DifferenceType> {
     using iterator_category = std::random_access_iterator_tag;
 
-    /// Implement to provide advance
-    virtual ParentType& advance(DifferenceType n) = 0;
-
-    /// Implement to provide ordering
-    virtual DifferenceType distance_to(const ParentType& rhs) const = 0;
-
     /** @brief Provides random access to any element in the container relative
      *  to the element currently pointed to by this iterator.
      *
@@ -288,7 +284,7 @@ struct RandomAccessIteratorBase
      *  @throws None. No throw guarantee.
      */
     bool operator<(const ParentType& rhs) const noexcept {
-        return distance_to(rhs) > 0;
+        return distance_to_(rhs) > 0;
     }
 
     /** @brief Compares two iterators and returns true if the current iterator
@@ -348,7 +344,7 @@ struct RandomAccessIteratorBase
      *  @returns The iterator advanced @p n elements.
      *  @throws exception if advance throws.
      */
-    ParentType& operator+=(DifferenceType n) { return advance(n); }
+    ParentType& operator+=(DifferenceType n) { return advance_(n); }
 
     /** @brief Creates a copy of the current iterator that points to the element
      *  a specified number of iterations away.
@@ -406,8 +402,15 @@ struct RandomAccessIteratorBase
      * @throws exception if distance_to throws.
      */
     DifferenceType operator-(const ParentType& rhs) const {
-        return distance_to(rhs);
+        return distance_to_(rhs);
     }
+protected:
+    /// Implement to provide advance
+    virtual ParentType& advance_(DifferenceType n) = 0;
+
+    /// Implement to provide ordering
+    virtual DifferenceType distance_to_(const ParentType& rhs) const = 0;
+
 };
 
 /**

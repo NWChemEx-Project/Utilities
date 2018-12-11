@@ -35,9 +35,9 @@ void check_state(comb_itr<repeat> start, const comb_itr<repeat>& end,
             comb_itr<repeat> tmp{orig, corr[i].size(), false};
             for(std::size_t j = 0; j < i; ++j) ++tmp;
             const long dx = static_cast<long>(i) - counter;
-            REQUIRE(start.distance_to(tmp) == dx);
+            REQUIRE(start - tmp == dx);
             comb_itr<repeat> copy{start};
-            REQUIRE(copy.advance(dx) == tmp);
+            REQUIRE((copy += dx) == tmp);
         }
         REQUIRE(*start++ == corr[counter++]);
     }

@@ -34,6 +34,7 @@ class CombinationItr : public detail_::RandomAccessIteratorBase<
     /// Typedefs forwarded from the base class
     ///@{
     using value_type      = typename base_type::value_type;
+    using reference       = typename base_type::reference;
     using const_reference = typename base_type::const_reference;
     using size_type       = typename base_type::size_type;
     using difference_type = typename base_type::difference_type;
@@ -77,92 +78,6 @@ class CombinationItr : public detail_::RandomAccessIteratorBase<
         update_comb();
     }
 
-    /** @brief Returns a read-only version of the element currently pointed to
-     *         by this iterator.
-     *
-     *
-     *  @return The element being pointed to.
-     *  @throws None No throw guarantee.
-     */
-    const_reference dereference() const noexcept { return comb_; }
-
-    /** @brief Makes the iterator point to the next Combination.
-     *
-     *  Combinations are ordered lexicographically and "next" follows from
-     *  this convention.
-     *
-     *  @warning Incrementing beyond the end of the container is allowed;
-     *           however, dereferencing the corresponding iterator is
-     *           undefined behavior.
-     *
-     *  @return The iterator after incrementing
-     *  @throws None No throw guarantee.
-     */
-    CombinationItr& increment() noexcept {
-        ++current_perm_;
-        update_comb();
-        return *this;
-    }
-
-    /** @brief Makes the iterator point to the previous Combination.
-     *
-     *  Combinations are ordered lexicographically and "previous" follows
-     *  from this convention.
-     *
-     *  @warning Decrementing beyond the beginning of the container is
-     *           allowed; however, dereferencing the corresponding iterator
-     *           is undefined behavior.
-     *
-     *  @return The iterator after decrementing
-     *  @throws None No throw guarantee.
-     */
-    CombinationItr& decrement() noexcept {
-        --current_perm_;
-        update_comb();
-        return *this;
-    }
-
-    /** @brief Moves the current iterator @p n iterations
-     *
-     *  @param[in] n The number of iterations to move the iterator.  Can
-     *             be either forward or backward.
-     *  @returns The current iterator pointing at the element @p n
-     *           iterations away.
-     *  @throws ??? if update_comb() throws same throw guarantee.
-     *
-     */
-    CombinationItr& advance(difference_type n) {
-        current_perm_ += n;
-        update_comb();
-        return *this;
-    }
-
-    /** Compares two CombinationItrs for exact equality
-     *
-     *  Exact equality is defined as pointing to the same Combination,
-     *  having the same starting Combination, and having both wrapped (or
-     *  not wrapped).
-     *
-     *  @param[in] other The iterator to compare to.
-     *  @return True if this iterator is exactly the same as @p other
-     *  @throws None No throw guarantee.  We assume that SequenceType's equality
-     *          operator is also no throw.
-     */
-    bool are_equal(const CombinationItr& other) const noexcept {
-        return std::tie(set_, current_perm_) ==
-               std::tie(other.set_, other.current_perm_);
-    }
-
-    /** @brief Returns the distance between this iterator and another
-     *
-     * @param[in] rhs The iterator we want the distance to.
-     * @returns the distance between the two iterators
-     * @throw None No throw guarantee
-     */
-    difference_type distance_to(const CombinationItr& rhs) const noexcept {
-        return current_perm_ - rhs.current_perm_;
-    }
-
     /**
      * @brief Exchanges the current iterator's state with that of another
      * instance.
@@ -179,7 +94,7 @@ class CombinationItr : public detail_::RandomAccessIteratorBase<
         std::swap(current_perm_, rhs.current_perm_);
     }
 
-    private:
+private:
     /// A copy of the parent's set
     value_type set_;
 
@@ -208,6 +123,91 @@ class CombinationItr : public detail_::RandomAccessIteratorBase<
         }
     }
 
+    /** @brief Returns a read-only version of the element currently pointed to
+     *         by this iterator.
+     *
+     *
+     *  @return The element being pointed to.
+     *  @throws None No throw guarantee.
+     */
+    reference dereference_() override { return comb_; }
+
+    /** @brief Makes the iterator point to the next Combination.
+     *
+     *  Combinations are ordered lexicographically and "next" follows from
+     *  this convention.
+     *
+     *  @warning Incrementing beyond the end of the container is allowed;
+     *           however, dereferencing the corresponding iterator is
+     *           undefined behavior.
+     *
+     *  @return The iterator after incrementing
+     *  @throws None No throw guarantee.
+     */
+    CombinationItr& increment_() override {
+        ++current_perm_;
+        update_comb();
+        return *this;
+    }
+
+    /** @brief Makes the iterator point to the previous Combination.
+     *
+     *  Combinations are ordered lexicographically and "previous" follows
+     *  from this convention.
+     *
+     *  @warning Decrementing beyond the beginning of the container is
+     *           allowed; however, dereferencing the corresponding iterator
+     *           is undefined behavior.
+     *
+     *  @return The iterator after decrementing
+     *  @throws None No throw guarantee.
+     */
+    CombinationItr& decrement_() override {
+        --current_perm_;
+        update_comb();
+        return *this;
+    }
+
+    /** @brief Moves the current iterator @p n iterations
+     *
+     *  @param[in] n The number of iterations to move the iterator.  Can
+     *             be either forward or backward.
+     *  @returns The current iterator pointing at the element @p n
+     *           iterations away.
+     *  @throws ??? if update_comb() throws same throw guarantee.
+     *
+     */
+    CombinationItr& advance_(difference_type n) override {
+        current_perm_ += n;
+        update_comb();
+        return *this;
+    }
+
+    /** Compares two CombinationItrs for exact equality
+     *
+     *  Exact equality is defined as pointing to the same Combination,
+     *  having the same starting Combination, and having both wrapped (or
+     *  not wrapped).
+     *
+     *  @param[in] other The iterator to compare to.
+     *  @return True if this iterator is exactly the same as @p other
+     *  @throws None No throw guarantee.  We assume that SequenceType's equality
+     *          operator is also no throw.
+     */
+    bool are_equal_(const CombinationItr& other) const noexcept override {
+        return std::tie(set_, current_perm_) ==
+               std::tie(other.set_, other.current_perm_);
+    }
+
+    /** @brief Returns the distance between this iterator and another
+     *
+     * @param[in] rhs The iterator we want the distance to.
+     * @returns the distance between the two iterators
+     * @throw None No throw guarantee
+     */
+    difference_type distance_to_(const CombinationItr& rhs) const override {
+        return current_perm_ - rhs.current_perm_;
+    }
 }; // End class CombinationItr
 
 } // End namespace detail_

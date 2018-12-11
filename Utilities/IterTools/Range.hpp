@@ -27,11 +27,12 @@ class RangeItr
       detail_::RandomAccessIteratorBase<RangeItr<element_type>, element_type>;
 
     public:
-    /// Pulls the const_reference typedef into scope
-    using const_reference = const element_type&;
-
-    /// Pulls the difference_type typedef into scope
+    /// Pulls some typedefs into scope
+    ///@{
+    using reference = typename base_type::reference;
+    using const_reference = typename base_type::const_reference;
     using typename base_type::difference_type;
+    ///@}
 
     /**
      * @brief Makes a default RangeItr instance.
@@ -105,7 +106,7 @@ class RangeItr
     RangeItr(element_type start, element_type stop, difference_type increment) :
       start_(start),
       stop_(stop),
-      increment_(increment),
+      shift_(increment),
       value_(start_) {}
 
     private:
@@ -113,22 +114,22 @@ class RangeItr
     friend base_type;
 
     /// Implements operator*()
-    const_reference dereference() const override { return value_; }
+    reference dereference_() override { return value_; }
 
     /// Implements operator++
-    RangeItr& increment() override { return advance(increment_); }
+    RangeItr& increment_() override { return advance_(shift_); }
 
     /// Implements operator--
-    RangeItr& decrement() override { return advance(-1 * increment_); }
+    RangeItr& decrement_() override { return advance_(-1 * shift_); }
 
     /// Implements operator+=
-    RangeItr& advance(difference_type adv) override {
+    RangeItr& advance_(difference_type adv) override {
         adv > 0 ? value_ += adv : value_ -= -1 * adv;
         return *this;
     }
 
     /// Implements itr1 - itr2
-    difference_type distance_to(const RangeItr& rhs) const noexcept {
+    difference_type distance_to_(const RangeItr& rhs) const noexcept {
         const bool is_positive = rhs.value_ > value_;
         difference_type abs_diff =
           is_positive ? rhs.value_ - value_ : value_ - rhs.value_;
@@ -146,7 +147,7 @@ class RangeItr
      *  otherwise.
      *  @throw None. No throw guarantee.
      */
-    bool are_equal(const RangeItr& rhs) const noexcept {
+    bool are_equal_(const RangeItr& rhs) const noexcept {
         return value_ == rhs.value_;
     }
 
@@ -157,7 +158,7 @@ class RangeItr
     element_type stop_ = 0;
 
     /// The amount to increment by
-    difference_type increment_ = 1;
+    difference_type shift_ = 1;
 
     /// The current value of the iterator
     element_type value_ = 0;
