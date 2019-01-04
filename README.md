@@ -23,5 +23,24 @@ sub libraries:
 Building Utilities
 --------------------
 
-Utilities piggy-backs off of CMakeBuild so see 
-[here](CMakeBuild/dox/Building.md) for instructions on building this library.
+Utilities is built using [CPP](https://github.com/CMakePackagingProject/CMakePackagingProject.git),
+hence the first step is to build and install CPP if you have not done so
+already. Then building Utilities can be accomplished by:
+
+```bash
+git clone https://github.com/NWChemEx-Project/Utilities.git
+cd Utilities
+cmake -H. -Bbuild -DCMAKE_PREFIX_PATH=<where/you/installed/CPP> \
+                  -DCMAKE_INSTALL_PREFIX=<where/you/want/to/install/Utilities>
+cd build
+cmake --build .
+#May need to run as an admin depending on where you are installing
+cmake --build . --target install                  
+```
+
+Note that the configure will appear to hang when it gets to Catch2. 
+This is because it is building Catch2. Building of Catch2 can be 
+avoided by disabling tests (*i.e.*, passing `-DBUILD_TESTS=OFF` to the first
+invocation of `cmake`) or by providing CMake with an already built version of
+Catch2 by passing `-DCatch2_ROOT=/path/to/catch2` to the first invocation of 
+`cmake`.
