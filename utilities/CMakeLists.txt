@@ -1,5 +1,5 @@
 set(
-    UTILITIES_HEADERS containers/case_nsensitive_map.hpp
+    UTILITIES_HEADERS containers/case_insensitive_map.hpp
                       containers/math_set.hpp
                       iter_tools/cartesian_product.hpp
                       iter_tools/combinations.hpp
