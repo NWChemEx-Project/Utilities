@@ -6,7 +6,10 @@
 .idea/
 
 #Build directories
-docs/
+docs/build
+docs/doxyoutput
+docs/source/api
+
 *-build-*/
 Debug/
 Release/
