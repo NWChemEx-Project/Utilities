@@ -1,5 +1,5 @@
 import os
-file_name = os.path.join("..", "Utilities", "Macros", "ForEach.hpp")
+file_name = os.path.join("..", "utilities", "macros", "for_each.hpp")
 depth = 25
 max_args = 1
 
