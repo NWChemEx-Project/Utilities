@@ -1,5 +1,5 @@
 #pragma once
-#include "utilities/type_traits/iterator_types.hpp"
+#include "utilities/iterators/input_iterator_base.hpp"
 #include "utilities/type_traits/tuple_utilities.hpp" //Includes tuple always
 #include <algorithm>                               //For std::min
 #include <type_traits>
@@ -320,13 +320,14 @@ class TupleContainerImpl {
      * TupleContainerImpl goes out of scope.
      *
      */
-    class TupleContainerIterator
-      : public detail_::InputIteratorBase<TupleContainerIterator, value_type> {
+    class TupleContainerIterator:
+        public utilities::iterators::InputIteratorBase<TupleContainerIterator,
+                                                      value_type> {
         private:
         /// Allows TupleContainerImpl to create an iterator
         friend class TupleContainerImpl<IncrementFunctor, ContainerTypes...>;
         /// Allows the base class to call the implementation functions
-        friend class detail_::InputIteratorBase<TupleContainerIterator,
+        friend class utilities::iterators::InputIteratorBase<TupleContainerIterator,
                                                 value_type>;
 
         /** @brief Creates a TupleContainerIterator instance.

@@ -1,5 +1,6 @@
 #pragma once
 #include "utilities/iter_tools/permutations.hpp"
+#include "utilities/iterators/random_access_iterator_base.hpp"
 #include <algorithm> //is_permutation
 #include <limits>    //max size of size_t
 #include <tuple>     //for tie
@@ -23,17 +24,18 @@ namespace detail_ {
  *  @todo C++17 allows inheriting default ctors.
  */
 template<typename SequenceType, bool repeat>
-class CombinationItr : public detail_::RandomAccessIteratorBase<
+class CombinationItr : public iterators::RandomAccessIteratorBase<
                          CombinationItr<SequenceType, repeat>, SequenceType> {
     /// The type of an instance of this class, defined for sanity
     using my_type = CombinationItr<SequenceType, repeat>;
     /// The type of the base class, again for sanity.
-    using base_type = detail_::RandomAccessIteratorBase<my_type, SequenceType>;
+    using base_type = iterators::RandomAccessIteratorBase<my_type, SequenceType>;
 
     public:
     /// Typedefs forwarded from the base class
     ///@{
     using value_type      = typename base_type::value_type;
+    using reference       = typename base_type::reference;
     using const_reference = typename base_type::const_reference;
     using size_type       = typename base_type::size_type;
     using difference_type = typename base_type::difference_type;
@@ -84,7 +86,7 @@ class CombinationItr : public detail_::RandomAccessIteratorBase<
      *  @return The element being pointed to.
      *  @throws None No throw guarantee.
      */
-    const_reference dereference() const noexcept { return comb_; }
+    reference dereference() noexcept { return comb_; }
 
     /** @brief Makes the iterator point to the next Combination.
      *

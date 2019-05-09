@@ -1,6 +1,6 @@
 #pragma once
 #include "utilities/iter_tools/range_container.hpp"
-#include "utilities/type_traits/iterator_types.hpp"
+#include "utilities/iterators/random_access_iterator_base.hpp"
 
 namespace utilities {
 namespace detail_ {
@@ -20,15 +20,17 @@ namespace detail_ {
  */
 template<typename element_type>
 class RangeItr
-  : public RandomAccessIteratorBase<RangeItr<element_type>, element_type> {
+: public iterators::RandomAccessIteratorBase<RangeItr<element_type>, element_type> {
     private:
     /// Typedef of the base type for sanity
     using base_type =
-      detail_::RandomAccessIteratorBase<RangeItr<element_type>, element_type>;
+      iterators::RandomAccessIteratorBase<RangeItr<element_type>, element_type>;
 
     public:
     /// Pulls the const_reference typedef into scope
-    using const_reference = const element_type&;
+    using const_reference = typename base_type::const_reference;
+
+    using reference = typename base_type::reference;
 
     /// Pulls the difference_type typedef into scope
     using typename base_type::difference_type;
@@ -113,7 +115,7 @@ class RangeItr
     friend base_type;
 
     /// Implements operator*()
-    const_reference dereference() const override { return value_; }
+    reference dereference() override { return value_; }
 
     /// Implements operator++
     RangeItr& increment() override { return advance(increment_); }

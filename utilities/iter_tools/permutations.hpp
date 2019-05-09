@@ -2,7 +2,7 @@
 #include "utilities/iter_tools/range_container.hpp"
 #include "utilities/mathematician/combinatorics.hpp"
 #include "utilities/mathematician/integer_utils.hpp"
-#include "utilities/type_traits/iterator_types.hpp"
+#include "utilities/iterators/random_access_iterator_base.hpp"
 #include <algorithm> //For is_permutation, next/prev permutation
 #include <limits>    //For maximum value of size_t
 #include <tuple>     //For std::tie
@@ -31,18 +31,18 @@ namespace detail_ {
  */
 template<typename SequenceType>
 class PermutationItr
-  : public detail_::RandomAccessIteratorBase<PermutationItr<SequenceType>,
+  : public iterators::RandomAccessIteratorBase<PermutationItr<SequenceType>,
                                              SequenceType> {
     /// Type of this class (to simplify defining base_type)
     using my_type = PermutationItr<SequenceType>;
-
     /// Type of the base class (to simplify scoping types)
-    using base_type = detail_::RandomAccessIteratorBase<my_type, SequenceType>;
+    using base_type = iterators::RandomAccessIteratorBase<my_type, SequenceType>;
 
     public:
     /// Brings some of base class's typedefs into scope
     ///@{
     using value_type      = typename base_type::value_type;
+    using reference       = typename base_type::reference;
     using const_reference = typename base_type::const_reference;
     using difference_type = typename base_type::difference_type;
     using size_type       = typename base_type::size_type;
@@ -102,7 +102,7 @@ class PermutationItr
      *  @return The element being pointed to.
      *  @throws None. No throw guarantee.
      */
-    const_reference dereference() const override { return set_; }
+    reference dereference() override { return set_; }
 
     /** @brief Makes the iterator point to the next permutation.
      *
