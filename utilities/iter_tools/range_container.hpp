@@ -6,29 +6,32 @@
 namespace utilities {
 namespace detail_ {
 
-/** @brief Simulates a container filled all elements in a range.
+/** @brief Wraps two iterators in a container-like API
  *
- *  This class is largely code factorization from the various IterTools
- *  containers. It contains no actual state aside from copies of the starting
- *  and ending iterators (i.e. it does not actually store every element in the
- *  range like it pretends to).  Consequentially all iterators to this container
- *  are constant iterators as they can not mutate the container.
- *
- *  This class implements most of the container API for the derived class.  The
- *  derived class is only responsible for the constructors.  That said instances
- *  of RangeContainers are never meant to be instantiated by the user.
- *
+ *  Particularly when working with generators, like those in the itertools
+ *  library, we need a container-like API so that they can be used in foreach
+ *  loops. That was the original motivation for this class. However, another
+ *  use is when you are implementing view-like objects. There you often need
+ *  the same object to sometimes own the values it has and to sometimes alias
+ *  them. The former is easily done by a container, whereas the latter is easier
+ *  to do with pointers. Thus putting the pointers into this class makes them
+ *  have a container-like API allowing one to consolidate the code.
+
  *  @todo It's possible (maybe with a bit of tweaking) to remove some of the
  *  boilerplate in IterTools classes using this class as a base class.
  *
- *  @tparam IteratorType The type of iterator used to generate the elements.  We
+ *  @tparam IteratorType The type of iterator used to generate the elements.  In
+ *                       general the returned
+ *  presently assume it at least meets the concept of bidirectional iterator.
+ *
+ *  @tparam CosntIterator The type of iterator used to generate the elements.  We
  *  presently assume it at least meets the concept of bidirectional iterator.
  */
-template<typename IteratorType>
+template<typename IteratorType, typename ConstIterator = IteratorType>
 class RangeContainer {
     public:
     /// The type of the elements contained within this container
-    using value_type = typename IteratorType::value_type;
+    using value_type = decltype(*std::declval<IteratorType>());
 
     /// The type of a reference to an element in this container
     using reference = value_type&;
@@ -40,7 +43,7 @@ class RangeContainer {
     using iterator = IteratorType;
 
     /// The type of an iterator that only reads the elements of this container.
-    using const_iterator = IteratorType;
+    using const_iterator = ConstIterator;
 
     /// The type of the difference between two elements of this container
     using difference_type = long int;
@@ -53,7 +56,7 @@ class RangeContainer {
      *  @throw ??? Throws if the default constructor for the iterator throws.
      *  Strong throw guarantee.
      */
-    RangeContainer() = default;
+    constexpr RangeContainer() = default;
 
     /** @brief The primarily useful constructor capable of making a container
      *         holding the specified range.
@@ -66,7 +69,9 @@ class RangeContainer {
      * @throw ??? If IteratorType's copy constructor throws.  Strong throw
      *        guarantee.
      */
-    RangeContainer(iterator start_itr, iterator end_itr, size_type size_in) :
+    constexpr RangeContainer(iterator start_itr,
+                             iterator end_itr,
+                             size_type size_in) :
       start_(start_itr),
       end_(end_itr),
       size_(size_in) {}
@@ -78,7 +83,7 @@ class RangeContainer {
      * @throw ??? if either the copy constructor or std::advance throw.  Same
      *        guarantee as IteratorType's copy ctor.
      */
-    value_type operator[](size_type i) const {
+    constexpr value_type operator[](size_type i) const {
         const_iterator copy_of_start(start_);
         std::advance(copy_of_start, i);
         return *copy_of_start;
@@ -93,13 +98,13 @@ class RangeContainer {
      *  @throw ??? Throws if the iterator's copy constructor throws. Same
      *         guarantee as IteratorType's copy constructor.
      */
-    iterator begin() { return start_; }
+    constexpr iterator begin() { return start_; }
 
     ///@copydoc begin()
-    const_iterator begin() const { return start_; }
+    constexpr const_iterator begin() const { return start_; }
 
     ///@copydoc begin()
-    const_iterator cbegin() const { return start_; }
+    constexpr const_iterator cbegin() const { return start_; }
 
     /**
      * @brief Returns an iterator that points to just past the last element of
@@ -114,13 +119,13 @@ class RangeContainer {
      * @throw ??? Throws if the iterator's copy constructor throws.  Same
      * guarantee as IteratorType's copy ctor.
      */
-    iterator end() { return end_; }
+    constexpr iterator end() { return end_; }
 
     ///@copydoc end()
-    const_iterator end() const { return end_; }
+    constexpr const_iterator end() const { return end_; }
 
     ///@copydoc end()
-    const_iterator cend() const { return end_; }
+    constexpr const_iterator cend() const { return end_; }
 
     /** @brief Returns the number of elements in this container.
      *
@@ -128,7 +133,7 @@ class RangeContainer {
      *  @return The number of elements in this container.
      *  @throw None. No throw guarantee.
      */
-    size_type size() const noexcept { return size_; }
+    constexpr size_type size() const noexcept { return size_; }
 
     /**
      * @brief The theoretical maximum size of the container as determined by
@@ -159,7 +164,7 @@ class RangeContainer {
      * @throw ??? if the equality operator of IteratorType throws.  Same
      * guarantee as IteratorType's equality operator.
      */
-    bool empty() const { return start_ == end_; }
+    constexpr bool empty() const { return start_ == end_; }
 
     /**
      * @brief Compares two RangeContainer instances for equality.
@@ -172,7 +177,7 @@ class RangeContainer {
      * @throw ??? Throws if the equality comparison operator of the iterator
      * throws.  Strong throw guarantee.
      */
-    bool operator==(const RangeContainer& rhs) const {
+    constexpr bool operator==(const RangeContainer& rhs) const {
         return std::tie(start_, end_) == std::tie(rhs.start_, rhs.end_);
     }
 
@@ -188,7 +193,7 @@ class RangeContainer {
      * @throw ??? Throws if operator==() of the iterators throws.  Same
      * guarantee as equality operator.
      */
-    bool operator!=(const RangeContainer& rhs) const {
+    constexpr bool operator!=(const RangeContainer& rhs) const {
         return !((*this) == rhs);
     }
 
@@ -201,7 +206,7 @@ class RangeContainer {
      *        guarantee if swapping IteratorType instances is no throw,
      *        otherwise it's weak at best.
      */
-    void swap(RangeContainer& rhs) {
+    constexpr void swap(RangeContainer& rhs) {
         std::swap(start_, rhs.start_);
         std::swap(end_, rhs.end_);
         std::swap(size_, rhs.size_);
