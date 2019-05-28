@@ -1,8 +1,8 @@
 #pragma once
 #include "utilities/containers/case_insensitive_map.hpp"
 #include <chrono>
-#include <string>
 #include <iostream>
+#include <string>
 
 namespace utilities {
 
@@ -32,14 +32,15 @@ namespace utilities {
  */
 class Timer {
 private:
-    ///The type of clock we use internally
+    /// The type of clock we use internally
     using clock_type = std::chrono::high_resolution_clock;
-    ///The type the clock uses to record time
+    /// The type the clock uses to record time
     using time_point = typename clock_type::time_point;
+
 public:
-    ///The type of a descriptions
+    /// The type of a descriptions
     using key_type = std::string;
-    ///The duration that passed between time points, the value_type
+    /// The duration that passed between time points, the value_type
     using duration = typename clock_type::duration;
 
     /** @brief Creates and starts a timer.
@@ -87,8 +88,8 @@ public:
      * @throw std::bac_alloc if there is insufficient memory to record the
      *                       timing. Strong throw guarantee.
      */
-    template<typename Fxn, typename...Args>
-    void time_it(key_type desc, Fxn&& fxn, Args&&...args);
+    template<typename Fxn, typename... Args>
+    void time_it(key_type desc, Fxn&& fxn, Args&&... args);
 
     /** @brief Resets how long the timer has been running for.
      *
@@ -137,15 +138,14 @@ public:
     auto cend() const noexcept { return end(); }
     ///@}
 private:
-    ///code factorization for recording a timing
+    /// code factorization for recording a timing
     void record_(key_type desc, time_point t1, time_point t2);
 
-    ///When we started timing
+    /// When we started timing
     time_point m_started_;
 
-    ///The timings that this instance has recorded
+    /// The timings that this instance has recorded
     utilities::CaseInsensitiveMap<duration> m_times_;
-
 };
 
 /** @brief Wraps printing a Timer instance out
@@ -170,18 +170,16 @@ private:
  */
 inline std::ostream& operator<<(std::ostream& os, const Timer& t);
 
-
 //------------------------------Implementations--------------------------------
 
-
 inline void Timer::record(std::string desc) {
-  ///Capture the time 1st in order to be slightly more accurate
-  auto t2 = clock_type::now();
-  record_(std::move(desc), m_started_, t2);
+    /// Capture the time 1st in order to be slightly more accurate
+    auto t2 = clock_type::now();
+    record_(std::move(desc), m_started_, t2);
 }
 
-template<typename Fxn, typename...Args>
-void Timer::time_it(std::string desc, Fxn&& fxn, Args&&...args) {
+template<typename Fxn, typename... Args>
+void Timer::time_it(std::string desc, Fxn&& fxn, Args&&... args) {
     auto t1 = clock_type::now();
     fxn(std::forward<Args>(args)...);
     auto t2 = clock_type::now();
@@ -189,21 +187,21 @@ void Timer::time_it(std::string desc, Fxn&& fxn, Args&&...args) {
 }
 
 inline void Timer::record_(std::string desc, time_point t1, time_point t2) {
-    m_times_.emplace(std::move(desc), t2-t1);
+    m_times_.emplace(std::move(desc), t2 - t1);
     reset();
 }
 
-inline std::ostream& operator<<(std::ostream& os, const Timer& t){
-  for(const auto& [desc, dt] : t){
-    using namespace std::chrono;
-    auto h  = duration_cast<hours>(dt);
-    auto m  = duration_cast<minutes>(dt) - h;
-    auto s  = duration_cast<seconds>(dt) - h - m;
-    auto ms = duration_cast<milliseconds>(dt) - h - m - s;
-    os << desc << " : " << h.count() << " h " << m.count() << " m "
-       << s.count() << " s " << ms.count() << " ms" <<std::endl;
-  }
-  return os;
+inline std::ostream& operator<<(std::ostream& os, const Timer& t) {
+    for(const auto& [desc, dt] : t) {
+        using namespace std::chrono;
+        auto h  = duration_cast<hours>(dt);
+        auto m  = duration_cast<minutes>(dt) - h;
+        auto s  = duration_cast<seconds>(dt) - h - m;
+        auto ms = duration_cast<milliseconds>(dt) - h - m - s;
+        os << desc << " : " << h.count() << " h " << m.count() << " m "
+           << s.count() << " s " << ms.count() << " ms" << std::endl;
+    }
+    return os;
 }
 
-} //namespace utilities
+} // namespace utilities
