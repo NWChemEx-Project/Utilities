@@ -12,6 +12,7 @@ set(sources test_main.cpp
             math_set.cpp
             smart_enum.cpp
             static_string.cpp
+            timer.cpp
             tuple_utilities.cpp
             type_traits_extensions.cpp
             zip.cpp

@@ -18,6 +18,7 @@ set(
                       iter_tools.hpp
                       smart_enum.hpp
                       static_string.hpp
+                      timer.hpp
 )
 
 set(UTILITIES_SRCS mathematician/combinatorics.cpp)
