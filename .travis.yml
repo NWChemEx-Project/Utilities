@@ -2,10 +2,8 @@ language: cpp
 
 env:
   global:
-    # Ubuntu version
     - LINUX_DIST=trusty
     - DEPS_DIR=${TRAVIS_BUILD_DIR}/deps
-    # Global build options and C++ flags
     - CXX_FLAGS="-Wall -pedantic -Werror -Wno-variadic-macros -Wno-long-long -Wno-shadow"
     - CMAKE_OPTIONS="-DCMAKE_PREFIX_PATH=${DEPS_DIR}/install -DCMAKE_INSTALL_PREFIX=${DEPS_DIR}/install"
     
@@ -49,8 +47,7 @@ install:
     - cd ${DEPS_DIR}
     - git clone https://github.com/CMakePackagingProject/CMakePackagingProject
     - cd CMakePackagingProject
-    - cmake ${CMAKE_OPTIONS} -H. -Bbuild
-    - cd build
+    - cmake ${CMAKE_OPTIONS} --build .
     - make && make install
     - cd ${TRAVIS_BUILD_DIR}
      
@@ -58,8 +55,6 @@ script:
     ############################################################################
     # Build main and tests
     ############################################################################
-     - mkdir -p build
-     - cd build
-     - cmake ${CMAKE_OPTIONS} -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DBUILD_TESTS=ON .. 
+     - cmake ${CMAKE_OPTIONS} -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DBUILD_TESTS=ON --build .
      - make
      - ctest
