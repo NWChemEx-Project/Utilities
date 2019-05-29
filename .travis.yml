@@ -1,60 +1,49 @@
+--- 
+before_install: 
+  - "mkdir -p ${DEPS_DIR}"
+  - "mkdir -p ${DEPS_DIR}/install"
+cache: 
+  - cmake
+  - g++-8
+  - gcc-8
+env: 
+  global: 
+    - LINUX_DIST=xenial
+    - "DEPS_DIR=${TRAVIS_BUILD_DIR}/deps"
+    - "CXX_FLAGS=\"-Wall -pedantic -Werror -Wno-variadic-macros -Wno-long-long -Wno-shadow\""
+    - "CMAKE_OPTIONS=\"-DCMAKE_PREFIX_PATH=${DEPS_DIR}/install -DCMAKE_INSTALL_PREFIX=${DEPS_DIR}/install\""
+install: 
+  - "alias cmake=/usr/bin/cmake"
+  - "export CXX=\"g++-8\" CC=\"gcc-8\""
+  - "echo ${PATH}"
+  - "echo ${CXX}"
+  - "${CXX} --version"
+  - "${CXX} -v"
+  - "echo ${CMAKE_OPTIONS}"
+  - "cd ${DEPS_DIR}"
+  - "git clone https://github.com/CMakePackagingProject/CMakePackagingProject"
+  - "cd CMakePackagingProject"
+  - "cmake ${CMAKE_OPTIONS} --build ."
+  - "make && make install"
+  - "cd ${TRAVIS_BUILD_DIR}"
 language: cpp
-
-env:
-  global:
-    - LINUX_DIST=trusty
-    - DEPS_DIR=${TRAVIS_BUILD_DIR}/deps
-    - CXX_FLAGS="-Wall -pedantic -Werror -Wno-variadic-macros -Wno-long-long -Wno-shadow"
-    - CMAKE_OPTIONS="-DCMAKE_PREFIX_PATH=${DEPS_DIR}/install -DCMAKE_INSTALL_PREFIX=${DEPS_DIR}/install"
-    
-cache:
-  - g++-7
-
-matrix:
-  include:
-    - os: linux
-      dist: trusty
-      sudo: true
+matrix: 
+  include: 
+    - 
+      addons: 
+        apt: 
+          packages: 
+            - "cmake - g++-8 - gcc-8"
+          sources: 
+            - 
+              key_url: "https://apt.kitware.com/keys/kitware-archive-latest.asc"
+              sourceline: "deb https://apt.kitware.com/ubuntu/ xenial main"
+            - ubuntu-toolchain-r-test
       compiler: gcc
-      addons:
-       apt:
-         packages: 
-           - g++-7
-         sources: 
-           - ubuntu-toolchain-r-test
-    
-before_install:
-    - mkdir -p ${DEPS_DIR}
-    - mkdir -p ${DEPS_DIR}/install
-    
-install:
-    - export CXX="g++-7" CC="gcc-7"
-    - echo ${PATH}
-    - echo ${CXX}
-    - ${CXX} --version
-    - ${CXX} -v
-    - echo ${CMAKE_OPTIONS}
-    
-    # Download and install recent cmake
-    - |
-      if [[ ${TRAVIS_OS_NAME} == "linux" ]]; then
-        CMAKE_URL="https://cmake.org/files/v3.14/cmake-3.14.0-Linux-x86_64.tar.gz"
-        mkdir -p ${DEPS_DIR}/cmake
-        travis_retry wget --no-check-certificate --quiet -O - ${CMAKE_URL} | tar --strip-components=1 -xz -C ${DEPS_DIR}/cmake
-        export PATH=${DEPS_DIR}/cmake/bin:${PATH}
-      fi
-      # Download and install CMakePackagingProject
-    - cd ${DEPS_DIR}
-    - git clone https://github.com/CMakePackagingProject/CMakePackagingProject
-    - cd CMakePackagingProject
-    - cmake ${CMAKE_OPTIONS} --build .
-    - make && make install
-    - cd ${TRAVIS_BUILD_DIR}
-     
-script:
-    ############################################################################
-    # Build main and tests
-    ############################################################################
-     - cmake ${CMAKE_OPTIONS} -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DBUILD_TESTS=ON --build .
-     - make
-     - ctest
+      dist: xenial
+      os: linux
+      sudo: true
+script: 
+  - "cmake ${CMAKE_OPTIONS} -DCMAKE_CXX_FLAGS=${CXX_FLAGS} -DBUILD_TESTS=ON --build ."
+  - make
+  - ctest
