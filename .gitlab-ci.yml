@@ -5,8 +5,7 @@ before_script:
   - export REPO_NAME=Utilities
   - export CI_PATH=~/git/gitlabCI
   - if [ -d "$CI_PATH" ]; then rm -rf $CI_PATH; fi
-  - mkdir $CI_PATH
-  - mkdir $CI_PATH/install
+  - mkdir -p $CI_PATH/install
   - git clone git@github.com:NWChemEx-Project/$REPO_NAME.git $CI_PATH/$REPO_NAME
 
 variables:
