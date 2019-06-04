@@ -10,7 +10,8 @@ before_script:
   - git clone https://github.com/CMakePP/CMakePackagingProject.git $CI_PATH/CMakePP
 
 variables:
-  CMAKE_OPTIONS: "-DCMAKE_PREFIX_PATH=$CI_PATH/install -DCMAKE_INSTALL_PREFIX=$CI_PATH/install -DCMAKE_C_COMPILER=gcc =DCMAKE_CXX_COMPILER=g++"
+  NWX_INSTALL_PATH: "~/git/gitlabCI/install"
+  CMAKE_OPTIONS: "-DCMAKE_PREFIX_PATH=$NWX_INSTALL_PATH/install -DCMAKE_INSTALL_PREFIX=$NWX_INSTALL_PATH/install -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++"
   NUM_CORES: "20"
 
 default_build:
