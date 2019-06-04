@@ -14,6 +14,8 @@ a942e188f9c4a0d80d069b826fdb1a3e85f3fe02 -DCMAKE_C_COMPILER=gcc =DCMAKE_CXX_COMP
   NUM_CORES: "24"
 
 default_build:
+    tags:
+      - linux,keeran
     stage: build
     script:
       - module load gcc-9.1.0-gcc-7.4.0-jjv2tsg cmake-3.14.2-gcc-9.1.0-jzu7ays
