@@ -10,6 +10,7 @@ variables:
   NUM_CORES: "4"
   ANL_PROJECT_SERVICE_USER: "nwchemex"
   PATH: "$PATH:/home/nwchemex/cmake-3.14.5-Linux-x86_64/bin"
+  CI_DEBUG_TRACE: "true"
 
 default_build:
     tags:
