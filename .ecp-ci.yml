@@ -23,7 +23,7 @@ default_build:
       - cmake $CMAKE_OPTIONS -DBUILD_TESTS=ON -H. -Bbuild 
       - cd build
       - make install
-      - cd $CI_PROJECT_DIR/$REPO_NAME
+      - cd $CI_PROJECT_DIR/$CI_PROJECT_NAME
       - cmake $CMAKE_OPTIONS -DBUILD_TESTS=ON -H. -Bbuild 
       - cd build
       - make -j$NUM_CORES
