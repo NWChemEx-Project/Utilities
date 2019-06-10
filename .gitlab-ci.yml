@@ -16,8 +16,8 @@ variables:
   NUM_CORES: "20"
 
 default_build:
-    only: 
-      - master
+    # only: 
+    #   - master
     tags:
       - linux,kamban
     stage: build
