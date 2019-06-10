@@ -2,16 +2,17 @@ stages:
   - build
 
 before_script:
+  - export CMAKE_BUILD_PARALLEL_LEVEL=24
   - export REPO_NAME=Utilities
-  - export CI_PATH=~/git/gitlabCI
+  - export CI_PATH=~/git/gitlabCI/$REPO_NAME
   - if [ -d "$CI_PATH" ]; then rm -rf $CI_PATH; fi
   - mkdir -p $CI_PATH/install
-  - git clone git@gitlab.com:NWChemEx-Project/Utilities.git $CI_PATH/$REPO_NAME
+  - git clone git@gitlab.com:NWChemEx-Project/$REPO_NAME.git $CI_PATH/$REPO_NAME
   - git clone https://github.com/CMakePP/CMakePackagingProject.git $CI_PATH/CMakePP
 
 variables:
-  NWX_INSTALL_PATH: "~/git/gitlabCI/install"
-  CMAKE_OPTIONS: "-DCMAKE_PREFIX_PATH=$NWX_INSTALL_PATH/install -DCMAKE_INSTALL_PREFIX=$NWX_INSTALL_PATH/install -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++"
+  NWX_INSTALL_PATH: "~/git/gitlabCI/Utilities/install"
+  CMAKE_OPTIONS: "-DCMAKE_PREFIX_PATH=$NWX_INSTALL_PATH -DCMAKE_INSTALL_PREFIX=$NWX_INSTALL_PATH -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++"
   NUM_CORES: "20"
 
 default_build:
