@@ -1,3 +1,4 @@
+#define _GLIBCXX_USE_CXX11_ABI 0
 #include<array>
 #include <catch2/catch.hpp>
 #include<deque>
