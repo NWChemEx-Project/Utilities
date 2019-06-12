@@ -338,7 +338,11 @@ std::ostream& operator<<(std::ostream& os,
  */
 template<typename T>
 std::ostream& operator<<(std::ostream& os, const std::optional<T>& o) {
-    return os << o.has_value() ? o.get_value() : "nullopt";
+    if(o.has_value())
+        os << o.value();
+    else
+        os << "nullopt";
+    return os;
 }
 
 /** @brief Makes std::pair printable.
