@@ -1,6 +1,6 @@
-#define _GLIBCXX_USE_CXX11_ABI 0
-#include<array>
+#include<utilities/printing/print_stl.hpp>
 #include <catch2/catch.hpp>
+#include<array>
 #include<deque>
 #include<forward_list>
 #include<list>
@@ -11,7 +11,6 @@
 #include<stack>
 #include<unordered_map>
 #include<unordered_set>
-#include<utilities/printing/print_stl.hpp>
 #include<sstream>
 #include<tuple>
 #include<utility>

@@ -1,5 +1,6 @@
 #pragma once
 
+
 /** @file forward_stl.hpp
  *
  *  This header file forward declares the classes in the STL. It is useful for
@@ -46,6 +47,9 @@ template<typename T, typename Container, typename Compare> class priority_queue;
 
 ///Forward declare std::queue
 template<typename T, typename Container> class queue;
+
+///Forward declare std::set
+template<typename T, typename Compare, typename Alloc> class set;
 
 //Forward declare std::stack
 template<typename T, typename Container> class stack;

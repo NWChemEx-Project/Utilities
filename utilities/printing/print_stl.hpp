@@ -1,6 +1,7 @@
 #pragma once
 #include <ostream>
 #include <type_traits>
+#include <tuple>
 #include "utilities/forward_stl.hpp"
 
 /** @file print_stl.hpp
@@ -257,9 +258,10 @@ std::ostream& operator<<(std::ostream& os,
  *  @throw ??? if the ostream's operator<< throws. Same exception guarantee.
  */
 template <typename T, typename Alloc>
-std::ostream& operator<<(std::ostream& os, const std::list<T, Alloc>& l) {
-    return utilities::printing::detail_::print_list(os, l);
+std::ostream &operator<<(std::ostream &os, const std::list<T, Alloc> &l) {
+  return utilities::printing::detail_::print_list(os, l);
 }
+
 
 /** @brief Makes std::map printable.
  *
