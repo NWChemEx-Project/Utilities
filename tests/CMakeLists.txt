@@ -7,6 +7,8 @@ set(sources test_main.cpp
             integer_utils.cpp
             iterator_types.cpp
             permutations.cpp
+            printing/print_stl.cpp
+            printing/word_wrap_stream.cpp
             range.cpp
             range_container.cpp
             math_set.cpp

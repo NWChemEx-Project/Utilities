@@ -12,16 +12,21 @@ set(
                       macros/for_each.hpp
                       mathematician/combinatorics.hpp
                       mathematician/integer_utils.hpp
+                      printing/print_stl.hpp
                       type_traits/iterator_types.hpp
                       type_traits/tuple_utilities.hpp
                       type_traits/type_traits_extensions.hpp
+                      forward_stl.hpp
                       iter_tools.hpp
                       smart_enum.hpp
                       static_string.hpp
                       timer.hpp
 )
 
-set(UTILITIES_SRCS mathematician/combinatorics.cpp)
+set(
+    UTILITIES_SRCS mathematician/combinatorics.cpp
+                   printing/word_wrap_stream.cpp
+)
 
 cpp_add_library(
     utilities
