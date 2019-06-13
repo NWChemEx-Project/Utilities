@@ -1,0 +1,30 @@
+stages:
+  - build
+before_script:
+  - mkdir -p install
+  - git clone https://github.com/CMakePP/CMakePackagingProject.git
+  
+variables:
+  NWX_INSTALL_PATH: "$CI_PROJECT_DIR/install"
+  CMAKE_OPTIONS: "-DCMAKE_PREFIX_PATH=$NWX_INSTALL_PATH/install -DCMAKE_INSTALL_PREFIX=$NWX_INSTALL_PATH/install -DCMAKE_C_COMPILER=gcc -DCMAKE_CXX_COMPILER=g++"
+  NUM_CORES: "4"
+  ANL_PROJECT_SERVICE_USER: "nwchemex"
+  PATH: "$PATH:/home/nwchemex/cmake-3.14.5-Linux-x86_64/bin"
+  CI_DEBUG_TRACE: "true"
+
+default_build:
+    tags:
+      - ecp-theta
+      - shell
+    stage: build
+    script:
+      - module load gcc
+      - cd $CI_PROJECT_DIR/CMakePackagingProject
+      - cmake $CMAKE_OPTIONS -DBUILD_TESTS=ON -H. -Bbuild 
+      - cd build
+      - make install
+      - cd $CI_PROJECT_DIR/$CI_PROJECT_NAME
+      - cmake $CMAKE_OPTIONS -DBUILD_TESTS=ON -H. -Bbuild 
+      - cd build
+      - make -j$NUM_CORES
+      - ctest -VV
