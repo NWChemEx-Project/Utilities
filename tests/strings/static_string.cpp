@@ -1,7 +1,7 @@
-#include <utilities/static_string.hpp>
 #include <cassert>
 #include <catch2/catch.hpp>
 #include <sstream>
+#include <utilities/strings/static_string.hpp>
 
 // Note we use static_assert to assert that it's working at compile-time and we
 // have to use assert in the check_string function because REQUIRE is not
