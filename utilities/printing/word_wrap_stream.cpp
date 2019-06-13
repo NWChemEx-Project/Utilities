@@ -4,15 +4,20 @@
 #include <vector>
 
 namespace utilities::printing {
+
+//Get the width type from WordWrapStream
 using width_type = typename WordWrapStream::width_type;
 
 namespace detail_ {
 
+//Define the PIMPL class
 class WordWrapBuffer : public std::streambuf {
 public:
-  WordWrapBuffer(std::ostream* os, width_type w) :
-    m_os_(os), m_w_(w) {}
+  //Takes the ostream we're wrapping and the width
+  WordWrapBuffer(std::ostream* os, width_type w) noexcept :
+  m_os_(os), m_w_(w) {}
 protected:
+//This function does the heavy lifting
 std::streamsize xsputn(const char* s, std::streamsize n) override {
       using itr_type = std::istream_iterator<std::string>;
       std::istringstream iss(std::string(s,s + n));
@@ -70,14 +75,15 @@ private:
 
   ///How many characters we've written
   width_type m_nchars_ = 0;
-};
+}; //class WordWrapBuffer
 
 } //namespace detail_
 
+//--------------------WordWrapStream Definitions--------------------------------
 
 WordWrapStream::WordWrapStream(std::ostream *os, width_type w) :
-m_pimpl_(std::make_unique<detail_::WordWrapBuffer>(os, w)) {
-  rdbuf(m_pimpl_.get());
+  m_pimpl_(std::make_unique<detail_::WordWrapBuffer>(os, w)) {
+    rdbuf(m_pimpl_.get());
 }
 
 WordWrapStream::~WordWrapStream() noexcept = default;

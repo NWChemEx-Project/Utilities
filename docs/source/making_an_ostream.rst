@@ -150,31 +150,30 @@ relevant for writing a custom output buffer.
 xsputn
 ======
 
-The ``xsputn`` function is th function you usually want to override. It's
-signature is:
+If your buffer leverages an existing ``std::ostream`` or ``std::streambf``, this
+is the function you want to override. It's signature is:
 
-..
+.. code-block:: c++
 
-takes a pointer to an array of characters and the length
-of that array. Your buffer class's implementation of this function should write
-as as many of the provided characters as possible to the output. After writing
-either the entire array, or as many characters as it could, the ``xsputn``
-function returns the number of characters it actually wrote. The base class
-provides a default implementation, which just calls ``sputc`` until ``sputc``
-returns ``traits_type::eof()`` or all characters have been written. Note that
-``sputc`` works by calling ``overflow``
+   std::streamsize xsputn(const char* s, std::streamsize n)
 
-Unless you
-have a more efficient way to write a lot of characters at once, just stick with
-the default implementation.
+It takes a pointer to an array of characters and the length of that array. Your
+buffer class's implementation of this function should write as many of the
+provided characters as possible to the output. After writing either the entire
+array, or as many characters as it can, your implementation should return the
+nuumber of characters it actually wrote.
+
+The base class provides a default implementation, which just calls ``sputc``
+until ``sputc`` returns ``traits_type::eof()`` (hence signaling an error) or all
+characters have been written. Note that ``sputc`` works by calling ``overflow``
+so if you choose not to override this function, you will need to override
+``overflow``.
+
 
 overflow
 ========
 
-Usually ``overflow`` and is the only function you have to override. It is the
-function that ultimately will do the writing. ``overflow`` is called when your
-buffer's internal output buffer is full. The signature of the overflow function
-is:
+``overflow`` is called when the ``pptr()`` is no longer valid. Its signature is:
 
 .. code-block:: c++
 
@@ -183,18 +182,22 @@ is:
 The input value, ``c``, is the character which could not fit in the internal
 output buffer. Your implementation is allowed to make more room in the internal
 output buffer (if you do this you need to adjust, ``pbase()``, ``pptr()``, and
-``epptr()``, if necessary). If you make more room you should not write ``c`` to
-the buffer.
-
-
+``epptr()``). The return is c, if ``overflow`` was successful or
+``traits_type::eof()`` if an error occurred.
 
 
 synch
 =====
 
+If a user calls flush on the ``std::ostream`` object it ultimately will call
+``synch``. ``synch``'s signature is:
+
 .. code-block:: c++
 
    int synch()
+
+It returns 0 if successful and -1 if it fails. Your implementation should dump
+whatever's in the internal output buffer to the output and reset the pointers.
 
 seekoff
 =======
