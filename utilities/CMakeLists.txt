@@ -23,7 +23,10 @@ set(
                       timer.hpp
 )
 
-set(UTILITIES_SRCS mathematician/combinatorics.cpp)
+set(
+    UTILITIES_SRCS mathematician/combinatorics.cpp
+                   printing/word_wrap_stream.cpp
+)
 
 cpp_add_library(
     utilities
