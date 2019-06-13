@@ -8,7 +8,6 @@ public:
     using width_type = unsigned short;
 
     Table(width_type max_width = 80);
-    Table()
     ~Table();
 private:
     std::unique_ptr<detail_::TablePIMPL> m_pimpl_;
