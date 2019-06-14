@@ -16,6 +16,7 @@ set(sources test_main.cpp
             math_set.cpp
             smart_enum.cpp
             strings/static_string.cpp
+            strings/string_tools.cpp
             timer.cpp
             tuple_utilities.cpp
             type_traits_extensions.cpp
