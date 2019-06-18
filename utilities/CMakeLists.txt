@@ -25,7 +25,6 @@ set(
                       forward_stl.hpp
                       iter_tools.hpp
                       smart_enum.hpp
-                      static_string.hpp
                       timer.hpp
 )
 
