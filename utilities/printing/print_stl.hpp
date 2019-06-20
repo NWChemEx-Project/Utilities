@@ -1,9 +1,23 @@
 #pragma once
-#include "utilities/forward_stl.hpp"
 #include "utilities/type_traits/is_printable.hpp"
+#include <array>
+#include <deque>
+#include <forward_list>
+#include <functional>
+#include <iostream>
+#include <map>
+#include <optional>
 #include <ostream>
+#include <queue>
+#include <set>
+#include <sstream>
+#include <stack>
 #include <tuple>
 #include <type_traits>
+#include <unordered_map>
+#include <unordered_set>
+#include <utility>
+#include <vector>
 
 /** @file print_stl.hpp
  *
