@@ -12,6 +12,7 @@ set(
                       macros/for_each.hpp
                       mathematician/combinatorics.hpp
                       mathematician/integer_utils.hpp
+                      printing/demangler.hpp
                       printing/print_stl.hpp
                       type_traits/is_printable.hpp
                       type_traits/iterator_types.hpp
@@ -26,7 +27,9 @@ set(
 
 set(
     UTILITIES_SRCS mathematician/combinatorics.cpp
+                   printing/demangler.cpp
                    printing/word_wrap_stream.cpp
+
 )
 
 cpp_add_library(
