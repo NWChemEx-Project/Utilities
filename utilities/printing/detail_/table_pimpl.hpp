@@ -588,9 +588,11 @@ inline typename TablePIMPL::size_vec TablePIMPL::space_out_cols() const {
     auto nrequest = 0;
     for(auto x : auto_cols) nrequest += width_of_col(x);
 
+    const auto nauto = auto_cols.size();
+
     // What's the average number of characters?
-    auto extra_chars    = free_chars % n;
-    auto avg_free_chars = (free_chars - extra_chars) / n;
+    auto extra_chars    = free_chars % nauto;
+    auto avg_free_chars = (free_chars - extra_chars) / nauto;
 
     // Can we just give them their widths?
     bool is_good = nrequest <= free_chars;
