@@ -37,4 +37,9 @@ TEST_CASE("WordWrapStream") {
         corr << p1 << p2;
         REQUIRE(ss.str() == corr.str());
     }
+    SECTION("Leading spaces") {
+        const std::string p1 = "  This sentence has leading spaces.";
+        p << p1;
+        REQUIRE(ss.str() == p1);
+    }
 }

@@ -31,30 +31,50 @@ protected:
 
         const auto nsentences = sentences.size();
         for(std::size_t si = 0; si < nsentences; ++si) { // Loop over sentences
-            // Break lines into words
-            auto words = strings::split_string(sentences[si], " ");
+            auto sentence = sentences[si];
+            while(!sentence.empty()) {
+                const unsigned short size = sentence.size();
+                if(m_nchars_ + size <= m_w_) { // Whole thing fits
+                    (*m_os_) << sentence;
+                    m_nchars_ += size;
+                    break;
+                }
 
-            for(const auto& wordi : words) { // Loop over words
-                const unsigned short size = wordi.size();
-                // The new width (if there's characters we need a space
-                const auto new_w = size + (m_nchars_ > 0 ? m_nchars_ + 1 : 0);
-                const bool fits  = new_w <= m_w_;
+                // Remainder of this while figures out where to break the line
 
-                // Add the space if we need it
-                if(fits && m_nchars_ > 0) {
-                    (*m_os_) << ' ';
-                    ++m_nchars_;
-                } else if(!fits) { // If it doesn't fit put it on next line
+                // How many characters do we have left?
+                const auto char_left = m_w_ - m_nchars_;
+
+                // Find the first space we can break on
+                std::size_t offset = sentence.find(' ', 0);
+
+                // Was there any spaces left?
+                const bool no_spaces_left = (offset == std::string::npos);
+
+                // Aren't on empty line and can't print any part of what remains
+                if((no_spaces_left || offset > char_left) && m_nchars_ > 0) {
                     (*m_os_) << std::endl;
                     m_nchars_ = 0;
+                    continue;
                 }
-                // else is it fits, but we don't need the space
 
-                // Print the word
-                (*m_os_) << wordi;
-                m_nchars_ += size;
-            } // loop over words
+                if(no_spaces_left) {
+                    (*m_os_) << sentence;
+                    break;
+                }
 
+                // See if we can fit more on the line
+                while(offset != std::string::npos) {
+                    auto temp = sentence.find(' ', offset + 1);
+                    if(temp > char_left || temp == std::string::npos) break;
+                    offset = temp;
+                }
+
+                (*m_os_) << sentence.substr(0, offset);
+                (*m_os_) << std::endl;
+                m_nchars_ = 0;
+                sentence = sentence.substr(offset + 1); // swallow the space
+            }
             // Print a newline if we have more lines left
             if(si < nsentences - 1) {
                 (*m_os_) << std::endl;
