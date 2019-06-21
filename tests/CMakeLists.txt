@@ -1,7 +1,8 @@
-set(sources test_main.cpp
-            cartesian_product.cpp
-            case_insensitive_map.cpp
-            combinations.cpp
+add_subdirectory(printing)
+list(APPEND sources test_main.cpp
+                    cartesian_product.cpp
+                    case_insensitive_map.cpp
+                    combinations.cpp
             combinatorics.cpp
             enumerate.cpp
             integer_utils.cpp

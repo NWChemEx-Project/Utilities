@@ -2,7 +2,7 @@
 #include <sstream>
 #include <utilities/printing/word_wrap_stream.hpp>
 using namespace utilities::printing;
-
+#include <iostream>
 TEST_CASE("WordWrapStream") {
     std::stringstream ss;
     std::stringstream corr;
@@ -41,5 +41,17 @@ TEST_CASE("WordWrapStream") {
         const std::string p1 = "  This sentence has leading spaces.";
         p << p1;
         REQUIRE(ss.str() == p1);
+    }
+    SECTION("std::endl") {
+        const std::string p1 = "Hello world";
+        p << p1 << std::endl << p1;
+        corr << p1 << std::endl << p1;
+        REQUIRE(ss.str() == corr.str());
+    }
+    SECTION("Multiple lines leading spaces") {
+        const std::string p1 = "  This sentence has leading spaces";
+        p << p1 << std::endl << p1;
+        corr << p1 << std::endl << p1;
+        REQUIRE(ss.str() == corr.str());
     }
 }

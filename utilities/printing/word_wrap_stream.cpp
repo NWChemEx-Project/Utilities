@@ -1,6 +1,6 @@
 #include "utilities/printing/word_wrap_stream.hpp"
 #include "utilities/strings/string_tools.hpp"
-
+#include <iostream>
 #include <iterator>
 #include <sstream>
 #include <vector>
@@ -73,7 +73,7 @@ protected:
                 (*m_os_) << sentence.substr(0, offset);
                 (*m_os_) << std::endl;
                 m_nchars_ = 0;
-                sentence = sentence.substr(offset + 1); // swallow the space
+                sentence  = sentence.substr(offset + 1); // swallow the space
             }
             // Print a newline if we have more lines left
             if(si < nsentences - 1) {
@@ -83,6 +83,17 @@ protected:
 
         } // loop over lines
         return n;
+    }
+
+    int overflow(int_type c) override {
+        if(m_nchars_ == m_w_) {
+            (*m_os_) << std::endl;
+            m_nchars_ = 0;
+        }
+        (*m_os_) << traits_type::to_char_type(c);
+        ++m_nchars_;
+
+        return c;
     }
 
 private:
