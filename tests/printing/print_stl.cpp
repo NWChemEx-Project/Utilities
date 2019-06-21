@@ -17,6 +17,8 @@
 #include <utility>
 #include <vector>
 
+using namespace utilities::printing;
+
 TEST_CASE("std::ostream<<(std::array)") {
     std::stringstream ss;
     SECTION("Empty") {
