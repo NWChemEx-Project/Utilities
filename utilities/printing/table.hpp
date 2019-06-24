@@ -240,7 +240,7 @@ private:
  *                        temporary buffers or the return. Strong throw
  *                        guarantee.
  */
-std::ostream& operator<<(std::ostream& os, const Table& t) {
+inline std::ostream& operator<<(std::ostream& os, const Table& t) {
     return os << t.str();
 }
 
