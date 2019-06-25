@@ -39,6 +39,6 @@ TEST_CASE("Printing a timer") {
     t.record("sleep 5 ms");
     std::stringstream ss;
     ss << t << std::endl;
-    auto found = ss.str().find("sleep 5 ms : 0 h 0 m 0 s 5 ms");
+    auto found = ss.str().find("sleep 5 ms : 0 h 0 m 0 s");
     REQUIRE(found != std::string::npos);
 }
