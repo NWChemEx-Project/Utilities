@@ -1,14 +1,14 @@
 #include "utilities/printing/demangler.hpp"
 #include <memory>
 
-#ifdef __GNUG__
+#if __has_include(<cxxabi.h>)
 #include <cxxabi.h>
 #endif
 
 namespace utilities::printing {
 
 std::string Demangler::demangle(const char* t) {
-#ifdef __GNUG__
+#if __has_include(<cxxabi.h>)
     int status = 0;
 
     std::unique_ptr<char, void (*)(void*)> res{
