@@ -14,6 +14,10 @@ set(
                       mathematician/integer_utils.hpp
                       printing/demangler.hpp
                       printing/print_stl.hpp
+                      printing/table.hpp
+                      printing/word_wrap_stream.hpp
+                      strings/string_tools.hpp
+                      strings/static_string.hpp
                       type_traits/is_printable.hpp
                       type_traits/iterator_types.hpp
                       type_traits/tuple_utilities.hpp
@@ -21,13 +25,13 @@ set(
                       forward_stl.hpp
                       iter_tools.hpp
                       smart_enum.hpp
-                      static_string.hpp
                       timer.hpp
 )
 
 set(
     UTILITIES_SRCS mathematician/combinatorics.cpp
                    printing/demangler.cpp
+                   printing/table.cpp
                    printing/word_wrap_stream.cpp
 
 )

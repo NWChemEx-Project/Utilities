@@ -2,8 +2,6 @@
 #include "utilities/forward_stl.hpp"
 #include "utilities/type_traits/is_printable.hpp"
 #include <ostream>
-#include <tuple>
-#include <type_traits>
 
 /** @file print_stl.hpp
  *
@@ -14,7 +12,9 @@
  *
  *  When appropriate, containers are printed like their Python analogs.
  */
-namespace utilities::printing::detail_ {
+namespace utilities::printing {
+
+namespace detail_ {
 
 template<typename T>
 std::ostream& print_element(std::ostream& os, T&& value) {
@@ -166,7 +166,7 @@ std::ostream& print_tuple(std::ostream& os, T&& rhs, char odelim = '(',
     }
 }
 
-} // namespace utilities::printing::detail_
+} // namespace detail_
 
 // Stuff below hwere is just boiler-plate for calling the above functions for
 // ever class in the STL
@@ -545,4 +545,4 @@ std::ostream& operator<<(std::ostream& os, const std::vector<T, Alloc>& v) {
     return utilities::printing::detail_::print_list(os, v);
 }
 
-//} // namespace std
+} // namespace utilities::printing

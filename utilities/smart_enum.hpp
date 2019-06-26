@@ -1,6 +1,6 @@
 #pragma once
 #include "utilities/macros/for_each.hpp"
-#include "utilities/static_string.hpp"
+#include "utilities/strings/static_string.hpp"
 #include <set>
 
 namespace utilities {
