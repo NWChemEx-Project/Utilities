@@ -23,14 +23,15 @@ namespace detail_ {
  *  @todo C++17 allows inheriting default ctors.
  */
 template<typename SequenceType, bool repeat>
-class CombinationItr : public detail_::RandomAccessIteratorBase<
+class CombinationItr : public iterators::RandomAccessIteratorBase<
                          CombinationItr<SequenceType, repeat>, SequenceType> {
     /// The type of an instance of this class, defined for sanity
     using my_type = CombinationItr<SequenceType, repeat>;
     /// The type of the base class, again for sanity.
-    using base_type = detail_::RandomAccessIteratorBase<my_type, SequenceType>;
+    using base_type =
+      iterators::RandomAccessIteratorBase<my_type, SequenceType>;
 
-    public:
+public:
     /// Typedefs forwarded from the base class
     ///@{
     using value_type      = typename base_type::value_type;
@@ -179,7 +180,7 @@ class CombinationItr : public detail_::RandomAccessIteratorBase<
         std::swap(current_perm_, rhs.current_perm_);
     }
 
-    private:
+private:
     /// A copy of the parent's set
     value_type set_;
 

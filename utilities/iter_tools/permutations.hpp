@@ -1,8 +1,8 @@
 #pragma once
 #include "utilities/iter_tools/range_container.hpp"
+#include "utilities/iterators/random_access_iterator_base.hpp"
 #include "utilities/mathematician/combinatorics.hpp"
 #include "utilities/mathematician/integer_utils.hpp"
-#include "utilities/type_traits/iterator_types.hpp"
 #include <algorithm> //For is_permutation, next/prev permutation
 #include <limits>    //For maximum value of size_t
 #include <tuple>     //For std::tie
@@ -31,15 +31,16 @@ namespace detail_ {
  */
 template<typename SequenceType>
 class PermutationItr
-  : public detail_::RandomAccessIteratorBase<PermutationItr<SequenceType>,
-                                             SequenceType> {
+  : public iterators::RandomAccessIteratorBase<PermutationItr<SequenceType>,
+                                               SequenceType> {
     /// Type of this class (to simplify defining base_type)
     using my_type = PermutationItr<SequenceType>;
 
     /// Type of the base class (to simplify scoping types)
-    using base_type = detail_::RandomAccessIteratorBase<my_type, SequenceType>;
+    using base_type =
+      iterators::RandomAccessIteratorBase<my_type, SequenceType>;
 
-    public:
+public:
     /// Brings some of base class's typedefs into scope
     ///@{
     using value_type      = typename base_type::value_type;
@@ -242,7 +243,7 @@ class PermutationItr
         std::swap(dx_, rhs.dx_);
     }
 
-    private:
+private:
     /// A copy of the parent's set, doesn't get modified
     value_type orig_set_;
 

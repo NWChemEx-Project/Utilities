@@ -1,7 +1,7 @@
-#include <utilities/iter_tools/zip.hpp>
-#include <utilities/type_traits/type_traits_extensions.hpp>
 #include <array>
 #include <catch2/catch.hpp>
+#include <utilities/iter_tools/zip.hpp>
+#include <utilities/type_traits/type_traits_extensions.hpp>
 
 using namespace utilities;
 
