@@ -1,6 +1,6 @@
 set(
     UTILITIES_HEADERS containers/case_insensitive_map.hpp
-                      containers/math_set.hpp
+    containers/math_set_old.hpp
                       iter_tools/cartesian_product.hpp
                       iter_tools/combinations.hpp
                       iter_tools/enumerate.hpp
