@@ -11,14 +11,29 @@ TEST_CASE("NestedSetPIMPL default ctor") {
     REQUIRE(s.size() == 0);
 }
 
-TEST_CASE("NestedSetPIMPL container ctor") {
-    std::vector corr{MathSet{1, 2}, MathSet{3, 4}, MathSet{5, 6}};
+TEST_CASE("NestedSetPIMPL intializer list") {
+    std::vector corr{1, 2, 2, 3, 3, 4};
+    NestedSetPIMPL s{MathSet{1, 2}, MathSet{2, 3}, MathSet{3, 4}};
 
-    NestedSetPIMPL<MathSet<int>> s(corr.begin(), corr.end());
+    using deduced_type = decltype(s);
+    STATIC_REQUIRE(std::is_same_v<deduced_type, NestedSetPIMPL<MathSet<int>>>);
+    STATIC_REQUIRE(
+      std::is_same_v<typename deduced_type::value_type, MathSet<int>>);
+
     REQUIRE(s.size() == 3);
-    std::size_t counter = 1;
-    for(const auto& x : s) {
+
+    auto* pelem         = &s[0][0]; // Set to the address of the first element
+    std::size_t counter = 0;
+    for(const MathSet<int>& x : s) {
         REQUIRE(x.size() == 2);
-        for(const auto& y : x) REQUIRE(y == counter++);
+        for(const int& y : x) {
+            REQUIRE(y == corr[counter]);
+            // Check that the sets are flattened (i.e. addresses are contiguous
+            REQUIRE(&y == pelem);
+            ++pelem;
+            ++counter;
+        }
     }
 }
+
+TEST_CASE("Nested Nested MathSet") { std::vector corr{1, 2, 3, 4, 5, 6, 7}; }
