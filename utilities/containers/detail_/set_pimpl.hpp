@@ -1,28 +1,32 @@
 #pragma once
+#include "utilities/containers/detail_/math_set_pimpl.hpp"
 #include <memory>
 #include <vector>
 
 namespace utilities::detail_ {
 
+/**
+ *
+ * @note This PIMPL serves as the ultimate backend for most sets. Of particular
+ *       note is that it serves as the backend for the NestedPIMPL class. In
+ *       order for that to work this class can **NOT** enforce uniqueness of the
+ *       elements, that must be done above the PIMPL.
+ * @tparam ElementType
+ */
 template<typename ElementType>
-class SetPIMPL {
+class SetPIMPL : public MathSetPIMPL<ElementType> {
 private:
     /// Type of the container used for storing the elements
     using container_type = std::vector<ElementType>;
 
+    /// Type of the base class
+    using base_type = MathSetPIMPL<ElementType>;
+
 public:
-    /// Type of the elements in the set
-    using value_type = typename container_type::value_type;
-    /// Type used to convey counts and offsets
-    using size_type = typename container_type::size_type;
-    /// Type of a reference to an element in the set
-    using reference = typename container_type::reference;
-    /// Type of a read-only reference to an element in the set
-    using const_reference = typename container_type::const_reference;
-    /// Type of a random access iterator that can read/write elements in the set
-    using iterator = typename container_type::iterator;
-    /// Type of a random access iterator that can only read elements in this set
-    using const_iterator = typename container_type::const_iterator;
+    using value_type      = typename base_type::value_type;
+    using const_reference = typename base_type::const_reference;
+    using iterator        = typename base_type::iterator;
+    using size_type       = typename base_type::size_type;
 
     /** @brief Creates an empty set.
      *
@@ -104,8 +108,8 @@ public:
     /** @brief Constructs a set with the provided values.
      *
      *  This ctor will add the values in the provided initializer list to the
-     *  set. Insertion of the values will respect uniqueness (repeat values
-     *  will only be added once).
+     *  set. Insertion of the values will **NOT** respect uniqueness (repeat
+     *  values will be added multiple times).
      *
      * @param[in] il An initializer list of the values to add to the set.
      *
@@ -118,8 +122,9 @@ public:
      *
      *  This ctor takes an iterator to the first element to add to the set and
      *  an iterator just past the last element to add. All elements in the
-     *  resulting range will be added to the set, respecting uniqueness (each
-     *  element will only be added once).
+     *  resulting range will be added to the set, **NOT** respecting uniqueness
+     *  (each element will be added regardless of whether it is already in the
+     *  set).
      *
      *  @tparam Itr1 The type of the iterator pointing to the first element.
      *  @tparam Itr2 The type of the iterator pointing to just past the last
@@ -137,157 +142,16 @@ public:
     template<typename Itr1, typename Itr2>
     SetPIMPL(Itr1 itr1, Itr2 itr2);
 
-    /** @brief Returns an iterator that points to the first element of the set.
-     *
-     *
-     *  This function returns an iterator that is pointing at the first element
-     *  of the container. If the set is empty the resulting iterator is the
-     *  same as the iterator returned by `end`. The iterator resulting from this
-     *  function can be used to modify the contents of the set.
-     *
-     *  @return An iterator pointing to the first element of the set.
-     *
-     *  @throw none No throw guarantee.
-     */
-    iterator begin() noexcept { return m_data_->begin(); }
-
-    /** @brief Returns an iterator that points to the first element of the set.
-     *
-     *
-     *  This function returns an iterator that is pointing at the first element
-     *  of the container. If the set is empty the resulting iterator is the
-     *  same as the iterator returned by `end`. The iterator resulting from this
-     *  function can only be used to read the contents of the set and not to
-     *  modify it.
-     *
-     *  @return An iterator pointing to the first element of the set.
-     *
-     *  @throw none No throw guarantee.
-     */
-    const_iterator begin() const noexcept { return m_data_->begin(); }
-
-    /** @brief Returns an iterator just past the last element of the set.
-     *
-     *  This function returns an iterator that is just past the last element of
-     *  the set. Iteration over the set is then possible by incrementing the
-     *  iterator returned by begin until it equals the iterator returned by this
-     *  function. Attempting to access the value pointed to by this iterator is
-     *  undefined behavior.
-     *
-     *  @return An iterator just past the last element in the set.
-     *
-     *  @throw none No throw guarantee.
-     */
-    iterator end() noexcept { return m_data_->end(); }
-
-    /** @brief Returns an iterator just past the last element of the set.
-     *
-     *  This function returns an iterator that is just past the last element of
-     *  the set. Iteration over the set is then possible by incrementing the
-     *  iterator returned by begin until it equals the iterator returned by this
-     *  function. Attempting to access the value pointed to by this iterator is
-     *  undefined behavior.
-     *
-     *  @return An iterator just past the last element in the set.
-     *
-     *  @throw none No throw guarantee.
-     */
-    const_iterator end() const noexcept { return m_data_->end(); }
-
-    /** @brief Computes the number of elements in this set.
-     *
-     *  This function returns the number of elements in the set. It should be
-     *  noted that the set only contains unique elements, thus the resulting
-     *  value is the number of unique elements that have been inserted into the
-     *  set.
-     *
-     *  @return The number of elements currently stored in the set.
-     *
-     *  @throw none No throw guarantee.
-     */
-    size_type size() const noexcept { return m_data_->size(); }
-
-    /** @brief Determines whether an element appears in the set or not.
-     *
-     *  This function is used to determine the number of times an element
-     *  appears in the set. Since an element can only appear at most once. The
-     *  returns safely map to boolean values of `false` when the element is not
-     *  present and `true` when it is.
-     *
-     *  @param[in] elem The element whose inclusion in the current set is in
-     *                  question.
-     *  @return The number of times (either 0 or 1) @p elem appears in the set.
-     *
-     *  @throw none No throw guarantee.
-     */
-    size_type count(const ElementType& elem) const noexcept;
-
-    /** @brief Adds an element to the set.
-     *
-     *  This function will first check if the provided element is in the set.
-     *  If it is the element will not be added again. If it is not then the
-     *  element is added and the size of the set increases by one.
-     *
-     *  @param[in] elem The element to add to the set.
-     *
-     *  @throw std::bad_alloc if there is insufficient memory to add the element
-     *                        to the set. Strong throw guarantee.
-     */
-    void insert(ElementType elem);
-
 private:
+    const_reference get_(size_type i) const override { return (*m_data_)[i]; }
+
+    void insert_(iterator offset, value_type elem) override;
+
+    size_type size_() const noexcept override { return m_data_->size(); }
+
     /// The actual data stored within this PIMPL
     std::shared_ptr<container_type> m_data_;
 };
-
-/** @brief Compares two SetPIMPL instances for equality
- *  @related SetPIMPL
- *
- *  Two SetPIMPL instances are equal if they have the same number of elements
- *  and if they contain the same elements, in the same order. It must be
- *  possible to implicitly compare elements from @p lhs with elements from
- *  @p rhs using `operator==`.
- *
- * @tparam T The type of the elements in @p lhs
- * @tparam U The type of the elements in @p rhs.
- *
- * @param[in] lhs The SetPIMPL on the left side of the comparison.
- * @param[in] rhs The SetPIMPL on the right side of the comparison.
- *
- * @return True if the two PIMPL instances hold equivalent sets and false
- *         otherwise.
- *
- * @throw none No throw guarantee.
- */
-template<typename T, typename U>
-bool operator==(const SetPIMPL<T>& lhs, const SetPIMPL<U>& rhs) noexcept {
-    if(lhs.size() != rhs.size()) return false;
-    return std::equal(lhs.begin(), lhs.end(), rhs.begin());
-}
-
-/** @brief Determines if two SetPIMPL instances are different.
- *  @related SetPIMPL
- *
- *  Two SetPIMPL instances are equal if they have the same number of elements
- *  and if they contain the same elements, in the same order. It must be
- *  possible to implicitly compare elements from @p lhs with elements from
- *  @p rhs using `operator==`.
- *
- * @tparam T The type of the elements in @p lhs
- * @tparam U The type of the elements in @p rhs.
- *
- * @param[in] lhs The SetPIMPL on the left side of the comparison.
- * @param[in] rhs The SetPIMPL on the right side of the comparison.
- *
- * @return False if the two PIMPL instances hold equivalent sets and true
- *         otherwise.
- *
- * @throw none No throw guarantee.
- */
-template<typename T, typename U>
-bool operator!=(const SetPIMPL<T>& lhs, const SetPIMPL<U>& rhs) noexcept {
-    return !(lhs == rhs);
-}
 
 //------------------------------Implementations---------------------------------
 
@@ -306,7 +170,7 @@ template<typename Itr1, typename Itr2>
 SET_PIMPL_TYPE::SetPIMPL(Itr1 itr1, Itr2 itr2) : SetPIMPL() {
     m_data_->reserve(std::distance(itr1, itr2));
     while(itr1 != itr2) {
-        insert(*itr1);
+        insert_(this->end(), *itr1);
         ++itr1;
     }
 }
@@ -318,15 +182,10 @@ SET_PIMPL_TYPE& SET_PIMPL_TYPE::operator=(const SET_PIMPL_TYPE& rhs) {
 }
 
 template<typename ElementType>
-typename SET_PIMPL_TYPE::size_type SET_PIMPL_TYPE::count(
-  const ElementType& elem) const noexcept {
-    return m_data_->end() != std::find(m_data_->begin(), m_data_->end(), elem);
-}
-
-template<typename ElementType>
-void SET_PIMPL_TYPE::insert(ElementType elem) {
-    if(count(elem)) return;
-    m_data_->push_back(elem);
+void SET_PIMPL_TYPE::insert_(iterator offset, value_type elem) {
+    auto diff = offset - this->begin();
+    m_data_->insert(m_data_->begin() + diff, std::move(elem));
 }
 #undef SET_PIMPL_TYPE
+
 } // namespace utilities::detail_

@@ -83,9 +83,9 @@ TEST_CASE("SetPIMPL size") {
     s.insert(1);
     REQUIRE(s.size() == 1);
     s.insert(1);
-    REQUIRE(s.size() == 1);
-    s.insert(2);
     REQUIRE(s.size() == 2);
+    s.insert(2);
+    REQUIRE(s.size() == 3);
 }
 
 TEST_CASE("SetPIMPL count") {
@@ -94,7 +94,7 @@ TEST_CASE("SetPIMPL count") {
     s.insert(0);
     REQUIRE(s.count(0) == 1);
     s.insert(0);
-    REQUIRE(s.count(0) == 1);
+    REQUIRE(s.count(0) == 2);
 }
 
 TEST_CASE("SetPIMPL insert") {
@@ -104,8 +104,8 @@ TEST_CASE("SetPIMPL insert") {
     REQUIRE(s.count(0) == 1);
     REQUIRE(s.size() == 1);
     s.insert(0);
-    REQUIRE(s.count(0) == 1);
-    REQUIRE(s.size() == 1);
+    REQUIRE(s.count(0) == 2);
+    REQUIRE(s.size() == 2);
 }
 
 TEST_CASE("SetPIMPL copy ctor") {
