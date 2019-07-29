@@ -1,6 +1,6 @@
 #pragma once
-#include "utilities/containers/detail_/nested_set_pimpl.hpp"
-#include "utilities/containers/detail_/set_pimpl.hpp"
+#include "utilities/containers/math_set/detail_/nested_set_pimpl.hpp"
+#include "utilities/containers/math_set/detail_/set_pimpl.hpp"
 #include <type_traits>
 
 namespace utilities {
@@ -37,24 +37,23 @@ struct MathSetTraits {
     /// Convenience variable for determining if @p T is not a MathSet
     static constexpr bool is_not_math_set_v = std::negation_v<is_math_set_t>;
 
-    /// Type of elements actually stored in the PIMPL
-    using value_type = ElementType;
-
-    /// Type of const references returned by the PIMPL
+    /// For convenience the type of the base class of all PIMPLs
+    using pimpl_base = detail_::MathSetPIMPL<ElementType>;
 
     /// Type of the normal PIMPL
-    using normal_pimpl = detail_::SetPIMPL<value_type>;
+    using normal_pimpl = detail_::SetPIMPL<ElementType>;
 
     /// Triggers if @p ElementType is a nested MathSet
     template<typename T>
     using if_nested =
-      std::conditional_t<is_math_set_v, detail_::NestedSetPIMPL<value_type>, T>;
+      std::conditional_t<is_math_set_v, detail_::NestedSetPIMPL<ElementType>,
+                         T>;
 
     /// Type of the default, non-view PIMPL for ElementType
     using default_pimpl = if_nested<normal_pimpl>;
 
-    /// For convenience the type of the base class of all PIMPLs
-    using pimpl_base = detail_::MathSetPIMPL<value_type>;
+    /// Type of elements actually stored in the PIMPL
+    using value_type = typename default_pimpl::value_type;
 
     /// Type of a reference to an element in the PIMPL
     using reference = typename default_pimpl::reference;
@@ -70,6 +69,10 @@ struct MathSetTraits {
 
     /// Type used for indexing/offsets with the PIPML
     using size_type = typename default_pimpl::size_type;
+
+    /// The number of nestings
+    static constexpr size_type depth =
+      is_not_math_set_v ? MathSetTraits<value_type>::depth + 1 : 0;
 };
 
 } // namespace detail_
