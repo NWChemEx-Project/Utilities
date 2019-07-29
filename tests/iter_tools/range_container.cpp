@@ -1,6 +1,6 @@
+#include <catch2/catch.hpp>
 #include <utilities/iter_tools/range_container.hpp>
 #include <utilities/type_traits/type_traits_extensions.hpp>
-#include <catch2/catch.hpp>
 
 using namespace utilities;
 using iterator_type  = typename std::vector<int>::const_iterator;

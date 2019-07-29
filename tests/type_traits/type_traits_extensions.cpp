@@ -1,5 +1,5 @@
-#include <utilities/type_traits/type_traits_extensions.hpp>
 #include <catch2/catch.hpp>
+#include <utilities/type_traits/type_traits_extensions.hpp>
 #include <vector>
 
 using namespace utilities;

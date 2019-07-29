@@ -1,5 +1,5 @@
-#include <utilities/containers/case_insensitive_map.hpp>
 #include <catch2/catch.hpp>
+#include <utilities/containers/case_insensitive_map.hpp>
 
 using namespace utilities;
 

@@ -1,6 +1,6 @@
+#include <catch2/catch.hpp>
 #include <utilities/iter_tools/permutations.hpp>
 #include <utilities/type_traits/type_traits_extensions.hpp>
-#include <catch2/catch.hpp>
 
 using namespace utilities;
 using set_type = std::vector<int>;

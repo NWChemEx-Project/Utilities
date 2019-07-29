@@ -9,6 +9,10 @@ set(
                       iter_tools/range_container.hpp
                       iter_tools/tuple_container.hpp
                       iter_tools/zip.hpp
+                      iterators/bidirectional_iterator_base.hpp
+                      iterators/input_iterator_base.hpp
+                      iterators/offset_iterator.hpp
+                      iterators/random_access_iterator_base.hpp
                       macros/for_each.hpp
                       mathematician/combinatorics.hpp
                       mathematician/integer_utils.hpp
@@ -19,7 +23,6 @@ set(
                       strings/string_tools.hpp
                       strings/static_string.hpp
                       type_traits/is_printable.hpp
-                      type_traits/iterator_types.hpp
                       type_traits/tuple_utilities.hpp
                       type_traits/type_traits_extensions.hpp
                       forward_stl.hpp
