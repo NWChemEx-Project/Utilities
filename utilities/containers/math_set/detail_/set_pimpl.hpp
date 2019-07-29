@@ -1,5 +1,5 @@
 #pragma once
-#include "utilities/containers/detail_/math_set_pimpl.hpp"
+#include "utilities/containers/math_set/detail_/math_set_pimpl.hpp"
 #include <memory>
 #include <vector>
 

@@ -1,5 +1,5 @@
-set(
-    UTILITIES_HEADERS containers/case_insensitive_map.hpp
+add_subdirectory(type_traits)
+list(APPEND headers containers/case_insensitive_map.hpp
                       containers/math_set.hpp
                       iter_tools/cartesian_product.hpp
                       iter_tools/combinations.hpp
@@ -22,9 +22,7 @@ set(
                       printing/word_wrap_stream.hpp
                       strings/string_tools.hpp
                       strings/static_string.hpp
-                      type_traits/is_printable.hpp
-                      type_traits/tuple_utilities.hpp
-                      type_traits/type_traits_extensions.hpp
+
                       forward_stl.hpp
                       iter_tools.hpp
                       smart_enum.hpp
@@ -42,7 +40,7 @@ set(
 cpp_add_library(
     utilities
     SOURCES ${UTILITIES_SRCS}
-    INCLUDES ${UTILITIES_HEADERS}
+    INCLUDES ${headers}
 )
 cpp_install(TARGETS utilities)
 

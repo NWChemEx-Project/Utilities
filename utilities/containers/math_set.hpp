@@ -1,5 +1,5 @@
 #pragma once
-#include "utilities/containers/detail_/math_set_traits.hpp"
+#include "utilities/containers/math_set/detail_/math_set_traits.hpp"
 
 namespace utilities {
 
@@ -18,25 +18,26 @@ namespace utilities {
  *  `MathSet` class avoids these problems by providing views and built-in
  *  support for standard set operations.
  *
- *  At the moment this class is only capable of being used as a stable ordered
- *  set (elements will be stored in the insertion order).
+ *  Conceptually MathSet models the power set of an ordered set. What this means
+ *  is that internally we store the elements in the order they were inserted.
+ *  Unlike std::set the order is stable with respect to insertion. The power set
+ *  part of this description means that this container acts as if it holds all
+ *  possible subsets of the set. In other words, it is possible to get a
+ *  reference to any subset of the input set. These references behave just like
+ *  references to the elements of any other container (if you modify the
+ *  reference you modify the values in the container).If you want the returned
+ *  set to be independent of the parent container make a copy.
+ *
+ *  Things to note:
+ *  - Generally speaking MathSet has characteristics similar to std::vector,
+ *    such as storing elements contiguously and having fast insertion onto the
+ *    end. MathSet supports arbitrary insertion, but general insertions will be
+ *    slow.
+ *
  *
  * @tparam element_type The type of the elements in this set. Should be
  *                      copyable, movable, comparable via  operator<, and
  *                      comparable via operator==.
- *
- * @warning Be very careful using this class with automatic template type
- *          parameter deduction. In particular take note of the following:
- *          @code
- *          std::vector<int> v{1, 2, 3, 4, 5};
- *
- *          MathSet s1{v}; // Makes MathSet<std::vector<int>> not MathSet<int>
- *          MathSet s2(v); // Use parentheses to make MathSet<int>
- *
- *          MathSet s3{s2}; //Makes MathSet<int> not MathSet<MathSet<int>>
- *          MathSet s4{{s2}} //Makes MathSet<MathSet<int>>
- *          @endcode
- *          When in doubt specify the template type parameter explicitly.
  */
 template<typename ElementType>
 class MathSet {
@@ -60,6 +61,9 @@ public:
     MathSet(my_type&& rhs) noexcept = default;
     my_type& operator=(my_type&& rhs) noexcept = default;
     MathSet(std::initializer_list<ElementType> il);
+    template<typename Itr1, typename Itr2>
+    MathSet(Itr1&& itr1, Itr2&& itr2);
+
     explicit MathSet(std::shared_ptr<pimpl_base> pimpl) : m_pimpl_(pimpl) {}
 
     void swap(my_type& rhs) noexcept { m_pimpl_.swap(rhs.m_pimpl_); }
@@ -80,7 +84,8 @@ public:
 
     /** @brief Adds an element to the set.
      *
-     *  If this set is stable
+     *  This function will add an element onto the end of the set. No check is
+     *  done to ensure that the element is unique.
      *
      */
     void insert(ElementType elem) { m_pimpl_->insert(std::move(elem)); }
@@ -115,6 +120,15 @@ MATH_SET_TYPE::MathSet(std::initializer_list<ElementType> il) :
   MathSet(std::make_shared<default_pimpl>(il)) {}
 
 template<typename ElementType>
+template<typename Itr1, typename Itr2>
+MATH_SET_TYPE::MathSet(Itr1&& itr1, Itr2&& itr2) : MathSet() {
+    while(itr1 != itr2) {
+        m_pimpl_->insert(*itr1);
+        ++itr1;
+    }
+}
+
+template<typename ElementType>
 bool MATH_SET_TYPE::operator==(const MathSet<ElementType>& rhs) const noexcept {
     return (*m_pimpl_) == (*rhs.m_pimpl_);
 }
@@ -123,6 +137,36 @@ template<typename ElementType>
 bool MATH_SET_TYPE::operator!=(const MathSet<ElementType>& rhs) const noexcept {
     return (*m_pimpl_) != (*rhs.m_pimpl_);
 }
+
+    // template<typename ElementType>
+    // MathS<const ElementType>
+    // MATH_SET_TYPE::intersect_(const MATH_SET_PIMPL_TYPE& rhs) const {
+    //    std::vector<size_type> idxs;
+    //    for(std::size_t i = 0; i < size(); ++i)
+    //        if(rhs.count((*this)[i]) > 0)
+    //            idxs.insert(i);
+    //    return SelectionViewPIMPL(idxs.begin(), idxs.end(), this);
+    //}
+    //
+    // template<typename ElementType>
+    // SelectionViewPIMPL<const ElementType>
+    // MATH_SET_PIMPL_TYPE::difference_(const MATH_SET_PIMPL_TYPE& rhs) const {
+    //    std::vector<size_type> idxs;
+    //    for(std::size_t i = 0; i < size(); ++i)
+    //        if(rhs.count((*this)[i]) == 0)
+    //            idxs.insert(i);
+    //    return SelectionViewPIMPL(idxs.begin(), idxs.end(), this);
+    //}
+    //
+    // template<typename ElementType>
+    // SelectionViewPIMPL<ElementType>
+    // MATH_SET_PIMPL_TYPE::difference_(const MATH_SET_PIMPL_TYPE& rhs) {
+    //    std::vector<size_type> idxs;
+    //    for(std::size_t i = 0; i < size(); ++i)
+    //        if(rhs.count((*this)[i]) == 0)
+    //            idxs.insert(i);
+    //    return SelectionViewPIMPL(idxs.begin(), idxs.end(), this);
+    //}
 
 #undef MATH_SET_TYPE
 
