@@ -1,5 +1,8 @@
 #pragma once
-#include "utilities/containers/math_set/detail_/range_view_pimpl.hpp"
+#include "math_set_traits.hpp"
+#include "utilities/containers/detail_/math_set/math_set_traits.hpp"
+#include "utilities/containers/detail_/math_set/range_view_pimpl.hpp"
+#include "utilities/containers/detail_/math_set/set_pimpl.hpp"
 
 namespace utilities::detail_ {
 
@@ -29,7 +32,9 @@ class NestedSetPIMPL : public MathSetPIMPL<ElementType> {
     using nested_type = typename ElementType::value_type;
     /// Each element in this PIMPL uses a PIMPL of this type
     using view_pimpl_type = RangeViewPIMPL<nested_type>;
-    /// The common base class for all MathSet PIMPLs
+    /// The default PIMPL for the nested MathSet
+    using default_pimpl = typename MathSetTraits<nested_type>::default_pimpl;
+    /// My base class type
     using base_type = MathSetPIMPL<ElementType>;
 
 public:
@@ -48,7 +53,7 @@ public:
      *  @throw none No throw guarantee.
      *
      */
-    NestedSetPIMPL() = default;
+    NestedSetPIMPL();
 
     /** @brief Fills the Set with provided initial values.
      *
@@ -88,41 +93,53 @@ private:
     const_reference get_(size_type i) const override { return m_views_[i]; }
     void insert_(iterator offset, ElementType new_elem) override;
     size_type size_() const noexcept override { return m_views_.size(); }
+    void erase_(const_reference elem) noexcept override;
+    void clear_() noexcept override;
 
     /// The views of the subsets
     std::vector<ElementType> m_views_;
 
     /// The flattened sets
-    ElementType m_data_;
+    std::unique_ptr<MathSetPIMPL<nested_type>> m_data_;
 };
 
 //-------------------------Implementations--------------------------------------
 #define NESTED_SET_PIMPL_TYPE NestedSetPIMPL<ElementType>
 
+template<typename Itr1, typename Itr2>
+NestedSetPIMPL(Itr1&&, Itr2 &&)->NestedSetPIMPL<typename Itr1::value_type>;
+
+template<typename ElementType>
+NESTED_SET_PIMPL_TYPE::NestedSetPIMPL() :
+  m_data_(std::make_unique<default_pimpl>()) {}
+
 template<typename ElementType>
 NESTED_SET_PIMPL_TYPE::NestedSetPIMPL(std::initializer_list<ElementType> il) :
   NestedSetPIMPL(il.begin(), il.end()) {}
-
-template<typename Itr1, typename Itr2>
-NestedSetPIMPL(Itr1&&, Itr2 &&)->NestedSetPIMPL<typename Itr1::value_type>;
 
 template<typename ElementType>
 template<typename Itr1, typename Itr2>
 NESTED_SET_PIMPL_TYPE::NestedSetPIMPL(Itr1&& itr1, Itr2&& itr2) :
   NestedSetPIMPL() {
     while(itr1 != itr2) {
-        insert_(this->end(), *itr1);
+        if(this->count(*itr1) == 0) insert_(this->end(), *itr1);
         ++itr1;
     }
 }
 
 template<typename ElementType>
 void NESTED_SET_PIMPL_TYPE::add_element_(ElementType elem) {
-    const auto ebegin = m_data_.size();
+    const auto ebegin = m_data_->size();
     const auto eend   = ebegin + elem.size();
-    auto view_pimpl = std::make_shared<view_pimpl_type>(ebegin, eend, &m_data_);
-    m_views_.emplace_back(std::move(ElementType(view_pimpl)));
-    for(auto&& x : elem) m_data_.insert(m_data_.end(), std::move(x));
+
+    auto view_pimpl =
+      std::make_unique<view_pimpl_type>(ebegin, eend, m_data_.get());
+
+    m_views_.emplace_back(std::move(ElementType(std::move(view_pimpl))));
+
+    // Need to allow duplicates because partitioning can make unique, e.g.
+    // {{1, 2}, {1}} is okay even though it looks like {1, 2, 1} flattened
+    for(auto&& x : elem) m_data_->no_check_insert(std::move(x));
 }
 
 template<typename ElementType>
@@ -138,8 +155,7 @@ void NESTED_SET_PIMPL_TYPE::insert_(iterator offset, ElementType new_elem) {
 
     // Reset containers, need to copy old views to preserve the element values
     std::vector<ElementType> old_views(m_views_);
-    std::vector<ElementType>{}.swap(m_views_);
-    ElementType{}.swap(m_data_);
+    this->clear();
 
     // Add values up to offset back in
     for(size_type i = 0; i < diff; ++i) add_element_(std::move(old_views[i]));
@@ -150,6 +166,20 @@ void NESTED_SET_PIMPL_TYPE::insert_(iterator offset, ElementType new_elem) {
     // Add remaining values, starting with what originally was offset
     for(size_type i = diff; i < old_views.size(); ++i)
         add_element_(std::move(old_views[i]));
+}
+
+template<typename ElementType>
+void NESTED_SET_PIMPL_TYPE::erase_(const_reference elem) noexcept {
+    std::vector<ElementType> old_elems(m_views_);
+    this->clear();
+    for(auto&& x : old_elems)
+        if(x != elem) this->insert(x);
+}
+
+template<typename ElementType>
+void NESTED_SET_PIMPL_TYPE::clear_() noexcept {
+    m_views_.clear();
+    m_data_->clear();
 }
 
 #undef NESTED_SET_PIMPL_TYPE

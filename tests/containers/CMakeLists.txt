@@ -1,8 +1,8 @@
-list(APPEND sources containers/math_set/detail_/element_type_traits.cpp
-                    containers/math_set/detail_/range_view_pimpl.cpp
-                    containers/math_set/detail_/nested_set_pimpl.cpp
-                    containers/math_set/detail_/selection_view_pimpl.cpp
-                    containers/math_set/detail_/set_pimpl.cpp
+list(APPEND sources containers/detail_/math_set/element_type_traits.cpp
+                    containers/detail_/math_set/range_view_pimpl.cpp
+                    containers/detail_/math_set/nested_set_pimpl.cpp
+                    containers/detail_/math_set/selection_view_pimpl.cpp
+                    containers/detail_/math_set/set_pimpl.cpp
                     containers/case_insensitive_map.cpp
                     containers/math_set.cpp
 )

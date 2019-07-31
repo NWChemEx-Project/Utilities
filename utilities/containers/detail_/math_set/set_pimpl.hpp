@@ -1,5 +1,5 @@
 #pragma once
-#include "utilities/containers/math_set/detail_/math_set_pimpl.hpp"
+#include "utilities/containers/detail_/math_set/math_set_pimpl.hpp"
 #include <memory>
 #include <vector>
 
@@ -149,6 +149,10 @@ private:
 
     size_type size_() const noexcept override { return m_data_->size(); }
 
+    void clear_() noexcept override { m_data_->clear(); }
+
+    void erase_(const_reference elem) override;
+
     /// The actual data stored within this PIMPL
     std::shared_ptr<container_type> m_data_;
 };
@@ -170,7 +174,7 @@ template<typename Itr1, typename Itr2>
 SET_PIMPL_TYPE::SetPIMPL(Itr1 itr1, Itr2 itr2) : SetPIMPL() {
     m_data_->reserve(std::distance(itr1, itr2));
     while(itr1 != itr2) {
-        insert_(this->end(), *itr1);
+        if(this->count(*itr1) == 0) insert_(this->end(), *itr1);
         ++itr1;
     }
 }
@@ -185,6 +189,11 @@ template<typename ElementType>
 void SET_PIMPL_TYPE::insert_(iterator offset, value_type elem) {
     auto diff = offset - this->begin();
     m_data_->insert(m_data_->begin() + diff, std::move(elem));
+}
+
+template<typename ElementType>
+void SET_PIMPL_TYPE::erase_(const_reference elem) {
+    m_data_->erase(std::find(m_data_->begin(), m_data_->end(), elem));
 }
 #undef SET_PIMPL_TYPE
 

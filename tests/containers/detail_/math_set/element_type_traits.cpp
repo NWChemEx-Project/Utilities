@@ -1,5 +1,5 @@
 #include <catch2/catch.hpp>
-#include <utilities/containers/math_set/detail_/element_type_traits.hpp>
+#include <utilities/containers/detail_/math_set/element_type_traits.hpp>
 
 TEST_CASE("ElementTypeTraits<int>") {
     using type = utilities::detail_::ElementTypeTraits<int>;

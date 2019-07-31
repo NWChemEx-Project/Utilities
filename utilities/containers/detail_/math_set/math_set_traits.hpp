@@ -1,6 +1,4 @@
 #pragma once
-#include "utilities/containers/math_set/detail_/nested_set_pimpl.hpp"
-#include "utilities/containers/math_set/detail_/set_pimpl.hpp"
 #include <type_traits>
 
 namespace utilities {
@@ -10,6 +8,11 @@ template<typename T>
 class MathSet;
 
 namespace detail_ {
+
+template<typename T>
+class NestedSetPIMPL;
+template<typename T>
+class SetPIMPL;
 
 /** @brief Collects all of the template meta-programming for the MathSet class
  *
@@ -29,16 +32,11 @@ struct MathSetTraits {
     template<typename T>
     struct IsMathSet<MathSet<T>> : std::true_type {};
 
+    /// Type of IsMathSet for this type_trait
     using is_math_set_t = IsMathSet<ElementType>;
 
-    /// Convenience variable for determining if @p T is a MathSet
+    /// Convenience variable for whether ElementType is a MathSet
     static constexpr bool is_math_set_v = is_math_set_t::value;
-
-    /// Convenience variable for determining if @p T is not a MathSet
-    static constexpr bool is_not_math_set_v = std::negation_v<is_math_set_t>;
-
-    /// For convenience the type of the base class of all PIMPLs
-    using pimpl_base = detail_::MathSetPIMPL<ElementType>;
 
     /// Type of the normal PIMPL
     using normal_pimpl = detail_::SetPIMPL<ElementType>;
@@ -51,28 +49,6 @@ struct MathSetTraits {
 
     /// Type of the default, non-view PIMPL for ElementType
     using default_pimpl = if_nested<normal_pimpl>;
-
-    /// Type of elements actually stored in the PIMPL
-    using value_type = typename default_pimpl::value_type;
-
-    /// Type of a reference to an element in the PIMPL
-    using reference = typename default_pimpl::reference;
-
-    /// Type of a read-only reference to an element in the PIMPL
-    using const_reference = typename default_pimpl::const_reference;
-
-    /// Type of an iterator over the elements in the PIMPL
-    using iterator = typename default_pimpl::iterator;
-
-    /// Type of an iterator that returns read-only elements in the PIMPL
-    using const_iterator = typename default_pimpl::const_iterator;
-
-    /// Type used for indexing/offsets with the PIPML
-    using size_type = typename default_pimpl::size_type;
-
-    /// The number of nestings
-    static constexpr size_type depth =
-      is_not_math_set_v ? MathSetTraits<value_type>::depth + 1 : 0;
 };
 
 } // namespace detail_

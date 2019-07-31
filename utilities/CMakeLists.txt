@@ -1,7 +1,6 @@
+add_subdirectory(containers)
 add_subdirectory(type_traits)
-list(APPEND headers containers/case_insensitive_map.hpp
-                      containers/math_set.hpp
-                      iter_tools/cartesian_product.hpp
+list(APPEND headers   iter_tools/cartesian_product.hpp
                       iter_tools/combinations.hpp
                       iter_tools/enumerate.hpp
                       iter_tools/permutations.hpp

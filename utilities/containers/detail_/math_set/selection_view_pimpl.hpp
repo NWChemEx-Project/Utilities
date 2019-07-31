@@ -1,5 +1,5 @@
 #pragma once
-#include "utilities/containers/math_set/detail_/math_set_pimpl.hpp"
+#include "utilities/containers/detail_/math_set/math_set_pimpl.hpp"
 
 namespace utilities::detail_ {
 
@@ -20,6 +20,9 @@ private:
     /// Type of the base class, used in other typedefs
     using base_type = MathSetPIMPL<ElementType>;
 
+    /// Type of this class
+    using my_type = MathSetPIMPL<ElementType>;
+
 public:
     /// Type of an element returned by this instance
     using value_type = typename base_type::value_type;
@@ -29,6 +32,23 @@ public:
     using const_reference = typename base_type::const_reference;
     /// Type of an iterator over this container
     using iterator = typename base_type::iterator;
+
+    base_type& operator=(const base_type& rhs) override {
+        base_type::operator=(rhs);
+        return *this;
+    }
+
+    /** @brief Creates an empty selection that is a view of @p parent
+     *
+     *  This ctor creates a new SelectionViewPIMPL that aliases @p parent. The
+     *  resulting instance is empty. Elements can be added to this instance by
+     *  calling `insert`.
+     *
+     *  @param[in] p The class this instance will be a view of.
+     *
+     *  @throw none No throw guarantee
+     */
+    explicit SelectionViewPIMPL(base_type* p) noexcept : m_parent_(p) {}
 
     /** @brief Creates a MathSetPIMPL that holds an assortment of indices from a
      *         parent container.
@@ -55,52 +75,97 @@ public:
      * @throw std::bad_alloc if there is insufficient memory to store the
      *                       indices. Strong throw guarantee.
      */
-    template<typename Itr1, typename Itr2, typename ParentContainer>
-    SelectionViewPIMPL(Itr1&& start, Itr2&& end, ParentContainer* parent);
+    template<typename Itr1, typename Itr2>
+    SelectionViewPIMPL(Itr1&& start, Itr2&& end, base_type* parent);
 
-private:
+protected:
+    /// Get the parent container's PIMPL in a read/write fashion
+    base_type& parent_() noexcept { return *m_parent_; }
+    /// Get the parent container's PIMPL in a read/only fashion
+    const base_type& parent_() const noexcept { return *m_parent_; }
+    /// Get the index of an element (code factorization)
+    size_type index_(const_reference elem) const noexcept;
+
     const_reference get_(size_type i) const override;
     void insert_(iterator offset, value_type elem) override;
     size_type size_() const noexcept override { return m_indices_.size(); }
+    void erase_(const_reference elem) override;
+    void clear_() noexcept override;
 
+private:
     /// A list of indices that are stored in this view
     std::vector<size_type> m_indices_;
-    /// Callback for actually getting an element
-    std::function<const_reference(size_type)> m_getter_;
-    /// Callback for inserting an element into the set
-    std::function<size_type(value_type)> m_inserter_;
+
+    /// The PIMPL of the parent container
+    base_type* m_parent_;
 };
 
 //---------------------------------Implementations------------------------------
 #define SELECTION_VIEW_PIMPL_TYPE SelectionViewPIMPL<ElementType>
 
-template<typename Itr1, typename Itr2, typename ParentContainer>
-SelectionViewPIMPL(Itr1&&, Itr2&&, ParentContainer*)
-  ->SelectionViewPIMPL<typename ParentContainer::value_type>;
+template<typename Itr1, typename Itr2, typename ElementType>
+SelectionViewPIMPL(Itr1&&, Itr2&&, MathSetPIMPL<ElementType>*)
+  ->SelectionViewPIMPL<ElementType>;
 
 template<typename ElementType>
-template<typename Itr1, typename Itr2, typename ParentContainer>
+template<typename Itr1, typename Itr2>
 SELECTION_VIEW_PIMPL_TYPE::SelectionViewPIMPL(Itr1&& start, Itr2&& end,
-                                              ParentContainer* parent) :
+                                              base_type* parent) :
   m_indices_(std::forward<Itr1>(start), std::forward<Itr2>(end)),
-  m_getter_([=](size_type i) -> const_reference { return (*parent)[i]; }),
-  m_inserter_([=](value_type ei) {
-      parent->insert(parent->end(), std::move(ei));
-      return parent->size() - 1;
-  }) {}
+  m_parent_(parent) {}
+
+template<typename ElementType>
+typename SELECTION_VIEW_PIMPL_TYPE::size_type SELECTION_VIEW_PIMPL_TYPE::index_(
+  const_reference elem) const noexcept {
+    auto itr = std::find(parent_().begin(), parent_().end(), elem);
+    return itr - parent_().begin();
+}
 
 template<typename ElementType>
 typename SELECTION_VIEW_PIMPL_TYPE::const_reference
 SELECTION_VIEW_PIMPL_TYPE::get_(size_type i) const {
-    auto itr = m_indices_.begin();
-    std::advance(itr, i);
-    return m_getter_(*itr);
+    return parent_()[m_indices_[i]];
 }
 
 template<typename ElementType>
 void SELECTION_VIEW_PIMPL_TYPE::insert_(iterator offset, value_type elem) {
+    // Two scenarios: parent has it and we need to alias it, or parent doesn't
+    // and we need to add it.
+
+    // Compute parent index
+    auto idx = index_(elem);
+
+    // Compute our index
     auto diff = offset - this->begin();
-    m_indices_.insert(m_indices_.begin() + diff, m_inserter_(std::move(elem)));
+
+    if(idx == parent_().size()) {
+        parent_().insert(parent_().end(), std::move(elem));
+    }
+
+    m_indices_.insert(m_indices_.begin() + diff, idx);
+}
+
+template<typename ElementType>
+void SELECTION_VIEW_PIMPL_TYPE::clear_() noexcept {
+    std::vector<ElementType> old_values(this->begin(), this->end());
+    m_indices_.clear();
+    for(const auto& x : old_values) parent_().erase(x);
+}
+
+template<typename ElementType>
+void SELECTION_VIEW_PIMPL_TYPE::erase_(const_reference elem) {
+    // Get the index we should erase
+    auto idx = index_(elem);
+
+    // Erase element from parent
+    parent_().erase(elem);
+
+    std::vector<size_type> new_indices;
+    for(auto x : m_indices_) {
+        if(x == idx) continue;
+        new_indices.push_back(x < idx ? x : x - 1);
+    }
+    m_indices_.swap(new_indices);
 }
 
 #undef SELECTION_VIEW_PIMPL_TYPE
