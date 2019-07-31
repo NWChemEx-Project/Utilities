@@ -1,6 +1,6 @@
 #include <catch2/catch.hpp>
+#include <utilities/containers/detail_/math_set/nested_set_pimpl.hpp>
 #include <utilities/containers/math_set.hpp>
-#include <utilities/containers/math_set/detail_/nested_set_pimpl.hpp>
 
 using namespace utilities;
 using namespace utilities::detail_;
@@ -104,7 +104,12 @@ TEST_CASE("NestedSetPIMPL insert") {
     }
 }
 
-TEST_CASE("NestedSetPIMPL get") { NestedSetPIMPL s{set_t{1, 2}, set_t{3, 4}}; }
+TEST_CASE("NestedSetPIMPL get") {
+    NestedSetPIMPL s{set_t{1, 2}, set_t{3, 4}, set_t{}};
+    REQUIRE(s[0] == set_t{1, 2});
+    REQUIRE(s[1] == set_t{3, 4});
+    REQUIRE(s[2] == set_t{});
+}
 
 TEST_CASE("NestedSetPIMPL size") {
     SECTION("empty set") {
@@ -115,6 +120,13 @@ TEST_CASE("NestedSetPIMPL size") {
         NestedSetPIMPL p{set_t{1}, set_t{2}, set_t{3}};
         REQUIRE(p.size() == 3);
     }
+}
+
+TEST_CASE("NestedSetPIMPL clear") {
+    NestedSetPIMPL s{set_t{}};
+    REQUIRE(s.size() == 1);
+    s.clear();
+    REQUIRE(s.size() == 0);
 }
 
 TEST_CASE("Nested Nested MathSet") {

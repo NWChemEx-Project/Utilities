@@ -1,5 +1,5 @@
 #pragma once
-#include "utilities/containers/math_set/detail_/element_type_traits.hpp"
+#include "utilities/containers/detail_/math_set/element_type_traits.hpp"
 #include "utilities/iterators/offset_iterator.hpp"
 
 #include <memory>
@@ -43,11 +43,26 @@ public:
     /// Default no-throw ctor
     MathSetPIMPL() noexcept = default;
 
+    /** @brief Makes this instance contain deep copies of @p rhs's members
+     *
+     *  This function ultimately will free up the contents of the current PIMPL,
+     *  by calling `clear_` and then call `insert_` with deep copies of each of
+     *  @p rhs's members.
+     *
+     *  @param[in] rhs The PIMPL we are copying the state from.
+     *
+     *  @return The current PIMPL with its state set to deep copies of @p rhs's
+     *          elements.
+     *
+     *  @throw std::bad_alloc if there is insufficient memory to perform the
+     *                        copy. Weak throw guarantee.
+     */
+    virtual my_type& operator=(const my_type& rhs);
+
     // Deleted to avoid slicing, copy/move is done via MathSet class
     //@{
     MathSetPIMPL(const my_type&) = delete;
-    my_type& operator=(const my_type&) = delete;
-    MathSetPIMPL(my_type&&)            = delete;
+    MathSetPIMPL(my_type&&)      = delete;
     my_type& operator=(my_type&&) = delete;
     //@}
 
@@ -95,7 +110,7 @@ public:
      *  @throw std::bad_alloc if there is insufficient memory to add the element
      *                        to the set. Strong throw guarantee.
      */
-    void insert(value_type elem) { insert(end(), std::move(elem)); }
+    void insert(value_type elem);
 
     /** @brief Adds an element to the set.
      *
@@ -113,7 +128,10 @@ public:
      *  @throw std::bad_alloc if there is insufficient memory to add the element
      *                        to the set. Strong throw guarantee.
      */
-    void insert(iterator off, value_type el) { insert_(off, std::move(el)); }
+    void insert(iterator off, value_type el);
+
+    /// Can be called by other PIMPLs to force insertion
+    void no_check_insert(value_type x) { insert_(end(), std::move(x)); }
 
     /** @brief Computes the number of elements in this set.
      *
@@ -198,6 +216,12 @@ public:
      */
     const_iterator end() const noexcept { return const_iterator(size(), this); }
 
+    void clear() noexcept { return clear_(); }
+
+    void erase(const_reference elem) {
+        if(count(elem) > 0) erase_(elem);
+    }
+
     /** @brief Compares MathSetPIMPL instances for equality
      *
      *  Two MathSetPIMPL instances are equal if they have the same number of
@@ -248,6 +272,11 @@ private:
 
     /// To be overridden by the derived class to compute the size of the set
     virtual size_type size_() const noexcept = 0;
+
+    /// To be overridden by the derived class to make the set empty again
+    virtual void clear_() noexcept = 0;
+
+    virtual void erase_(const_reference elem) = 0;
 };
 
 /** @brief Determines if @p lhs comes before @p rhs sequentially.
@@ -360,6 +389,15 @@ bool operator<=(const MathSetPIMPL<T>& lhs,
 #define MATH_SET_PIMPL_TYPE MathSetPIMPL<ElementType>
 
 template<typename ElementType>
+MATH_SET_PIMPL_TYPE& MATH_SET_PIMPL_TYPE::operator=(const my_type& rhs) {
+    std::vector<ElementType> old(begin(), end());
+    for(const auto& x : old)
+        if(rhs.count(x) == 0) erase(x);
+    for(const auto& x : rhs) insert(x);
+    return *this;
+}
+
+template<typename ElementType>
 typename MATH_SET_PIMPL_TYPE::reference MATH_SET_PIMPL_TYPE::operator[](
   size_type i) {
     check_index_(i);
@@ -377,6 +415,18 @@ template<typename ElementType>
 typename MATH_SET_PIMPL_TYPE::size_type MATH_SET_PIMPL_TYPE::count(
   const_reference elem) const noexcept {
     return std::count(begin(), end(), elem);
+}
+
+template<typename ElementType>
+void MATH_SET_PIMPL_TYPE::insert(value_type elem) {
+    if(count(elem) > 0) return;
+    insert(end(), std::move(elem));
+}
+
+template<typename ElementType>
+void MATH_SET_PIMPL_TYPE::insert(iterator off, value_type el) {
+    if(count(el) > 0) return;
+    insert_(off, std::move(el));
 }
 
 template<typename ElementType>

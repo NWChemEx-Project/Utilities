@@ -1,5 +1,5 @@
 #include <catch2/catch.hpp>
-#include <utilities/containers/math_set/detail_/set_pimpl.hpp>
+#include <utilities/containers/detail_/math_set/set_pimpl.hpp>
 #include <utilities/iter_tools/zip.hpp>
 
 using namespace utilities::detail_;
@@ -30,17 +30,38 @@ TEST_CASE("SetPIMPL initializer list ctor") {
             REQUIRE(s.count(x) == 1);
         }
     }
+    SECTION("Multiple element initializer list with duplicates") {
+        SetPIMPL s{1, 1, 2};
+        REQUIRE(s.size() == 2);
+        REQUIRE(s[0] == 1);
+        REQUIRE(s[1] == 2);
+    }
 }
 
 TEST_CASE("SetPIMPL range ctor") {
-    std::vector<int> corr{1, 2, 3};
-    SetPIMPL s(corr.begin(), corr.end());
+    SECTION("Empty range") {
+        std::vector<int> v;
+        SetPIMPL s(v.begin(), v.end());
+        REQUIRE(s.size() == 0);
+    }
+    SECTION("Full range") {
+        std::vector<int> corr{1, 2, 3};
+        SetPIMPL s(corr.begin(), corr.end());
 
-    REQUIRE(s.size() == corr.size());
-    REQUIRE(s.count(9) == 0);
-    for(const auto & [x, y] : utilities::Zip(s, corr)) {
-        REQUIRE(x == y);
-        REQUIRE(s.count(x) == 1);
+        REQUIRE(s.size() == corr.size());
+        REQUIRE(s.count(9) == 0);
+        for(const auto & [x, y] : utilities::Zip(s, corr)) {
+            REQUIRE(x == y);
+            REQUIRE(s.count(x) == 1);
+        }
+    }
+    SECTION("Full range with duplicates") {
+        std::vector<int> corr{1, 1, 2};
+        SetPIMPL s(corr.begin(), corr.end());
+
+        REQUIRE(s.size() == 2);
+        REQUIRE(s[0] == 1);
+        REQUIRE(s[1] == 2);
     }
 }
 
@@ -71,6 +92,25 @@ TEST_CASE("SetPIMPL operator[] const") {
     SECTION("Are read-only") {
         using no_ref = std::remove_reference_t<decltype(s[0])>;
         STATIC_REQUIRE(std::is_const_v<no_ref>);
+    }
+}
+
+TEST_CASE("SetPIMPL clear()") {
+    SetPIMPL s{1, 2, 3};
+    REQUIRE(s.size() == 3);
+    s.clear();
+    REQUIRE(s.size() == 0);
+}
+
+TEST_CASE("SetPIMPL erase") {
+    SetPIMPL s{1, 2, 3, 4};
+    SECTION("Element is not present") {
+        s.erase(5);
+        REQUIRE(s == SetPIMPL{1, 2, 3, 4});
+    }
+    SECTION("Element is present") {
+        s.erase(2);
+        REQUIRE(s == SetPIMPL{1, 3, 4});
     }
 }
 
@@ -123,9 +163,9 @@ TEST_CASE("SetPIMPL size") {
     s.insert(1);
     REQUIRE(s.size() == 1);
     s.insert(1);
-    REQUIRE(s.size() == 2);
+    REQUIRE(s.size() == 1);
     s.insert(2);
-    REQUIRE(s.size() == 3);
+    REQUIRE(s.size() == 2);
 }
 
 TEST_CASE("SetPIMPL count") {
@@ -134,7 +174,7 @@ TEST_CASE("SetPIMPL count") {
     s.insert(0);
     REQUIRE(s.count(0) == 1);
     s.insert(0);
-    REQUIRE(s.count(0) == 2);
+    REQUIRE(s.count(0) == 1);
 }
 
 TEST_CASE("SetPIMPL insert") {
@@ -147,11 +187,8 @@ TEST_CASE("SetPIMPL insert") {
 
     SECTION("Insert same element at beginning") {
         s.insert(s.begin(), 0);
-        REQUIRE(s.size() == 2);
-        auto itr = s.begin();
-        REQUIRE(*itr == 0);
-        ++itr;
-        REQUIRE(*itr == 0);
+        REQUIRE(s.size() == 1);
+        REQUIRE(s[0] == 0);
     }
 
     SECTION("Insert different element at beginning") {
@@ -165,11 +202,8 @@ TEST_CASE("SetPIMPL insert") {
 
     SECTION("Insert same element at end") {
         s.insert(0);
-        REQUIRE(s.size() == 2);
-        auto itr = s.begin();
-        REQUIRE(*itr == 0);
-        ++itr;
-        REQUIRE(*itr == 0);
+        REQUIRE(s.size() == 1);
+        REQUIRE(s[0] == 0);
     }
     SECTION("Insert different element at end") {
         s.insert(1);
@@ -205,7 +239,7 @@ TEST_CASE("SetPIMPL equality") {
 
     SECTION("Different contents") {
         SECTION("Different elements") {
-            SetPIMPL s2{4, 5, 5};
+            SetPIMPL s2{4, 5, 6};
             REQUIRE(s1 != s2);
             REQUIRE_FALSE(s1 == s2);
         }
