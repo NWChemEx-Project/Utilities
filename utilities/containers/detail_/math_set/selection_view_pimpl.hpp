@@ -21,7 +21,7 @@ private:
     using base_type = MathSetPIMPL<ElementType>;
 
     /// Type of this class
-    using my_type = MathSetPIMPL<ElementType>;
+    using my_type = SelectionViewPIMPL<ElementType>;
 
 public:
     /// Type of an element returned by this instance
@@ -32,11 +32,6 @@ public:
     using const_reference = typename base_type::const_reference;
     /// Type of an iterator over this container
     using iterator = typename base_type::iterator;
-
-    base_type& operator=(const base_type& rhs) override {
-        base_type::operator=(rhs);
-        return *this;
-    }
 
     /** @brief Creates an empty selection that is a view of @p parent
      *
@@ -90,7 +85,7 @@ protected:
     void insert_(iterator offset, value_type elem) override;
     size_type size_() const noexcept override { return m_indices_.size(); }
     void erase_(const_reference elem) override;
-    void clear_() noexcept override;
+    void clear_() override;
 
 private:
     /// A list of indices that are stored in this view
@@ -146,7 +141,7 @@ void SELECTION_VIEW_PIMPL_TYPE::insert_(iterator offset, value_type elem) {
 }
 
 template<typename ElementType>
-void SELECTION_VIEW_PIMPL_TYPE::clear_() noexcept {
+void SELECTION_VIEW_PIMPL_TYPE::clear_() {
     std::vector<ElementType> old_values(this->begin(), this->end());
     m_indices_.clear();
     for(const auto& x : old_values) parent_().erase(x);

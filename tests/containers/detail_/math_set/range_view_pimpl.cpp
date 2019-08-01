@@ -176,3 +176,29 @@ TEST_CASE("RangeViewPIMPL clear") {
         REQUIRE(p == SetPIMPL{1, 3});
     }
 }
+
+TEST_CASE("RangeViewPIMPL erase") {
+    SetPIMPL s{1, 2, 3, 4, 5};
+    RangeViewPIMPL p(1, 4, &s);
+    SECTION("Erase first element") {
+        p.erase(2);
+        REQUIRE(p.size() == 2);
+        REQUIRE(&p[0] == &s[1]);
+        REQUIRE(&p[1] == &s[2]);
+        REQUIRE(s == SetPIMPL{1, 3, 4, 5});
+    }
+    SECTION("Erase middle element") {
+        p.erase(3);
+        REQUIRE(p.size() == 2);
+        REQUIRE(&p[0] == &s[1]);
+        REQUIRE(&p[1] == &s[2]);
+        REQUIRE(s == SetPIMPL{1, 2, 4, 5});
+    }
+    SECTION("Erase end element") {
+        p.erase(4);
+        REQUIRE(p.size() == 2);
+        REQUIRE(&p[0] == &s[1]);
+        REQUIRE(&p[1] == &s[2]);
+        REQUIRE(s == SetPIMPL{1, 2, 3, 5});
+    }
+}

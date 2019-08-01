@@ -2,6 +2,7 @@
 #include "utilities/containers/detail_/math_set/math_set_traits.hpp"
 #include "utilities/containers/detail_/math_set/nested_set_pimpl.hpp"
 #include "utilities/containers/detail_/math_set/selection_view_pimpl.hpp"
+#include "utilities/iter_tools/enumerate.hpp"
 #include <map>
 #include <set>
 
@@ -35,6 +36,18 @@ namespace utilities {
  *  case a deep copy will be made and the result will be independent of the
  *  original container.
  *
+ *  @warning At the moment it is your responsability to ensure that you do not
+ *           invalidate the uniqueness of the elements through direct
+ *           modification. For example:
+ *           ```
+ *           MathSet s{1, 2, 3};
+ *           auto& s0 = s[0];
+ *           // Don't do this next line
+ *           //s0 = 2; Would cause s to be {2, 2, 3}
+ *           ```
+ *           This warning only applies to working with references to elements.
+ *           If you go through the public API of the MathSet class, the MathSet
+ *           class will enforce uniqueness automatically.
  *
  * @tparam element_type The type of the elements in this set. Should be
  *                      copyable, movable, comparable via  operator<, and
@@ -93,25 +106,30 @@ public:
      */
     MathSet(const my_type& rhs);
 
-    /** @brief Changes this instance's state into a deep copy of another
-     *         instance's state.
+    /* Creating a new MathSet by copy/move of another MathSet is well defined;
+     * however, when you try to copy/move assign ambiguities arise.
      *
-     *  This function will set the current instance's state to a deep copy of
-     *  @p rhs's state. The state contained within this instance will be
-     *  freed-up thereby invalidating all references, pointers, and iterators to
-     *  that state.
+     *  Let A be an alias of a subset of B. Then for some other set C what does
+     *  A = C do?
      *
-     *  @param[in] rhs The instance whose state is to be deep copied.
+     *  If C is completely disjoint from B (and therefore A as well) one can
+     *  argue it makes sense to remove A's elements from B, add C's elements to
+     *  B, and then make A alias the new elements. But where do we put C's
+     *  elements in B? Do we replace A's elements? If so, what do we do if A and
+     *  C have different numbers of elements? If we do not replace A's elements
+     *  do we then just append C's elements onto B's elements?
      *
-     *  @return The current instance after its state has been modified to be a
-     *          deep copy of @p rhs's state.
-     *
-     *  @throw std::bad_alloc if there is insufficient memory to perform the
-     *                        copy. Strong throw guarantee.
+     *  If C contains one or more elements from B (and or A) it makes sense to
+     *  remove the elements of A not in C from B, for each element in C also in
+     *  B make A point to the existing element, and then follow the above
+     *  protocol for new elements. If the elements common to C and B are not in
+     *  the same order in both C and B then what order do we store them in, C's
+     *  or B's?
      */
-    my_type& operator=(const my_type& rhs);
+    my_type& operator=(const my_type& rhs) = delete;
+    my_type& operator=(my_type&& rhs) = delete;
 
-    /** @brief Transfers ownership of another instance's stat to a new MathSet
+    /** @brief Transfers ownership of another instance's state to a new MathSet
      *         instance.
      *
      *  This ctor can be used to transfer ownership of a MathSet's state to a
@@ -124,24 +142,7 @@ public:
      *
      *  @throw none No throw guarantee.
      */
-    MathSet(my_type&& rhs) noexcept = default;
-
-    /** @brief Switches the current instance's state to another instance's state
-     *
-     *  This function can be used to set the current instance's state to that of
-     *  another MathSet instance. The original state of this instance will be
-     *  freed up thereby invalidating any references, pointers, or iterators to
-     *  it. All references, pointers, and iterators to @p rhs remain valid
-     *  except that they now point to the current instance's state.
-     *
-     *  @param[in] rhs The instance whose state is being taken. After this call
-     *                 @p rhs will be in a valid, but otherwise undefined state.
-     *
-     *  @return The current instance after setting its state to that of @p rhs.
-     *
-     *  @throw none No throw guarantee.
-     */
-    //    my_type& operator=(my_type&& rhs) noexcept = default;
+    MathSet(my_type&& rhs) noexcept = delete;
 
     /** @brief Creates a new MathSet initialized with the provided contents
      *
@@ -359,12 +360,13 @@ public:
 
     /** @brief Adds an element to the set.
      *
-     *  This function will add an element onto the end of the set. No check is
-     *  done to ensure that the element is unique. The element inserted into
-     *  the set will be assigned index `size()` where `size()` is the size of
-     *  the set prior to insertion. Generally speaking calling this function
-     *  will invalidate any references, pointers, and iterators to this set and
-     *  to elements of this set.
+     *  This function will add an element onto the end of the set if the element
+     *  is not already present in the set. If the element is not already present
+     *  then it is inserted onto the set at the index resulting from calling
+     *  `size()` prior to insertion. If this set is an alias, insertion will
+     *  also insert the element into the parent set. After calling this
+     *  function all references, pointers, and iterators to this set are
+     *  invalidated.
      *
      *  @param[in] elem The element to add to the container.
      *
@@ -396,9 +398,75 @@ public:
      */
     void insert(iterator offset, ElementType elem);
 
-    void clear() noexcept { m_pimpl_->clear(); }
+    /** @brief Makes the current instance the empty set.
+     *
+     *  Calling this function will free all elements in the set. If this set is
+     *  an alias of another set then the elements will also be removed from that
+     *  set. After this call all references, pointers, and iterators to this
+     *  set are invalidated.
+     *
+     *  @note Since this a destructive operation care needs to be taken with
+     *        referring to this instance's state during the destruction process.
+     *        For this reason some backends will need to make temporary copies
+     *        of the state they are deleting.
+     *
+     *  @throw std::bad_alloc if there is insufficient memory to temporarily
+     *                        copy elements of the set. Weak throw guarantee.
+     */
+    void clear() { m_pimpl_->clear(); }
 
-    void erase(const_reference elem) noexcept { m_pimpl_->erase(elem); }
+    /** @brief Removes an element from set.
+     *
+     *  This function can be used to remove a specific element from the set. If
+     *  the element is not present in the set this is a null operation. If this
+     *  set is an alias the element will also be removed from the parent set.
+     *  After calling this function all references, pointers, and iterators are
+     *  invalidated.
+     *
+     *  @param[in] elem The value of the element to erase.
+     *
+     *  @note As a destructive operation care needs to be taken to ensure that
+     *        we do not use invalid internal references. This is easiest if
+     *        we temporaily copy some aspects of the state.
+     *
+     *  @throw std::bad_alloc if there is insufficient memory to copy elements.
+     *                        Weak throw guarantee.
+     */
+    void erase(const_reference elem) { m_pimpl_->erase(elem); }
+
+    /** @brief Returns an arbitrary subset of elements from this set.
+     *
+     *  Given a callback with a signature `bool(const_reference)` this function
+     *  will loop over the elements in this set calling the callback on each
+     *  one. If the callback returns true, then the element will be included in
+     *  the resulting subset, otherwise the element will not.
+     *
+     *  @tparam SelectorFxn The type of the callback should be usable as a call
+     *                      of the form `bool(const_reference)`.
+     *
+     *  @param[in] selector The callback to use for the selection process.
+     *
+     *  @return A read-only alias of the requested subset.
+     */
+    template<typename SelectorFxn>
+    const my_type& select(SelectorFxn&& selector) const;
+
+    /** @brief Returns an arbitrary subset of elements from this set.
+     *
+     *  Given a callback with a signature `bool(const_reference)` this function
+     *  will loop over the elements in this set calling the callback on each
+     *  one. If the callback returns true, then the element will be included in
+     *  the resulting subset, otherwise the element will not.
+     *
+     *  @tparam SelectorFxn The type of the callback should be usable as a call
+     *                      of the form `bool(const_reference)`.
+     *
+     *  @param[in] selector The callback to use for the selection process.
+     *
+     *  @return A read/write alias of the requested subset.
+     */
+    template<typename SelectorFxn>
+    my_type& select(SelectorFxn&& selector);
 
     /** @brief Returns the intersection of this set with another set.
      *
@@ -444,12 +512,53 @@ public:
      */
     const my_type& operator^(const my_type& rhs) const;
 
-    /** @brief Makes this set the
+    /** @brief Computes the set difference between this and another set.
      *
-     * @param rhs
-     * @return
+     *  This function will compute the set difference (e.g., lhs - rhs is the
+     *  set of elements in @p lhs that are **NOT** in @p rhs). The resulting
+     *  instance is an alias of the elements in this instance.
+     *
+     *  @param[in] rhs The other set to take the set difference with.
+     *
+     *  @return A read/write alias to the subset of this class.
+     *
+     *  @throw std::bad_alloc if there is insufficient memory to store the
+     *                        indices in the aliased set. Strong throw
+     *                        guarantee.
      */
-    // my_type& operator^=(const my_type& rhs);
+    my_type& operator-(const my_type& rhs);
+
+    /** @brief Computes the set difference between this and another set.
+     *
+     *  This function will compute the set difference (e.g., lhs - rhs is the
+     *  set of elements in @p lhs that are **NOT** in @p rhs). The resulting
+     *  instance is an alias of the elements in this instance.
+     *
+     *  @param[in] rhs The other set to take the set difference with.
+     *
+     *  @return A read-only alias to the subset of this class.
+     *
+     *  @throw std::bad_alloc if there is insufficient memory to store the
+     *                        indices in the aliased set. Strong throw
+     *                        guarantee.
+     */
+    const my_type& operator-(const my_type& rhs) const;
+
+    /** @brief Computes the union of this set and another.
+     *
+     *  The union of two sets is the set of all elements in either set. This
+     *  function will compute a new superset of elements that is **NOT** an
+     *  alias of either set.
+     *
+     *  @param[in] rhs The instance to take the union with.
+     *
+     *  @return A new MathSet instance containing the union of this instance and
+     *          @p rhs.
+     *
+     *  @throw std::bad_alloc if there is insufficient memory to make the new
+     *                        instance. Strong throw guarantee.
+     */
+    my_type operator+(const my_type& rhs) const;
 
     /** @brief Compares two sets for equality.
      *
@@ -494,8 +603,6 @@ private:
     /// Code factorization for getting a const-PIMPL on demand
     const auto cptr_() const noexcept;
 
-    const my_type& intersect_(const my_type& rhs) const;
-
     /// The object actually implementing the state and fundamental algorithms
     std::unique_ptr<pimpl_base> m_pimpl_;
 
@@ -519,12 +626,6 @@ MathSet(Itr1&&, Itr2 &&)->MathSet<typename Itr1::value_type>;
 template<typename ElementType>
 MATH_SET_TYPE::MathSet(const MATH_SET_TYPE& rhs) :
   MathSet(std::make_unique<default_pimpl>(rhs.begin(), rhs.end())) {}
-
-template<typename ElementType>
-MATH_SET_TYPE& MATH_SET_TYPE::operator=(const MATH_SET_TYPE& rhs) {
-    *m_pimpl_ = *rhs.m_pimpl_;
-    return *this;
-}
 
 template<typename ElementType>
 MATH_SET_TYPE::MathSet(std::initializer_list<ElementType> il) :
@@ -552,18 +653,30 @@ void MATH_SET_TYPE::insert(iterator offset, ElementType elem) {
 
 template<typename ElementType>
 const MATH_SET_TYPE& MATH_SET_TYPE::operator^(const my_type& rhs) const {
-    return intersect_(rhs);
+    return select([&](const_reference elem) { return rhs.count(elem) > 0; });
 }
 
 template<typename ElementType>
 MATH_SET_TYPE& MATH_SET_TYPE::operator^(const my_type& rhs) {
-    return const_cast<my_type&>(intersect_(rhs));
+    return select([&](const_reference elem) { return rhs.count(elem) > 0; });
 }
 
-// template<typename ElementType>
-// MATH_SET_TYPE& MATH_SET_TYPE::operator^=(const my_type& rhs) {
-//    return (*this) = my_type((*this) ^ rhs);
-//}
+template<typename ElementType>
+const MATH_SET_TYPE& MATH_SET_TYPE::operator-(const MATH_SET_TYPE& rhs) const {
+    return select([&](const_reference elem) { return rhs.count(elem) == 0; });
+}
+
+template<typename ElementType>
+MATH_SET_TYPE& MATH_SET_TYPE::operator-(const MATH_SET_TYPE& rhs) {
+    return select([&](const_reference elem) { return rhs.count(elem) == 0; });
+}
+
+template<typename ElementType>
+MATH_SET_TYPE MATH_SET_TYPE::operator+(const MATH_SET_TYPE& rhs) const {
+    MathSet s(*this);
+    for(const auto& x : rhs) s.insert(x);
+    return s;
+}
 
 template<typename ElementType>
 bool MATH_SET_TYPE::operator==(const MathSet<ElementType>& rhs) const noexcept {
@@ -576,10 +689,11 @@ bool MATH_SET_TYPE::operator!=(const MathSet<ElementType>& rhs) const noexcept {
 }
 
 template<typename ElementType>
-const MATH_SET_TYPE& MATH_SET_TYPE::intersect_(const MATH_SET_TYPE& rhs) const {
+template<typename SelectorFxn>
+const MATH_SET_TYPE& MATH_SET_TYPE::select(SelectorFxn&& selector) const {
     std::set<size_type> idxs{};
-    for(std::size_t i = 0; i < size(); ++i) {
-        if(rhs.count((*this)[i]) > 0) { idxs.insert(i); }
+    for(size_t i = 0; i < size(); ++i) {
+        if(selector((*this)[i])) { idxs.insert(i); }
     }
     auto non_const_pimpl = const_cast<pimpl_base*>(m_pimpl_.get());
     auto ptr =
@@ -589,25 +703,13 @@ const MATH_SET_TYPE& MATH_SET_TYPE::intersect_(const MATH_SET_TYPE& rhs) const {
     return *m_subsets_.at(idxs);
 }
 
-// template<typename ElementType>
-// SelectionViewPIMPL<const ElementType>
-// MATH_SET_PIMPL_TYPE::difference_(const MATH_SET_PIMPL_TYPE& rhs) const {
-//    std::vector<size_type> idxs;
-//    for(std::size_t i = 0; i < size(); ++i)
-//        if(rhs.count((*this)[i]) == 0)
-//            idxs.insert(i);
-//    return SelectionViewPIMPL(idxs.begin(), idxs.end(), this);
-//}
-//
-// template<typename ElementType>
-// SelectionViewPIMPL<ElementType>
-// MATH_SET_PIMPL_TYPE::difference_(const MATH_SET_PIMPL_TYPE& rhs) {
-//    std::vector<size_type> idxs;
-//    for(std::size_t i = 0; i < size(); ++i)
-//        if(rhs.count((*this)[i]) == 0)
-//            idxs.insert(i);
-//    return SelectionViewPIMPL(idxs.begin(), idxs.end(), this);
-//}
+template<typename ElementType>
+template<typename SelectorFxn>
+MATH_SET_TYPE& MATH_SET_TYPE::select(SelectorFxn&& selector) {
+    const auto& const_me = *this;
+    return const_cast<my_type&>(
+      const_me.select(std::forward<SelectorFxn>(selector)));
+}
 
 template<typename ElementType>
 const auto MATH_SET_TYPE::cptr_() const noexcept {

@@ -32,30 +32,6 @@ TEST_CASE("SelectionViewPIMPL range ctor") {
     }
 }
 
-TEST_CASE("SelectionViewPIMPL assignment") {
-    SetPIMPL p{1, 2, 3, 4};
-    SelectionViewPIMPL s(p.begin(), p.begin() + 2, &p);
-
-    SECTION("Same elements") {
-        s = SetPIMPL{2, 3};
-        REQUIRE(&s[0] == &p[1]);
-        REQUIRE(&s[1] == &p[2]);
-        REQUIRE(p == SetPIMPL{1, 2, 3, 4});
-    }
-    SECTION("Different elements") {
-        s = SetPIMPL{5, 6};
-        REQUIRE(&s[0] == &p[2]);
-        REQUIRE(&s[1] == &p[3]);
-        REQUIRE(p == SetPIMPL{1, 4, 5, 6});
-    }
-    SECTION("Mix of elements") {
-        s = SetPIMPL{3, 5};
-        REQUIRE(&s[0] == &p[1]);
-        REQUIRE(&s[1] == &p[3]);
-        REQUIRE(p == SetPIMPL{1, 3, 4, 5});
-    }
-}
-
 TEST_CASE("SelectionViewPIMPL get") {
     SECTION("Empty set") {
         SetPIMPL<int> v;
