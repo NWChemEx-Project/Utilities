@@ -43,26 +43,11 @@ public:
     /// Default no-throw ctor
     MathSetPIMPL() noexcept = default;
 
-    /** @brief Makes this instance contain deep copies of @p rhs's members
-     *
-     *  This function ultimately will free up the contents of the current PIMPL,
-     *  by calling `clear_` and then call `insert_` with deep copies of each of
-     *  @p rhs's members.
-     *
-     *  @param[in] rhs The PIMPL we are copying the state from.
-     *
-     *  @return The current PIMPL with its state set to deep copies of @p rhs's
-     *          elements.
-     *
-     *  @throw std::bad_alloc if there is insufficient memory to perform the
-     *                        copy. Weak throw guarantee.
-     */
-    virtual my_type& operator=(const my_type& rhs);
-
     // Deleted to avoid slicing, copy/move is done via MathSet class
     //@{
     MathSetPIMPL(const my_type&) = delete;
     MathSetPIMPL(my_type&&)      = delete;
+    my_type& operator=(const my_type&) = delete;
     my_type& operator=(my_type&&) = delete;
     //@}
 
@@ -216,7 +201,7 @@ public:
      */
     const_iterator end() const noexcept { return const_iterator(size(), this); }
 
-    void clear() noexcept { return clear_(); }
+    void clear() { return clear_(); }
 
     void erase(const_reference elem) {
         if(count(elem) > 0) erase_(elem);
@@ -274,7 +259,7 @@ private:
     virtual size_type size_() const noexcept = 0;
 
     /// To be overridden by the derived class to make the set empty again
-    virtual void clear_() noexcept = 0;
+    virtual void clear_() = 0;
 
     virtual void erase_(const_reference elem) = 0;
 };
@@ -387,15 +372,6 @@ bool operator<=(const MathSetPIMPL<T>& lhs,
 
 //------------------------Implementations---------------------------------------
 #define MATH_SET_PIMPL_TYPE MathSetPIMPL<ElementType>
-
-template<typename ElementType>
-MATH_SET_PIMPL_TYPE& MATH_SET_PIMPL_TYPE::operator=(const my_type& rhs) {
-    std::vector<ElementType> old(begin(), end());
-    for(const auto& x : old)
-        if(rhs.count(x) == 0) erase(x);
-    for(const auto& x : rhs) insert(x);
-    return *this;
-}
 
 template<typename ElementType>
 typename MATH_SET_PIMPL_TYPE::reference MATH_SET_PIMPL_TYPE::operator[](

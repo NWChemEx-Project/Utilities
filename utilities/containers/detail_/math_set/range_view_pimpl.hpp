@@ -36,6 +36,9 @@ private:
     /// The type of the PIMPL common to all PIMPLs
     using pimpl_base = MathSetPIMPL<ElementType>;
 
+    /// The type of this PIMPL
+    using my_type = RangeViewPIMPL<ElementType>;
+
 public:
     /// The type of the elements in this set
     using value_type = typename base_type::value_type;
@@ -46,7 +49,16 @@ public:
     /// A read/write iterator over this set
     using iterator = typename base_type::iterator;
 
-    RangeViewPIMPL(pimpl_base* parent) noexcept;
+    /** @brief Creates an empty subset of another set.
+     *
+     *  This ctor will create an alias of the empty set in @p parent. Elements
+     *  added to this set will also be added to @p parent if they do not exist.
+     *
+     *  @param[in] parent The set we are aliasing.
+     *
+     *  @throw none No throw guarantee.
+     */
+    explicit RangeViewPIMPL(pimpl_base* parent) noexcept;
 
     /** @brief Creates a view of elements from another container.
      *
@@ -77,7 +89,7 @@ private:
     void insert_(iterator offset, value_type elem) override;
     size_type size_() const noexcept override;
     void erase_(const_reference elem) noexcept override;
-    void clear_() noexcept override;
+    void clear_() override;
 
     /// Index of the first element in the set we are a view of
     size_type m_start_ = 0;
@@ -177,22 +189,25 @@ void RANGE_VIEW_PIMPL_TYPE::erase_(const_reference elem) noexcept {
     }
 
     auto idx = this->index_(elem);
-    if(idx == m_start_) {
-        ++m_start_;
-    } else {
-        --m_end_;
-    }
-
+    // Our range is now effectively one shorter
+    --m_end_;
     this->parent_().erase(elem);
 }
 
 template<typename ElementType>
-void RANGE_VIEW_PIMPL_TYPE::clear_() noexcept {
+void RANGE_VIEW_PIMPL_TYPE::clear_() {
     if(!am_storing_()) {
         base_type::clear_();
         return;
     }
-    for(const auto& x : *this) this->parent_().erase(x);
+
+    /* Since we are modifying this container we need to be careful using the
+     * iterators to do it (each modification ivalidates the iterators and the
+     * range-based for loop uses the same pair until completion). To that end
+     * we copy the elements, erase them, and reset our range.
+     */
+    std::vector<ElementType> old(this->begin(), this->end());
+    for(const auto& x : old) this->parent_().erase(x);
     m_start_ = 0;
     m_end_   = 0;
 }

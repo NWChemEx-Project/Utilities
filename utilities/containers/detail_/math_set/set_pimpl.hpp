@@ -52,25 +52,6 @@ public:
      */
     SetPIMPL(const SetPIMPL& rhs) : SetPIMPL(rhs.begin(), rhs.end()) {}
 
-    /** @brief Overwrites the current set's state with a deep copy of another
-     *         set.
-     *
-     *  This function sets the current PIMPL's state to a deep copy of @p rhs's
-     *  state and returns the current instance to facilitate chaining. The
-     *  previous state will be released making all references, and iterators
-     *  invalid. Any views to the MathSet owning this PIMPL will alias the deep
-     *  copy of this state and will thus likely be invalidated.
-     *
-     * @param[in] rhs The set whose state is being copied.
-     *
-     * @return The current SetPIMPL instance after its state has been set to a
-     *         deep copy
-     *
-     * @throw std::bad_alloc if there is insufficient memory to copy the
-     *                       elements from @p rhs. Strong throw guarantee.
-     */
-    SetPIMPL& operator=(const SetPIMPL& rhs);
-
     /** @brief Creates a new set by taking ownership of another set's state.
      *
      *  This ctor is used to create a new SetPIMPL instance by taking ownership
@@ -177,12 +158,6 @@ SET_PIMPL_TYPE::SetPIMPL(Itr1 itr1, Itr2 itr2) : SetPIMPL() {
         if(this->count(*itr1) == 0) insert_(this->end(), *itr1);
         ++itr1;
     }
-}
-
-template<typename ElementType>
-SET_PIMPL_TYPE& SET_PIMPL_TYPE::operator=(const SET_PIMPL_TYPE& rhs) {
-    SetPIMPL(rhs).m_data_->swap(*m_data_);
-    return *this;
 }
 
 template<typename ElementType>

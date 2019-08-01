@@ -123,10 +123,28 @@ TEST_CASE("NestedSetPIMPL size") {
 }
 
 TEST_CASE("NestedSetPIMPL clear") {
-    NestedSetPIMPL s{set_t{}};
-    REQUIRE(s.size() == 1);
-    s.clear();
-    REQUIRE(s.size() == 0);
+    NestedSetPIMPL s{set_t{1, 2}, MathSet<int>{}, MathSet{2, 4}};
+    SECTION("Whole set") {
+        s.clear();
+        REQUIRE(s.size() == 0);
+    }
+}
+
+TEST_CASE("NestedSetPIMPL erase") {
+    NestedSetPIMPL s{set_t{1, 2}, set_t{}, set_t{2, 4}};
+
+    SECTION("Erase from beginning") {
+        s.erase(set_t{1, 2});
+        REQUIRE(s == NestedSetPIMPL{set_t{}, set_t{2, 4}});
+    }
+    SECTION("Erase from middle") {
+        s.erase(set_t{});
+        REQUIRE(s == NestedSetPIMPL{set_t{1, 2}, set_t{2, 4}});
+    }
+    SECTION("Erase from end") {
+        s.erase(set_t{2, 4});
+        REQUIRE(s == NestedSetPIMPL{set_t{1, 2}, set_t{}});
+    }
 }
 
 TEST_CASE("Nested Nested MathSet") {

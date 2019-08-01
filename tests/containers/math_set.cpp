@@ -107,58 +107,18 @@ TEST_CASE("MathSet copy ctor") {
     }
 }
 
-TEST_CASE("MathSet copy assignment") {
-    SECTION("Normal elements") {
-        MathSet s{1, 2, 3};
-        MathSet<int> s2;
-        auto ps2 = &(s2 = s);
-        REQUIRE(ps2 == &s2);
-        REQUIRE(s == s2);
-        REQUIRE_FALSE(&s[0] == &s2[0]);
-        REQUIRE_FALSE(&s[1] == &s2[1]);
-        REQUIRE_FALSE(&s[2] == &s2[2]);
-    }
-    SECTION("MathSet elements") {
-        MathSet s{set_t{1}, set_t{}};
-        MathSet<set_t> s2;
-        auto ps2 = &(s2 = s);
-        REQUIRE(ps2 == &s2);
-        REQUIRE(s == s2);
-        REQUIRE_FALSE(&s[0][0] == &s2[0][0]);
-    }
-}
-
-TEST_CASE("MathSet move ctor") {
-    SECTION("Normal elements") {
-        MathSet s{1, 2, 3};
-        MathSet s2(s);
-        MathSet s3(std::move(s));
-        REQUIRE(s3 == s2);
-    }
-    SECTION("MathSet elements") {
-        MathSet s{set_t{1}, set_t{}};
-        MathSet s2{s};
-        MathSet s3(std::move(s));
-        REQUIRE(s3 == s2);
-    }
-}
-
-// TEST_CASE("MathSet move assignment") {
-//    SECTION("Normal elements"){
+// TEST_CASE("MathSet move ctor") {
+//    SECTION("Normal elements") {
 //        MathSet s{1, 2, 3};
 //        MathSet s2(s);
-//        MathSet<int> s3;
-//        auto ps3 = &(s3 = std::move(s));
-//        REQUIRE(ps3 == &s3);
-//        REQUIRE(s2 == s3);
+//        MathSet s3(std::move(s));
+//        REQUIRE(s3 == s2);
 //    }
-//    SECTION("MathSet elements"){
+//    SECTION("MathSet elements") {
 //        MathSet s{set_t{1}, set_t{}};
-//        MathSet s2(s);
-//        MathSet<set_t> s3;
-//        auto ps3 = &(s3 = std::move(s));
-//        REQUIRE(ps3 == &s3);
-//        REQUIRE(s2 == s3);
+//        MathSet s2{s};
+//        MathSet s3(std::move(s));
+//        REQUIRE(s3 == s2);
 //    }
 //}
 
@@ -342,6 +302,39 @@ TEST_CASE("MathSet insert(pos, elem)") {
     }
 }
 
+TEST_CASE("MathSet clear") {
+    SECTION("Normal MathSet") {
+        MathSet s{1, 2, 3};
+        s.clear();
+        REQUIRE(s == MathSet<int>{});
+    }
+}
+
+TEST_CASE("MathSet erase") {
+    SECTION("Normal MathSet") {
+        MathSet s{1, 2, 3};
+        SECTION("Non-existing value") {
+            s.erase(4);
+            REQUIRE(s == MathSet{1, 2, 3});
+        }
+        SECTION("Existing value") {
+            s.erase(2);
+            REQUIRE(s == MathSet{1, 3});
+        }
+    }
+    SECTION("Aliased MathSet") {
+        MathSet s{MathSet{1, 2}, MathSet<int>{}, MathSet{2, 3}};
+        SECTION("Non-existing value") {
+            s.erase(MathSet{1, 3});
+            REQUIRE(s == MathSet{MathSet{1, 2}, MathSet<int>{}, MathSet{2, 3}});
+        }
+        SECTION("Existing value") {
+            s.erase(MathSet<int>{});
+            REQUIRE(s == MathSet{MathSet{1, 2}, MathSet{2, 3}});
+        }
+    }
+}
+
 TEST_CASE("MathSet intersection") {
     MathSet s{1, 2, 3};
 
@@ -400,25 +393,52 @@ TEST_CASE("MathSet intersection const") {
     }
 }
 
-// TEST_CASE("MathSet intersection assignment"){
-//    MathSet s{1, 2, 3};
-//
-//    SECTION("empty set"){
-//        set_t s2;
-//        auto ps = &(s ^= s2);
-//        REQUIRE(ps == &s);
-//        REQUIRE(s == s2);
-//    }
-//
-//    SECTION("Non-empty set"){
-//        set_t s2{2, 5, 9};
-//        auto p2 = &s[1];
-//        auto ps = &(s ^= s2);
-//        REQUIRE(ps == &s);
-//        REQUIRE(s == set_t{2});
-//        REQUIRE_FALSE(&s[0] == p2);
-//    }
-//}
+TEST_CASE("MathSet difference") {
+    MathSet s1{1, 2, 3};
+
+    SECTION("Empty set") {
+        MathSet<int> empty;
+        SECTION("Empty with Empty") {
+            auto& s2 = empty - empty;
+            REQUIRE(s2 == MathSet<int>{});
+        }
+        SECTION("Empty with Full") {
+            auto& s2 = empty - s1;
+            REQUIRE(s2 == MathSet<int>{});
+        }
+        SECTION("Full with Empty") {
+            auto& s2 = s1 - empty;
+            REQUIRE(s2 == MathSet{1, 2, 3});
+        }
+    }
+    SECTION("Subset") {
+        MathSet s2{1};
+        SECTION("Superset with subset") {
+            auto& s3 = s1 - s2;
+            REQUIRE(s3 == MathSet{2, 3});
+        }
+        SECTION("Subset with superset") {
+            auto& s3 = s2 - s1;
+            REQUIRE(s3 == MathSet<int>{});
+        }
+    }
+}
+
+TEST_CASE("MathSet union") {
+    MathSet s1{1, 2, 3};
+
+    SECTION("Empyt") {
+        MathSet<int> s2;
+        auto s3 = s1 + s2;
+        REQUIRE(s3 == MathSet{1, 2, 3});
+    }
+
+    SECTION("Two full sets") {
+        MathSet s2{2, 4, 5};
+        auto s3 = s1 + s2;
+        REQUIRE(s3 == MathSet{1, 2, 3, 4, 5});
+    }
+}
 
 TEST_CASE("MathSet equality") {
     MathSet s{1, 2, 3};
