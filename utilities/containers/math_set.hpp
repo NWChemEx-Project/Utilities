@@ -142,7 +142,7 @@ public:
      *
      *  @throw none No throw guarantee.
      */
-    MathSet(my_type&& rhs) noexcept = delete;
+    MathSet(my_type&& rhs) noexcept = default;
 
     /** @brief Creates a new MathSet initialized with the provided contents
      *
