@@ -61,45 +61,22 @@ TEST_CASE("NestedSetPIMPL range ctor") {
     }
 }
 
-TEST_CASE("NestedSetPIMPL insert") {
+TEST_CASE("NestedSetPIMPL push_back") {
     SECTION("Empty set") {
         NestedSetPIMPL<set_t> s;
 
-        s.insert(set_t{1, 2});
+        s.push_back(set_t{1, 2});
         REQUIRE(s.size() == 1);
         REQUIRE(s[0] == set_t{1, 2});
     }
     SECTION("Non-empty set") {
         NestedSetPIMPL s{set_t{1, 2}};
 
-        SECTION("Add before element") {
-            s.insert(s.begin(), set_t{3, 4});
-            REQUIRE(s.size() == 2);
-            REQUIRE(s[0] == set_t{3, 4});
-            REQUIRE(s[1] == set_t{1, 2});
-        }
-
         SECTION("Add after element") {
-            s.insert(s.end(), set_t{3, 4});
+            s.push_back(set_t{3, 4});
             REQUIRE(s.size() == 2);
             REQUIRE(s[0] == set_t{1, 2});
             REQUIRE(s[1] == set_t{3, 4});
-        }
-
-        SECTION("Add to element beginning") {
-            s[0].insert(s[0].begin(), 0);
-            REQUIRE(s.size() == 1);
-            REQUIRE(s[0] == set_t{0, 1, 2});
-        }
-        SECTION("Add to element middle") {
-            s[0].insert(s[0].begin() + 1, 0);
-            REQUIRE(s.size() == 1);
-            REQUIRE(s[0] == set_t{1, 0, 2});
-        }
-        SECTION("Add to element end") {
-            s[0].insert(s[0].end(), 0);
-            REQUIRE(s.size() == 1);
-            REQUIRE(s[0] == set_t{1, 2, 0});
         }
     }
 }
@@ -119,31 +96,6 @@ TEST_CASE("NestedSetPIMPL size") {
     SECTION("non-empty set") {
         NestedSetPIMPL p{set_t{1}, set_t{2}, set_t{3}};
         REQUIRE(p.size() == 3);
-    }
-}
-
-TEST_CASE("NestedSetPIMPL clear") {
-    NestedSetPIMPL s{set_t{1, 2}, MathSet<int>{}, MathSet{2, 4}};
-    SECTION("Whole set") {
-        s.clear();
-        REQUIRE(s.size() == 0);
-    }
-}
-
-TEST_CASE("NestedSetPIMPL erase") {
-    NestedSetPIMPL s{set_t{1, 2}, set_t{}, set_t{2, 4}};
-
-    SECTION("Erase from beginning") {
-        s.erase(set_t{1, 2});
-        REQUIRE(s == NestedSetPIMPL{set_t{}, set_t{2, 4}});
-    }
-    SECTION("Erase from middle") {
-        s.erase(set_t{});
-        REQUIRE(s == NestedSetPIMPL{set_t{1, 2}, set_t{2, 4}});
-    }
-    SECTION("Erase from end") {
-        s.erase(set_t{2, 4});
-        REQUIRE(s == NestedSetPIMPL{set_t{1, 2}, set_t{}});
     }
 }
 

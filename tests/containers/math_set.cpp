@@ -1,6 +1,5 @@
 #include <catch2/catch.hpp>
 #include <utilities/containers/math_set.hpp>
-#include <utilities/iter_tools/zip.hpp>
 #include <vector>
 
 using namespace utilities;
@@ -107,34 +106,6 @@ TEST_CASE("MathSet copy ctor") {
     }
 }
 
-// TEST_CASE("MathSet move ctor") {
-//    SECTION("Normal elements") {
-//        MathSet s{1, 2, 3};
-//        MathSet s2(s);
-//        MathSet s3(std::move(s));
-//        REQUIRE(s3 == s2);
-//    }
-//    SECTION("MathSet elements") {
-//        MathSet s{set_t{1}, set_t{}};
-//        MathSet s2{s};
-//        MathSet s3(std::move(s));
-//        REQUIRE(s3 == s2);
-//    }
-//}
-
-TEST_CASE("MathSet begin") {
-    MathSet s{1, 2, 3};
-    auto itr = s.begin();
-
-    SECTION("State") {
-        for(int i = 1; i < 4; ++i, ++itr) REQUIRE(*itr == i);
-    }
-    SECTION("Writability") {
-        *itr = 9;
-        REQUIRE(s[0] == 9);
-    }
-}
-
 TEST_CASE("MathSet begin const") {
     const MathSet s{1, 2, 3};
     auto itr = s.begin();
@@ -161,16 +132,6 @@ TEST_CASE("MathSet cbegin") {
     }
 }
 
-TEST_CASE("MathSet end") {
-    MathSet s{1, 2};
-    auto itr = s.begin();
-    REQUIRE_FALSE(itr == s.end());
-    ++itr;
-    REQUIRE_FALSE(itr == s.end());
-    ++itr;
-    REQUIRE(itr == s.end());
-}
-
 TEST_CASE("MathSet end const") {
     const MathSet s{1, 2};
     auto itr = s.begin();
@@ -189,20 +150,6 @@ TEST_CASE("MathSet cend") {
     REQUIRE_FALSE(itr == s.cend());
     ++itr;
     REQUIRE(itr == s.cend());
-}
-
-TEST_CASE("MathSet operator[]") {
-    MathSet s{1, 2, 3};
-
-    SECTION("State") {
-        REQUIRE(s[0] == 1);
-        REQUIRE(s[1] == 2);
-        REQUIRE(s[2] == 3);
-    }
-    SECTION("Writability") {
-        s[0] = 9;
-        REQUIRE(s[0] == 9);
-    }
 }
 
 TEST_CASE("MathSet operator[] const") {
@@ -228,111 +175,27 @@ TEST_CASE("MathSet count") {
 TEST_CASE("MathSet size") {
     set_t s;
     REQUIRE(s.size() == 0);
-    s.insert(1);
+    s.push_back(1);
     REQUIRE(s.size() == 1);
 }
 
 TEST_CASE("MathSet empty") {
     set_t s;
     REQUIRE(s.empty());
-    s.insert(2);
+    s.push_back(2);
     REQUIRE_FALSE(s.empty());
 }
 
-TEST_CASE("MathSet insert(elem)") {
+TEST_CASE("MathSet push_back(elem)") {
     set_t s;
     REQUIRE(s.size() == 0);
-    s.insert(1);
+    s.push_back(1);
     REQUIRE(s[0] == 1);
     REQUIRE(s.size() == 1);
-    s.insert(2);
+    s.push_back(2);
     REQUIRE(s[0] == 1);
     REQUIRE(s[1] == 2);
     REQUIRE(s.size() == 2);
-}
-
-TEST_CASE("MathSet insert(pos, elem)") {
-    set_t s;
-
-    SECTION("Beginning") {
-        s.insert(s.begin(), 1);
-        REQUIRE(s.size() == 1);
-        REQUIRE(s[0] == 1);
-
-        SECTION("Beginning again") {
-            s.insert(s.begin(), 2);
-            REQUIRE(s.size() == 2);
-            REQUIRE(s[0] == 2);
-            REQUIRE(s[1] == 1);
-
-            SECTION("Middle") {
-                s.insert(s.begin() + 1, 3);
-                REQUIRE(s.size() == 3);
-                REQUIRE(s[0] == 2);
-                REQUIRE(s[1] == 3);
-                REQUIRE(s[2] == 1);
-            }
-        }
-
-        SECTION("At end") {
-            s.insert(s.end(), 2);
-            REQUIRE(s.size() == 2);
-            REQUIRE(s[0] == 1);
-            REQUIRE(s[1] == 2);
-        }
-    }
-    SECTION("End") {
-        s.insert(s.end(), 1);
-        REQUIRE(s.size() == 1);
-        REQUIRE(s[0] == 1);
-
-        SECTION("Beginning") {
-            s.insert(s.begin(), 2);
-            REQUIRE(s.size() == 2);
-            REQUIRE(s[0] == 2);
-            REQUIRE(s[1] == 1);
-        }
-
-        SECTION("End again") {
-            s.insert(s.end(), 2);
-            REQUIRE(s.size() == 2);
-            REQUIRE(s[0] == 1);
-            REQUIRE(s[1] == 2);
-        }
-    }
-}
-
-TEST_CASE("MathSet clear") {
-    SECTION("Normal MathSet") {
-        MathSet s{1, 2, 3};
-        s.clear();
-        REQUIRE(s == MathSet<int>{});
-    }
-}
-
-TEST_CASE("MathSet erase") {
-    SECTION("Normal MathSet") {
-        MathSet s{1, 2, 3};
-        SECTION("Non-existing value") {
-            s.erase(4);
-            REQUIRE(s == MathSet{1, 2, 3});
-        }
-        SECTION("Existing value") {
-            s.erase(2);
-            REQUIRE(s == MathSet{1, 3});
-        }
-    }
-    SECTION("Aliased MathSet") {
-        MathSet s{MathSet{1, 2}, MathSet<int>{}, MathSet{2, 3}};
-        SECTION("Non-existing value") {
-            s.erase(MathSet{1, 3});
-            REQUIRE(s == MathSet{MathSet{1, 2}, MathSet<int>{}, MathSet{2, 3}});
-        }
-        SECTION("Existing value") {
-            s.erase(MathSet<int>{});
-            REQUIRE(s == MathSet{MathSet{1, 2}, MathSet{2, 3}});
-        }
-    }
 }
 
 TEST_CASE("MathSet intersection") {

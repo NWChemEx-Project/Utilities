@@ -5,28 +5,35 @@
 
 namespace utilities::detail_ {
 
-/**
+/** @brief Backend for MathSet that owns its own data and that data is not more
+ *         MathSet instances.
+ *
+ *  This class basically wraps an std::vector in the MathSetPIMPL API.
  *
  * @note This PIMPL serves as the ultimate backend for most sets. Of particular
  *       note is that it serves as the backend for the NestedPIMPL class. In
  *       order for that to work this class can **NOT** enforce uniqueness of the
  *       elements, that must be done above the PIMPL.
- * @tparam ElementType
+ *
+ * @tparam ElementType The class type of the elements being stored in the set.
  */
 template<typename ElementType>
 class SetPIMPL : public MathSetPIMPL<ElementType> {
 private:
     /// Type of the container used for storing the elements
     using container_type = std::vector<ElementType>;
-
     /// Type of the base class
     using base_type = MathSetPIMPL<ElementType>;
 
 public:
-    using value_type      = typename base_type::value_type;
+    /// Type elements are stored as, implicitly converts to ElementType
+    using value_type = typename base_type::value_type;
+    /// Type of a read-only reference to an element in this PIMPL
     using const_reference = typename base_type::const_reference;
-    using iterator        = typename base_type::iterator;
-    using size_type       = typename base_type::size_type;
+    /// Type of an iterator over a non-const PIMPL
+    using iterator = typename base_type::iterator;
+    /// Type used for indexing and offsets
+    using size_type = typename base_type::size_type;
 
     /** @brief Creates an empty set.
      *
@@ -38,53 +45,7 @@ public:
      *                        Strong throw guarantee.
      *
      */
-    SetPIMPL() : m_data_(std::make_shared<container_type>()) {}
-
-    /** @brief Creates a set by deep copying another set's state.
-     *
-     *  This ctor will create a new set, whose elements are allocated on the
-     *  heap and are deep copies of the elements in @p rhs.
-     *
-     *  @param[in] rhs The set whose state is being copied.
-     *
-     *  @throw std::bad_alloc if there is insufficient memory to allocate the
-     *                        elements on the heap. Strong throw guarantee.
-     */
-    SetPIMPL(const SetPIMPL& rhs) : SetPIMPL(rhs.begin(), rhs.end()) {}
-
-    /** @brief Creates a new set by taking ownership of another set's state.
-     *
-     *  This ctor is used to create a new SetPIMPL instance by taking ownership
-     *  of another instance's state.
-     *
-     *  @param[in] rhs The set whose state is being taken. After this operation
-     *                 @p rhs's state is in a valid, but otherwise undefined
-     *                 state.
-     *
-     *  @throw none No throw guarantee.
-     *
-     */
-    SetPIMPL(SetPIMPL&& rhs) noexcept = default;
-
-    /** @brief Transfers ownership of another set's state to this set.
-     *
-     *  This function is used to set the current SetPIMPL instance's state to
-     *  the state of @p rhs. All references and iterators to this SetPIMPL's
-     *  state will be invalidated. Views to the MathSet instance wrapping this
-     *  PIMPL will continue to alias this instance and will thus likely be
-     *  invalidated.
-     *
-     *  @param[in] rhs The set whose state is being taken. After this operation
-     *                 @p rhs's state is in a valid, but otherwise undefined
-     *                 state.
-     *
-     *  @return The current instance after its state has been set to @p rhs's
-     *          state.
-     *
-     *  @throw none No throw guarantee.
-     *
-     */
-    SetPIMPL& operator=(SetPIMPL&& rhs) noexcept = default;
+    SetPIMPL() = default;
 
     /** @brief Constructs a set with the provided values.
      *
@@ -124,19 +85,16 @@ public:
     SetPIMPL(Itr1 itr1, Itr2 itr2);
 
 private:
-    const_reference get_(size_type i) const override { return (*m_data_)[i]; }
-
-    void insert_(iterator offset, value_type elem) override;
-
-    size_type size_() const noexcept override { return m_data_->size(); }
-
-    void clear_() noexcept override { m_data_->clear(); }
-
-    void erase_(const_reference elem) override;
+    /// Implements operator[] of MathSetPIMPL
+    const_reference get_(size_type i) const override { return m_data_[i]; }
+    /// Implements insert() of MathSetPIMPL
+    void push_back_(value_type elem) override;
+    /// Implements size() of MathSetPIMPL
+    size_type size_() const noexcept override { return m_data_.size(); }
 
     /// The actual data stored within this PIMPL
-    std::shared_ptr<container_type> m_data_;
-};
+    container_type m_data_;
+}; // class SetPIMPL
 
 //------------------------------Implementations---------------------------------
 
@@ -153,23 +111,19 @@ SET_PIMPL_TYPE::SetPIMPL(std::initializer_list<ElementType> il) :
 template<typename ElementType>
 template<typename Itr1, typename Itr2>
 SET_PIMPL_TYPE::SetPIMPL(Itr1 itr1, Itr2 itr2) : SetPIMPL() {
-    m_data_->reserve(std::distance(itr1, itr2));
+    m_data_.reserve(std::distance(itr1, itr2));
     while(itr1 != itr2) {
-        if(this->count(*itr1) == 0) insert_(this->end(), *itr1);
+        if(this->count(*itr1) == 0) push_back_(*itr1);
         ++itr1;
     }
 }
 
 template<typename ElementType>
-void SET_PIMPL_TYPE::insert_(iterator offset, value_type elem) {
-    auto diff = offset - this->begin();
-    m_data_->insert(m_data_->begin() + diff, std::move(elem));
+void SET_PIMPL_TYPE::push_back_(value_type elem) {
+    m_data_.emplace_back(std::move(elem));
 }
 
-template<typename ElementType>
-void SET_PIMPL_TYPE::erase_(const_reference elem) {
-    m_data_->erase(std::find(m_data_->begin(), m_data_->end(), elem));
-}
+/// Ensure SET_PIMPL_TYPE does not pollute macro namespace
 #undef SET_PIMPL_TYPE
 
 } // namespace utilities::detail_

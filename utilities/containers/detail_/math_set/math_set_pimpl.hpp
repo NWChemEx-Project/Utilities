@@ -14,6 +14,7 @@ class SelectionViewPIMPL;
  *  manner. The MathSetPIMPL class defines the API that the MathSet class will
  *  use to interact with the various derived classes.
  *
+ *
  * @tparam ElementType The type of the elements in the set. Must satisfy the
  *                     same concepts as the template type parameter of the
  *                     MathSet class.
@@ -85,38 +86,18 @@ public:
      */
     const_reference operator[](size_type i) const;
 
-    /** @brief Adds an element to the set.
+    /** @brief Adds an element to the end of the set.
      *
-     *  This function is a convenience function for calling insert(end(), elem).
-     *  It will insert the element onto the end of the set.
      *
      *  @param[in] elem The element to add to the set.
      *
      *  @throw std::bad_alloc if there is insufficient memory to add the element
      *                        to the set. Strong throw guarantee.
      */
-    void insert(value_type elem);
-
-    /** @brief Adds an element to the set.
-     *
-     *  This function will add an element to the set before the element pointed
-     *  at by @p off. Calling this function will invalidate all references and
-     *  iterators to this class and its members. In general insertion will be
-     *  fastest if @p off is equal to end(). This function ultimately calls the
-     *  derived class via it's `insert_` method.
-     *
-     *  @param[in] off An iterator pointing at the element which should come
-     *                 after @p elem. Setting @p off to end() will cause the
-     *                 element to be inserted at the end of the container.
-     *  @param[in] elem The element to add to the set.
-     *
-     *  @throw std::bad_alloc if there is insufficient memory to add the element
-     *                        to the set. Strong throw guarantee.
-     */
-    void insert(iterator off, value_type el);
+    void push_back(value_type elem);
 
     /// Can be called by other PIMPLs to force insertion
-    void no_check_insert(value_type x) { insert_(end(), std::move(x)); }
+    void no_check_insert(value_type x) { push_back_(std::move(x)); }
 
     /** @brief Computes the number of elements in this set.
      *
@@ -201,12 +182,6 @@ public:
      */
     const_iterator end() const noexcept { return const_iterator(size(), this); }
 
-    void clear() { return clear_(); }
-
-    void erase(const_reference elem) {
-        if(count(elem) > 0) erase_(elem);
-    }
-
     /** @brief Compares MathSetPIMPL instances for equality
      *
      *  Two MathSetPIMPL instances are equal if they have the same number of
@@ -253,15 +228,10 @@ private:
     virtual const_reference get_(size_type i) const = 0;
 
     /// To be overridden by derived class to implement inserting an element
-    virtual void insert_(iterator offset, value_type elem) = 0;
+    virtual void push_back_(value_type elem) = 0;
 
     /// To be overridden by the derived class to compute the size of the set
     virtual size_type size_() const noexcept = 0;
-
-    /// To be overridden by the derived class to make the set empty again
-    virtual void clear_() = 0;
-
-    virtual void erase_(const_reference elem) = 0;
 };
 
 /** @brief Determines if @p lhs comes before @p rhs sequentially.
@@ -394,15 +364,9 @@ typename MATH_SET_PIMPL_TYPE::size_type MATH_SET_PIMPL_TYPE::count(
 }
 
 template<typename ElementType>
-void MATH_SET_PIMPL_TYPE::insert(value_type elem) {
+void MATH_SET_PIMPL_TYPE::push_back(value_type elem) {
     if(count(elem) > 0) return;
-    insert(end(), std::move(elem));
-}
-
-template<typename ElementType>
-void MATH_SET_PIMPL_TYPE::insert(iterator off, value_type el) {
-    if(count(el) > 0) return;
-    insert_(off, std::move(el));
+    push_back_(std::move(elem));
 }
 
 template<typename ElementType>
