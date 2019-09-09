@@ -17,10 +17,6 @@ namespace utilities::detail_ {
  *  into the dense `MathSet<T>`. When users request elements of the
  *  MathSet<MathSet<T>> class they actually get the aliases.
  *
- *  @note Because the elements are stored in a flattened manner it is assumed
- *        that insertion of new elements will primarily occur onto the end of
- *        this set. Insertion elsewhere into this set is going to be
- *        inefficient.
  *
  * @tparam ElementType Expected to be a cv-qualified MathSet type. Of note we
  *                     assume that it can be constructed given a MathSetPIMPL
@@ -87,21 +83,19 @@ public:
     NestedSetPIMPL(Itr1&& itr1, Itr2&& itr2);
 
 private:
-    /// Code factorization for adding an element
-    void add_element_(ElementType elem);
-
+    /// Implements operator[] for MathSetPIMPL
     const_reference get_(size_type i) const override { return m_views_[i]; }
-    void insert_(iterator offset, ElementType new_elem) override;
+    /// Implements push_back for MathSetPIMPL
+    void push_back_(ElementType new_elem) override;
+    /// Implements size for MathSetPIMPL
     size_type size_() const noexcept override { return m_views_.size(); }
-    void erase_(const_reference elem) noexcept override;
-    void clear_() noexcept override;
 
     /// The views of the subsets
     std::vector<ElementType> m_views_;
 
     /// The flattened sets
     std::unique_ptr<MathSetPIMPL<nested_type>> m_data_;
-};
+}; // class NestedSetPIMPL
 
 //-------------------------Implementations--------------------------------------
 #define NESTED_SET_PIMPL_TYPE NestedSetPIMPL<ElementType>
@@ -122,64 +116,24 @@ template<typename Itr1, typename Itr2>
 NESTED_SET_PIMPL_TYPE::NestedSetPIMPL(Itr1&& itr1, Itr2&& itr2) :
   NestedSetPIMPL() {
     while(itr1 != itr2) {
-        if(this->count(*itr1) == 0) insert_(this->end(), *itr1);
+        if(this->count(*itr1) == 0) push_back_(*itr1);
         ++itr1;
     }
 }
 
 template<typename ElementType>
-void NESTED_SET_PIMPL_TYPE::add_element_(ElementType elem) {
-    const auto ebegin = m_data_->size();
-    const auto eend   = ebegin + elem.size();
+void NESTED_SET_PIMPL_TYPE::push_back_(ElementType new_elem) {
+    const auto elem_begin = m_data_->size();
+    const auto elem_end   = elem_begin + new_elem.size();
 
     auto view_pimpl =
-      std::make_unique<view_pimpl_type>(ebegin, eend, m_data_.get());
+      std::make_unique<view_pimpl_type>(elem_begin, elem_end, m_data_.get());
 
     m_views_.emplace_back(std::move(ElementType(std::move(view_pimpl))));
 
     // Need to allow duplicates because partitioning can make unique, e.g.
     // {{1, 2}, {1}} is okay even though it looks like {1, 2, 1} flattened
-    for(auto&& x : elem) m_data_->no_check_insert(std::move(x));
-}
-
-template<typename ElementType>
-void NESTED_SET_PIMPL_TYPE::insert_(iterator offset, ElementType new_elem) {
-    // If it's at the end life is easy
-    if(offset == this->end()) {
-        add_element_(std::move(new_elem));
-        return;
-    }
-
-    // It's not though...
-    auto diff = offset - this->begin(); // Index where new element goes
-
-    // Reset containers, need to copy old views to preserve the element values
-    std::vector<ElementType> old_views(m_views_);
-    this->clear();
-
-    // Add values up to offset back in
-    for(size_type i = 0; i < diff; ++i) add_element_(std::move(old_views[i]));
-
-    // Add the new value at offset
-    add_element_(std::move(new_elem));
-
-    // Add remaining values, starting with what originally was offset
-    for(size_type i = diff; i < old_views.size(); ++i)
-        add_element_(std::move(old_views[i]));
-}
-
-template<typename ElementType>
-void NESTED_SET_PIMPL_TYPE::erase_(const_reference elem) noexcept {
-    std::vector<ElementType> old_elems(m_views_);
-    this->clear();
-    for(auto&& x : old_elems)
-        if(x != elem) this->insert(x);
-}
-
-template<typename ElementType>
-void NESTED_SET_PIMPL_TYPE::clear_() noexcept {
-    m_views_.clear();
-    m_data_->clear();
+    for(auto&& x : new_elem) m_data_->no_check_insert(std::move(x));
 }
 
 #undef NESTED_SET_PIMPL_TYPE

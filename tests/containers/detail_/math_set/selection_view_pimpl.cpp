@@ -4,169 +4,50 @@
 #include <vector>
 
 using namespace utilities::detail_;
-using vector_t = std::vector<int>;
+using vector_t = std::vector<std::size_t>;
 
 TEST_CASE("SelectionViewPIMPL parent ctor") {
-    SetPIMPL<int> s;
-    SelectionViewPIMPL p(&s);
-    REQUIRE(p.size() == 0);
-}
-
-TEST_CASE("SelectionViewPIMPL range ctor") {
+    SetPIMPL<int> s{1, 2, 3, 4, 5};
     SECTION("Empty set") {
-        vector_t v;
-        SetPIMPL<int> s;
-        SelectionViewPIMPL p(v.begin(), v.end(), &s);
-        REQUIRE(v.size() == 0);
-        REQUIRE_THROWS_AS(p[0], std::out_of_range);
+        SelectionViewPIMPL p(&s, vector_t{});
+        REQUIRE(p.size() == 0);
     }
-    SECTION("Non-empty set") {
-        SetPIMPL s{1, 2, 3};
-        vector_t idx{0, 2};
-        SelectionViewPIMPL p(idx.begin(), idx.end(), &s);
+    SECTION("Legit set") {
+        vector_t v{2, 4};
+        SelectionViewPIMPL p(&s, std::move(v));
         REQUIRE(p.size() == 2);
-        REQUIRE(p[0] == 1);
-        REQUIRE(&p[0] == &s[0]);
-        REQUIRE(p[1] == 3);
-        REQUIRE(&p[1] == &s[2]);
+        REQUIRE(p[0] == 3);
+        REQUIRE(p[1] == 5);
     }
 }
 
 TEST_CASE("SelectionViewPIMPL get") {
-    SECTION("Empty set") {
-        SetPIMPL<int> v;
-        SelectionViewPIMPL p(&v);
-        p.insert(0);
-        REQUIRE(&p[0] == &v[0]);
-    }
-    SECTION("Non-empty set") {
-        SetPIMPL v{1, 2, 3, 4};
-        vector_t idx{0, 2};
-        SelectionViewPIMPL p(idx.begin(), idx.end(), &v);
-        REQUIRE(p[0] == 1);
-        REQUIRE(&p[0] == &v[0]);
-        REQUIRE(p[1] == 3);
-        REQUIRE(&p[1] == &v[2]);
-    }
-}
-
-TEST_CASE("SelectionViewPIMPL insert") {
-    SECTION("empty parent and empty indices") {
-        SetPIMPL<int> vec;
-        SelectionViewPIMPL p(&vec);
-        p.insert(0);
-        REQUIRE(p.size() == 1);
-        REQUIRE(vec.size() == 1);
-        REQUIRE(vec[0] == 0);
-        REQUIRE(&p[0] == &vec[0]);
-    }
-    SECTION("Non-empty parent") {
-        SetPIMPL<int> vec{1, 2, 3};
-
-        SECTION("Empty indices") {
-            SelectionViewPIMPL p(&vec);
-            REQUIRE(p.size() == 0);
-
-            SECTION("Add element from vec") {
-                p.insert(1);
-                REQUIRE(&p[0] == &vec[0]);
-                REQUIRE(p[0] == 1);
-            }
-            SECTION("New element") {
-                p.insert(4);
-                REQUIRE(vec.size() == 4);
-                REQUIRE(&p[0] == &vec[3]);
-                REQUIRE(p[0] == 4);
-            }
-        }
-        SECTION("Non-empty indices") {
-            vector_t indices{0};
-            SelectionViewPIMPL p(indices.begin(), indices.end(), &vec);
-
-            SECTION("At the beginning") {
-                SECTION("Element from vec") {
-                    p.insert(p.begin(), 3);
-                    REQUIRE(p.size() == 2);
-                    REQUIRE(&p[0] == &vec[2]);
-                    REQUIRE(&p[1] == &vec[0]);
-                    REQUIRE(vec == SetPIMPL{1, 2, 3});
-                }
-                SECTION("New element") {
-                    p.insert(p.begin(), 4);
-                    REQUIRE(p.size() == 2);
-                    REQUIRE(&p[0] == &vec[3]);
-                    REQUIRE(&p[1] == &vec[0]);
-                    REQUIRE(vec == SetPIMPL{1, 2, 3, 4});
-                }
-            }
-
-            SECTION("At the end") {
-                SECTION("Element from vec") {
-                    p.insert(p.end(), 3);
-                    REQUIRE(p.size() == 2);
-                    REQUIRE(&p[0] == &vec[0]);
-                    REQUIRE(&p[1] == &vec[2]);
-                    REQUIRE(vec == SetPIMPL{1, 2, 3});
-                }
-                SECTION("New element") {
-                    p.insert(p.end(), 4);
-                    REQUIRE(p.size() == 2);
-                    REQUIRE(&p[0] == &vec[0]);
-                    REQUIRE(&p[1] == &vec[3]);
-                    REQUIRE(vec == SetPIMPL{1, 2, 3, 4});
-                }
-            }
-            SECTION("Element from us") {
-                p.insert(1);
-                REQUIRE(p.size() == 1);
-                REQUIRE(p[0] == 1);
-            }
-        }
-    }
+    SetPIMPL v{1, 2, 3, 4};
+    vector_t idx{0, 2};
+    SelectionViewPIMPL p(&v, idx);
+    REQUIRE(p[0] == 1);
+    REQUIRE(&p[0] == &v[0]);
+    REQUIRE(p[1] == 3);
+    REQUIRE(&p[1] == &v[2]);
 }
 
 TEST_CASE("SelectionViewPIMPL size") {
     SECTION("Empty set") {
         SetPIMPL<int> v;
-        SelectionViewPIMPL p(&v);
+        SelectionViewPIMPL p(&v, vector_t{});
         REQUIRE(p.size() == 0);
     }
     SECTION("Non-empty set") {
         SetPIMPL v{1, 2, 3, 4, 5};
         vector_t idx{0, 3};
-        SelectionViewPIMPL p(idx.begin(), idx.end(), &v);
+        SelectionViewPIMPL p(&v, std::move(idx));
         REQUIRE(p.size() == 2);
     }
 }
 
-TEST_CASE("SelectionViewPIMPL clear") {
-    SetPIMPL s{1, 2, 3};
-    vector_t v{1, 2};
-    SelectionViewPIMPL p(v.begin(), v.end(), &s);
-    REQUIRE(p.size() == 2);
-    p.clear();
-    REQUIRE(p.size() == 0);
-    REQUIRE(s == SetPIMPL{1});
-}
-
-TEST_CASE("SelectionViewPIMPL erase") {
+TEST_CASE("SelectionViewPIMPL push_back") {
     SetPIMPL s{1, 2, 3, 4, 5};
     vector_t v{1, 2, 3};
-    SelectionViewPIMPL p(v.begin(), v.end(), &s);
-
-    SECTION("Erase element not in set") {
-        p.erase(5);
-        REQUIRE(p.size() == 3);
-        REQUIRE(&p[0] == &s[1]);
-        REQUIRE(&p[1] == &s[2]);
-        REQUIRE(&p[2] == &s[3]);
-        REQUIRE(s == SetPIMPL{1, 2, 3, 4, 5});
-    }
-    SECTION("Element in set") {
-        p.erase(2);
-        REQUIRE(p.size() == 2);
-        REQUIRE(&p[0] == &s[1]);
-        REQUIRE(&p[1] == &s[2]);
-        REQUIRE(s == SetPIMPL{1, 3, 4, 5});
-    }
+    SelectionViewPIMPL p(&s, std::move(v));
+    REQUIRE_THROWS_AS(p.push_back(9), std::runtime_error);
 }

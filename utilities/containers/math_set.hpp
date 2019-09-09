@@ -106,6 +106,21 @@ public:
      */
     MathSet(const my_type& rhs);
 
+    /** @brief Transfers ownership of another instance's state to a new MathSet
+     *         instance.
+     *
+     *  This ctor can be used to transfer ownership of a MathSet's state to a
+     *  new instance. The resulting instance maintains any aliasing relations
+     *  that @p rhs possessed.
+     *
+     *  @param[in] rhs The instance which originally owns the state. After this
+     *                  function is called @p rhs will be in a valid, but
+     *                  otherwise undefined state.
+     *
+     *  @throw none No throw guarantee.
+     */
+    MathSet(my_type&& rhs) noexcept = default;
+
     /* Creating a new MathSet by copy/move of another MathSet is well defined;
      * however, when you try to copy/move assign ambiguities arise.
      *
@@ -128,21 +143,6 @@ public:
      */
     my_type& operator=(const my_type& rhs) = delete;
     my_type& operator=(my_type&& rhs) = delete;
-
-    /** @brief Transfers ownership of another instance's state to a new MathSet
-     *         instance.
-     *
-     *  This ctor can be used to transfer ownership of a MathSet's state to a
-     *  new instance. The resulting instance maintains any aliasing relations
-     *  that @p rhs possessed.
-     *
-     *  @param[in] rhs The instance which originally owns the state. After this
-     *                  function is called @p rhs will be in a valid, but
-     *                  otherwise undefined state.
-     *
-     *  @throw none No throw guarantee.
-     */
-    MathSet(my_type&& rhs) noexcept = default;
 
     /** @brief Creates a new MathSet initialized with the provided contents
      *
@@ -196,21 +196,6 @@ public:
      */
     explicit MathSet(pimpl_ptr pimpl) noexcept : m_pimpl_(std::move(pimpl)) {}
 
-    /** @brief Returns an iterator pointing at the first element in the set.
-     *
-     *  This function returns an iterator that points to the first element in
-     *  the set. The iterator can be used to loop over the elements in the set
-     *  by incrementing it until it equals the return of the end() function.
-     *  Elements pointed at by the resulting iterator can be modified through
-     *  the iterator.
-     *
-     *  @return A random-access iterator that points to the first element in the
-     *          set.
-     *
-     *  @throw none No throw guarantee.
-     */
-    iterator begin() noexcept { return m_pimpl_->begin(); }
-
     /** @brief Returns a read-only iterator pointing at the first element in the
      *         set.
      *
@@ -255,20 +240,6 @@ public:
      *
      *  @throw none No throw guarantee.
      */
-    iterator end() noexcept { return m_pimpl_->end(); }
-
-    /** @brief Returns an iterator to just past the end of this set.
-     *
-     *  The iterator returned by this function is just past the end of the set.
-     *  Conceptually you can think of this as being an iterator to the first
-     *  element **NOT** in the set; however, the iterator returned by this
-     *  function should **NOT** be dereferenced or used for iteration.
-     *
-     *  @return An iterator just past the end of this set. The iterator is
-     *          suitable for signaling end of iteration.
-     *
-     *  @throw none No throw guarantee.
-     */
     const_iterator end() const noexcept { return cptr_()->end(); }
 
     /** @brief Returns an iterator to just past the end of this set.
@@ -284,22 +255,6 @@ public:
      *  @throw none No throw guarantee.
      */
     const_iterator cend() const noexcept { return end(); }
-
-    /** @brief Returns the i-th element in this set.
-     *
-     *  Elements in this set are ordered. This function will return the @p i -th
-     *  element in the set at the time of the call. The element will be returned
-     *  by read/write reference.
-     *
-     *  @param[in] i The index of the element to retrieve. Must be in the range
-     *               [0, size()).
-     *
-     *  @return The i-th element in the set by read/write reference.
-     *
-     *  @throw std::out_of_range if @p i is not in the range [0, size()). Strong
-     *                           throw guarantee.
-     */
-    reference operator[](size_type i) { return (*m_pimpl_)[i]; }
 
     /** @brief Returns the i-th element in this set.
      *
@@ -373,66 +328,7 @@ public:
      *  @throw std::bad_alloc if there is insufficient memory to add the element
      *                        weak throw guarantee.
      */
-    void insert(ElementType elem) { m_pimpl_->insert(std::move(elem)); }
-
-    /** @brief Inserts the element before the provided iterator.
-     *
-     *  Say our set is: @f$\{9, 8, 7\}@f$ and @p offset points at the second
-     *  element of the set, i.e., 8, then this function will insert the element
-     *  between 9 and 8. For sake of argument, say the element we are inserting
-     *  is 2, then our set would look like @f$\{9, 2, 8, 7\}@f$ after the
-     *  insertion. Calling this function will in general invalidate all
-     *  references, pointers, and iterators to this set and elements of this
-     *  set.
-     *
-     *  @param[in] offset A pointer to the element that should come after
-     *                    @p elem. Prepending an element to the beginning of the
-     *                    set can be done by setting @p offset to `begin` and
-     *                    appending an element onto the end can be done by
-     *                    setting @p offset to `end`.
-     *  @param[in] elem   The element that should be added to the set at the
-     *                    offset provided by @p offset.
-     *
-     *  @throw std::bad_alloc if there is insufficient memory to add the
-     * element. Weak throw guarantee.
-     */
-    void insert(iterator offset, ElementType elem);
-
-    /** @brief Makes the current instance the empty set.
-     *
-     *  Calling this function will free all elements in the set. If this set is
-     *  an alias of another set then the elements will also be removed from that
-     *  set. After this call all references, pointers, and iterators to this
-     *  set are invalidated.
-     *
-     *  @note Since this a destructive operation care needs to be taken with
-     *        referring to this instance's state during the destruction process.
-     *        For this reason some backends will need to make temporary copies
-     *        of the state they are deleting.
-     *
-     *  @throw std::bad_alloc if there is insufficient memory to temporarily
-     *                        copy elements of the set. Weak throw guarantee.
-     */
-    void clear() { m_pimpl_->clear(); }
-
-    /** @brief Removes an element from set.
-     *
-     *  This function can be used to remove a specific element from the set. If
-     *  the element is not present in the set this is a null operation. If this
-     *  set is an alias the element will also be removed from the parent set.
-     *  After calling this function all references, pointers, and iterators are
-     *  invalidated.
-     *
-     *  @param[in] elem The value of the element to erase.
-     *
-     *  @note As a destructive operation care needs to be taken to ensure that
-     *        we do not use invalid internal references. This is easiest if
-     *        we temporaily copy some aspects of the state.
-     *
-     *  @throw std::bad_alloc if there is insufficient memory to copy elements.
-     *                        Weak throw guarantee.
-     */
-    void erase(const_reference elem) { m_pimpl_->erase(elem); }
+    void push_back(ElementType elem) { m_pimpl_->push_back(std::move(elem)); }
 
     /** @brief Returns an arbitrary subset of elements from this set.
      *
@@ -450,45 +346,6 @@ public:
      */
     template<typename SelectorFxn>
     const my_type& select(SelectorFxn&& selector) const;
-
-    /** @brief Returns an arbitrary subset of elements from this set.
-     *
-     *  Given a callback with a signature `bool(const_reference)` this function
-     *  will loop over the elements in this set calling the callback on each
-     *  one. If the callback returns true, then the element will be included in
-     *  the resulting subset, otherwise the element will not.
-     *
-     *  @tparam SelectorFxn The type of the callback should be usable as a call
-     *                      of the form `bool(const_reference)`.
-     *
-     *  @param[in] selector The callback to use for the selection process.
-     *
-     *  @return A read/write alias of the requested subset.
-     */
-    template<typename SelectorFxn>
-    my_type& select(SelectorFxn&& selector);
-
-    /** @brief Returns the intersection of this set with another set.
-     *
-     *  This function will return the intersection of this set with another set,
-     *  where the intersection is defined as the set of elements common to both
-     *  this set and the other set.
-     *
-     *  @warning Bit-wise operators, like `^`, are evaluated after equality so
-     *           take care when using `^` in boolean expressions. For example,
-     *           `assert(s1 ^ s2 == s3)` will fail to compile because it is
-     *           read as: `assert(s1 ^ (s2 == s3))` the solution is to use `()`
-     *           around `s1 ^ s2`.
-     *
-     *  @param[in] rhs The set to take the intersection with.
-     *
-     *  @return The subset of the current set that is also present in @p rhs.
-     *          The returned instance is a read/write view of the current set.
-     *
-     *  @throw std::bad_alloc if there is insufficient memory to store the
-     *                        indices in the intersection.
-     */
-    my_type& operator^(const my_type& rhs);
 
     /** @brief Returns the intersection of this set with another set.
      *
@@ -511,22 +368,6 @@ public:
      *                        indices in the intersection.
      */
     const my_type& operator^(const my_type& rhs) const;
-
-    /** @brief Computes the set difference between this and another set.
-     *
-     *  This function will compute the set difference (e.g., lhs - rhs is the
-     *  set of elements in @p lhs that are **NOT** in @p rhs). The resulting
-     *  instance is an alias of the elements in this instance.
-     *
-     *  @param[in] rhs The other set to take the set difference with.
-     *
-     *  @return A read/write alias to the subset of this class.
-     *
-     *  @throw std::bad_alloc if there is insufficient memory to store the
-     *                        indices in the aliased set. Strong throw
-     *                        guarantee.
-     */
-    my_type& operator-(const my_type& rhs);
 
     /** @brief Computes the set difference between this and another set.
      *
@@ -635,7 +476,7 @@ template<typename ElementType>
 template<typename Itr1, typename Itr2>
 MATH_SET_TYPE::MathSet(Itr1&& itr1, Itr2&& itr2) : MathSet() {
     while(itr1 != itr2) {
-        m_pimpl_->insert(*itr1);
+        m_pimpl_->push_back(*itr1);
         ++itr1;
     }
 }
@@ -647,17 +488,7 @@ typename MATH_SET_TYPE::size_type MATH_SET_TYPE::count(
 }
 
 template<typename ElementType>
-void MATH_SET_TYPE::insert(iterator offset, ElementType elem) {
-    m_pimpl_->insert(offset, std::move(elem));
-}
-
-template<typename ElementType>
 const MATH_SET_TYPE& MATH_SET_TYPE::operator^(const my_type& rhs) const {
-    return select([&](const_reference elem) { return rhs.count(elem) > 0; });
-}
-
-template<typename ElementType>
-MATH_SET_TYPE& MATH_SET_TYPE::operator^(const my_type& rhs) {
     return select([&](const_reference elem) { return rhs.count(elem) > 0; });
 }
 
@@ -667,14 +498,9 @@ const MATH_SET_TYPE& MATH_SET_TYPE::operator-(const MATH_SET_TYPE& rhs) const {
 }
 
 template<typename ElementType>
-MATH_SET_TYPE& MATH_SET_TYPE::operator-(const MATH_SET_TYPE& rhs) {
-    return select([&](const_reference elem) { return rhs.count(elem) == 0; });
-}
-
-template<typename ElementType>
 MATH_SET_TYPE MATH_SET_TYPE::operator+(const MATH_SET_TYPE& rhs) const {
     MathSet s(*this);
-    for(const auto& x : rhs) s.insert(x);
+    for(const auto& x : rhs) s.push_back(x);
     return s;
 }
 
@@ -695,20 +521,11 @@ const MATH_SET_TYPE& MATH_SET_TYPE::select(SelectorFxn&& selector) const {
     for(size_t i = 0; i < size(); ++i) {
         if(selector((*this)[i])) { idxs.insert(i); }
     }
-    auto non_const_pimpl = const_cast<pimpl_base*>(m_pimpl_.get());
     auto ptr =
-      std::make_unique<selection_t>(idxs.begin(), idxs.end(), non_const_pimpl);
+      std::make_unique<selection_t>(m_pimpl_.get(), idxs.begin(), idxs.end());
     m_subsets_.emplace(idxs,
                        std::make_unique<my_type>(my_type(std::move(ptr))));
     return *m_subsets_.at(idxs);
-}
-
-template<typename ElementType>
-template<typename SelectorFxn>
-MATH_SET_TYPE& MATH_SET_TYPE::select(SelectorFxn&& selector) {
-    const auto& const_me = *this;
-    return const_cast<my_type&>(
-      const_me.select(std::forward<SelectorFxn>(selector)));
 }
 
 template<typename ElementType>
