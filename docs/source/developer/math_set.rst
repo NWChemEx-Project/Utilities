@@ -10,23 +10,55 @@ Design Points
 -------------
 
 The ``MathSet`` class was primarily developed to serve as the backend container
-for physics concepts that are:
+for physics concepts that require:
 
-- ordered set-like,
-- (possibly) nested set-like
+- ordered, possibly nested, set-like storage,
+- slicing,
+- basic set operation (union, intersection, etc.)
 
 Additionally we require that the resulting object is reasonably efficient. In
 particular this means:
 
-- elements are stored contiguously
-- nested sets are flattened
+- elements are stored contiguously,
+- nested sets are flattened,
+- slices are views and not copies.
+
+API and State
+-------------
+
+.. sidebar:: State Diagram for MathSet
+
+   .. _math_set_state:
+   .. figure:: uml/math_set_nested.png
+
+       Illustration of how the state of a MathSet changes after various
+       operations.
+
+:numfig:`math_set_state` provides a summary of how a MathSet's state changes
+as a result of various operations. The first deciding factor on the MathSet's
+state is what the template type is. The template type determines what the
+default PIMPL is. If the template type is another MathSet then the default PIMPL
+is NestedSetPIMPL, otherwise it is SetPIMPL. The default PIMPLs all own the
+memory of the elements, so when elements are added they are added to these
+PIMPLs. Calling any operation that slices the set (*e.g.*, intersection or
+set difference) results in a view of the original set. The object responsible
+for the view is of type SelectionViewPIMPL. The trick to making all of this work
+as expected is to always make deep copies, regardless of what PIMPL the set has.
+
+What the above paragraph should make clear is that all of the storage details
+are handled by the PIMPL. The MathSet API is the same regardless of what PIMPL
+is used and to the user behaves the same. Views are only returned as read-only.
+This inhibits the user from accidentally modifying the aliased state when they
+intend to modify the slice. However, as a reference, usual C++ conventions
+dictate that modifications to the parent container will change the slice. The
+aliasing is broken when the user takes a copy.
 
 Elements
 --------
 
 Elements in a ``MathSet`` are treated as immutable. This makes it easier to
 reason about correctness and corner cases when we rely on more exotic
-implementations. must be:
+implementations. Additionally each element must be:
 
 - copyable
 
@@ -58,7 +90,7 @@ clear. For example, in the following, invalid, code:
    auto& s2 = s0 - s1; // s2 == {1, 3}
    s2[0] = 4;
 
-the intent is likely to make ``s2 == {4, 3}``, whereas in
+the intent is to make ``s2 == {4, 3}``, whereas in
 
 .. code-block:: C++
 
@@ -97,19 +129,28 @@ something like: ``s0 = {{1, 2}, {3, 4}, {4, 5}}``. For performance we want to
 flatten the internal sets so that the elements are stored contiguously (this
 will always be possible because each element of the outer set must have the same
 type). When we flatten the above set it gets stored in memory like:
-``s0 = [1, 2, 3, 4, 4, 5]``. When we return an element from ``s0`` it holds a
-view of ``s0``. Specifically it holds the starting and stopping indices for that
-element (for example the second element of ``s0`` would hold now that it starts
-at element 2 and stops before element 4). Since we return the elements as views
-we run into the same problem as we did in the last section. Here however one
-could argue that the user did not want them to be "views", so when you modify
-say the second element of ``s0`` you expect ``s0`` to to be modified as well. At
-the moment we treat the elements of a MathSet as immutable so you can not edit
-them despite this being well defined.
+``s0 = [1, 2, 3, 4, 4, 5]``. Note that this means the underlying container must
+allow duplicate elements to be stored because the partitioning may make the
+elements unique. Anyways, when we return an element from ``s0`` the user expects
+it to be MathSet-like (afterall that's what they specified the type of the
+element as). To accomplish this we need to use views, specifically we use the
+RangeViewPIMPL. This PIMPL holds the starting and stopping indices for the
+returned MathSet (*e.g.*, the RangeViewPIMPL for the second element of ``s0``
+would hold that it starts at element 2 and stops before element 4).
+
+Since we return the elements as views we run into the same problem as we did in
+the last section. Here, however, one can argue that the user did not want them
+to be "views", but discrete elements. The fact that they are views is an
+implementation detail. Put another way, when the user modifies say the second
+element of ``s0`` they expect ``s0`` to to be modified as well. This complicates
+things because adding another element to the second element changes the offset
+indices for element three (in general it changes the offset indices for all
+elements following it). This could be worked around since the view has a pointer
+to the parent set, but for now I am lazy and treat the elements of a MathSet as
+immutable to avoid this problem.
 
 Other Thoughts
 --------------
 
 - Could create a binary view, which would be a view of two MathSet instances
   simultaneously.
-- Could create a non-flattened nested set PIMPL.
