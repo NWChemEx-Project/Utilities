@@ -8,6 +8,7 @@ add_subdirectory(type_traits)
 list(APPEND sources test_main.cpp
                     smart_enum.cpp
                     timer.cpp
+                    tutorials/math_set.cpp
 )
 
 cpp_add_executable(
