@@ -136,35 +136,46 @@ auto get_end_tuple(ContainerType&& container);
  *
  *  This function assumes you are looping over an @f$N@f$-tuple of iterators in
  *  lexicographical order. In such case when you increase iterator i, you must
- *  reset all iterators in the range @f$[i+1, N)@f$.
+ *  reset all iterators in the range @f$[i+1, N)@f$. This function will reset
+ *  iterator @f$m@f$ by calling `begin` on the object the @f$m-1@f$-th iterator
+ *  is pointing to.
  *
  * @tparam tdepth The index of the first iterator to reset.
- * @tparam IteratorType
- * @param itr
- * @return
+ * @tparam ContainerType The type of the nested container that the iterator is
+ *         for.
+ * @tparam IteratorType The type of the tuple holding all the iterators.
+ * @param[in] container The container the iterator is for.
+ * @param[in] itr The tuple of iterators we are resetting.
+ * @return A tuple of iterators such that starting with the @p tdepth -th
+ *         iterator all iterators have been reset by calling `begin` on the
+ *         element pointed to by the proceeding iterator.
+ * @throw ??? If calling `begin` on any iterator throws. Same throw guarantee.
  */
 template<std::size_t tdepth, typename ContainerType, typename IteratorType>
 auto reset_tuple_of_itr(ContainerType&& container, IteratorType itr);
 
+/** @brief Increments a tuple of iterators assuming lexicographical ordering.
+ *
+ *  This function will start with the last iterator in the tuple and try to
+ *  increment it. If the iterator can be incremented it will be and the
+ *  resulting tuple is returned. If the iterator can not be incremented then
+ *  this function will try to increment the second to last iterator. This cycle
+ *  repeats until an iterator can be incremented or all iterators are exhausted,
+ *  in the latter case the tuple is returned unchanged. In the former case this
+ *  function will also call `reset_tuple_of_itr` on the tuple.
+ *
+ * @tparam depth Should always be specified as 0 by the user. Used internally to
+ *               do recursion.
+ * @tparam ContainerType The type of the container the iterators are for.
+ * @tparam IteratorType  The type of the tuple holding the iterators
+ * @param[in] container The container the iterators are for.
+ * @param[in] itr The tuple of iterators we are incrementing.
+ * @return The tuple of iterators advanced to the next lexicographical element.
+ * @throw ??? if `end` throws for any of the nested containers or if
+ *            reset_tuple_of_itr throws. Same throw guarantee.
+ */
 template<std::size_t depth, typename ContainerType, typename IteratorType>
-auto increment_tuple_of_itr(ContainerType&& container, IteratorType itr) {
-    constexpr auto tuple_length = std::tuple_size_v<IteratorType>;
-    static_assert(tuple_length != 0, "Can not increment empty tuple");
-    static_assert(depth != tuple_length, "Ran off the end of the tuple");
-
-    // Start from back and try to increment
-    constexpr auto curr_idx = tuple_length - 1 - depth;
-    ++std::get<curr_idx>(itr);
-    if constexpr(curr_idx != 0) {
-        if(std::get<curr_idx>(itr) == std::get<curr_idx - 1>(itr)->end())
-            return increment_tuple_of_itr<depth + 1>(
-              std::forward<ContainerType>(container), std::move(itr));
-    } else {
-        if(std::get<curr_idx>(itr) == container.end()) return itr;
-    }
-    return reset_tuple_of_itr<curr_idx + 1>(
-      std::forward<ContainerType>(container), std::move(itr));
-}
+auto increment_tuple_of_itr(ContainerType&& container, IteratorType itr);
 
 /// Type of a tuple holding iterators
 template<std::size_t depth, typename T>
@@ -201,31 +212,35 @@ class FlattenedContainerIterator
     using base_type = detail_::fci_base<depth, ContainerType>;
 
 public:
+    /// Type of a read-only reference to an element in this container
     using const_reference = typename base_type::const_reference;
-    FlattenedContainerIterator(ContainerType* container, bool at_end) :
-      m_container_(container),
-      m_itr_(at_end ? detail_::get_end_tuple<0, depth>(*container) :
-                      detail_::get_begin_tuple<0, depth>(*container)) {}
 
-    const_reference dereference() const override {
-        return *std::get<depth>(m_itr_);
-    }
+    /** @brief Creates an iterator that flattens the specified container out to
+     *         a depth @p depth.
+     *
+     * @param[in] container The container we are iterating over.
+     * @param[in] at_end Should this iterator be just past the last element. If
+     *            false then the iterator points to the first element.
+     * @throws ??? if get_end_tuple or get_begin_tuple throw. Strong throw
+     *             guarantee.
+     */
+    FlattenedContainerIterator(ContainerType* container, bool at_end);
 
-    my_type& increment() override {
-        m_itr_ =
-          detail_::increment_tuple_of_itr<0>(*m_container_, std::move(m_itr_));
-        return *this;
-    }
+    /// Implements operator*() for the base class
+    const_reference dereference() const override;
 
-    bool are_equal(const my_type& rhs) const noexcept override {
-        return std::tie(m_container_, m_itr_) ==
-               std::tie(rhs.m_container_, rhs.m_itr_);
-    }
+    /// Implements operator++() for the base class
+    my_type& increment() override;
+
+    /// Implements operator== for the base class
+    bool are_equal(const my_type& rhs) const noexcept override;
 
 private:
+    /// The parent container we are iterating over
     ContainerType* m_container_;
+    /// The collection of iterators to iterate over
     detail_::iterator_tuple_t<depth, ContainerType> m_itr_;
-};
+}; // class FlattenedContainerIterator
 
 // -------------------------Implementations ------------------------------------
 
@@ -267,14 +282,63 @@ auto reset_tuple_of_itr(ContainerType&& container, IteratorType itr) {
     } else {
         if constexpr(tdepth == 0) {
             std::get<0>(itr) = container.begin();
-        } else if constexpr(tdepth == 1) { // Care is needed if itr 0 is done
-            if(std::get<0>(itr) == container.end()) return itr;
         } else {
+            if constexpr(tdepth == 1) { // Care is needed if itr 0 is done
+                if(std::get<0>(itr) == container.end()) return itr;
+            }
             std::get<tdepth>(itr) = std::get<tdepth - 1>(itr)->begin();
         }
         return reset_tuple_of_itr<tdepth + 1>(container, std::move(itr));
     }
 }
 
+template<std::size_t depth, typename ContainerType, typename IteratorType>
+auto increment_tuple_of_itr(ContainerType&& container, IteratorType itr) {
+    constexpr auto tuple_length = std::tuple_size_v<IteratorType>;
+    static_assert(tuple_length != 0, "Can not increment empty tuple");
+    static_assert(depth != tuple_length, "Ran off the end of the tuple");
+
+    // Start from back and try to increment
+    constexpr auto curr_idx = tuple_length - 1 - depth;
+    ++std::get<curr_idx>(itr);
+    if constexpr(curr_idx != 0) {
+        if(std::get<curr_idx>(itr) == std::get<curr_idx - 1>(itr)->end())
+            return increment_tuple_of_itr<depth + 1>(
+              std::forward<ContainerType>(container), std::move(itr));
+    } else {
+        if(std::get<curr_idx>(itr) == container.end()) return itr;
+    }
+    return reset_tuple_of_itr<curr_idx + 1>(
+      std::forward<ContainerType>(container), std::move(itr));
+}
+
 } // namespace detail_
+
+#define FCI FlattenedContainerIterator<depth, ContainerType>
+
+template<std::size_t depth, typename ContainerType>
+FCI::FlattenedContainerIterator(ContainerType* container, bool at_end) :
+  m_container_(container),
+  m_itr_(at_end ? detail_::get_end_tuple<0, depth>(*container) :
+                  detail_::get_begin_tuple<0, depth>(*container)) {}
+
+template<std::size_t depth, typename ContainerType>
+typename FCI::const_reference FCI::dereference() const {
+    return *std::get<depth>(m_itr_);
+}
+
+template<std::size_t depth, typename ContainerType>
+FCI& FCI::increment() {
+    m_itr_ =
+      detail_::increment_tuple_of_itr<0>(*m_container_, std::move(m_itr_));
+    return *this;
+}
+
+template<std::size_t depth, typename ContainerType>
+bool FCI::are_equal(const my_type& rhs) const noexcept {
+    return std::tie(m_container_, m_itr_) ==
+           std::tie(rhs.m_container_, rhs.m_itr_);
+}
+
+#undef FCI
 } // namespace utilities::iterators

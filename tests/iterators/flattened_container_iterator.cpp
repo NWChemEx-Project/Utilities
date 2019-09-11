@@ -225,10 +225,108 @@ TEST_CASE("increment_tuple_of_itr") {
 
 TEST_CASE("FlattenedContainerIterator") {
     vec1 v1{1, 2, 3};
+    vec2 v2{v1, v1, v1};
     SECTION("vector") {
         FlattenedContainerIterator<0, decltype(v1)> itr1(&v1, false);
         FlattenedContainerIterator<0, decltype(v1)> itr2(&v1, true);
 
         REQUIRE(itr1 != itr2);
+        std::size_t counter = 0;
+        while(itr1 != itr2 && counter < v1.size()) {
+            REQUIRE(&(*itr1) == &v1[counter]);
+            ++itr1;
+            ++counter;
+        }
+        REQUIRE(itr1 == itr2);
+    }
+    SECTION("vector of vector") {
+        SECTION("Depth 0") {
+            FlattenedContainerIterator<0, decltype(v2)> itr1(&v2, false);
+            FlattenedContainerIterator<0, decltype(v2)> itr2(&v2, true);
+
+            REQUIRE(itr1 != itr2);
+            std::size_t counter = 0;
+            while(itr1 != itr2 && counter < v2.size()) {
+                REQUIRE(&(*itr1) == &v2[counter]);
+                ++itr1;
+                ++counter;
+            }
+            REQUIRE(itr1 == itr2);
+        }
+        SECTION("Depth 1") {
+            FlattenedContainerIterator<1, decltype(v2)> itr1(&v2, false);
+            FlattenedContainerIterator<1, decltype(v2)> itr2(&v2, true);
+
+            REQUIRE(itr1 != itr2);
+            std::size_t counter_i = 0;
+            std::size_t counter_j = 0;
+            while(itr1 != itr2 && counter_i < v2.size()) {
+                REQUIRE(&(*itr1) == &v2[counter_i][counter_j]);
+                ++itr1;
+                ++counter_j;
+                if(counter_j == v2[counter_i].size()) {
+                    counter_j = 0;
+                    ++counter_i;
+                }
+            }
+            REQUIRE(itr1 == itr2);
+        }
+    }
+    SECTION("vector of vector of vector") {
+        vec3 v3{v2, v2, v2};
+        SECTION("Depth 0") {
+            FlattenedContainerIterator<0, decltype(v3)> itr1(&v3, false);
+            FlattenedContainerIterator<0, decltype(v3)> itr2(&v3, true);
+
+            REQUIRE(itr1 != itr2);
+            std::size_t counter = 0;
+            while(itr1 != itr2 && counter < v3.size()) {
+                REQUIRE(&(*itr1) == &v3[counter]);
+                ++itr1;
+                ++counter;
+            }
+            REQUIRE(itr1 == itr2);
+        }
+        SECTION("Depth 1") {
+            FlattenedContainerIterator<1, decltype(v3)> itr1(&v3, false);
+            FlattenedContainerIterator<1, decltype(v3)> itr2(&v3, true);
+
+            REQUIRE(itr1 != itr2);
+            std::size_t counter_i = 0;
+            std::size_t counter_j = 0;
+            while(itr1 != itr2 && counter_i < v3.size()) {
+                REQUIRE(&(*itr1) == &v3[counter_i][counter_j]);
+                ++itr1;
+                ++counter_j;
+                if(counter_j == v3[counter_i].size()) {
+                    counter_j = 0;
+                    ++counter_i;
+                }
+            }
+            REQUIRE(itr1 == itr2);
+        }
+        SECTION("Depth 2") {
+            FlattenedContainerIterator<2, decltype(v3)> itr1(&v3, false);
+            FlattenedContainerIterator<2, decltype(v3)> itr2(&v3, true);
+
+            REQUIRE(itr1 != itr2);
+            std::size_t counter_i = 0;
+            std::size_t counter_j = 0;
+            std::size_t counter_k = 0;
+            while(itr1 != itr2 && counter_i < v3.size()) {
+                REQUIRE(&(*itr1) == &v3[counter_i][counter_j][counter_k]);
+                ++itr1;
+                ++counter_k;
+                if(counter_k == v3[counter_i][counter_j].size()) {
+                    counter_k = 0;
+                    ++counter_j;
+                }
+                if(counter_j == v3[counter_i].size()) {
+                    counter_j = 0;
+                    ++counter_i;
+                }
+            }
+            REQUIRE(itr1 == itr2);
+        }
     }
 }
