@@ -116,67 +116,45 @@ TEST_CASE("reset_tuple_of_itr") {
     SECTION("vector") {
         auto itr = detail_::get_begin_tuple<0, 0>(v1);
         ++std::get<0>(itr);
-        auto new_itr = detail_::reset_tuple_of_itr<1>(itr);
+        auto new_itr = detail_::reset_tuple_of_itr<1>(v1, itr);
         REQUIRE(itr == new_itr);
         ++std::get<0>(itr);
-        new_itr = detail_::reset_tuple_of_itr<1>(itr);
+        new_itr = detail_::reset_tuple_of_itr<1>(v1, itr);
         REQUIRE(itr == new_itr);
     }
     SECTION("Vector of Vector") {
         auto itr = detail_::get_begin_tuple<0, 1>(v2);
-        REQUIRE(std::get<1>(itr) == v2[0].begin());
-        ++std::get<0>(itr);
-        itr = detail_::reset_tuple_of_itr<1>(itr);
-        REQUIRE(std::get<1>(itr) == v2[1].begin());
-        ++std::get<0>(itr);
-        itr = detail_::reset_tuple_of_itr<1>(itr);
-        REQUIRE(std::get<1>(itr) == v2[2].begin());
+        for(std::size_t i = 0; i < v2.size(); ++i) {
+            REQUIRE(std::get<1>(itr) == v2[i].begin());
+            ++std::get<0>(itr);
+            itr = detail_::reset_tuple_of_itr<1>(v2, itr);
+        }
+        itr = detail_::reset_tuple_of_itr<0>(v2, itr);
+        REQUIRE(std::get<0>(itr) == v2.begin());
     }
     SECTION("Vector of Vector of Vector") {
         vec3 v3{v2, v2, v2};
         SECTION("0, 1") {
             auto itr = detail_::get_begin_tuple<0, 1>(v3);
-            REQUIRE(std::get<1>(itr) == v3[0].begin());
-            ++std::get<0>(itr);
-            itr = detail_::reset_tuple_of_itr<1>(itr);
-            REQUIRE(std::get<1>(itr) == v3[1].begin());
-            ++std::get<0>(itr);
-            itr = detail_::reset_tuple_of_itr<1>(itr);
-            REQUIRE(std::get<1>(itr) == v3[2].begin());
+            for(std::size_t i = 0; i < v3.size(); ++i) {
+                REQUIRE(std::get<1>(itr) == v3[i].begin());
+                ++std::get<0>(itr);
+                itr = detail_::reset_tuple_of_itr<1>(v3, itr);
+            }
         }
         SECTION("0, 2") {
             auto itr = detail_::get_begin_tuple<0, 2>(v3);
-            REQUIRE(std::get<1>(itr) == v3[0].begin());
-            REQUIRE(std::get<2>(itr) == v3[0][0].begin());
-
-            ++std::get<1>(itr);
-            itr = detail_::reset_tuple_of_itr<2>(itr);
-            REQUIRE(std::get<2>(itr) == v3[0][1].begin());
-            ++std::get<1>(itr);
-            itr = detail_::reset_tuple_of_itr<2>(itr);
-            REQUIRE(std::get<2>(itr) == v3[0][2].begin());
-
-            ++std::get<0>(itr);
-            itr = detail_::reset_tuple_of_itr<1>(itr);
-            REQUIRE(std::get<1>(itr) == v3[1].begin());
-            REQUIRE(std::get<2>(itr) == v3[1][0].begin());
-            ++std::get<1>(itr);
-            itr = detail_::reset_tuple_of_itr<2>(itr);
-            REQUIRE(std::get<2>(itr) == v3[1][1].begin());
-            ++std::get<1>(itr);
-            itr = detail_::reset_tuple_of_itr<2>(itr);
-            REQUIRE(std::get<2>(itr) == v3[1][2].begin());
-
-            ++std::get<0>(itr);
-            itr = detail_::reset_tuple_of_itr<1>(itr);
-            REQUIRE(std::get<1>(itr) == v3[2].begin());
-            REQUIRE(std::get<2>(itr) == v3[2][0].begin());
-            ++std::get<1>(itr);
-            itr = detail_::reset_tuple_of_itr<2>(itr);
-            REQUIRE(std::get<2>(itr) == v3[2][1].begin());
-            ++std::get<1>(itr);
-            itr = detail_::reset_tuple_of_itr<2>(itr);
-            REQUIRE(std::get<2>(itr) == v3[2][2].begin());
+            for(std::size_t i = 0; i < v3.size(); ++i) {
+                REQUIRE(std::get<1>(itr) == v3[i].begin());
+                for(std::size_t j = 0; j < v3[i].size(); ++j) {
+                    REQUIRE(std::get<2>(itr) == v3[i][j].begin());
+                    ++std::get<1>(itr);
+                    itr = detail_::reset_tuple_of_itr<2>(v3, itr);
+                }
+                ++std::get<0>(itr);
+                if(std::get<0>(itr) == v3.end()) break;
+                itr = detail_::reset_tuple_of_itr<1>(v3, itr);
+            }
         }
     }
 }
@@ -186,7 +164,6 @@ TEST_CASE("increment_tuple_of_itr") {
     vec2 v2{vec1{1, 2, 3}, vec1{4, 5, 6}, vec1{7, 8, 9}};
     SECTION("vector") {
         auto itr = detail_::get_begin_tuple<0, 0>(v1);
-
         for(auto i = 0; i < v1.size(); ++i) {
             REQUIRE(&(*std::get<0>(itr)) == &v1[i]);
             itr = detail_::increment_tuple_of_itr<0>(v1, itr);
@@ -195,7 +172,6 @@ TEST_CASE("increment_tuple_of_itr") {
     SECTION("vector of vector") {
         SECTION("0 0") {
             auto itr = detail_::get_begin_tuple<0, 0>(v2);
-
             for(auto i = 0; i < v2.size(); ++i) {
                 REQUIRE(&(*std::get<0>(itr)) == &v2[i]);
                 itr = detail_::increment_tuple_of_itr<0>(v2, itr);
@@ -203,7 +179,6 @@ TEST_CASE("increment_tuple_of_itr") {
         }
         SECTION("0 1") {
             auto itr = detail_::get_begin_tuple<0, 1>(v2);
-
             for(auto i = 0; i < v1.size(); ++i) {
                 REQUIRE(&(*std::get<0>(itr)) == &v2[i]);
                 for(auto j = 0; j < v2[i].size(); ++j) {
@@ -217,7 +192,6 @@ TEST_CASE("increment_tuple_of_itr") {
         vec3 v3{v2, v2, v2};
         SECTION("0 0") {
             auto itr = detail_::get_begin_tuple<0, 0>(v3);
-
             for(auto i = 0; i < v3.size(); ++i) {
                 REQUIRE(&(*std::get<0>(itr)) == &v3[i]);
                 itr = detail_::increment_tuple_of_itr<0>(v3, itr);
@@ -225,7 +199,6 @@ TEST_CASE("increment_tuple_of_itr") {
         }
         SECTION("0 1") {
             auto itr = detail_::get_begin_tuple<0, 1>(v3);
-
             for(auto i = 0; i < v3.size(); ++i) {
                 REQUIRE(&(*std::get<0>(itr)) == &v3[i]);
                 for(auto j = 0; j < v3[i].size(); ++j) {
@@ -236,7 +209,6 @@ TEST_CASE("increment_tuple_of_itr") {
         }
         SECTION("0 2") {
             auto itr = detail_::get_begin_tuple<0, 2>(v3);
-
             for(auto i = 0; i < v3.size(); ++i) {
                 REQUIRE(&(*std::get<0>(itr)) == &v3[i]);
                 for(auto j = 0; j < v3[i].size(); ++j) {
