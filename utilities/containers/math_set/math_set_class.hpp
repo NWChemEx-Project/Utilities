@@ -1,7 +1,6 @@
 #pragma once
-#include "utilities/containers/detail_/math_set/math_set_traits.hpp"
-#include "utilities/containers/detail_/math_set/nested_set_pimpl.hpp"
-#include "utilities/containers/detail_/math_set/selection_view_pimpl.hpp"
+#include "utilities/containers/math_set/detail_/math_set_traits.hpp"
+#include "utilities/containers/math_set/detail_/nested_set_pimpl.hpp"
 #include "utilities/iter_tools/enumerate.hpp"
 #include <map>
 #include <set>
@@ -196,6 +195,10 @@ public:
      */
     explicit MathSet(pimpl_ptr pimpl) noexcept : m_pimpl_(std::move(pimpl)) {}
 
+    virtual ~MathSet() = default;
+
+    iterator begin() noexcept { return m_pimpl_->begin(); }
+
     /** @brief Returns a read-only iterator pointing at the first element in the
      *         set.
      *
@@ -227,6 +230,8 @@ public:
      *  @throw none No throw guarantee.
      */
     const_iterator cbegin() const noexcept { return begin(); }
+
+    iterator end() noexcept { return m_pimpl_->end(); }
 
     /** @brief Returns an iterator to just past the end of this set.
      *
@@ -271,6 +276,8 @@ public:
      *                           throw guarantee.
      */
     const_reference operator[](size_type i) const { return (*m_pimpl_)[i]; }
+
+    reference operator[](size_type i) { return (*m_pimpl_)[i]; }
 
     /** @brief Returns the number of times @p elem appears in the set
      *
@@ -330,114 +337,7 @@ public:
      */
     void push_back(ElementType elem) { m_pimpl_->push_back(std::move(elem)); }
 
-    /** @brief Returns an arbitrary subset of elements from this set.
-     *
-     *  Given a callback with a signature `bool(const_reference)` this function
-     *  will loop over the elements in this set calling the callback on each
-     *  one. If the callback returns true, then the element will be included in
-     *  the resulting subset, otherwise the element will not.
-     *
-     *  @tparam SelectorFxn The type of the callback should be usable as a call
-     *                      of the form `bool(const_reference)`.
-     *
-     *  @param[in] selector The callback to use for the selection process.
-     *
-     *  @return A read-only alias of the requested subset.
-     */
-    template<typename SelectorFxn>
-    const my_type& select(SelectorFxn&& selector) const;
-
-    /** @brief Returns the intersection of this set with another set.
-     *
-     *  This function will return the intersection of this set with another set,
-     *  where the intersection is defined as the set of elements common to both
-     *  this set and the other set.
-     *
-     *  @warning Bit-wise operators, like `^`, are evaluated after equality so
-     *           take care when using `^` in boolean expressions. For example,
-     *           `assert(s1 ^ s2 == s3)` will fail to compile because it is
-     *           read as: `assert(s1 ^ (s2 == s3))` the solution is to use `()`
-     *           around `s1 ^ s2`.
-     *
-     *  @param[in] rhs The set to take the intersection with.
-     *
-     *  @return The subset of the current set that is also present in @p rhs.
-     *          The returned instance is a read-only view of the current set.
-     *
-     *  @throw std::bad_alloc if there is insufficient memory to store the
-     *                        indices in the intersection.
-     */
-    const my_type& operator^(const my_type& rhs) const;
-
-    /** @brief Computes the set difference between this and another set.
-     *
-     *  This function will compute the set difference (e.g., lhs - rhs is the
-     *  set of elements in @p lhs that are **NOT** in @p rhs). The resulting
-     *  instance is an alias of the elements in this instance.
-     *
-     *  @param[in] rhs The other set to take the set difference with.
-     *
-     *  @return A read-only alias to the subset of this class.
-     *
-     *  @throw std::bad_alloc if there is insufficient memory to store the
-     *                        indices in the aliased set. Strong throw
-     *                        guarantee.
-     */
-    const my_type& operator-(const my_type& rhs) const;
-
-    /** @brief Computes the union of this set and another.
-     *
-     *  The union of two sets is the set of all elements in either set. This
-     *  function will compute a new superset of elements that is **NOT** an
-     *  alias of either set.
-     *
-     *  @param[in] rhs The instance to take the union with.
-     *
-     *  @return A new MathSet instance containing the union of this instance and
-     *          @p rhs.
-     *
-     *  @throw std::bad_alloc if there is insufficient memory to make the new
-     *                        instance. Strong throw guarantee.
-     */
-    my_type operator+(const my_type& rhs) const;
-
-    /** @brief Compares two sets for equality.
-     *
-     *  Two sets are equal if they contain the same number of elements, and the
-     *  i-th element in each set compares equal for all i. Note that in
-     *  particular two sets that are permutations of one another will compare
-     *  as different.
-     *
-     * @param[in] rhs The set to compare with the current instance.
-     *
-     * @return True if this set is the same as @p rhs and false otherwise.
-     *
-     * @throw none No throw guarantee.
-     */
-    bool operator==(const MathSet<ElementType>& rhs) const noexcept;
-
-    /** @brief Determines if two sets are different.
-     *
-     *  Two sets are equal if they contain the same number of elements, and the
-     *  i-th element in each set compares equal for all i. Note that in
-     *  particular two sets that are permutations of one another will compare
-     *  as different.
-     *
-     * @param[in] rhs The set to compare with the current instance.
-     *
-     * @return False if this set is the same as @p rhs and true otherwise.
-     *
-     * @throw none No throw guarantee.
-     */
-    bool operator!=(const MathSet<ElementType>& rhs) const noexcept;
-
 private:
-    /// Allow PIMPLs to work directly with the PIMPL
-    friend class detail_::MathSetPIMPL<ElementType>;
-
-    /// The type returned by functions returning read/write selections
-    using selection_t = detail_::SelectionViewPIMPL<value_type>;
-
     /// Type used to allow this class to hold instances of itself
     using ptr_to_my_type = std::unique_ptr<my_type>;
 
@@ -446,15 +346,6 @@ private:
 
     /// The object actually implementing the state and fundamental algorithms
     std::unique_ptr<pimpl_base> m_pimpl_;
-
-    /** @brief Stores subsets that we generate
-     *
-     *  For some of the operations, like intersection, we need to return subsets
-     *  by reference. In order to do this we need to store the subsets. Rather
-     *  than store all possible subsets we simply store the ones the user
-     *  requests in this map.
-     */
-    mutable std::map<std::set<size_type>, ptr_to_my_type> m_subsets_;
 };
 
 //-----------------------------Implementations----------------------------------
@@ -485,47 +376,6 @@ template<typename ElementType>
 typename MATH_SET_TYPE::size_type MATH_SET_TYPE::count(
   const_reference elem) const noexcept {
     return m_pimpl_->count(elem);
-}
-
-template<typename ElementType>
-const MATH_SET_TYPE& MATH_SET_TYPE::operator^(const my_type& rhs) const {
-    return select([&](const_reference elem) { return rhs.count(elem) > 0; });
-}
-
-template<typename ElementType>
-const MATH_SET_TYPE& MATH_SET_TYPE::operator-(const MATH_SET_TYPE& rhs) const {
-    return select([&](const_reference elem) { return rhs.count(elem) == 0; });
-}
-
-template<typename ElementType>
-MATH_SET_TYPE MATH_SET_TYPE::operator+(const MATH_SET_TYPE& rhs) const {
-    MathSet s(*this);
-    for(const auto& x : rhs) s.push_back(x);
-    return s;
-}
-
-template<typename ElementType>
-bool MATH_SET_TYPE::operator==(const MathSet<ElementType>& rhs) const noexcept {
-    return (*m_pimpl_) == (*rhs.m_pimpl_);
-}
-
-template<typename ElementType>
-bool MATH_SET_TYPE::operator!=(const MathSet<ElementType>& rhs) const noexcept {
-    return (*m_pimpl_) != (*rhs.m_pimpl_);
-}
-
-template<typename ElementType>
-template<typename SelectorFxn>
-const MATH_SET_TYPE& MATH_SET_TYPE::select(SelectorFxn&& selector) const {
-    std::set<size_type> idxs{};
-    for(size_t i = 0; i < size(); ++i) {
-        if(selector((*this)[i])) { idxs.insert(i); }
-    }
-    auto ptr =
-      std::make_unique<selection_t>(m_pimpl_.get(), idxs.begin(), idxs.end());
-    m_subsets_.emplace(idxs,
-                       std::make_unique<my_type>(my_type(std::move(ptr))));
-    return *m_subsets_.at(idxs);
 }
 
 template<typename ElementType>

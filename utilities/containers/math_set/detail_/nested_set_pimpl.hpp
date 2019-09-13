@@ -1,8 +1,8 @@
 #pragma once
 #include "math_set_traits.hpp"
-#include "utilities/containers/detail_/math_set/math_set_traits.hpp"
-#include "utilities/containers/detail_/math_set/range_view_pimpl.hpp"
-#include "utilities/containers/detail_/math_set/set_pimpl.hpp"
+#include "utilities/containers/math_set/detail_/math_set_traits.hpp"
+#include "utilities/containers/math_set/detail_/range_view_pimpl.hpp"
+#include "utilities/containers/math_set/detail_/set_pimpl.hpp"
 
 namespace utilities::detail_ {
 
@@ -85,6 +85,10 @@ public:
 private:
     /// Implements operator[] for MathSetPIMPL
     const_reference get_(size_type i) const override { return m_views_[i]; }
+    /// Implements count() for MathSetPIMPL
+    size_type count_(const_reference elem) const noexcept override {
+        return std::count(m_views_.begin(), m_views_.end(), elem);
+    }
     /// Implements push_back for MathSetPIMPL
     void push_back_(ElementType new_elem) override;
     /// Implements size for MathSetPIMPL

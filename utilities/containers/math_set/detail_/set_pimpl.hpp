@@ -1,5 +1,5 @@
 #pragma once
-#include "utilities/containers/detail_/math_set/math_set_pimpl.hpp"
+#include "utilities/containers/math_set/detail_/math_set_pimpl.hpp"
 #include <memory>
 #include <vector>
 
@@ -9,11 +9,6 @@ namespace utilities::detail_ {
  *         MathSet instances.
  *
  *  This class basically wraps an std::vector in the MathSetPIMPL API.
- *
- * @note This PIMPL serves as the ultimate backend for most sets. Of particular
- *       note is that it serves as the backend for the NestedPIMPL class. In
- *       order for that to work this class can **NOT** enforce uniqueness of the
- *       elements, that must be done above the PIMPL.
  *
  * @tparam ElementType The class type of the elements being stored in the set.
  */
@@ -87,13 +82,16 @@ public:
 private:
     /// Implements operator[] of MathSetPIMPL
     const_reference get_(size_type i) const override { return m_data_[i]; }
-    /// Implements insert() of MathSetPIMPL
+    /// Implements count of MathSetPIMPL
+    size_type count_(const_reference elem) const noexcept override;
+    /// Implements push_back() of MathSetPIMPL
     void push_back_(value_type elem) override;
     /// Implements size() of MathSetPIMPL
     size_type size_() const noexcept override { return m_data_.size(); }
 
-    /// The actual data stored within this PIMPL
+    /// The actual data stored within this PIMPL, in the user's order
     container_type m_data_;
+
 }; // class SetPIMPL
 
 //------------------------------Implementations---------------------------------
@@ -116,6 +114,12 @@ SET_PIMPL_TYPE::SetPIMPL(Itr1 itr1, Itr2 itr2) : SetPIMPL() {
         if(this->count(*itr1) == 0) push_back_(*itr1);
         ++itr1;
     }
+}
+
+template<typename ElementType>
+typename SET_PIMPL_TYPE::size_type SET_PIMPL_TYPE::count_(
+  const_reference elem) const noexcept {
+    return std::count(m_data_.begin(), m_data_.end(), elem);
 }
 
 template<typename ElementType>

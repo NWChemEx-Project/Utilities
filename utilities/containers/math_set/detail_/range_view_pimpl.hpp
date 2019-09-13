@@ -1,5 +1,5 @@
 #pragma once
-#include "utilities/containers/detail_/math_set/math_set_pimpl.hpp"
+#include "utilities/containers/math_set/detail_/math_set_pimpl.hpp"
 
 namespace utilities::detail_ {
 
@@ -46,6 +46,10 @@ public:
 private:
     /// Implements operator[] for MathSetPIMPL
     const_reference get_(size_type i) const override;
+    /// Implements count for MathSetPIMPL
+    size_type count_(const_reference elem) const noexcept {
+        return std::count(this->begin(), this->end(), elem);
+    }
     /// Implements push_back for MathSetPIMPL
     void push_back_(value_type elem) override;
     /// Implements size() for MathSetPIMPL
