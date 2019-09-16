@@ -10,7 +10,7 @@ namespace utilities {
  * @tparam ElementType
  */
 template<typename ElementType>
-class MathSetView : private MathSet<ElementType> {
+class MathSetView {
 private:
     using pimpl_type = detail_::MathSetViewPIMPL<ElementType>;
     using base_type  = MathSet<ElementType>;
@@ -20,24 +20,25 @@ public:
     using const_reference = typename base_type::const_reference;
     using size_type       = typename base_type::size_type;
 
-    operator MathSet<ElementType>() const { MathSet<ElementType>(*this); }
-    operator const MathSet<ElementType>&() const { return *this; }
+    operator MathSet<ElementType>() const { m_pimpl_; }
+    operator const MathSet<ElementType>&() const { return m_pimpl_; }
 
-    MathSetView() : base_type(std::make_unique<pimpl_type>()) {}
+    MathSetView() : m_pimpl_(std::make_unique<pimpl_type>()) {}
     explicit MathSetView(std::vector<view_type> values) :
-      base_type(std::make_unique<pimpl_type>(std::move(values))) {}
+      m_pimpl_(std::make_unique<pimpl_type>(std::move(values))) {}
 
-    auto begin() const noexcept { return base_type::begin(); }
-    auto end() const noexcept { return base_type::end(); }
+    auto begin() const noexcept { return m_pimpl_.begin(); }
+    auto end() const noexcept { return m_pimpl_.end(); }
 
-    using base_type::cbegin;
-    using base_type::cend;
-    const_reference operator[](size_type i) const {
-        return base_type::operator[](i);
-    }
-    using base_type::count;
-    using base_type::empty;
-    using base_type::size;
+    auto cbegin() const noexcept { return m_pimpl_.cbegin(); }
+    auto cend() const noexcept { return m_pimpl_.cend(); }
+    const_reference operator[](size_type i) const { return m_pimpl_[i]; }
+    auto count(const_reference e) const noexcept { return m_pimpl_.count(e); }
+    auto empty() const noexcept { return m_pimpl_.empty(); }
+    auto size() const noexcept { return m_pimpl_.size(); }
+
+private:
+    MathSet<ElementType> m_pimpl_;
 };
 
 template<typename T>

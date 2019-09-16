@@ -30,7 +30,7 @@ TEST_CASE("MathSetView<int> list ctor") {
     }
 }
 
-TEST_CASE("MathSet begin const") {
+TEST_CASE("MathSetView<int> begin const") {
     vector_t v{1, 2, 3};
     std::vector pv{std::ref(v[1]), std::ref(v[2])};
     const MathSetView<int> s(pv);
@@ -113,4 +113,33 @@ TEST_CASE("MathSetView<int> empty") {
     MathSetView<int> s2;
     REQUIRE(s2.empty());
     REQUIRE_FALSE(s.empty());
+}
+
+TEST_CASE("MathSetView<int> implicit MathSet<int> conversion") {
+    vector_t v{1, 2, 3};
+    std::vector pv{std::ref(v[1]), std::ref(v[2])};
+    MathSetView s(pv);
+    MathSet<int> s2(s);
+    const MathSet<int> s3(s);
+    SECTION("Is a deep copy") {
+        for(std::size_t i = 0; i < 2; ++i) {
+            REQUIRE(&s[i] != &s2[i]);
+            REQUIRE(&s[i] != &s3[i]);
+            REQUIRE(s[i] == s2[i]);
+            REQUIRE(s[i] == s3[i]);
+        }
+    }
+}
+
+TEST_CASE("MathSetView<int> implicit const MathSet<int>& conversion") {
+    vector_t v{1, 2, 3};
+    std::vector pv{std::ref(v[1]), std::ref(v[2])};
+    MathSetView s(pv);
+    const MathSet<int>& s2(s);
+    SECTION("Is an alias") {
+        for(std::size_t i = 0; i < 2; ++i) {
+            REQUIRE(&s[i] == &s2[i]);
+            REQUIRE(s[i] == s2[i]);
+        }
+    }
 }

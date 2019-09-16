@@ -1,6 +1,7 @@
 #pragma once
 #include "utilities/containers/math_set/detail_/math_set_traits.hpp"
 #include "utilities/containers/math_set/detail_/nested_set_pimpl.hpp"
+#include "utilities/containers/math_set/detail_/set_pimpl.hpp"
 #include "utilities/iter_tools/enumerate.hpp"
 #include <map>
 #include <set>
@@ -338,14 +339,11 @@ public:
     void push_back(ElementType elem) { m_pimpl_->push_back(std::move(elem)); }
 
 private:
-    /// Type used to allow this class to hold instances of itself
-    using ptr_to_my_type = std::unique_ptr<my_type>;
-
     /// Code factorization for getting a const-PIMPL on demand
-    const auto cptr_() const noexcept;
+    const auto* cptr_() const noexcept;
 
     /// The object actually implementing the state and fundamental algorithms
-    std::unique_ptr<pimpl_base> m_pimpl_;
+    pimpl_ptr m_pimpl_;
 };
 
 //-----------------------------Implementations----------------------------------
@@ -379,7 +377,7 @@ typename MATH_SET_TYPE::size_type MATH_SET_TYPE::count(
 }
 
 template<typename ElementType>
-const auto MATH_SET_TYPE::cptr_() const noexcept {
+const auto* MATH_SET_TYPE::cptr_() const noexcept {
     return const_cast<const pimpl_base*>(m_pimpl_.get());
 }
 

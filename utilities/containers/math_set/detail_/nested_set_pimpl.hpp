@@ -2,7 +2,6 @@
 #include "math_set_traits.hpp"
 #include "utilities/containers/math_set/detail_/math_set_traits.hpp"
 #include "utilities/containers/math_set/detail_/range_view_pimpl.hpp"
-#include "utilities/containers/math_set/detail_/set_pimpl.hpp"
 
 namespace utilities::detail_ {
 
@@ -137,7 +136,7 @@ void NESTED_SET_PIMPL_TYPE::push_back_(ElementType new_elem) {
 
     // Need to allow duplicates because partitioning can make unique, e.g.
     // {{1, 2}, {1}} is okay even though it looks like {1, 2, 1} flattened
-    for(auto&& x : new_elem) m_data_->no_check_insert(std::move(x));
+    for(auto&& x : new_elem) m_data_->no_check_push_back(std::move(x));
 }
 
 #undef NESTED_SET_PIMPL_TYPE

@@ -1,6 +1,6 @@
 #include <catch2/catch.hpp>
-#include <utilities/containers/detail_/math_set/range_view_pimpl.hpp>
-#include <utilities/containers/detail_/math_set/set_pimpl.hpp>
+#include <utilities/containers/math_set/detail_/range_view_pimpl.hpp>
+#include <utilities/containers/math_set/detail_/set_pimpl.hpp>
 #include <vector>
 
 using namespace utilities::detail_;

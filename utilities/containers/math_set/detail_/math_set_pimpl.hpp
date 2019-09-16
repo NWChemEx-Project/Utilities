@@ -110,6 +110,8 @@ public:
      */
     void push_back(value_type elem);
 
+    void no_check_push_back(value_type elem) { push_back_(std::move(elem)); }
+
     /** @brief Computes the number of elements in this set.
      *
      *  This function returns the number of elements in the set. This function

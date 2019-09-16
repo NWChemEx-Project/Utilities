@@ -1,6 +1,6 @@
 #include <catch2/catch.hpp>
-#include <utilities/containers/detail_/math_set/nested_set_pimpl.hpp>
-#include <utilities/containers/math_set.hpp>
+#include <utilities/containers/math_set/detail_/nested_set_pimpl.hpp>
+#include <utilities/containers/math_set/math_set.hpp>
 
 using namespace utilities;
 using namespace utilities::detail_;
