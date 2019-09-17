@@ -17,7 +17,7 @@ auto intersection_guts_(T&& lhs, U&& rhs) {
     std::vector<value_type> idxs;
     for(auto& x : lhs)
         if(rhs.count(x)) idxs.push_back(std::ref(x));
-    return MathSetView{std::move(idxs)};
+    return MathSetView{idxs.begin(), idxs.end()};
 }
 
 } // namespace detail_

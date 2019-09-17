@@ -8,65 +8,65 @@ using set_t    = MathSet<int>;
 
 template<typename T, typename U>
 static void compare_math_set(T&& math_set, U&& corr) {
-    REQUIRE(math_set.size() == corr.size());
-    REQUIRE(math_set.empty() == corr.empty());
-    std::size_t counter = 0;
-    auto elem_itr       = math_set.begin();
-    for(auto x : corr) {
-        REQUIRE(math_set.count(x) == 1);
-        REQUIRE(math_set[counter] == x);
-        REQUIRE(*elem_itr == x);
-        ++counter;
-        ++elem_itr;
+    SECTION("size") { REQUIRE(math_set.size() == corr.size()); }
+    SECTION("empty-ness") { REQUIRE(math_set.empty() == corr.empty()); }
+    SECTION("Elements") {
+        std::size_t counter = 0;
+        auto elem_itr       = math_set.begin();
+        for(auto x : corr) {
+            REQUIRE(math_set.count(x) == 1);
+            REQUIRE(math_set[counter] == x);
+            REQUIRE(*elem_itr == x);
+            ++counter;
+            ++elem_itr;
+        }
     }
 }
 
-TEST_CASE("MathSet<int> default ctor") {
+TEST_CASE("MathSet<int>: default ctor") {
     set_t s;
     compare_math_set(s, vector_t{});
     REQUIRE(s.begin() == s.end());
     REQUIRE(s.cbegin() == s.cend());
 }
 
-TEST_CASE("MathSet<int> initializer list ctor") {
+TEST_CASE("MathSet<int>: initializer list ctor") {
     SECTION("Empty list") {
         MathSet s(std::initializer_list<int>{});
         compare_math_set(s, vector_t{});
     }
     SECTION("Single entry") {
-        SECTION("Non-MathSet content") {
-            MathSet s{1};
-            compare_math_set(s, vector_t{1});
-        }
-        SECTION("MathSet content") {
-            MathSet<set_t> s{set_t{1, 2}};
-            REQUIRE(s.size() == 1);
-            REQUIRE_FALSE(s.empty());
-            compare_math_set(s[0], vector_t{1, 2});
-            compare_math_set(*s.begin(), vector_t{1, 2});
-            REQUIRE(s.count(set_t{1, 2}) == 1);
-        }
+        MathSet s{1};
+        compare_math_set(s, vector_t{1});
     }
-
     SECTION("Multiple entries") {
-        SECTION("Non-MathSet content") {
-            MathSet s{1, 2, 3};
-            compare_math_set(s, vector_t{1, 2, 3});
-        }
-        SECTION("MathSet content") {
-            MathSet s{set_t{1}, set_t{2, 3}, set_t{}};
-            REQUIRE(s.size() == 3);
-            compare_math_set(s[0], vector_t{1});
-            compare_math_set(s[1], vector_t{2, 3});
-            compare_math_set(s[2], vector_t{});
-            REQUIRE(s.count(set_t{1}) == 1);
-            REQUIRE(s.count(set_t{2, 3}) == 1);
-            REQUIRE(s.count(set_t{}) == 1);
-        }
+        MathSet s{1, 2, 3};
+        compare_math_set(s, vector_t{1, 2, 3});
     }
 }
 
-TEST_CASE("MathSet<int> range ctor") {
+TEST_CASE("MathSet<MathSet<int>>: initializer list ctor") {
+    SECTION("Single entry") {
+        MathSet<set_t> s{set_t{1, 2}};
+        REQUIRE(s.size() == 1);
+        REQUIRE_FALSE(s.empty());
+        compare_math_set(s[0], vector_t{1, 2});
+        compare_math_set(*s.begin(), vector_t{1, 2});
+        REQUIRE(s.count(set_t{1, 2}) == 1);
+    }
+    SECTION("Multiple entries") {
+        MathSet s{set_t{1}, set_t{2, 3}, set_t{}};
+        REQUIRE(s.size() == 3);
+        compare_math_set(s[0], vector_t{1});
+        compare_math_set(s[1], vector_t{2, 3});
+        compare_math_set(s[2], vector_t{});
+        REQUIRE(s.count(set_t{1}) == 1);
+        REQUIRE(s.count(set_t{2, 3}) == 1);
+        REQUIRE(s.count(set_t{}) == 1);
+    }
+}
+
+TEST_CASE("MathSet<int>: range ctor") {
     SECTION("Empty list") {
         vector_t v;
         MathSet s(v.begin(), v.end());
@@ -86,19 +86,87 @@ TEST_CASE("MathSet<int> range ctor") {
     }
 }
 
-TEST_CASE("MathSet copy ctor") {
+TEST_CASE("MathSet<int>: copy ctor") {
+    MathSet s{1, 2, 3};
+    MathSet s2(s);
+    compare_math_set(s2, vector_t{1, 2, 3});
+    for(std::size_t i = 0; i < 3; ++i) REQUIRE(&s2[i] != &s[i]);
+}
+
+TEST_CASE("MathSet<MathSet<int>>: copy ctor") {
+    MathSet s{set_t{1}, set_t{}};
+    MathSet s2{s};
+    compare_math_set(s2[0], vector_t{1});
+    compare_math_set(s2[1], vector_t{});
+    for(std::size_t i = 0; i < 2; ++i) REQUIRE(&s2[i] != &s[i]);
+}
+
+TEST_CASE("MathSet<int>: move ctor") {
     SECTION("Normal elements") {
         MathSet s{1, 2, 3};
         MathSet s2(s);
-        compare_math_set(s2, vector_t{1, 2, 3});
-        for(std::size_t i = 0; i < 3; ++i) REQUIRE(&s2[i] != &s[i]);
+        MathSet s3(std::move(s));
+        compare_math_set(s3, vector_t{1, 2, 3});
     }
     SECTION("MathSet elements") {
         MathSet s{set_t{1}, set_t{}};
         MathSet s2{s};
+        MathSet s3(std::move(s));
+        compare_math_set(s3[0], vector_t{1});
+        compare_math_set(s3[1], vector_t{});
+    }
+}
+
+TEST_CASE("MathSet<int>: copy assignment") {
+    SECTION("Normal elements") {
+        MathSet s{1, 2, 3};
+        MathSet<int> s2;
+        auto ps2 = &(s2 = s);
+        SECTION("Returns this") { REQUIRE(ps2 == &s2); }
+        compare_math_set(s2, vector_t{1, 2, 3});
+        SECTION("Not an alias") {
+            for(std::size_t i = 0; i < 3; ++i) REQUIRE(&s2[i] != &s[i]);
+        }
+    }
+    SECTION("MathSet elements") {
+        MathSet s{set_t{1}, set_t{}};
+        MathSet<set_t> s2;
+        auto ps2 = &(s2 = s);
+        SECTION("Returns this") { REQUIRE(ps2 == &s2); }
         compare_math_set(s2[0], vector_t{1});
         compare_math_set(s2[1], vector_t{});
-        for(std::size_t i = 0; i < 2; ++i) REQUIRE(&s2[i] != &s[i]);
+        SECTION("Not an alias") {
+            for(std::size_t i = 0; i < 2; ++i) REQUIRE(&s2[i] != &s[i]);
+        }
+    }
+}
+
+TEST_CASE("MathSet<int>: move assignment") {
+    MathSet s{1, 2, 3};
+    std::array<int*, 3> ps{&s[0], &s[1], &s[2]};
+    auto s_begin = s.begin();
+    MathSet<int> s2;
+    auto ps2 = &(s2 = std::move(s));
+    SECTION("Returns this") { REQUIRE(ps2 == &s2); }
+    compare_math_set(s2, vector_t{1, 2, 3});
+    SECTION("References remain valid") {
+        for(std::size_t i = 0; i < 3; ++i) REQUIRE(&s2[i] == ps[i]);
+    }
+    SECTION("Iterators remain valid") {
+        for(int i = 1; i <= 3; ++i, ++s_begin) REQUIRE(*s_begin == i);
+    }
+}
+
+TEST_CASE("MathSet<MathSet<int>>: move assignment") {
+    MathSet s{set_t{1}, set_t{}};
+    std::array ps{&s[0], &s[1]};
+    MathSet<set_t> s2;
+    auto ps2 = &(s2 = std::move(s));
+    SECTION("Returns this") { REQUIRE(ps2 == &s2); }
+    compare_math_set(s2[0], vector_t{1});
+    compare_math_set(s2[1], vector_t{});
+    SECTION("References remain valid") {
+        for(std::size_t i = 0; i < 2; ++i) REQUIRE(&s2[i] == ps[i]);
     }
 }
 

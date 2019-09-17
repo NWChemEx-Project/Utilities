@@ -20,34 +20,8 @@ namespace utilities {
  *
  *  While to some extent it is possible to do these operations with std::set
  *  most of them will result in copies or verbose call to free-functions. The
- *  `MathSet` class avoids these problems by transparently using views and by
- *  providing built-in support for standard set operations.
- *
- *  Conceptually MathSet models the power set of an ordered set. Unlike std::set
- *  the order is stable with respect to insertion, namely, the elements are
- *  stored in insertion order and are not sorted like std:;set. The power set
- *  part of the description means that this container acts as if its elements
- *  include the power set (all possible subsets) of the set. In other words, it
- *  is possible to get read/write or read-only references to any subset of the
- *  set contained in a MathSet instance. These references behave just like
- *  references to the elements of any other container. Modifying the references
- *  modifies the value in the container. This aliasing behavior is avoided if
- *  instead of taking the element by reference you take it by value. In this
- *  case a deep copy will be made and the result will be independent of the
- *  original container.
- *
- *  @warning At the moment it is your responsability to ensure that you do not
- *           invalidate the uniqueness of the elements through direct
- *           modification. For example:
- *           ```
- *           MathSet s{1, 2, 3};
- *           auto& s0 = s[0];
- *           // Don't do this next line
- *           //s0 = 2; Would cause s to be {2, 2, 3}
- *           ```
- *           This warning only applies to working with references to elements.
- *           If you go through the public API of the MathSet class, the MathSet
- *           class will enforce uniqueness automatically.
+ *  `MathSet` class avoids these problems by using views and by providing
+ *  built-in support for standard set operations.
  *
  * @tparam element_type The type of the elements in this set. Should be
  *                      copyable, movable, comparable via  operator<, and
@@ -84,8 +58,7 @@ public:
     /** @brief Creates an empty set.
      *
      *  This constructor creates an empty set. Elements can be added to the
-     *  resulting set by calling insert. Any elements added to the resulting
-     *  instance will be owned by the instance.
+     *  resulting set by calling pusH_back.
      *
      *  @throw std::bad_alloc if there is insufficient memory to create the
      *                        PIMPL. Strong throw guarantee.
@@ -95,9 +68,9 @@ public:
     /** @brief Makes a deep copy of another MathSet
      *
      *  This ctor will initialize a new MathSet instance with a deep copy of
-     *  another MathSet's state. Note that in particular this means that if you
-     *  are copying from an alias the new instance will be decoupled from the
-     *  alias's parent container.
+     *  another MathSet's state. Note that MathSetView is implicitly convertible
+     *  to a const MathSet& so this copy ctor will also make deep copies of
+     *  views.
      *
      *  @param[in] rhs The MathSet instance to make a deep copy of.
      *
@@ -110,8 +83,9 @@ public:
      *         instance.
      *
      *  This ctor can be used to transfer ownership of a MathSet's state to a
-     *  new instance. The resulting instance maintains any aliasing relations
-     *  that @p rhs possessed.
+     *  new instance. This ctor can only be used to avoid copies by calling it
+     *  with a MathSet instance. Attempting to move a MathSetView into a MathSet
+     *  will actually result in moving a temporary, which is a copy of the view.
      *
      *  @param[in] rhs The instance which originally owns the state. After this
      *                  function is called @p rhs will be in a valid, but
@@ -121,28 +95,37 @@ public:
      */
     MathSet(my_type&& rhs) noexcept = default;
 
-    /* Creating a new MathSet by copy/move of another MathSet is well defined;
-     * however, when you try to copy/move assign ambiguities arise.
+    /** @brief Makes this set contain a deep copy of another set
      *
-     *  Let A be an alias of a subset of B. Then for some other set C what does
-     *  A = C do?
+     *  This function assigns to the current MathSet instance a deep copy of
+     *  another MathSet or MathSetView instance. In general, after calling this
+     *  function all previously existing iterators and references to this
+     *  instance's old state are no longer valid.
      *
-     *  If C is completely disjoint from B (and therefore A as well) one can
-     *  argue it makes sense to remove A's elements from B, add C's elements to
-     *  B, and then make A alias the new elements. But where do we put C's
-     *  elements in B? Do we replace A's elements? If so, what do we do if A and
-     *  C have different numbers of elements? If we do not replace A's elements
-     *  do we then just append C's elements onto B's elements?
-     *
-     *  If C contains one or more elements from B (and or A) it makes sense to
-     *  remove the elements of A not in C from B, for each element in C also in
-     *  B make A point to the existing element, and then follow the above
-     *  protocol for new elements. If the elements common to C and B are not in
-     *  the same order in both C and B then what order do we store them in, C's
-     *  or B's?
+     * @param[in] rhs The MathSet instance we are making a deep copy of.
+     * @return The current instance after setting its state to a deep copy of
+     *         @p rhs.
+     * @throw std::bad_alloc if there is insufficient memory to perform the
+     *                       copy. Strong throw guarantee.
      */
-    my_type& operator=(const my_type& rhs) = delete;
-    my_type& operator=(my_type&& rhs) = delete;
+    my_type& operator=(const my_type& rhs);
+
+    /** @brief Moves another set's state into the current instance.
+     *
+     *  This function moves another MathSet instance's state into the current
+     *  MathSet instance. In general, after calling this function all previously
+     *  existing iterators and references to this instance's state are no longer
+     *  valid. Iterators and references to @p rhs 's state remain valid, but now
+     *  refer to the state of this instance.
+     *
+     * @param[in] rhs The MathSet instance we are taking the state from. After
+     *            this operation @p rhs is in a valid, but otherwise undefined
+     *            state.
+     * @return The current instance after taking @p rhs's state.
+     *
+     * @throw none No throw guarantee.
+     */
+    my_type& operator=(my_type&& rhs) noexcept = default;
 
     /** @brief Creates a new MathSet initialized with the provided contents
      *
@@ -195,8 +178,6 @@ public:
      * @throw none No throw guarantee.
      */
     explicit MathSet(pimpl_ptr pimpl) noexcept : m_pimpl_(std::move(pimpl)) {}
-
-    virtual ~MathSet() = default;
 
     iterator begin() noexcept { return m_pimpl_->begin(); }
 
@@ -356,6 +337,11 @@ MathSet(Itr1&&, Itr2 &&)->MathSet<typename Itr1::value_type>;
 template<typename ElementType>
 MATH_SET_TYPE::MathSet(const MATH_SET_TYPE& rhs) :
   MathSet(std::make_unique<default_pimpl>(rhs.begin(), rhs.end())) {}
+
+template<typename ElementType>
+MATH_SET_TYPE& MATH_SET_TYPE::operator=(const my_type& rhs) {
+    return (*this) = std::move(MATH_SET_TYPE(rhs));
+}
 
 template<typename ElementType>
 MATH_SET_TYPE::MathSet(std::initializer_list<ElementType> il) :

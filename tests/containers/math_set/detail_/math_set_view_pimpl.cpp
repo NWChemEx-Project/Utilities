@@ -4,108 +4,50 @@
 
 using namespace utilities::detail_;
 
-TEST_CASE("MathSetViewPIMPL default ctor") {
+using vector_t = std::vector<int>;
+
+template<typename T, typename U>
+static void check_math_set_view_pimpl(T&& view, U&& corr) {
+    SECTION("Size") { REQUIRE(view.size() == corr.size()); }
+    SECTION("Elements") {
+        std::size_t counter = 0;
+        auto view_begin     = view.begin();
+        for(auto& x : corr) {
+            REQUIRE(view.count(x) == 1);
+            REQUIRE(&x == &view[counter]);
+            REQUIRE(&(*view_begin) == &x);
+            ++counter;
+            ++view_begin;
+        }
+    }
+}
+
+TEST_CASE("MathSetViewPIMPL<int>: default ctor") {
     MathSetViewPIMPL<int> s;
-    REQUIRE(s.size() == 0);
-    REQUIRE(s.count(0) == 0);
+    check_math_set_view_pimpl(s, vector_t{});
     REQUIRE(s.begin() == s.end());
 }
 
-TEST_CASE("MathSetViewPIMPL range ctor") {
-    std::vector<int> v{1, 2, 3};
-    SECTION("Empty range") {
-        std::vector<std::reference_wrapper<int>> pv;
-        MathSetViewPIMPL s(pv);
-        REQUIRE(s.size() == 0);
-    }
-    SECTION("Full range") {
-        std::vector pv{std::ref(v[1]), std::ref(v[2])};
-        MathSetViewPIMPL s(pv);
-        REQUIRE(s.size() == 2);
-        REQUIRE(&s[0] == &v[1]);
-        REQUIRE(&s[1] == &v[2]);
-    }
+TEST_CASE("MathSetViewPIMPL<int>: non-const views") {
+    vector_t v{1, 2, 3};
+    std::vector pv{std::ref(v[0]), std::ref(v[1]), std::ref(v[2])};
+    MathSetViewPIMPL<int> s(pv);
+    check_math_set_view_pimpl(s, v);
 }
 
-TEST_CASE("MathSetViewPIMPL operator[]") {
+TEST_CASE("MathSetViewPIMPL<int>: const views") {
+    vector_t v{1, 2, 3};
+    std::vector pv{std::cref(v[0]), std::cref(v[1]), std::cref(v[2])};
+    MathSetViewPIMPL<int> s(pv);
+    check_math_set_view_pimpl(s, v);
+}
+
+TEST_CASE("MathSetViewPIMPL<int>: get_") {
     std::vector<int> v{1, 2, 3};
-    std::vector pv{std::ref(v[1]), std::ref(v[2])};
+    std::vector pv{std::ref(v[0]), std::ref(v[1]), std::ref(v[2])};
     const MathSetViewPIMPL s(pv);
-    REQUIRE_THROWS_AS(s[3], std::out_of_range);
-    SECTION("Initial values") {
-        REQUIRE(s[0] == 2);
-        REQUIRE(s[1] == 3);
-    }
-}
-
-TEST_CASE("MathSetViewPIMPL operator[] const") {
-    std::vector<int> v{1, 2, 3};
-    std::vector pv{std::ref(v[1]), std::ref(v[2])};
-    const MathSetViewPIMPL s(pv);
-    REQUIRE_THROWS_AS(s[3], std::out_of_range);
-    SECTION("Initial values") {
-        REQUIRE(s[0] == 2);
-        REQUIRE(s[1] == 3);
-    }
-    SECTION("Are read-only") {
-        using no_ref = std::remove_reference_t<decltype(s[0])>;
-        STATIC_REQUIRE(std::is_const_v<no_ref>);
-    }
-}
-
-TEST_CASE("MathSetViewPIMPL begin") {
-    std::vector<int> v{1, 2, 3};
-    std::vector pv{std::ref(v[1]), std::ref(v[2])};
-    MathSetViewPIMPL s(pv);
-    auto b = s.begin();
-
-    SECTION("Can iterate over container") {
-        REQUIRE(*b == 2);
-        ++b;
-        REQUIRE(*b == 3);
-    }
-}
-
-TEST_CASE("MathSetViewPIMPL begin const") {
-    std::vector<int> v{1, 2, 3};
-    std::vector pv{std::ref(v[1]), std::ref(v[2])};
-    const MathSetViewPIMPL s(pv);
-    auto b = s.begin();
-    STATIC_REQUIRE(std::is_const_v<std::remove_reference_t<decltype(*b)>>);
-    REQUIRE(*b == 2);
-    ++b;
-    REQUIRE(*b == 3);
-}
-
-TEST_CASE("MathSetViewPIMPL end") {
-    std::vector<int> v{1, 2, 3};
-    std::vector pv{std::ref(v[1]), std::ref(v[2])};
-    MathSetViewPIMPL s(pv);
-    auto b = s.begin();
-    std::advance(b, 2);
-    REQUIRE(b == s.end());
-}
-
-TEST_CASE("MathSetViewPIMPL end const") {
-    std::vector<int> v{1, 2, 3};
-    std::vector pv{std::ref(v[1]), std::ref(v[2])};
-    MathSetViewPIMPL s(pv);
-    auto b = s.begin();
-    std::advance(b, 2);
-    REQUIRE(b == s.end());
-}
-
-TEST_CASE("MathSetViewPIMPL size") {
-    SECTION("empty") {
-        MathSetViewPIMPL<int> s;
-        REQUIRE(s.size() == 0);
-    }
-    SECTION("full") {
-        std::vector<int> v{1, 2, 3};
-        std::vector pv{std::ref(v[1]), std::ref(v[2])};
-        MathSetViewPIMPL s(pv);
-        REQUIRE(s.size() == 2);
-    }
+    SECTION("Bad index throws") { REQUIRE_THROWS_AS(s[3], std::out_of_range); }
+    check_math_set_view_pimpl(s, v);
 }
 
 TEST_CASE("MathSetViewPIMPL count") {
@@ -125,4 +67,17 @@ TEST_CASE("MathSetViewPIMPL count") {
 TEST_CASE("MathSetViewPIMPL push_back") {
     MathSetViewPIMPL<int> s;
     REQUIRE_THROWS_AS(s.push_back(3), std::runtime_error);
+}
+
+TEST_CASE("MathSetViewPIMPL size") {
+    SECTION("empty") {
+        MathSetViewPIMPL<int> s;
+        REQUIRE(s.size() == 0);
+    }
+    SECTION("full") {
+        std::vector<int> v{1, 2, 3};
+        std::vector pv{std::ref(v[1]), std::ref(v[2])};
+        MathSetViewPIMPL s(pv);
+        REQUIRE(s.size() == 2);
+    }
 }
