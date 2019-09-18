@@ -57,17 +57,8 @@ public:
      *         read-write references to read-only references. Strong throw
      *         guarantee.
      */
-    explicit MathSetViewPIMPL(std::vector<view_type> data);
-
-    /** @brief Initializes the PIMPL with aliases to the provided elements.
-     *
-     *  This ctor creates a MathSetView that aliases the provided elements. The
-     *  elements will be aliased as read-only inside the resulting instance.
-     *
-     *  @param[in] data References to the elements that this set will alias.
-     *  @throw none No throw guarantee.
-     */
-    explicit MathSetViewPIMPL(vector_of_views_type data) noexcept;
+    template<typename T>
+    explicit MathSetViewPIMPL(std::vector<T> data);
 
 private:
     /// Implements operator[] for MathSetPIMPL
@@ -93,16 +84,13 @@ template<typename T>
 MathSetViewPIMPL(std::vector<std::reference_wrapper<T>>)->MathSetViewPIMPL<T>;
 
 template<typename ElementType>
-MATH_SET_VIEW_PIMPL::MathSetViewPIMPL(std::vector<view_type> data) :
-  MathSetViewPIMPL([=]() {
+template<typename T>
+MATH_SET_VIEW_PIMPL::MathSetViewPIMPL(std::vector<T> data) :
+  m_data_([=]() {
       std::vector<const_view_type> rv;
       for(auto x : data) rv.push_back(std::cref(x.get()));
       return rv;
   }()) {}
-
-template<typename ElementType>
-MATH_SET_VIEW_PIMPL::MathSetViewPIMPL(vector_of_views_type data) noexcept :
-  m_data_(std::move(data)) {}
 
 template<typename ElementType>
 typename MATH_SET_VIEW_PIMPL::const_reference MATH_SET_VIEW_PIMPL::get_(

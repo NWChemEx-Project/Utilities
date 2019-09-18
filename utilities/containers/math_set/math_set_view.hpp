@@ -31,6 +31,8 @@ private:
     using const_view_type = std::reference_wrapper<const ElementType>;
 
 public:
+    /// Type of an element stored in this set
+    using value_type = typename math_set_type::value_type;
     /// Type of a reference to a read-only element in the parent set
     using const_reference = typename math_set_type::const_reference;
     /// Type used for indexing and counting
@@ -120,14 +122,101 @@ public:
     template<typename Itr1, typename Itr2>
     explicit MathSetView(Itr1&& begin, Itr2&& end);
 
+    /** @brief Returns an iterator pointing at the first element in this set.
+     *
+     *  This function can be used to retrieve an iterator pointing to the first
+     *  element in the set. If the set is empty the returned iterator will
+     *  compare equal to the iterator returned by `end()`. The resulting
+     *  iterator will return read-only references to the internal elements and
+     *  can not be used to modify the elements.
+     *
+     *  @return A random-access iterator pointing to the first element in the
+     *          set.
+     *  @throw none No throw guarantee.
+     */
     auto begin() const noexcept { return m_pimpl_.begin(); }
+
+    /** @brief Returns an iterator pointing at the first element in this set.
+     *
+     *  This function can be used to retrieve an iterator pointing to the first
+     *  element in the set. If the set is empty the returned iterator will
+     *  compare equal to the iterator returned by `end()`. The resulting
+     *  iterator will return read-only references to the internal elements and
+     *  can not be used to modify the elements.
+     *
+     *  @return A random-access iterator pointing to the first element in the
+     *          set.
+     *  @throw none No throw guarantee.
+     */
     auto cbegin() const noexcept { return m_pimpl_.cbegin(); }
+
+    /** @brief Returns an iterator pointing to just past the last element in
+     *         this set.
+     *
+     *  This function can be used to retrieve an iterator pointing to just past
+     *  the last element in the set. The resulting iterator is meant for use as
+     *  a semaphore and should not be dereferenced.
+     *
+     *  @return A random-access iterator pointing to just past the last element
+     *          in the set.
+     *  @throw none No throw guarantee.
+     */
     auto end() const noexcept { return m_pimpl_.end(); }
+
+    /** @brief Returns an iterator pointing to just past the last element in
+     *         this set.
+     *
+     *  This function can be used to retrieve an iterator pointing to just past
+     *  the last element in the set. The resulting iterator is meant for use as
+     *  a semaphore and should not be dereferenced.
+     *
+     *  @return A random-access iterator pointing to just past the last element
+     *          in the set.
+     *  @throw none No throw guarantee.
+     */
     auto cend() const noexcept { return m_pimpl_.cend(); }
 
+    /** @brief Returns the @p i -th element in the set by read-only reference
+     *
+     *  This function is used to access the @p i-th element in this set. The
+     *  order of the elements is determined by the order in which they were
+     *  inserted into this set.
+     *
+     *  @param[in] i The index of the element to retrieve. Must be in the range
+     *            [0, size()).
+     *
+     *  @return A read-only reference to the @p i-th element in the set.
+     *
+     *  @throw std::out_of_range if @p i is not in the range [0, size()). Strong
+     *         throw guarantee.
+     */
     const_reference operator[](size_type i) const { return m_pimpl_[i]; }
 
+    /** @brief Returns the number of times an element appears in the set.
+     *
+     *  This function will determine if @p e appears in the set or not. @p e
+     *  will be compared to elements in the set using operator==. Since
+     *  MathSet instances enforce uniqueness the return will either be 0 or 1.
+     *
+     *  @param[in] e The element whose inclusion in the set is in question.
+     *
+     *  @return The number of times @p e appears in this set. Will be either 0
+     *          or 1.
+     *
+     *  @throw none No throw guarantee.
+     */
     auto count(const_reference e) const noexcept { return m_pimpl_.count(e); }
+
+    /** @brief Determines if the current set contains elements or not.
+     *
+     *  This function can be used to determine if the set modeled by the current
+     *  view is empty or not. This function will not tell you whether or not
+     *  the parent MathSet is empty.
+     *
+     *  @return true if this set currently holds no aliases and false otherwise.
+     *
+     *  @throw none No throw guarantee.
+     */
     auto empty() const noexcept { return m_pimpl_.empty(); }
 
     /** @brief The number of elements being aliased by this view.

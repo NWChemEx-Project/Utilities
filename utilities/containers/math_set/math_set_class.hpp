@@ -179,6 +179,21 @@ public:
      */
     explicit MathSet(pimpl_ptr pimpl) noexcept : m_pimpl_(std::move(pimpl)) {}
 
+    /** @brief Returns a read/write iterator pointing at the first element in
+     *         the set.
+     *
+     *  This function returns an iterator that points to the first element in
+     *  the set. The iterator can be used to loop over the elements in the set
+     *  by incrementing it until it equals the return of the end() function.
+     *  Elements pointed at by the resulting iterator are read/writeable (as
+     *  long as @p T is not a const-qualified type) and can be modified through
+     *  the iterator.
+     *
+     *  @return A read/write, random-access iterator that points to the first
+     *          element in the set.
+     *
+     *  @throw none No throw guarantee.
+     */
     iterator begin() noexcept { return m_pimpl_->begin(); }
 
     /** @brief Returns a read-only iterator pointing at the first element in the
@@ -213,6 +228,18 @@ public:
      */
     const_iterator cbegin() const noexcept { return begin(); }
 
+    /** @brief Returns a read/write iterator pointing to just past the last
+     *  element in the set.
+     *
+     *  This function returns an iterator that points to just past the last
+     *  element in the set. The iterator is meant for use as a semaphore and
+     *  should not be dereferenced.
+     *
+     *  @return A read/write, random-access iterator that points to just past
+     *          the last element in the set.
+     *
+     *  @throw none No throw guarantee.
+     */
     iterator end() noexcept { return m_pimpl_->end(); }
 
     /** @brief Returns an iterator to just past the end of this set.
@@ -259,6 +286,20 @@ public:
      */
     const_reference operator[](size_type i) const { return (*m_pimpl_)[i]; }
 
+    /** @brief Returns the i-th element in this set.
+     *
+     *  Elements in this set are ordered. This function will return the @p i -th
+     *  element in the set at the time of the call. The element will be returned
+     *  as a read/write reference.
+     *
+     *  @param[in] i The index of the element to retrieve. Must be in the range
+     *               [0, size()).
+     *
+     *  @return The i-th element in the set by read/write reference
+     *
+     *  @throw std::out_of_range if @p i is not in the range [0, size()). Strong
+     *                           throw guarantee.
+     */
     reference operator[](size_type i) { return (*m_pimpl_)[i]; }
 
     /** @brief Returns the number of times @p elem appears in the set

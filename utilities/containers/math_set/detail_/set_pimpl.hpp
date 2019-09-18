@@ -11,6 +11,8 @@ namespace utilities::detail_ {
  *  This class basically wraps an std::vector in the MathSetPIMPL API.
  *
  * @tparam ElementType The class type of the elements being stored in the set.
+ *         Must satisfy the same concept as the template type parameter for the
+ *         MathSet class.
  */
 template<typename ElementType>
 class SetPIMPL : public MathSetPIMPL<ElementType> {
