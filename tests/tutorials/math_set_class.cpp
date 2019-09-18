@@ -1,5 +1,5 @@
 #include <catch2/catch.hpp>
-#include <utilities/containers/math_set.hpp>
+#include <utilities/containers/math_set/math_set.hpp>
 
 TEST_CASE("MathSet usage") {
     using namespace utilities;
@@ -19,21 +19,24 @@ TEST_CASE("MathSet usage") {
     MathSet<int> s5 = s1 - s2;
     REQUIRE(s5 == MathSet{1, 3});
 
-    // Possible to avoid copy while slicing:
-    const auto& s7 = s1 ^ s2;
+    // Possible to avoid copying while performing operations
+    auto s7 = s1 ^ s2;
     REQUIRE(&s7[0] == &s1[1]);
     REQUIRE(&s7[1] == &s1[3]);
 
-    const auto& s8 = s1 - s2;
+    auto s8 = s1 - s2;
     REQUIRE(&s8[0] == &s1[0]);
     REQUIRE(&s8[1] == &s1[2]);
+
+    auto s9 = s1 + s2;
+    REQUIRE(&s9[0] == &s1[0]);
+    REQUIRE(&s9[1] == &s1[1]);
+    REQUIRE(&s9[2] == &s1[2]);
+    REQUIRE(&s9[3] == &s1[3]);
+    REQUIRE(&s9[4] == &s2[2]);
+    REQUIRE(&s9[5] == &s2[3]);
 
     // Can append new elements
     s1.push_back(5);
     REQUIRE(s1.size() == 5);
-
-    // More complicated slicing (we select the elements of s1 with even values)
-    const auto& s9 = s1.select([](const auto& x) { return x % 2 == 0; });
-    REQUIRE(&s9[0] == &s1[1]);
-    REQUIRE(&s9[1] == &s1[3]);
 }

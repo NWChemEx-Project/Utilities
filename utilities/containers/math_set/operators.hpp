@@ -63,7 +63,7 @@ auto intersection_guts_(T&& lhs, U&& rhs) {
     std::vector<const_reference> idxs;
     for(auto& x : lhs)
         if(rhs.count(x)) idxs.push_back(std::ref(x));
-    return MathSetView{idxs.begin(), idxs.end()};
+    return MathSetView<value_type>{idxs.begin(), idxs.end()};
 }
 
 /** @brief Implements MathSet::operator+ and MathSetView::operator+
@@ -97,7 +97,7 @@ auto union_guts_(T&& lhs, U&& rhs) {
     for(auto& x : lhs) idxs.push_back(std::ref(x));
     for(auto& x : rhs)
         if(!lhs.count(x)) idxs.push_back(std::cref(x));
-    return MathSetView{idxs.begin(), idxs.end()};
+    return MathSetView<value_type>{idxs.begin(), idxs.end()};
 }
 
 /** @brief Implements MathSet::operator- and MathSetView::operator-
@@ -129,7 +129,7 @@ auto set_difference_guts_(T&& lhs, U&& rhs) {
     std::vector<const_reference> idxs;
     for(auto& x : lhs)
         if(!rhs.count(x)) idxs.push_back(std::ref(x));
-    return MathSetView{idxs.begin(), idxs.end()};
+    return MathSetView<value_type>{idxs.begin(), idxs.end()};
 }
 
 } // namespace detail_

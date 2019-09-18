@@ -243,7 +243,7 @@ public:
      *  @throw std::bad_alloc if there is insufficient memory to make the copy.
      *         Strong throw guarantee.
      */
-    operator MathSet<ElementType>() const { m_pimpl_; }
+    // operator MathSet<ElementType>() const { m_pimpl_; }
 
     /** @brief Allows implicit conversion to a read-only MathSet without copying
      *
