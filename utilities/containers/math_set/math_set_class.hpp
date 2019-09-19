@@ -24,8 +24,8 @@ namespace utilities {
  *  built-in support for standard set operations.
  *
  * @tparam element_type The type of the elements in this set. Should be
- *                      copyable, movable, comparable via  operator<, and
- *                      comparable via operator==.
+ *                      non-cv qualified, copyable, movable, comparable via
+ *                      operator<, and comparable via operator==.
  */
 template<typename ElementType>
 class MathSet {

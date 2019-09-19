@@ -33,6 +33,8 @@ private:
 public:
     /// Type of an element stored in this set
     using value_type = typename math_set_type::value_type;
+    /// Type of a reference to a read/write element in the parent set
+    using reference = typename math_set_type::reference;
     /// Type of a reference to a read-only element in the parent set
     using const_reference = typename math_set_type::const_reference;
     /// Type used for indexing and counting
@@ -229,21 +231,6 @@ public:
      *  @throw none No throw guarantee
      */
     auto size() const noexcept { return m_pimpl_.size(); }
-
-    /** @brief Allows implicit conversion to read/write MathSet by copying
-     *
-     *  This conversion allows users to use MathSetView instances as read/write
-     *  MathSet instances. This is done by deep copying the elements aliased
-     *  by this MathSetView instance. The use of a deep copy avoids issues
-     *  related to aliasing. Modification of the elements can be done through
-     *  the parent set.
-     *
-     *  @return A MathSet instance which contains a deep copy of the elements
-     *          aliased by this set.
-     *  @throw std::bad_alloc if there is insufficient memory to make the copy.
-     *         Strong throw guarantee.
-     */
-    // operator MathSet<ElementType>() const { m_pimpl_; }
 
     /** @brief Allows implicit conversion to a read-only MathSet without copying
      *

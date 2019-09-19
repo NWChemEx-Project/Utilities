@@ -167,36 +167,6 @@ TEST_CASE("MathSetView<int> size") {
     REQUIRE(s.size() == 2);
 }
 
-TEST_CASE("MathSetView<int> : operator MathSet<int>()") {
-    vector_t v{1, 2, 3};
-    std::vector pv{std::ref(v[1]), std::ref(v[2])};
-    MathSetView s(pv.begin(), pv.end());
-    SECTION("Initialize MathSet<int> from MathSetView<int>") {
-        MathSet<int> s2(s);
-        for(std::size_t i = 0; i < 2; ++i) {
-            SECTION("Is deep copy") { REQUIRE(&s[i] != &s2[i]); }
-            SECTION("View still aliases") { REQUIRE(&s[i] == &v[i + 1]); }
-            SECTION("Copy has correct value") { REQUIRE(s[i] == s2[i]); }
-        }
-    }
-    SECTION("Initialize const MathSet<int> from MathSetView<int>") {
-        const MathSet<int> s2(s);
-        for(std::size_t i = 0; i < 2; ++i) {
-            SECTION("Is deep copy") { REQUIRE(&s[i] != &s2[i]); }
-            SECTION("View still aliases") { REQUIRE(&s[i] == &v[i + 1]); }
-            SECTION("Copy has correct value") { REQUIRE(s[i] == s2[i]); }
-        }
-    }
-    SECTION("Initialize MathSet<int> by moving MathSetView<int>") {
-        MathSet<int> s2(std::move(s));
-        for(std::size_t i = 0; i < 2; ++i) {
-            SECTION("Is deep copy") { REQUIRE(&s[i] != &s2[i]); }
-            SECTION("View still aliases") { REQUIRE(&s[i] == &v[i + 1]); }
-            SECTION("Copy has correct value") { REQUIRE(s[i] == s2[i]); }
-        }
-    }
-}
-
 TEST_CASE("MathSetView<int> : operator const MathSet<int>&") {
     vector_t v{1, 2, 3};
     std::vector pv{std::ref(v[1]), std::ref(v[2])};
