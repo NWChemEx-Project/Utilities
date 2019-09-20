@@ -1,6 +1,5 @@
-set(
-    UTILITIES_HEADERS containers/case_insensitive_map.hpp
-                      containers/math_set.hpp
+add_subdirectory(containers)
+list(APPEND UTILITIES_HEADERS
                       iter_tools/cartesian_product.hpp
                       iter_tools/combinations.hpp
                       iter_tools/enumerate.hpp
