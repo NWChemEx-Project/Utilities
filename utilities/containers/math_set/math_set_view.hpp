@@ -32,11 +32,11 @@ private:
 
 public:
     /// Type of an element stored in this set
-    using value_type = typename math_set_type::value_type;
+    using value_type = std::remove_cv_t<ElementType>;
     /// Type of a reference to a read/write element in the parent set
-    using reference = typename math_set_type::reference;
+    using reference = ElementType&;
     /// Type of a reference to a read-only element in the parent set
-    using const_reference = typename math_set_type::const_reference;
+    using const_reference = const ElementType&;
     /// Type used for indexing and counting
     using size_type = typename math_set_type::size_type;
 
@@ -129,6 +129,20 @@ public:
      *  This function can be used to retrieve an iterator pointing to the first
      *  element in the set. If the set is empty the returned iterator will
      *  compare equal to the iterator returned by `end()`. The resulting
+     *  iterator will return references that are read/write-able if @p T is
+     *  non-const.
+     *
+     *  @return A random-access iterator pointing to the first element in the
+     *          set.
+     *  @throw none No throw guarantee.
+     */
+    auto begin() noexcept { return m_pimpl_.begin(); }
+
+    /** @brief Returns an iterator pointing at the first element in this set.
+     *
+     *  This function can be used to retrieve an iterator pointing to the first
+     *  element in the set. If the set is empty the returned iterator will
+     *  compare equal to the iterator returned by `end()`. The resulting
      *  iterator will return read-only references to the internal elements and
      *  can not be used to modify the elements.
      *
@@ -163,6 +177,19 @@ public:
      *          in the set.
      *  @throw none No throw guarantee.
      */
+    auto end() noexcept { return m_pimpl_.end(); }
+
+    /** @brief Returns an iterator pointing to just past the last element in
+     *         this set.
+     *
+     *  This function can be used to retrieve an iterator pointing to just past
+     *  the last element in the set. The resulting iterator is meant for use as
+     *  a semaphore and should not be dereferenced.
+     *
+     *  @return A random-access iterator pointing to just past the last element
+     *          in the set.
+     *  @throw none No throw guarantee.
+     */
     auto end() const noexcept { return m_pimpl_.end(); }
 
     /** @brief Returns an iterator pointing to just past the last element in
@@ -177,6 +204,23 @@ public:
      *  @throw none No throw guarantee.
      */
     auto cend() const noexcept { return m_pimpl_.cend(); }
+
+    /** @brief Returns the @p i -th element in the set by read/write reference
+     *
+     *  This function is used to access the @p i-th element in this set. The
+     *  order of the elements is determined by the order in which they were
+     *  inserted into this set. The resulting reference is read/write only if
+     *  the @p is non-const.
+     *
+     *  @param[in] i The index of the element to retrieve. Must be in the range
+     *            [0, size()).
+     *
+     *  @return A read/write reference to the @p i-th element in the set.
+     *
+     *  @throw std::out_of_range if @p i is not in the range [0, size()). Strong
+     *         throw guarantee.
+     */
+    reference operator[](size_type i) { return m_pimpl_[i]; }
 
     /** @brief Returns the @p i -th element in the set by read-only reference
      *

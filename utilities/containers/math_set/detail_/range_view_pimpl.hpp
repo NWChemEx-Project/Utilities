@@ -1,5 +1,6 @@
 #pragma once
 #include "utilities/containers/math_set/detail_/math_set_pimpl.hpp"
+#include <algorithm>
 
 namespace utilities::detail_ {
 
