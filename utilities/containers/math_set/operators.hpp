@@ -58,12 +58,11 @@ static auto are_equal_guts_(T&& lhs, U&& rhs) {
  */
 template<typename T, typename U>
 auto intersection_guts_(T&& lhs, U&& rhs) {
-    using value_type      = typename std::remove_reference_t<T>::value_type;
-    using const_reference = std::reference_wrapper<const value_type>;
-    std::vector<const_reference> idxs;
+    using value_type = typename std::remove_reference_t<T>::value_type;
+    std::vector<value_type*> idxs;
     for(auto& x : lhs)
-        if(rhs.count(x)) idxs.push_back(std::ref(x));
-    return MathSetView<value_type>{idxs.begin(), idxs.end()};
+        if(rhs.count(x)) idxs.push_back(const_cast<value_type*>(&x));
+    return MathSetView<const value_type>{idxs.begin(), idxs.end()};
 }
 
 /** @brief Implements MathSet::operator+ and MathSetView::operator+
@@ -91,13 +90,12 @@ auto intersection_guts_(T&& lhs, U&& rhs) {
  */
 template<typename T, typename U>
 auto union_guts_(T&& lhs, U&& rhs) {
-    using value_type      = typename std::remove_reference_t<T>::value_type;
-    using const_reference = std::reference_wrapper<const value_type>;
-    std::vector<const_reference> idxs;
-    for(auto& x : lhs) idxs.push_back(std::ref(x));
+    using value_type = typename std::remove_reference_t<T>::value_type;
+    std::vector<value_type*> idxs;
+    for(auto& x : lhs) idxs.push_back(const_cast<value_type*>(&x));
     for(auto& x : rhs)
-        if(!lhs.count(x)) idxs.push_back(std::cref(x));
-    return MathSetView<value_type>{idxs.begin(), idxs.end()};
+        if(!lhs.count(x)) idxs.push_back(const_cast<value_type*>(&x));
+    return MathSetView<const value_type>{idxs.begin(), idxs.end()};
 }
 
 /** @brief Implements MathSet::operator- and MathSetView::operator-
@@ -124,12 +122,11 @@ auto union_guts_(T&& lhs, U&& rhs) {
  */
 template<typename T, typename U>
 auto set_difference_guts_(T&& lhs, U&& rhs) {
-    using value_type      = typename std::remove_reference_t<T>::value_type;
-    using const_reference = std::reference_wrapper<const value_type>;
-    std::vector<const_reference> idxs;
+    using value_type = typename std::remove_reference_t<T>::value_type;
+    std::vector<value_type*> idxs;
     for(auto& x : lhs)
-        if(!rhs.count(x)) idxs.push_back(std::ref(x));
-    return MathSetView<value_type>{idxs.begin(), idxs.end()};
+        if(!rhs.count(x)) idxs.push_back(const_cast<value_type*>(&x));
+    return MathSetView<const value_type>{idxs.begin(), idxs.end()};
 }
 
 } // namespace detail_

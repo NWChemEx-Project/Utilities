@@ -3,29 +3,19 @@
 
 namespace utilities::detail_ {
 
-/** @brief Implements MathSetView
+/** @brief Implements a MathSetView that holds an arbitrary selection of
+ *         elements.
  *
- *  MathSetView instances hold references to the elements they alias. This class
- *  stores those references. All references held by this class are read-only
- *  regardless of whether or not the aliased MathSet is read-only.
+ *  The RangeViewPIMPL is the backend for storing contiguous elements of a
+ *  parent set. This PIMPL stores an arbitrary selection of elements.
  *
- *  @tparam T The cv-qualified type of elements in the MathSet that is being
- *            aliased.
+ *  @param ElementType the non-cv-qualified type of the elements in the MathSet.
  */
 template<typename ElementType>
 class MathSetViewPIMPL : public MathSetPIMPL<ElementType> {
 private:
     /// Type of the base class
     using base_type = MathSetPIMPL<ElementType>;
-
-    /// Type used to alias a read/write element of another set
-    using view_type = std::reference_wrapper<ElementType>;
-
-    /// Type used to alias a read-only element of another set
-    using const_view_type = std::reference_wrapper<const ElementType>;
-
-    /// Type of vector holding const views
-    using vector_of_views_type = std::vector<const_view_type>;
 
 public:
     /// Type of an element stored in the aliased set
@@ -49,20 +39,18 @@ public:
     /** @brief Initializes the PIMPL with aliases to the provided elements.
      *
      *  This ctor creates a MathSetView that aliases the provided elements. The
-     *  elements will be aliased as read-only inside the resulting instance even
-     *  though they are taken as read/write.
+     *  elements will be aliased as read/write.
      *
-     *  @param[in] data References to the elements that this set will alias.
+     *  @param[in] data Pointers to the elements that this set will alias.
      *  @throw std::bad_alloc if there is insufficient memory to copy the
      *         read-write references to read-only references. Strong throw
      *         guarantee.
      */
-    template<typename T>
-    explicit MathSetViewPIMPL(std::vector<T> data);
+    explicit MathSetViewPIMPL(std::vector<value_type*> data);
 
 private:
     /// Implements operator[] for MathSetPIMPL
-    const_reference get_(size_type i) const override;
+    const_reference get_(size_type i) const override { return *m_data_[i]; }
 
     /// Implements count() for MathSetPIMPL
     size_type count_(const_reference elem) const noexcept override;
@@ -74,34 +62,23 @@ private:
     size_type size_() const noexcept override { return m_data_.size(); }
 
     /// The actual data references stored in this view
-    vector_of_views_type m_data_;
+    std::vector<value_type*> m_data_;
 }; // class MathSetViewPIMPL
 
 // -----------------------------------Implementations---------------------------
 #define MATH_SET_VIEW_PIMPL MathSetViewPIMPL<ElementType>
 
 template<typename T>
-MathSetViewPIMPL(std::vector<std::reference_wrapper<T>>)->MathSetViewPIMPL<T>;
+MathSetViewPIMPL(std::vector<T*>)->MathSetViewPIMPL<T>;
 
 template<typename ElementType>
-template<typename T>
-MATH_SET_VIEW_PIMPL::MathSetViewPIMPL(std::vector<T> data) :
-  m_data_([=]() {
-      std::vector<const_view_type> rv;
-      for(auto x : data) rv.push_back(std::cref(x.get()));
-      return rv;
-  }()) {}
-
-template<typename ElementType>
-typename MATH_SET_VIEW_PIMPL::const_reference MATH_SET_VIEW_PIMPL::get_(
-  size_type i) const {
-    return m_data_[i].get();
-}
+MATH_SET_VIEW_PIMPL::MathSetViewPIMPL(std::vector<value_type*> data) :
+  m_data_(std::move(data)) {}
 
 template<typename ElementType>
 typename MATH_SET_VIEW_PIMPL::size_type MATH_SET_VIEW_PIMPL::count_(
   const_reference elem) const noexcept {
-    auto l = [=](auto x) { return x.get() == elem; };
+    auto l = [&](auto x) { return *x == elem; };
     return std::find_if(m_data_.begin(), m_data_.end(), l) != m_data_.end();
 }
 

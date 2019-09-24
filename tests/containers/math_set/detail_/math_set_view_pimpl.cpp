@@ -25,27 +25,22 @@ static void check_math_set_view_pimpl(T&& view, U&& corr) {
 TEST_CASE("MathSetViewPIMPL<int>: default ctor") {
     MathSetViewPIMPL<int> s;
     check_math_set_view_pimpl(s, vector_t{});
-    REQUIRE(s.begin() == s.end());
+    SECTION("For empty container begin() == end()") {
+        REQUIRE(s.begin() == s.end());
+    }
 }
 
 TEST_CASE("MathSetViewPIMPL<int>: non-const views") {
     vector_t v{1, 2, 3};
-    std::vector pv{std::ref(v[0]), std::ref(v[1]), std::ref(v[2])};
-    MathSetViewPIMPL<int> s(pv);
-    check_math_set_view_pimpl(s, v);
-}
-
-TEST_CASE("MathSetViewPIMPL<int>: const views") {
-    vector_t v{1, 2, 3};
-    std::vector pv{std::cref(v[0]), std::cref(v[1]), std::cref(v[2])};
+    std::vector pv{&v[0], &v[1], &v[2]};
     MathSetViewPIMPL<int> s(pv);
     check_math_set_view_pimpl(s, v);
 }
 
 TEST_CASE("MathSetViewPIMPL<int>: get_") {
-    std::vector<int> v{1, 2, 3};
-    std::vector pv{std::ref(v[0]), std::ref(v[1]), std::ref(v[2])};
-    const MathSetViewPIMPL s(pv);
+    vector_t v{1, 2, 3};
+    std::vector pv{&v[0], &v[1], &v[2]};
+    MathSetViewPIMPL<int> s(pv);
     SECTION("Bad index throws") { REQUIRE_THROWS_AS(s[3], std::out_of_range); }
     check_math_set_view_pimpl(s, v);
 }
@@ -56,9 +51,9 @@ TEST_CASE("MathSetViewPIMPL count") {
         REQUIRE(s.count(2) == 0);
     }
     SECTION("full") {
-        std::vector<int> v{1, 2, 3};
-        std::vector pv{std::ref(v[1]), std::ref(v[2])};
-        MathSetViewPIMPL s(pv);
+        vector_t v{1, 2, 3};
+        std::vector pv{&v[0], &v[1], &v[2]};
+        MathSetViewPIMPL<int> s(pv);
         REQUIRE(s.count(2) == 1);
         REQUIRE(s.count(0) == 0);
     }
@@ -75,9 +70,9 @@ TEST_CASE("MathSetViewPIMPL size") {
         REQUIRE(s.size() == 0);
     }
     SECTION("full") {
-        std::vector<int> v{1, 2, 3};
-        std::vector pv{std::ref(v[1]), std::ref(v[2])};
-        MathSetViewPIMPL s(pv);
-        REQUIRE(s.size() == 2);
+        vector_t v{1, 2, 3};
+        std::vector pv{&v[0], &v[1], &v[2]};
+        MathSetViewPIMPL<int> s(pv);
+        REQUIRE(s.size() == 3);
     }
 }

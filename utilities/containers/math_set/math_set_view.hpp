@@ -20,25 +20,29 @@ class MathSetView {
 private:
     /// Type of this class
     using my_type = MathSetView<ElementType>;
-
-    /// Type of the PIMPL holding the aliases
-    using pimpl_type = detail_::MathSetViewPIMPL<ElementType>;
-
-    /// Type of the corresponding MathSet
-    using math_set_type = MathSet<ElementType>;
-
-    /// Type used to store a read-only reference
-    using const_view_type = std::reference_wrapper<const ElementType>;
+    /// Is this class aliasing a const MathSet?
+    static constexpr bool is_const = std::is_const_v<ElementType>;
+    /// Type w/o cv-qualifiers for internal use
+    using value_type_ = std::remove_cv_t<ElementType>;
+    /// Type of a modifiable MathSet containing these elements
+    using math_set_type = MathSet<value_type_>;
+    /// Type of a read-only MathSet containing these elements
+    using const_math_set_type = const MathSet<value_type_>;
+    /// Type of the MathSet that goes with ElementType
+    using my_math_set_type =
+      std::conditional_t<is_const, const_math_set_type, math_set_type>;
+    /// Type of the PIMPL for the MathSet
+    using pimpl_type = detail_::MathSetViewPIMPL<value_type_>;
 
 public:
     /// Type of an element stored in this set
-    using value_type = std::remove_cv_t<ElementType>;
-    /// Type of a reference to a read/write element in the parent set
+    using value_type = value_type_;
+    /// Type of a reference to a (possibly) read/write element in the parent set
     using reference = ElementType&;
     /// Type of a reference to a read-only element in the parent set
     using const_reference = const ElementType&;
     /// Type used for indexing and counting
-    using size_type = typename math_set_type::size_type;
+    using size_type = typename my_math_set_type::size_type;
 
     /** @brief Makes an empty MathSetView.
      *
@@ -49,7 +53,7 @@ public:
      *  @throw std::bad_alloc if there is insufficient memory to allocate the
      *         PIMPL. Strong throw guarantee.
      */
-    MathSetView() : m_pimpl_(std::make_unique<pimpl_type>()) {}
+    MathSetView();
 
     /** @brief Makes an instance that aliases the same elements as @p rhs.
      *
@@ -136,7 +140,7 @@ public:
      *          set.
      *  @throw none No throw guarantee.
      */
-    auto begin() noexcept { return m_pimpl_.begin(); }
+    auto begin() noexcept;
 
     /** @brief Returns an iterator pointing at the first element in this set.
      *
@@ -177,7 +181,7 @@ public:
      *          in the set.
      *  @throw none No throw guarantee.
      */
-    auto end() noexcept { return m_pimpl_.end(); }
+    auto end() noexcept;
 
     /** @brief Returns an iterator pointing to just past the last element in
      *         this set.
@@ -286,11 +290,11 @@ public:
      *
      *  @throw none No throw guarantee.
      */
-    operator const MathSet<ElementType>&() const noexcept { return m_pimpl_; }
+    operator const MathSet<value_type>&() const noexcept { return m_pimpl_; }
 
 private:
     /// The PIMPL (in a MathSet for ease of conversion) holding the aliases
-    MathSet<ElementType> m_pimpl_;
+    MathSet<value_type> m_pimpl_;
 }; // class MathSetView
 
 // -----------------------------Implementations--------------------------------
@@ -298,13 +302,17 @@ private:
 
 template<typename Itr1, typename Itr2>
 MathSetView(Itr1&& itr1, Itr2 &&)
-  ->MathSetView<std::remove_reference_t<decltype(itr1->get())>>;
+  ->MathSetView<
+    std::remove_pointer_t<std::remove_reference_t<decltype(*itr1)>>>;
+
+template<typename ElementType>
+MATH_SET_VIEW::MathSetView() : m_pimpl_(std::make_unique<pimpl_type>()) {}
 
 template<typename ElementType>
 MATH_SET_VIEW::MathSetView(const MATH_SET_VIEW& rhs) :
   m_pimpl_(std::make_unique<pimpl_type>([&]() {
-      std::vector<const_view_type> rv;
-      for(auto& x : rhs) rv.push_back(std::cref(x));
+      std::vector<value_type*> rv;
+      for(auto& x : rhs) rv.push_back(const_cast<value_type*>(&x));
       return rv;
   }())) {}
 
@@ -318,6 +326,24 @@ template<typename Itr1, typename Itr2>
 MATH_SET_VIEW::MathSetView(Itr1&& begin, Itr2&& end) :
   m_pimpl_(std::make_unique<pimpl_type>(
     std::vector(std::forward<Itr1>(begin), std::forward<Itr2>(end)))) {}
+
+template<typename ElementType>
+auto MATH_SET_VIEW::begin() noexcept {
+    if constexpr(is_const) {
+        return m_pimpl_.cbegin();
+    } else {
+        return m_pimpl_.begin();
+    }
+}
+
+template<typename ElementType>
+auto MATH_SET_VIEW::end() noexcept {
+    if constexpr(is_const) {
+        return m_pimpl_.cend();
+    } else {
+        return m_pimpl_.end();
+    }
+}
 
 #undef MATH_SET_VIEW
 } // namespace utilities

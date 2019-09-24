@@ -17,13 +17,13 @@ TEST_CASE("MathSet<int>: operator==") {
     }
     SECTION("MathSetView<int>, same content") {
         MathSet s1{1, 2, 3};
-        std::vector v{std::ref(s1[0]), std::ref(s1[1]), std::ref(s1[2])};
+        std::vector v{(&s1[0]), (&s1[1]), (&s1[2])};
         MathSetView s2(v.begin(), v.end());
         REQUIRE(s0 == s2);
     }
     SECTION("MathSetView<int>, different content") {
         MathSet s1{2, 3, 4};
-        std::vector v{std::ref(s1[0]), std::ref(s1[1]), std::ref(s1[2])};
+        std::vector v{(&s1[0]), (&s1[1]), (&s1[2])};
         MathSetView s2(v.begin(), v.end());
         REQUIRE_FALSE(s0 == s2);
     }
@@ -43,13 +43,13 @@ TEST_CASE("MathSet<int>: operator!=") {
     }
     SECTION("MathSetView<int>, same content") {
         MathSet s1{1, 2, 3};
-        std::vector v{std::ref(s1[0]), std::ref(s1[1]), std::ref(s1[2])};
+        std::vector v{(&s1[0]), (&s1[1]), (&s1[2])};
         MathSetView s2(v.begin(), v.end());
         REQUIRE_FALSE(s0 != s2);
     }
     SECTION("MathSetView<int>, different content") {
         MathSet s1{2, 3, 4};
-        std::vector v{std::ref(s1[0]), std::ref(s1[1]), std::ref(s1[2])};
+        std::vector v{(&s1[0]), (&s1[1]), (&s1[2])};
         MathSetView s2(v.begin(), v.end());
         REQUIRE(s0 != s2);
     }
@@ -57,7 +57,7 @@ TEST_CASE("MathSet<int>: operator!=") {
 
 TEST_CASE("MathSetView<int>: operator==") {
     MathSet s0{1, 2, 3};
-    std::vector v{std::ref(s0[0]), std::ref(s0[1]), std::ref(s0[2])};
+    std::vector v{(&s0[0]), (&s0[1]), (&s0[2])};
     MathSetView s1{v.begin(), v.end()};
 
     SECTION("Same instance") { REQUIRE(s1 == s1); }
@@ -71,13 +71,13 @@ TEST_CASE("MathSetView<int>: operator==") {
     }
     SECTION("MathSetView<int>, same content") {
         MathSet s2{1, 2, 3};
-        std::vector v2{std::ref(s2[0]), std::ref(s2[1]), std::ref(s2[2])};
+        std::vector v2{(&s2[0]), (&s2[1]), (&s2[2])};
         MathSetView s3(v2.begin(), v2.end());
         REQUIRE(s1 == s3);
     }
     SECTION("MathSetView<int>, different content") {
         MathSet s2{2, 3, 4};
-        std::vector v2{std::ref(s2[0]), std::ref(s2[1]), std::ref(s2[2])};
+        std::vector v2{(&s2[0]), (&s2[1]), (&s2[2])};
         MathSetView s3(v2.begin(), v2.end());
         REQUIRE_FALSE(s1 == s3);
     }
@@ -85,7 +85,7 @@ TEST_CASE("MathSetView<int>: operator==") {
 
 TEST_CASE("MathSetView<int>: operator!=") {
     MathSet s0{1, 2, 3};
-    std::vector v{std::ref(s0[0]), std::ref(s0[1]), std::ref(s0[2])};
+    std::vector v{(&s0[0]), (&s0[1]), (&s0[2])};
     MathSetView s1{v.begin(), v.end()};
 
     SECTION("Same instance") { REQUIRE_FALSE(s1 != s1); }
@@ -99,13 +99,13 @@ TEST_CASE("MathSetView<int>: operator!=") {
     }
     SECTION("MathSetView<int>, same content") {
         MathSet s2{1, 2, 3};
-        std::vector v2{std::ref(s2[0]), std::ref(s2[1]), std::ref(s2[2])};
+        std::vector v2{(&s2[0]), (&s2[1]), (&s2[2])};
         MathSetView s3(v2.begin(), v2.end());
         REQUIRE_FALSE(s1 != s3);
     }
     SECTION("MathSetView<int>, different content") {
         MathSet s2{2, 3, 4};
-        std::vector v2{std::ref(s2[0]), std::ref(s2[1]), std::ref(s2[2])};
+        std::vector v2{(&s2[0]), (&s2[1]), (&s2[2])};
         MathSetView s3(v2.begin(), v2.end());
         REQUIRE(s1 != s3);
     }
@@ -127,7 +127,7 @@ TEST_CASE("MathSet<int>: operator^") {
         REQUIRE((s0 ^ s1) == s1);
     }
     SECTION("MathSetView, same content") {
-        std::vector v{std::ref(s0[0]), std::ref(s0[1]), std::ref(s0[2])};
+        std::vector v{(&s0[0]), (&s0[1]), (&s0[2])};
         MathSetView<int> s1{v.begin(), v.end()};
         REQUIRE((s0 ^ s1) == s1);
     }
@@ -136,7 +136,7 @@ TEST_CASE("MathSet<int>: operator^") {
         REQUIRE((s0 ^ s1) == s1);
     }
     SECTION("MathSetView, subset") {
-        std::vector v{std::ref(s0[0]), std::ref(s0[2])};
+        std::vector v{(&s0[0]), (&s0[2])};
         MathSetView<int> s1{v.begin(), v.end()};
         REQUIRE((s0 ^ s1) == s1);
     }
@@ -146,8 +146,7 @@ TEST_CASE("MathSet<int>: operator^") {
     }
     SECTION("MathSetView, superset") {
         int four = 4;
-        std::vector v{std::ref(s0[0]), std::ref(s0[1]), std::ref(s0[2]),
-                      std::ref(four)};
+        std::vector v{(&s0[0]), (&s0[1]), (&s0[2]), (&four)};
         MathSetView<int> s1{v.begin(), v.end()};
         REQUIRE((s0 ^ s1) == s0);
     }
@@ -159,7 +158,7 @@ TEST_CASE("MathSet<int>: operator^") {
     SECTION("MathSetView, no common elements") {
         MathSet<int> s1{4, 5, 6};
         MathSetView<int> empty;
-        std::vector v{std::ref(s1[0]), std::ref(s1[1]), std::ref(s1[2])};
+        std::vector v{(&s1[0]), (&s1[1]), (&s1[2])};
         MathSetView<int> s2{v.begin(), v.end()};
         REQUIRE((s0 ^ s2) == empty);
     }
@@ -171,7 +170,7 @@ TEST_CASE("MathSet<int>: operator^") {
     SECTION("MathSetView, some overlap") {
         MathSet<int> s1{4, 2, 6};
         MathSet<int> s2{2};
-        std::vector v{std::ref(s1[0]), std::ref(s1[1]), std::ref(s1[2])};
+        std::vector v{(&s1[0]), (&s1[1]), (&s1[2])};
         MathSetView<int> s3{v.begin(), v.end()};
         REQUIRE((s0 ^ s3) == s2);
     }
@@ -184,7 +183,7 @@ TEST_CASE("MathSet<int>: operator^") {
 
 TEST_CASE("MathSetView<int>: operator^") {
     MathSet<int> s0{1, 2, 3};
-    std::vector v{std::ref(s0[0]), std::ref(s0[1]), std::ref(s0[2])};
+    std::vector v{(&s0[0]), (&s0[1]), (&s0[2])};
     MathSetView<int> s1{v.begin(), v.end()};
     SECTION("Same instance") { REQUIRE((s1 ^ s1) == s1); }
     SECTION("Empty MathSet") {
@@ -200,7 +199,7 @@ TEST_CASE("MathSetView<int>: operator^") {
         REQUIRE((s1 ^ s2) == s1);
     }
     SECTION("MathSetView, same content") {
-        std::vector v2{std::ref(s0[0]), std::ref(s0[1]), std::ref(s0[2])};
+        std::vector v2{(&s0[0]), (&s0[1]), (&s0[2])};
         MathSetView<int> s2{v2.begin(), v2.end()};
         REQUIRE((s1 ^ s2) == s1);
     }
@@ -209,7 +208,7 @@ TEST_CASE("MathSetView<int>: operator^") {
         REQUIRE((s1 ^ s2) == s2);
     }
     SECTION("MathSetView, subset") {
-        std::vector v2{std::ref(s0[0]), std::ref(s0[2])};
+        std::vector v2{(&s0[0]), (&s0[2])};
         MathSetView<int> s2{v2.begin(), v2.end()};
         REQUIRE((s1 ^ s2) == s2);
     }
@@ -219,8 +218,7 @@ TEST_CASE("MathSetView<int>: operator^") {
     }
     SECTION("MathSetView, superset") {
         int four = 4;
-        std::vector v2{std::ref(s0[0]), std::ref(s0[1]), std::ref(s0[2]),
-                       std::ref(four)};
+        std::vector v2{(&s0[0]), (&s0[1]), (&s0[2]), (&four)};
         MathSetView<int> s2{v2.begin(), v2.end()};
         REQUIRE((s1 ^ s2) == s1);
     }
@@ -232,7 +230,7 @@ TEST_CASE("MathSetView<int>: operator^") {
     SECTION("MathSetView, no common elements") {
         MathSet<int> s2{4, 5, 6};
         MathSetView<int> empty;
-        std::vector v2{std::ref(s2[0]), std::ref(s2[1]), std::ref(s2[2])};
+        std::vector v2{(&s2[0]), (&s2[1]), (&s2[2])};
         MathSetView<int> s3{v2.begin(), v2.end()};
         REQUIRE((s1 ^ s3) == empty);
     }
@@ -244,7 +242,7 @@ TEST_CASE("MathSetView<int>: operator^") {
     SECTION("MathSetView, some overlap") {
         MathSet<int> s2{4, 2, 6};
         MathSet<int> s3{2};
-        std::vector v2{std::ref(s2[0]), std::ref(s2[1]), std::ref(s2[2])};
+        std::vector v2{(&s2[0]), (&s2[1]), (&s2[2])};
         MathSetView<int> s4{v2.begin(), v2.end()};
         REQUIRE((s1 ^ s4) == s3);
     }
@@ -271,7 +269,7 @@ TEST_CASE("MathSet<int>: operator+") {
         REQUIRE((s0 + s1) == s1);
     }
     SECTION("MathSetView, same content") {
-        std::vector v{std::ref(s0[0]), std::ref(s0[1]), std::ref(s0[2])};
+        std::vector v{(&s0[0]), (&s0[1]), (&s0[2])};
         MathSetView<int> s1{v.begin(), v.end()};
         REQUIRE((s0 + s1) == s1);
     }
@@ -280,7 +278,7 @@ TEST_CASE("MathSet<int>: operator+") {
         REQUIRE((s0 + s1) == s0);
     }
     SECTION("MathSetView, subset") {
-        std::vector v{std::ref(s0[0]), std::ref(s0[2])};
+        std::vector v{(&s0[0]), (&s0[2])};
         MathSetView<int> s1{v.begin(), v.end()};
         REQUIRE((s0 + s1) == s0);
     }
@@ -290,8 +288,7 @@ TEST_CASE("MathSet<int>: operator+") {
     }
     SECTION("MathSetView, superset") {
         int four = 4;
-        std::vector v{std::ref(s0[0]), std::ref(s0[1]), std::ref(s0[2]),
-                      std::ref(four)};
+        std::vector v{(&s0[0]), (&s0[1]), (&s0[2]), (&four)};
         MathSetView<int> s1{v.begin(), v.end()};
         REQUIRE((s0 + s1) == s1);
     }
@@ -303,7 +300,7 @@ TEST_CASE("MathSet<int>: operator+") {
     SECTION("MathSetView, no common elements") {
         MathSet<int> s1{4, 5, 6};
         MathSet<int> s2{1, 2, 3, 4, 5, 6};
-        std::vector v{std::ref(s1[0]), std::ref(s1[1]), std::ref(s1[2])};
+        std::vector v{(&s1[0]), (&s1[1]), (&s1[2])};
         MathSetView<int> s3{v.begin(), v.end()};
         REQUIRE((s0 + s3) == s2);
     }
@@ -315,7 +312,7 @@ TEST_CASE("MathSet<int>: operator+") {
     SECTION("MathSetView, some overlap") {
         MathSet<int> s1{4, 2, 6};
         MathSet<int> s2{1, 2, 3, 4, 6};
-        std::vector v{std::ref(s1[0]), std::ref(s1[1]), std::ref(s1[2])};
+        std::vector v{(&s1[0]), (&s1[1]), (&s1[2])};
         MathSetView<int> s3{v.begin(), v.end()};
         REQUIRE((s0 + s3) == s2);
     }
@@ -330,7 +327,7 @@ TEST_CASE("MathSet<int>: operator+") {
 
 TEST_CASE("MathSetView<int>: operator+") {
     MathSet<int> s0{1, 2, 3};
-    std::vector v{std::ref(s0[0]), std::ref(s0[1]), std::ref(s0[2])};
+    std::vector v{(&s0[0]), (&s0[1]), (&s0[2])};
     MathSetView<int> s1{v.begin(), v.end()};
     SECTION("Same instance") { REQUIRE((s1 + s1) == s1); }
     SECTION("Empty MathSet") {
@@ -346,7 +343,7 @@ TEST_CASE("MathSetView<int>: operator+") {
         REQUIRE((s1 + s2) == s1);
     }
     SECTION("MathSetView, same content") {
-        std::vector v2{std::ref(s0[0]), std::ref(s0[1]), std::ref(s0[2])};
+        std::vector v2{(&s0[0]), (&s0[1]), (&s0[2])};
         MathSetView<int> s2{v2.begin(), v2.end()};
         REQUIRE((s1 + s2) == s1);
     }
@@ -355,7 +352,7 @@ TEST_CASE("MathSetView<int>: operator+") {
         REQUIRE((s1 + s2) == s1);
     }
     SECTION("MathSetView, subset") {
-        std::vector v2{std::ref(s0[0]), std::ref(s0[2])};
+        std::vector v2{(&s0[0]), (&s0[2])};
         MathSetView<int> s2{v2.begin(), v2.end()};
         REQUIRE((s1 + s2) == s1);
     }
@@ -365,8 +362,7 @@ TEST_CASE("MathSetView<int>: operator+") {
     }
     SECTION("MathSetView, superset") {
         int four = 4;
-        std::vector v2{std::ref(s0[0]), std::ref(s0[1]), std::ref(s0[2]),
-                       std::ref(four)};
+        std::vector v2{(&s0[0]), (&s0[1]), (&s0[2]), (&four)};
         MathSetView<int> s2{v2.begin(), v2.end()};
         REQUIRE((s1 + s2) == s2);
     }
@@ -378,7 +374,7 @@ TEST_CASE("MathSetView<int>: operator+") {
     SECTION("MathSetView, no common elements") {
         MathSet<int> s2{4, 5, 6};
         MathSet<int> s3{1, 2, 3, 4, 5, 6};
-        std::vector v2{std::ref(s2[0]), std::ref(s2[1]), std::ref(s2[2])};
+        std::vector v2{(&s2[0]), (&s2[1]), (&s2[2])};
         MathSetView<int> s4{v2.begin(), v2.end()};
         REQUIRE((s1 + s4) == s3);
     }
@@ -390,7 +386,7 @@ TEST_CASE("MathSetView<int>: operator+") {
     SECTION("MathSetView, some overlap") {
         MathSet<int> s2{4, 2, 6};
         MathSet<int> s3{1, 2, 3, 4, 6};
-        std::vector v2{std::ref(s2[0]), std::ref(s2[1]), std::ref(s2[2])};
+        std::vector v2{(&s2[0]), (&s2[1]), (&s2[2])};
         MathSetView<int> s4{v2.begin(), v2.end()};
         REQUIRE((s1 + s4) == s3);
     }
@@ -420,7 +416,7 @@ TEST_CASE("MathSet<int>: operator-") {
         REQUIRE((s0 - s1) == empty);
     }
     SECTION("MathSetView, same content") {
-        std::vector v{std::ref(s0[0]), std::ref(s0[1]), std::ref(s0[2])};
+        std::vector v{(&s0[0]), (&s0[1]), (&s0[2])};
         MathSetView<int> s1{v.begin(), v.end()};
         REQUIRE((s0 - s1) == empty);
     }
@@ -429,7 +425,7 @@ TEST_CASE("MathSet<int>: operator-") {
         REQUIRE((s0 - s1) == MathSet<int>{2});
     }
     SECTION("MathSetView, subset") {
-        std::vector v{std::ref(s0[0]), std::ref(s0[2])};
+        std::vector v{(&s0[0]), (&s0[2])};
         MathSetView<int> s1{v.begin(), v.end()};
         REQUIRE((s0 - s1) == MathSet<int>{2});
     }
@@ -439,8 +435,7 @@ TEST_CASE("MathSet<int>: operator-") {
     }
     SECTION("MathSetView, superset") {
         int four = 4;
-        std::vector v{std::ref(s0[0]), std::ref(s0[1]), std::ref(s0[2]),
-                      std::ref(four)};
+        std::vector v{(&s0[0]), (&s0[1]), (&s0[2]), (&four)};
         MathSetView<int> s1{v.begin(), v.end()};
         REQUIRE((s0 - s1) == empty);
     }
@@ -450,7 +445,7 @@ TEST_CASE("MathSet<int>: operator-") {
     }
     SECTION("MathSetView, no common elements") {
         MathSet<int> s1{4, 5, 6};
-        std::vector v{std::ref(s1[0]), std::ref(s1[1]), std::ref(s1[2])};
+        std::vector v{(&s1[0]), (&s1[1]), (&s1[2])};
         MathSetView<int> s3{v.begin(), v.end()};
         REQUIRE((s0 - s3) == s0);
     }
@@ -462,7 +457,7 @@ TEST_CASE("MathSet<int>: operator-") {
     SECTION("MathSetView, some overlap") {
         MathSet<int> s1{4, 2, 6};
         MathSet<int> s2{1, 3};
-        std::vector v{std::ref(s1[0]), std::ref(s1[1]), std::ref(s1[2])};
+        std::vector v{(&s1[0]), (&s1[1]), (&s1[2])};
         MathSetView<int> s3{v.begin(), v.end()};
         REQUIRE((s0 - s3) == s2);
     }
@@ -477,7 +472,7 @@ TEST_CASE("MathSet<int>: operator-") {
 TEST_CASE("MathSetView<int>: operator-") {
     MathSet<int> s0{1, 2, 3};
     MathSet<int> empty;
-    std::vector v{std::ref(s0[0]), std::ref(s0[1]), std::ref(s0[2])};
+    std::vector v{(&s0[0]), (&s0[1]), (&s0[2])};
     MathSetView<int> s1{v.begin(), v.end()};
     SECTION("Same instance") { REQUIRE((s1 - s1) == empty); }
     SECTION("Empty MathSet") {
@@ -493,7 +488,7 @@ TEST_CASE("MathSetView<int>: operator-") {
         REQUIRE((s1 - s2) == empty);
     }
     SECTION("MathSetView, same content") {
-        std::vector v2{std::ref(s0[0]), std::ref(s0[1]), std::ref(s0[2])};
+        std::vector v2{(&s0[0]), (&s0[1]), (&s0[2])};
         MathSetView<int> s2{v2.begin(), v2.end()};
         REQUIRE((s1 - s2) == empty);
     }
@@ -502,7 +497,7 @@ TEST_CASE("MathSetView<int>: operator-") {
         REQUIRE((s1 - s2) == MathSet<int>{2});
     }
     SECTION("MathSetView, subset") {
-        std::vector v2{std::ref(s0[0]), std::ref(s0[2])};
+        std::vector v2{(&s0[0]), (&s0[2])};
         MathSetView<int> s2{v2.begin(), v2.end()};
         REQUIRE((s1 - s2) == MathSet<int>{2});
     }
@@ -512,8 +507,7 @@ TEST_CASE("MathSetView<int>: operator-") {
     }
     SECTION("MathSetView, superset") {
         int four = 4;
-        std::vector v2{std::ref(s0[0]), std::ref(s0[1]), std::ref(s0[2]),
-                       std::ref(four)};
+        std::vector v2{(&s0[0]), (&s0[1]), (&s0[2]), (&four)};
         MathSetView<int> s2{v2.begin(), v2.end()};
         REQUIRE((s1 - s2) == empty);
     }
@@ -523,7 +517,7 @@ TEST_CASE("MathSetView<int>: operator-") {
     }
     SECTION("MathSetView, no common elements") {
         MathSet<int> s2{4, 5, 6};
-        std::vector v2{std::ref(s2[0]), std::ref(s2[1]), std::ref(s2[2])};
+        std::vector v2{(&s2[0]), (&s2[1]), (&s2[2])};
         MathSetView<int> s4{v2.begin(), v2.end()};
         REQUIRE((s1 - s4) == s1);
     }
@@ -535,7 +529,7 @@ TEST_CASE("MathSetView<int>: operator-") {
     SECTION("MathSetView, some overlap") {
         MathSet<int> s2{4, 2, 6};
         MathSet<int> s3{1, 3};
-        std::vector v2{std::ref(s2[0]), std::ref(s2[1]), std::ref(s2[2])};
+        std::vector v2{(&s2[0]), (&s2[1]), (&s2[2])};
         MathSetView<int> s4{v2.begin(), v2.end()};
         REQUIRE((s1 - s4) == s3);
     }

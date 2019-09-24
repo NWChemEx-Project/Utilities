@@ -144,3 +144,16 @@ instead of holding an ``std::vector<T>`` it holds the data as
 step to implement the PIMPL API. It serves as the PIMPL for the ``MathSet<T>``
 instance wrapped by a ``MathSetView<T>`` instance.
 
+Const-Correctness
+=================
+
+Enforcing const-correctness is the responsibility of the ``MathSet<T>`` and
+``MathSetView<T>`` classes. The former is read/write as long as the instance is
+non-const and is read-only if it is ``const MathSet<T>``. ``MathSetView<T>``
+works like an iterator. A view of a ``MathSet<T>`` is of type ``MathSetView<T>``
+and a view of a ``const MathSet<T>`` is of type ``MathSetView<const T>``. Note
+that ``const MathSetView<T> x;`` means you can not change the state of ``x``,
+for example ``x = MathSetView<T>{...};`` won't work. However, creating a new
+view like ``MathSetView<T>{x};`` will allow modification of the ``MathSet<T>``
+instance being aliased by ``x``. The ``const`` must be in template type in order
+for the view to be unable to modify the aliased set.
