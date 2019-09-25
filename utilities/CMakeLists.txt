@@ -1,4 +1,5 @@
 add_subdirectory(containers)
+add_subdirectory(iterators)
 list(APPEND UTILITIES_HEADERS
                       iter_tools/cartesian_product.hpp
                       iter_tools/combinations.hpp
@@ -8,10 +9,6 @@ list(APPEND UTILITIES_HEADERS
                       iter_tools/range_container.hpp
                       iter_tools/tuple_container.hpp
                       iter_tools/zip.hpp
-                      iterators/bidirectional_iterator_base.hpp
-                      iterators/input_iterator_base.hpp
-                      iterators/offset_iterator.hpp
-                      iterators/random_access_iterator_base.hpp
                       macros/for_each.hpp
                       mathematician/combinatorics.hpp
                       mathematician/integer_utils.hpp
