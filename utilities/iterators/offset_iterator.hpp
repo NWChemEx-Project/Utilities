@@ -84,6 +84,7 @@ public:
     OffsetIterator(size_type offset, ContainerType* parent) noexcept;
 
 private:
+    /// Allow the base classes to use these functions for CRTP
     friend InputIteratorBase<my_type>;
     friend BidirectionalIteratorBase<my_type>;
     friend RandomAccessIteratorBase<my_type>;
