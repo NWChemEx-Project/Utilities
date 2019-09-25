@@ -4,7 +4,7 @@
 
 using namespace utilities;
 using namespace iterators;
-
+namespace {
 struct Iterator : public InputIteratorBase<Iterator, int> {
     int value_ = 0;
 
@@ -21,7 +21,7 @@ struct Iterator : public InputIteratorBase<Iterator, int> {
 };
 
 struct Iterator2 : public InputIteratorBase<Iterator, const int> {};
-
+} // namespace
 TEST_CASE("InputIterator base class") {
     Iterator itr;
     SECTION("Satisfies iterator concept") {
