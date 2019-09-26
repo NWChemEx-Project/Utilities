@@ -321,14 +321,12 @@ private:
      *
      */
     class TupleContainerIterator
-      : public iterators::InputIteratorBase<TupleContainerIterator,
-                                            value_type> {
+      : public iterators::InputIteratorBase<TupleContainerIterator> {
     private:
         /// Allows TupleContainerImpl to create an iterator
         friend class TupleContainerImpl<IncrementFunctor, ContainerTypes...>;
         /// Allows the base class to call the implementation functions
-        friend class iterators::InputIteratorBase<TupleContainerIterator,
-                                                  value_type>;
+        friend class iterators::InputIteratorBase<TupleContainerIterator>;
 
         /** @brief Creates a TupleContainerIterator instance.
          *

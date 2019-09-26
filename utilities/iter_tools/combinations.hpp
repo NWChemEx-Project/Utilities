@@ -5,6 +5,49 @@
 #include <tuple>     //for tie
 
 namespace utilities {
+
+template<typename SequenceType, bool repeat = false>
+class Combinations
+  : public IndexableContainerBase<Combinations<SequenceType, repeat>> {
+private:
+    using my_type   = Combinations<SequenceType, repeat>;
+    using base_type = IndexableContainerBase<my_type>;
+
+public:
+    using value_type = SequenceType;
+    using size_type  = typename base_type::size_type;
+    Combinations(SequenceType seq, size_type k);
+
+private:
+    SequenceType m_set_;
+    Permutations<std::vector<bool>> m_perm_;
+};
+
+template<typename SequenceType, bool repeat>
+Combinations<SequenceType, repeat>::Combinations(SequenceType seq,
+                                                 size_type k) :
+  m_set_(seq),
+  m_perm_([=]() {
+      const auto n        = seq.size();
+      const auto eff_size = (n || k ? n + k - 1 : 0);
+      std::vector<bool> temp(!repeat ? n : eff_size, true);
+      return Permutations(temp);
+  }()) {}
+} // namespace utilities
+
+template<typename SequenceType, bool repeat>
+Combinations<SequenceType, repeat>::get_(size_type i) const {
+    auto perm = m_perm_[i];
+    for(size_type i = 0, counter = 0, bar_count = 0; i < p.size(); ++i) {
+        if(!p[i])
+            comb_[counter++] = set_[!repeat ? i : bar_count];
+        else
+            ++bar_count;
+        if(counter == comb_.size()) // Early termination, rest are false
+            break;
+    }
+}
+
 namespace detail_ {
 
 /** @brief The main implementation of the CombinationImpl class.  This iterator

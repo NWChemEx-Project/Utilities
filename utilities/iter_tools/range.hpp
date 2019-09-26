@@ -20,19 +20,19 @@ namespace detail_ {
  */
 template<typename element_type>
 class RangeItr
-  : public iterators::RandomAccessIteratorBase<RangeItr<element_type>,
-                                               element_type> {
+  : public iterators::RandomAccessIteratorBase<RangeItr<element_type>> {
 private:
     /// Typedef of the base type for sanity
     using base_type =
-      iterators::RandomAccessIteratorBase<RangeItr<element_type>, element_type>;
+      iterators::RandomAccessIteratorBase<RangeItr<element_type>>;
 
 public:
+    using value_type = element_type;
     /// Pulls the const_reference typedef into scope
     using const_reference = const element_type&;
 
     /// Pulls the difference_type typedef into scope
-    using typename base_type::difference_type;
+    using difference_type = long int;
 
     /**
      * @brief Makes a default RangeItr instance.
@@ -114,22 +114,22 @@ private:
     friend base_type;
 
     /// Implements operator*()
-    const_reference dereference() const override { return value_; }
+    const_reference dereference() const { return value_; }
 
     /// Implements operator++
-    RangeItr& increment() override { return advance(increment_); }
+    RangeItr& increment() { return advance(increment_); }
 
     /// Implements operator--
-    RangeItr& decrement() override { return advance(-1 * increment_); }
+    RangeItr& decrement() { return advance(-1 * increment_); }
 
     /// Implements operator+=
-    RangeItr& advance(difference_type adv) override {
+    RangeItr& advance(difference_type adv) {
         adv > 0 ? value_ += adv : value_ -= -1 * adv;
         return *this;
     }
 
     /// Implements itr1 - itr2
-    difference_type distance_to(const RangeItr& rhs) const noexcept {
+    difference_type distance_to(const RangeItr& rhs) const {
         const bool is_positive = rhs.value_ > value_;
         difference_type abs_diff =
           is_positive ? rhs.value_ - value_ : value_ - rhs.value_;
@@ -147,9 +147,7 @@ private:
      *  otherwise.
      *  @throw None. No throw guarantee.
      */
-    bool are_equal(const RangeItr& rhs) const noexcept {
-        return value_ == rhs.value_;
-    }
+    bool are_equal(const RangeItr& rhs) const { return value_ == rhs.value_; }
 
     /// The first value in our range
     element_type start_ = 0;
