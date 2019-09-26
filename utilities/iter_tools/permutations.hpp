@@ -5,6 +5,24 @@
 
 namespace utilities {
 
+/** @brief Facilitates looping over all unique permutations of a set.
+ *
+ *  An instance of the Permutations class simulates a container filled with all
+ *  unique permutations of a sequence. The container only actually holds two
+ *  copies of the sequence (the original and the current sequence) and updates
+ *  the current sequence as appropriate. This class is primarily designed to be
+ *  used like:
+ *
+ *  @code
+ *  std::vector<int> s{1, 2, 3};
+ *  for(auto perm : Permutations(s)){
+ *      // Do something with the permutation.
+ *  }
+ *  @endcode
+ *
+ *  @tparam SequenceType The type of the container holding the input sequence.
+ *                       The type must support copy construction.
+ */
 template<typename SequenceType>
 class Permutations : public IndexableContainerBase<Permutations<SequenceType>> {
 private:
@@ -19,14 +37,27 @@ public:
     /// Type of an index/offset
     using size_type = typename base_type::size_type;
 
+    /** @brief Creates a container that "holds" all permutations of the input
+     *         sequence.
+     *
+     *  This ctor will create a new container that simulates a container filled
+     *  with all unique Permutations of @p seq. The resulting container does
+     *  not actually hold all such permutations, but generates them on the fly.
+     *
+     *  @param[in] seq The sequence we want all unique permutations of.
+     *
+     *  @throw std::bad_alloc if there is insufficient memory to store two
+     *         copies of the sequence. Strong throw guarantee.
+     */
     explicit Permutations(SequenceType seq);
 
 private:
     friend base_type;
     /// Implements size() for base class by returning the pre-computed size
     size_type size_() const noexcept { return m_nperms_; }
-
+    /// Implements operator[] for base class
     const SequenceType& at_(size_type i) const;
+
     /// Lexicographically speaking, this is the 0-th permutation
     SequenceType m_sorted_orig_;
     /// The last permutation we returned

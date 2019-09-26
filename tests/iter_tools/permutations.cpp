@@ -91,3 +91,11 @@ TEST_CASE("Permutations<vector<int>> : at_") {
         SECTION("Element 2") { REQUIRE(p[2] == set_type{1, 2, 2}); }
     }
 }
+
+TEST_CASE("Permutations<vector<int>> : Works in a foreach loop") {
+    set_type corr{1, 2, 3};
+    for(auto p : Permutations(set_type{1, 2, 3})) {
+        REQURIE(p == corr);
+        std::next_permutation(corr.begin(), corr.end());
+    }
+}
