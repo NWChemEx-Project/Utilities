@@ -1,130 +1,148 @@
 #include <catch2/catch.hpp>
 #include <utilities/iter_tools/combinations.hpp>
 
+/* Testing strategy
+ *
+ * We piggy-back off of Permutations to implement Combinations. Consequentially
+ * all we need to test is:
+ *
+ * - ctor initializes the class correctly
+ * - size works correctly (actually done as part of ctor)
+ * - at_ increments the combinations correctly
+ *
+ */
+
 using namespace utilities;
 using vector_t = std::vector<int>;
 
-template<bool repeat>
-using comb_itr = detail_::CombinationItr<vector_t, repeat>;
-
-std::vector<std::vector<vector_t>> corr_combs{
-  {{}},                     // k=0
-  {{1}, {2}, {3}},          // k=1
-  {{1, 2}, {1, 3}, {2, 3}}, // k=2
-  {{1, 2, 3}}               // k=3
-};
-
-std::vector<std::vector<vector_t>> corr_combs_wr{
-  {{}},                                                                  // k=0
-  {{1}, {2}},                                                            // k=1
-  {{1, 1}, {1, 2}, {2, 2}},                                              // k=2
-  {{1, 1, 1}, {1, 1, 2}, {1, 2, 2}, {2, 2, 2}},                          // k=3
-  {{1, 1, 1, 1}, {1, 1, 1, 2}, {1, 1, 2, 2}, {1, 2, 2, 2}, {2, 2, 2, 2}} // k=4
-};
-
-template<bool repeat>
-void check_state(comb_itr<repeat> start, const comb_itr<repeat>& end,
-                 const vector_t& orig, const std::vector<vector_t>& corr) {
-    if(corr.size() != 0)
-        REQUIRE(start != end);
-    else
-        REQUIRE(start == end);
-    size_t counter = 0;
-    while(start != end) {
-        for(std::size_t i = 0; i < corr.size(); ++i) {
-            comb_itr<repeat> tmp{orig, corr[i].size(), false};
-            for(std::size_t j = 0; j < i; ++j) ++tmp;
-            const long dx = static_cast<long>(i) - counter;
-            REQUIRE(start.distance_to(tmp) == dx);
-            comb_itr<repeat> copy{start};
-            REQUIRE(copy.advance(dx) == tmp);
+TEST_CASE("Combinations<vector<int>> : ctor") {
+    SECTION("No repeat") {
+        SECTION("Empty set") {
+            Combinations c(vector_t{}, 0);
+            SECTION("Size") { REQUIRE(c.size() == 1); }
+            SECTION("Value") { REQUIRE(*c.begin() == vector_t{}); }
         }
-        REQUIRE(*start++ == corr[counter++]);
+        SECTION("Full set, choose 0") {
+            Combinations c(vector_t{1, 2, 3}, 0);
+            SECTION("Size") { REQUIRE(c.size() == 1); }
+            SECTION("Value") { REQUIRE(*c.begin() == vector_t{}); }
+        }
+        SECTION("Full set, choose 1") {
+            Combinations c(vector_t{1, 2, 3}, 1);
+            SECTION("Size") { REQUIRE(c.size() == 3); }
+            SECTION("Value") { REQUIRE(*c.begin() == vector_t{1}); }
+        }
+        SECTION("Full set, choose 2") {
+            Combinations c(vector_t{1, 2, 3}, 2);
+            SECTION("Size") { REQUIRE(c.size() == 3); }
+            SECTION("Value") { REQUIRE(*c.begin() == vector_t{1, 2}); }
+        }
+        SECTION("Full set, choose 3") {
+            Combinations c(vector_t{1, 2, 3}, 3);
+            SECTION("Size") { REQUIRE(c.size() == 1); }
+            SECTION("Value") { REQUIRE(*c.begin() == vector_t{1, 2, 3}); }
+        }
+    }
+    SECTION("Repeat") {
+        SECTION("Empty set") {
+            Combinations c(vector_t{}, 0, true);
+            SECTION("Size") { REQUIRE(c.size() == 1); }
+            SECTION("Value") { REQUIRE(*c.begin() == vector_t{}); }
+        }
+        SECTION("Full set, choose 0") {
+            Combinations c(vector_t{1, 2, 3}, 0, true);
+            SECTION("Size") { REQUIRE(c.size() == 1); }
+            SECTION("Value") { REQUIRE(*c.begin() == vector_t{}); }
+        }
+        SECTION("Full set, choose 1") {
+            Combinations c(vector_t{1, 2, 3}, 1, true);
+            SECTION("Size") { REQUIRE(c.size() == 3); }
+            SECTION("Value") { REQUIRE(*c.begin() == vector_t{1}); }
+        }
+        SECTION("Full set, choose 2") {
+            Combinations c(vector_t{1, 2, 3}, 2, true);
+            SECTION("Size") { REQUIRE(c.size() == 6); }
+            SECTION("Value") { REQUIRE(*c.begin() == vector_t{1, 1}); }
+        }
+        SECTION("Full set, choose 3") {
+            Combinations c(vector_t{1, 2, 3}, 3, true);
+            SECTION("Size") { REQUIRE(c.size() == 10); }
+            SECTION("Value") { REQUIRE(*c.begin() == vector_t{1, 1, 1}); }
+        }
     }
 }
-TEST_CASE("Combinations") {
-    SECTION("Default Ctor w/o Repeat") {
-        comb_itr<false> c0;
-        check_state(c0, c0, {}, {});
-    }
 
-    SECTION("Default Ctor w Repeat") {
-        comb_itr<true> c0;
-        check_state(c0, c0, {}, {});
+TEST_CASE("Combinations<vector<int>> : at") {
+    SECTION("No repeat") {
+        SECTION("Empty set") {
+            Combinations c(vector_t{}, 0);
+            SECTION("Element 0") { REQUIRE(c[0] == vector_t{}); }
+        }
+        SECTION("Full set, choose 0") {
+            Combinations c(vector_t{1, 2, 3}, 0);
+            SECTION("Element 0") { REQUIRE(c[0] == vector_t{}); }
+        }
+        SECTION("Full set, choose 1") {
+            Combinations c(vector_t{1, 2, 3}, 1);
+            SECTION("Element 0") { REQUIRE(c[0] == vector_t{1}); }
+            SECTION("Element 1") { REQUIRE(c[1] == vector_t{2}); }
+            SECTION("Element 2") { REQUIRE(c[2] == vector_t{3}); }
+        }
+        SECTION("Full set, choose 2") {
+            Combinations c(vector_t{1, 2, 3}, 2);
+            SECTION("Element 0") { REQUIRE(c[0] == vector_t{1, 2}); }
+            SECTION("Element 1") { REQUIRE(c[1] == vector_t{1, 3}); }
+            SECTION("Element 2") { REQUIRE(c[2] == vector_t{2, 3}); }
+        }
+        SECTION("Full set, choose 3") {
+            Combinations c(vector_t{1, 2, 3}, 3);
+            SECTION("Element 0") { REQUIRE(c[0] == vector_t{1, 2, 3}); }
+        }
     }
+    SECTION("Repeats") {
+        SECTION("Empty set") {
+            Combinations c(vector_t{}, 0, true);
+            SECTION("Element 0") { REQUIRE(c[0] == vector_t{}); }
+        }
+        SECTION("Full set, choose 0") {
+            Combinations c(vector_t{1, 2, 3}, 0, true);
+            SECTION("Element 0") { REQUIRE(c[0] == vector_t{}); }
+        }
+        SECTION("Full set, choose 1") {
+            Combinations c(vector_t{1, 2, 3}, 1, true);
+            SECTION("Element 0") { REQUIRE(c[0] == vector_t{1}); }
+            SECTION("Element 1") { REQUIRE(c[1] == vector_t{2}); }
+            SECTION("Element 2") { REQUIRE(c[2] == vector_t{3}); }
+        }
+        SECTION("Full set, choose 2") {
+            Combinations c(vector_t{1, 2, 3}, 2, true);
+            SECTION("Element 0") { REQUIRE(c[0] == vector_t{1, 1}); }
+            SECTION("Element 1") { REQUIRE(c[1] == vector_t{1, 2}); }
+            SECTION("Element 2") { REQUIRE(c[2] == vector_t{1, 3}); }
+            SECTION("Element 3") { REQUIRE(c[3] == vector_t{2, 2}); }
+            SECTION("Element 4") { REQUIRE(c[4] == vector_t{2, 3}); }
+            SECTION("Element 5") { REQUIRE(c[5] == vector_t{3, 3}); }
+        }
+        SECTION("Full set, choose 3") {
+            Combinations c(vector_t{1, 2, 3}, 3, true);
+            SECTION("Element 0") { REQUIRE(c[0] == vector_t{1, 1, 1}); }
+            SECTION("Element 1") { REQUIRE(c[1] == vector_t{1, 1, 2}); }
+            SECTION("Element 2") { REQUIRE(c[2] == vector_t{1, 1, 3}); }
+            SECTION("Element 3") { REQUIRE(c[3] == vector_t{1, 2, 2}); }
+            SECTION("Element 4") { REQUIRE(c[4] == vector_t{1, 2, 3}); }
+            SECTION("Element 5") { REQUIRE(c[5] == vector_t{1, 3, 3}); }
+            SECTION("Element 6") { REQUIRE(c[6] == vector_t{2, 2, 2}); }
+            SECTION("Element 7") { REQUIRE(c[7] == vector_t{2, 2, 3}); }
+            SECTION("Element 8") { REQUIRE(c[8] == vector_t{2, 3, 3}); }
+            SECTION("Element 9") { REQUIRE(c[9] == vector_t{3, 3, 3}); }
+        }
+    }
+}
 
-    SECTION("Combinations") {
-        std::vector<int> s0{1, 2, 3};
-        for(size_t k = 0; k < 4; ++k) {
-            SECTION("{1, 2, 3} choose " + std::to_string(k)) {
-                comb_itr<false> c0(s0, k, false);
-                comb_itr<false> c1(s0, k, true);
-                check_state<false>(c0, c1, s0, corr_combs[k]);
-            }
-        }
-    }
-    SECTION("Ctors w/o Repeat") {
-        std::vector<int> s0{1, 2, 3};
-        comb_itr<false> c0(s0, 2, false);
-        SECTION("Copy Ctor") {
-            comb_itr<false> c2{c0};
-            REQUIRE(c2 == c0);
-        }
-        SECTION("Copy assignment") {
-            comb_itr<false> c2;
-            REQUIRE(c2 != c0);
-            c2 = c0;
-            REQUIRE(c2 == c0);
-        }
-        SECTION("Move Ctor") {
-            comb_itr<false> c2{c0};
-            comb_itr<false> c3{std::move(c0)};
-            REQUIRE(c3 == c2);
-        }
-        SECTION("Move assignment") {
-            comb_itr<false> c2;
-            REQUIRE(c2 != c0);
-            comb_itr<false> c3{c0};
-            c2 = std::move(c3);
-            REQUIRE(c2 == c0);
-        }
-    }
-
-    SECTION("Combinations With Repeat") {
-        std::vector<int> s0{1, 2};
-        for(size_t k = 0; k <= 4; ++k) {
-            SECTION("{1, 2} multichoose " + std::to_string(k)) {
-                comb_itr<true> c0(s0, k, false);
-                comb_itr<true> c1(s0, k, true);
-                check_state<true>(c0, c1, s0, corr_combs_wr[k]);
-            }
-        }
-    }
-
-    SECTION("Ctors w/Repeat") {
-        std::vector<int> s0{1, 2};
-        comb_itr<true> c0(s0, 2, false);
-        SECTION("Copy Ctor") {
-            comb_itr<true> c2{c0};
-            REQUIRE(c2 == c0);
-        }
-        SECTION("Copy assignment") {
-            comb_itr<true> c2;
-            REQUIRE(c2 != c0);
-            c2 = c0;
-            REQUIRE(c2 == c0);
-        }
-        SECTION("Move Ctor") {
-            comb_itr<true> c2{c0};
-            comb_itr<true> c3{std::move(c0)};
-            REQUIRE(c3 == c2);
-        }
-        SECTION("Move assignment") {
-            comb_itr<true> c2;
-            REQUIRE(c2 != c0);
-            comb_itr<true> c3{c0};
-            c2 = std::move(c3);
-            REQUIRE(c2 == c0);
-        }
+TEST_CASE("Combinations<vector<int>> : can be used in a foreach loop") {
+    std::vector corr{vector_t{1, 2}, vector_t{1, 3}, vector_t{2, 3}};
+    std::size_t counter = 0;
+    for(auto comb : Combinations(vector_t{1, 2, 3}, 2)) {
+        REQUIRE(comb == corr[counter++]);
     }
 }
