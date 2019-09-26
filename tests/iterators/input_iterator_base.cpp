@@ -1,11 +1,11 @@
 #include <catch2/catch.hpp>
 #include <utilities/iterators/input_iterator_base.hpp>
-#include <utilities/type_traits/type_traits_extensions.hpp>
 
-using namespace utilities;
-using namespace iterators;
+using namespace utilities::iterators;
+
 namespace {
-struct Iterator : public InputIteratorBase<Iterator, int> {
+// Tests when we are returning elements by reference
+struct Iterator : InputIteratorBase<Iterator> {
     int value_ = 0;
 
     Iterator& increment() {
@@ -14,47 +14,102 @@ struct Iterator : public InputIteratorBase<Iterator, int> {
     }
 
     const int& dereference() const { return value_; }
+    int& dereference() { return value_; }
 
     bool are_equal(const Iterator& other) const noexcept {
         return value_ == other.value_;
     }
 };
 
-struct Iterator2 : public InputIteratorBase<Iterator, const int> {};
-} // namespace
-TEST_CASE("InputIterator base class") {
-    Iterator itr;
-    SECTION("Satisfies iterator concept") {
-        bool is_itr = is_input_iterator<Iterator>::value;
-        REQUIRE(is_itr);
-    }
-    SECTION("Can be dereferenced in non-const state") {
-        int& value = *itr;
-        REQUIRE(value == 0);
-        REQUIRE(&value == &itr.value_);
-    }
-    SECTION("Can be dereferenced in a const state") {
-        const int& value = *const_cast<const Iterator&>(itr); // NOLINT
-        REQUIRE(value == 0);
-        REQUIRE(&value == &itr.value_);
-    }
-    SECTION("Can be prefix-incremented") {
-        auto& rv = ++itr;
-        REQUIRE(&rv == &itr);
-        REQUIRE(*rv == 1);
+// Tests when we are not returning elements by reference (for example as view)
+struct Iterator2 : InputIteratorBase<Iterator2> {
+    int value_ = 0;
 
-        SECTION("Equality works") { REQUIRE(rv == itr); }
+    Iterator2& increment() {
+        ++value_;
+        return *this;
     }
-    SECTION("Can be post-incremented") {
-        auto rv = itr++;
-        REQUIRE(*rv == 0);
-        REQUIRE(&rv.value_ != &itr.value_);
-        REQUIRE(*itr == 1);
-        SECTION("Inequality works") { REQUIRE(rv != itr); }
+
+    int dereference() const { return value_; }
+    int dereference() { return value_; }
+
+    bool are_equal(const Iterator& other) const noexcept {
+        return value_ == other.value_;
     }
-    SECTION("Const is obeyed") {
-        bool is_const =
-          std::is_same<const int&, typename Iterator2::reference>::value;
-        REQUIRE(is_const);
+};
+} // namespace
+TEST_CASE("InputIteratorBase<Iterator> : operator*()") {
+    Iterator itr;
+    SECTION("Value") { REQUIRE(*itr == 0); }
+    SECTION("Is alias") { REQUIRE(&(*itr) == &itr.value_); }
+}
+
+TEST_CASE("InputIteratorBase<Iterator2> : operator*()") {
+    Iterator2 itr;
+    SECTION("Value") { REQUIRE(*itr == 0); }
+    SECTION("Is not an alias") {
+        STATIC_REQUIRE_FALSE(std::is_reference_v<decltype(*itr)>);
+    }
+}
+
+TEST_CASE("InputIteratorBase<Iterator> : operator*() const") {
+    const Iterator itr;
+    SECTION("Value") { REQUIRE(*itr == 0); }
+    SECTION("Is alias") { REQUIRE(&(*itr) == &itr.value_); }
+    SECTION("Is read-only") {
+        STATIC_REQUIRE(std::is_same_v<const int&, decltype(*itr)>);
+    }
+}
+
+TEST_CASE("InputIteratorBase<Iterator2> : operator*() const") {
+    const Iterator2 itr;
+    SECTION("Value") { REQUIRE(*itr == 0); }
+    SECTION("Is not an alias") {
+        STATIC_REQUIRE_FALSE(std::is_reference_v<decltype(*itr)>);
+    }
+}
+
+TEST_CASE("InputIteratorBase<Iterator> : operator->()") {
+    Iterator itr;
+    SECTION("Value") { REQUIRE(itr.operator->() == &itr.value_); }
+}
+
+TEST_CASE("InputIteratorBase<Iterator> : operator->() const") {
+    const Iterator itr;
+    SECTION("Value") { REQUIRE(itr.operator->() == &itr.value_); }
+    SECTION("Is read-only") {
+        STATIC_REQUIRE(std::is_same_v<const int*, decltype(itr.operator->())>);
+    }
+}
+
+TEST_CASE("InputIteratorBase<Iterator> : operator++()") {
+    Iterator itr;
+    auto pitr = &(++itr);
+    SECTION("Returns this") { REQUIRE(pitr == &itr); }
+    SECTION("Value") { REQUIRE(*itr == 1); }
+}
+
+TEST_CASE("InputIteratorBase<Iterator> : operator++(int)") {
+    Iterator itr;
+    auto itr2 = itr++;
+    SECTION("Returns copy") { REQUIRE(*itr2 == 0); }
+    SECTION("Value") { REQUIRE(*itr == 1); }
+}
+
+TEST_CASE("InputIteratorBase<Iterator> : operator==") {
+    Iterator itr, itr2;
+    SECTION("Same value") { REQUIRE(itr == itr2); }
+    SECTION("Different values") {
+        ++itr2;
+        REQUIRE_FALSE(itr == itr2);
+    }
+}
+
+TEST_CASE("InputIteratorBase<Iterator> : operator!=") {
+    Iterator itr, itr2;
+    SECTION("Same value") { REQUIRE_FALSE(itr != itr2); }
+    SECTION("Different values") {
+        ++itr2;
+        REQUIRE(itr != itr2);
     }
 }

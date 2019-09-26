@@ -4,62 +4,69 @@
 namespace utilities::iterators {
 
 /** @brief This class is designed to facilitate making your own bidirectional
- *  iterator class.
+ *         iterator class.
  *
  *  When making your own iterator there's a lot of boiler plate involved.  This
  *  class factors out as much boiler plate as possible for a bidirectional
  *  iterator, which is an iterator that allows you to access either the next
  *  element or the previous element.
  *
- *  To use this class you'll need to implement in your derived class:
- *  - dereference
- *  - are_equal
- *  - increment
- *  - decrement
+ *  To use this class your derived class needs to implement the functions for
+ *  the InputIteratorBase class:
+ *  - `ParentType& increment()`
+ *  - `const_reference dereference()const`
+ *  - `reference dereference()`
+ *  - `bool are_equal(const ParentType&) const noexcept`
  *
- *  @tparam ParentType The type of iterator that you are making.  This class
- *          works off CRTP so it needs to know the most derived class.
- *  @tparam ValueType The type of the elements you are storing in your
- *          container.
- *  @tparam SizeType The type of an index into your container. Default:
-            std::size_t.
- *  @tparam DifferenceType The type of the difference between two SizeType
- *          instances.  Default: long int.
+ *  As well as:
+ *  - `ParentType& decrement()` - which should decrement the element pointed at
+ *    by one and return `*this`. This function can throw if it wants.
+ *
+ *  @tparam ParentType The type of iterator that you are making.
  */
-template<typename ParentType,
-         typename ValueType = typename ParentType::value_type,
-         typename SizeType = std::size_t, typename DifferenceType = long int>
-struct BidirectionalIteratorBase
-  : public InputIteratorBase<ParentType, ValueType, SizeType, DifferenceType> {
+template<typename ParentType>
+struct BidirectionalIteratorBase : public InputIteratorBase<ParentType> {
+    /// The category of iterator that this iterator satisfies
     using iterator_category = std::bidirectional_iterator_tag;
 
-    /// Implement to provide decrement functionality
-    virtual ParentType& decrement() = 0;
-
-    /** @brief Decrements the current iterator before returning the value.
+    /** @brief Returns this iterator pointing to the previous element
      *
-     *  This operator relies on decrement for its functionality.
+     *  This operator will make the current iterator point to the previous
+     *  element and then return the current instance. This function ultimately
+     *  works by calling the derived class's `decrement()` member.
      *
-     *  @returns The current iterator after decrementing it.
-     *  @throws exception if decrement throws.
+     *  @returns The current iterator after decrementing the element it points
+     *           to by one.
+     *
+     *  @throws ??? This function will throw if `decrement()` throws. Same
+     *          throw guarantee as the `decrement()`.
      */
-    ParentType& operator--() { return decrement(); }
+    ParentType& operator--() { return this->downcast_().decrement(); }
 
     /** @brief Decrements the current iterator after returning the value.
      *
-     *  Like the postfix increment operator this operator relies on the copy
-     *  constructor and the prefix decrement operator.
+     *  Semantically this operator returns the current iterator, pointing to its
+     *  current value and then decrements the value it points to by 1. In
+     *  practice this function actually copies the current instance, decrements
+     *  the current, non-copy, instance, and returns the copy. This function
+     *  ultimately works by calling the derived class's `decrement()` member and
+     *  its copy constructor.
      *
-     *  @returns A copy of the current iterator before decrementing it.
-     *  @throws exception if either the copy constructor or prefix decrement
-     *  operator throws.
+     *  @returns A copy of the current iterator before it was decremented.
+     *
+     *  @throws ??? If either the copy constructor or the derived class's
+     *              `decrement()` function throw. Same throw guarantee.
      */
-    ParentType operator--(int) {
-        ParentType& up_me = static_cast<ParentType&>(*this);
-        ParentType copy_of_me(up_me);
-        --(*this);
-        return copy_of_me;
-    }
-};
+    ParentType operator--(int);
+}; // class BidirectionalIteratorBase
+
+// ------------------------------------Implementations--------------------------
+
+template<typename ParentType>
+ParentType BidirectionalIteratorBase<ParentType>::operator--(int) {
+    ParentType copy_of_me(this->downcast_());
+    --(*this);
+    return copy_of_me;
+}
 
 } // namespace utilities::iterators

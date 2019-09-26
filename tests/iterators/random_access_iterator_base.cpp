@@ -1,78 +1,179 @@
 #include <catch2/catch.hpp>
+#include <map>
 #include <utilities/iterators/random_access_iterator_base.hpp>
-#include <utilities/type_traits/type_traits_extensions.hpp>
+using namespace utilities::iterators;
 
-using namespace utilities;
-using namespace iterators;
 namespace {
-struct RandomAccessIterator
-  : public RandomAccessIteratorBase<RandomAccessIterator, int> {
+struct RAIterator : public RandomAccessIteratorBase<RAIterator> {
     int value_ = 0;
 
-    RandomAccessIterator& increment() {
+    RAIterator& increment() {
         ++value_;
         return *this;
     }
 
-    RandomAccessIterator& decrement() {
+    RAIterator& decrement() {
         --value_;
         return *this;
     }
 
-    const int& dereference() const { return value_; }
+    int dereference() const { return value_; }
 
-    bool are_equal(const RandomAccessIterator& other) const noexcept {
+    bool are_equal(const RAIterator& other) const noexcept {
         return value_ == other.value_;
     }
 
-    long int distance_to(const RandomAccessIterator& other) const noexcept {
+    long int distance_to(const RAIterator& other) const noexcept {
         return other.value_ - value_;
     }
 
-    RandomAccessIterator& advance(long int n) {
+    RAIterator& advance(long int n) {
+        value_ += n;
+        return *this;
+    }
+};
+
+struct RAIterator2 : public RandomAccessIteratorBase<RAIterator2> {
+    std::map<int, int>* m_ptr_ = nullptr;
+    int value_                 = 0;
+
+    RAIterator2& increment() {
+        ++value_;
+        return *this;
+    }
+
+    RAIterator2& decrement() {
+        --value_;
+        return *this;
+    }
+
+    int& dereference() const { return (*m_ptr_)[value_]; }
+
+    bool are_equal(const RAIterator2& other) const noexcept {
+        return value_ == other.value_;
+    }
+
+    long int distance_to(const RAIterator2& other) const noexcept {
+        return other.value_ - value_;
+    }
+
+    RAIterator2& advance(long int n) {
         value_ += n;
         return *this;
     }
 };
 } // namespace
-TEST_CASE("RandomAccessIterator base class") {
-    RandomAccessIterator itr;
-    SECTION("Satisfies iterator concept") {
-        bool is_itr = is_random_access_iterator<RandomAccessIterator>::value;
-        REQUIRE(is_itr);
+TEST_CASE("RandomAccessRAIteratorBase<RAIterator> : operator+=") {
+    RAIterator itr;
+    auto pitr = &(itr += 2);
+    SECTION("Returns this") { REQUIRE(pitr == &itr); }
+    SECTION("Advances by 2") { REQUIRE(itr.value_ == 2); }
+}
+
+TEST_CASE("RandomAccessRAIteratorBase<RAIterator> : operator+") {
+    RAIterator itr;
+    auto itr2 = itr + 2;
+    SECTION("Returns a copy") { REQUIRE(&itr != &itr2); }
+    SECTION("Leaves this alone") { REQUIRE(itr.value_ == 0); }
+    SECTION("Advances result by 2") { REQUIRE(itr2.value_ == 2); }
+}
+
+TEST_CASE("RandomAccessRAIteratorBase<RAIterator> : operator-=") {
+    RAIterator itr;
+    auto pitr = &(itr -= 2);
+    SECTION("Returns this") { REQUIRE(pitr == &itr); }
+    SECTION("Retreats by 2") { REQUIRE(itr.value_ == -2); }
+}
+
+TEST_CASE("RandomAccessRAIteratorBase<RAIterator> : operator-") {
+    RAIterator itr;
+    auto itr2 = itr - 2;
+    SECTION("Returns a copy") { REQUIRE(&itr != &itr2); }
+    SECTION("Leaves this alone") { REQUIRE(itr.value_ == 0); }
+    SECTION("Retreats result by 2") { REQUIRE(itr2.value_ == -2); }
+}
+
+TEST_CASE("RandomAccessRAIteratorBase<RAIterator> : operator[]") {
+    RAIterator itr;
+    SECTION("Value") {
+        auto rv = itr[2];
+        REQUIRE(itr[2] == 2);
     }
-    SECTION("Order comparisons work") {
-        RandomAccessIterator itr2;
-        RandomAccessIterator itr3;
-        itr3.value_ = 10;
-        REQUIRE(itr < itr3);
+    SECTION("Is not an alias") {
+        STATIC_REQUIRE(std::is_same_v<int, decltype(itr[2])>);
+    }
+}
+
+TEST_CASE("RandomAccessRAIteratorBase<RAIterator2> : operator[]") {
+    std::map<int, int> values{{2, 2}};
+    RAIterator2 itr;
+    itr.m_ptr_ = &values;
+    auto& rv   = itr[2];
+    SECTION("Value") { REQUIRE(rv == 2); }
+    SECTION("Is alias") { REQUIRE(&rv == &values[2]); }
+}
+
+TEST_CASE("RandomAccessRAIteratorBase<RAIterator> : operator<") {
+    RAIterator itr, itr2;
+    SECTION("Same value") { REQUIRE_FALSE(itr < itr2); }
+    SECTION("Earlier value") {
+        --itr;
+        REQUIRE(itr < itr2);
+    }
+    SECTION("Later value") {
+        ++itr;
+        REQUIRE_FALSE(itr < itr2);
+    }
+}
+
+TEST_CASE("RandomAccessRAIteratorBase<RAIterator> : operator<=") {
+    RAIterator itr, itr2;
+    SECTION("Same value") { REQUIRE(itr <= itr2); }
+    SECTION("Earlier value") {
+        --itr;
         REQUIRE(itr <= itr2);
-        REQUIRE(itr3 > itr);
-        REQUIRE(itr2 >= itr);
     }
-    SECTION("Advancing works") {
-        RandomAccessIterator& rv = (itr += 10);
-        REQUIRE(&rv == &itr);
-        REQUIRE(rv.value_ == 10);
+    SECTION("Later value") {
+        ++itr;
+        REQUIRE_FALSE(itr <= itr2);
     }
-    SECTION("Advance and copy works") {
-        RandomAccessIterator rv = (itr + 10);
-        REQUIRE(itr.value_ == 0);
-        REQUIRE(rv.value_ == 10);
+}
+
+TEST_CASE("RandomAccessRAIteratorBase<RAIterator> : operator>") {
+    RAIterator itr, itr2;
+    SECTION("Same value") { REQUIRE_FALSE(itr > itr2); }
+    SECTION("Earlier value") {
+        --itr;
+        REQUIRE_FALSE(itr > itr2);
     }
-    SECTION("Go backwards works") {
-        RandomAccessIterator& rv = (itr -= 10);
-        REQUIRE(&rv == &itr);
-        REQUIRE(itr.value_ == -10);
+    SECTION("Later value") {
+        ++itr;
+        REQUIRE(itr > itr2);
     }
-    SECTION("Go backwards and copy works") {
-        RandomAccessIterator rv = (itr - 10);
-        REQUIRE(itr.value_ == 0);
-        REQUIRE(rv.value_ == -10);
+}
+
+TEST_CASE("RandomAccessRAIteratorBase<RAIterator> : operator>=") {
+    RAIterator itr, itr2;
+    SECTION("Same value") { REQUIRE(itr >= itr2); }
+    SECTION("Earlier value") {
+        --itr;
+        REQUIRE_FALSE(itr >= itr2);
     }
-    SECTION("Random access works") {
-        int rv = itr[100];
-        REQUIRE(itr.value_ == 0);
-        REQUIRE(rv == 100);
+    SECTION("Later value") {
+        ++itr;
+        REQUIRE(itr >= itr2);
+    }
+}
+
+TEST_CASE("RandomAccessRAIteratorBase<RAIterator> : operator-(RAIterator)") {
+    RAIterator itr, itr2;
+    SECTION("Same element") { REQUIRE((itr - itr2) == 0); }
+    SECTION("Is behind") {
+        --itr;
+        REQUIRE((itr - itr2) == -1);
+    }
+    SECTION("Is ahead") {
+        ++itr;
+        REQUIRE((itr - itr2) == 1);
     }
 }
