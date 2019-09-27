@@ -225,7 +225,14 @@ template<typename DerivedType>
 bool operator==(const IndexableContainerBase<DerivedType>& lhs,
                 const IndexableContainerBase<DerivedType>& rhs) noexcept {
     if(lhs.size() != rhs.size()) return false;
-    return std::equal(lhs.begin(), lhs.end(), rhs.begin());
+    /* Note that here we don't use std::equal because it assumes that the return
+     * value of dereferencing an iterator is a true reference. Consequentially,
+     * we'll get segfaults if the user's container returns things by temporary
+     * copies.
+     */
+    for(decltype(lhs.size()) counter = 0; counter < lhs.size(); ++counter)
+        if(lhs[counter] != rhs[counter]) return false;
+    return true;
 }
 
 /** @brief Determines if two IndexableContainerBase instances are different.
