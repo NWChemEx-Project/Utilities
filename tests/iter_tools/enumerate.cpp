@@ -4,12 +4,11 @@
 
 using namespace utilities;
 
-TEST_CASE("Enumerate") {
-    std::vector<double> test{1.1, 2.2, 3.3};
+TEST_CASE("Enumerate<std::vector<int>>") {
+    std::vector test{1, 2, 3};
     std::size_t counter = 0;
-    for(auto x : Enumerate(test)) {
-        REQUIRE(std::get<0>(x) == counter);
-        REQUIRE(std::get<1>(x) == test[counter]);
-        ++counter;
+    for(auto && [x, y] : Enumerate(test)) {
+        REQUIRE(x == counter);
+        REQUIRE(y == ++counter);
     }
 }
