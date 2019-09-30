@@ -4,7 +4,7 @@
 
 using namespace utilities;
 using namespace iterators;
-
+namespace {
 struct RandomAccessIterator
   : public RandomAccessIteratorBase<RandomAccessIterator, int> {
     int value_ = 0;
@@ -34,7 +34,7 @@ struct RandomAccessIterator
         return *this;
     }
 };
-
+} // namespace
 TEST_CASE("RandomAccessIterator base class") {
     RandomAccessIterator itr;
     SECTION("Satisfies iterator concept") {

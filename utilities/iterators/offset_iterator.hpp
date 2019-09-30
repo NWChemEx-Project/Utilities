@@ -1,17 +1,8 @@
 #pragma once
-#include "utilities/iterators/random_access_iterator_base.hpp"
+#include "utilities/iterators/random_access_iterator_base2.hpp"
 #include "utilities/mathematician/integer_utils.hpp"
 
 namespace utilities::iterators {
-namespace detail_ {
-
-/// Typedef that works out the cv-qualifiers for the values in an OffsetItr
-template<typename T>
-using offset_itr_value_t =
-  std::conditional_t<std::is_const_v<T>, const typename T::value_type,
-                     typename T::value_type>;
-
-} // namespace detail_
 
 /** @brief Implements a random access iterator given a random access container
  *         that defines `operator[] const`.
@@ -39,34 +30,36 @@ using offset_itr_value_t =
  *
  *  @tparam ContainerType The cv-qualified type of the container that we are
  *                        implementing the iterator for. It must define
- *                        `operator[](size_type) const` and have a typedef
+ *                        `operator[](size_type)` and have a typedef
  *                        `value_type` of the unqualified type of the elements.
  *                        The same cv qualifications present on `ContainerType`
  *                        will be applied to reference and pointer types of the
  *                        resulting iterator.
  */
 template<typename ContainerType>
-class OffsetIterator : public RandomAccessIteratorBase<
-                         OffsetIterator<ContainerType>,
-                         detail_::offset_itr_value_t<ContainerType>> {
+class OffsetIterator
+  : public RandomAccessIteratorBase<OffsetIterator<ContainerType>> {
 private:
     /// Typedef of this class's type to make things more readable
     using my_type = OffsetIterator<ContainerType>;
 
     /// Typedef of the base class's type to make things more readable
-    using base_type =
-      RandomAccessIteratorBase<my_type,
-                               detail_::offset_itr_value_t<ContainerType>>;
+    using base_type = RandomAccessIteratorBase<my_type>;
 
 public:
-    /// Pull in the type of a constant reference from the base class
-    using const_reference = typename base_type::const_reference;
+    /// Use the indexing/offset type of the container
+    using size_type = typename ContainerType::size_type;
 
-    /// Pull in the type used for indexing/offsets from the base class
-    using size_type = typename base_type::size_type;
-
-    /// Pull in the type of a signed offset
-    using difference_type = typename base_type::difference_type;
+    /** @brief Makes an OffsetIterator that is not associated with any
+     *         container.
+     *
+     *  The iterator resulting from this ctor does not alias any container. It
+     *  is primarily useful as a placeholder. The iterator can be made valid, by
+     *  assignment.
+     *
+     *  @throw none No throw guarantee.
+     */
+    OffsetIterator() noexcept = default;
 
     /** @brief Creates a new OffsetIterator instance that wraps the provided
      *         container and initially points at the element with the provided
@@ -90,6 +83,12 @@ public:
      */
     OffsetIterator(size_type offset, ContainerType* parent) noexcept;
 
+private:
+    /// Allow the base classes to use these functions for CRTP
+    friend InputIteratorBase<my_type>;
+    friend BidirectionalIteratorBase<my_type>;
+    friend RandomAccessIteratorBase<my_type>;
+
     /** @brief Retrieves the element the iterator is currently pointing at.
      *
      *  This function calls the wrapped container's `operator[] const` function
@@ -100,7 +99,7 @@ public:
      *  @throw ??? If the wrapped container's `operator[] const` throws. Same
      *             guarantee as the wrapped container's `operator[] const`.
      */
-    const_reference dereference() const override;
+    decltype(auto) dereference() const { return (*m_parent_)[m_offset_]; }
 
     /** @brief Advances the element currently being pointed at by 1
      *
@@ -116,10 +115,7 @@ public:
      *  @throw none No throw guarantee.
      *
      */
-    my_type& increment() noexcept override {
-        ++m_offset_;
-        return *this;
-    }
+    my_type& increment() noexcept;
 
     /** @brief Decreases the element currently being pointed at by 1
      *
@@ -135,10 +131,7 @@ public:
      *  @throw none No throw guarantee.
      *
      */
-    my_type& decrement() noexcept override {
-        --m_offset_;
-        return *this;
-    }
+    my_type& decrement() noexcept;
 
     /** @brief Compares this iterator to another iterator in order to determine
      *         whether they point to the same element.
@@ -153,7 +146,7 @@ public:
      *
      * @throw none No throw guarantee.
      */
-    bool are_equal(const my_type& rhs) const noexcept override;
+    bool are_equal(const my_type& rhs) const noexcept;
 
     /** @brief Advances the iterator by @p n increments.
      *
@@ -171,29 +164,28 @@ public:
      *
      *  @throw none No throw guarantee.
      */
-    my_type& advance(difference_type n) noexcept override;
+    template<typename DifferenceType>
+    my_type& advance(DifferenceType&& n) noexcept;
 
     /** @brief Computes the distance to another OffsetIterator instance.
      *
      *  This function simply returns the difference between the internal offsets
-     *  of the current instance and @p rhs. No check is performed to ensure that
-     *  @p rhs points to the same container or that it is even reachable by the
-     *  current instance.
+     *  of the current instance and @p rhs.
      *
      *  @return How many increments, if positive, @p rhs is ahead of this
      *          instance, or, if negative, how many increments this instance is
      *          ahead of @p rhs.
      *
-     *  @throw none No throw guarantee.
+     *  @throw std::out_of_range if @p rhs is not reachable from the current
+     *                           iterator. Strong throw guarantee.
      */
-    difference_type distance_to(const my_type& rhs) const noexcept override;
+    decltype(auto) distance_to(const my_type& rhs) const;
 
-private:
     /// The index of the element we are currently pointing at
-    size_type m_offset_;
+    size_type m_offset_ = 0;
 
     /// The container we are an iterator for.
-    ContainerType* m_parent_;
+    ContainerType* m_parent_ = nullptr;
 }; // class OffsetIterator
 
 //-----------------------------Implementations----------------------------------
@@ -207,9 +199,15 @@ OFFSET_ITERATOR_TYPE::OffsetIterator(size_type offset,
   m_parent_(parent) {}
 
 template<typename ContainerType>
-typename OFFSET_ITERATOR_TYPE::const_reference
-OFFSET_ITERATOR_TYPE::dereference() const {
-    return (*m_parent_)[m_offset_];
+OFFSET_ITERATOR_TYPE& OFFSET_ITERATOR_TYPE::increment() noexcept {
+    ++m_offset_;
+    return *this;
+}
+
+template<typename ContainerType>
+OFFSET_ITERATOR_TYPE& OFFSET_ITERATOR_TYPE::decrement() noexcept {
+    --m_offset_;
+    return *this;
 }
 
 template<typename ContainerType>
@@ -219,16 +217,18 @@ bool OFFSET_ITERATOR_TYPE::are_equal(const my_type& rhs) const noexcept {
 }
 
 template<typename ContainerType>
+template<typename DifferenceType>
 OFFSET_ITERATOR_TYPE& OFFSET_ITERATOR_TYPE::advance(
-  difference_type n) noexcept {
-    m_offset_ += n;
+  DifferenceType&& n) noexcept {
+    m_offset_ += std::forward<DifferenceType>(n);
     return *this;
 }
 
 template<typename ContainerType>
-typename OFFSET_ITERATOR_TYPE::difference_type
-OFFSET_ITERATOR_TYPE::distance_to(const my_type& rhs) const noexcept {
-    return UnsignedSubtract(m_offset_, rhs.m_offset_);
+decltype(auto) OFFSET_ITERATOR_TYPE::distance_to(const my_type& rhs) const {
+    if(m_parent_ != rhs.m_parent_)
+        throw std::out_of_range("RHS is not reachable from current iterator");
+    return UnsignedSubtract(rhs.m_offset_, m_offset_);
 }
 
 #undef OFFSET_ITERATOR_TYPE

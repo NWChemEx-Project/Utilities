@@ -3,7 +3,7 @@
 #include <utilities/type_traits/type_traits_extensions.hpp>
 
 using namespace utilities;
-
+namespace {
 struct BidirectionalIterator
   : public iterators::BidirectionalIteratorBase<BidirectionalIterator, int> {
     int value_ = 0;
@@ -24,7 +24,7 @@ struct BidirectionalIterator
         return value_ == other.value_;
     }
 };
-
+} // namespace
 TEST_CASE("BidirectionalIterator base class") {
     BidirectionalIterator itr;
     SECTION("Satisfies iterator concept") {
