@@ -47,18 +47,8 @@ private:
     using base_type = RandomAccessIteratorBase<my_type>;
 
 public:
-    /// The type of a value stored in the container
-    using value_type = typename ContainerType::value_type;
-    /// The type of a (possibly) read-/write- reference to an element
-    using reference = decltype(std::declval<ContainerType>()[0]);
-    /// The type of a read-only reference to an element
-    using const_reference = decltype(std::declval<const ContainerType>()[0]);
-    /// The type of a pointer returned by operator->
-    using pointer = std::remove_reference_t<reference>*;
     /// Use the indexing/offset type of the container
     using size_type = typename ContainerType::size_type;
-    /// The type used for iterator distances
-    using difference_type = long int;
 
     /** @brief Makes an OffsetIterator that is not associated with any
      *         container.
@@ -189,7 +179,7 @@ private:
      *  @throw std::out_of_range if @p rhs is not reachable from the current
      *                           iterator. Strong throw guarantee.
      */
-    difference_type distance_to(const my_type& rhs) const;
+    decltype(auto) distance_to(const my_type& rhs) const;
 
     /// The index of the element we are currently pointing at
     size_type m_offset_ = 0;
@@ -235,8 +225,7 @@ OFFSET_ITERATOR_TYPE& OFFSET_ITERATOR_TYPE::advance(
 }
 
 template<typename ContainerType>
-typename OFFSET_ITERATOR_TYPE::difference_type
-OFFSET_ITERATOR_TYPE::distance_to(const my_type& rhs) const {
+decltype(auto) OFFSET_ITERATOR_TYPE::distance_to(const my_type& rhs) const {
     if(m_parent_ != rhs.m_parent_)
         throw std::out_of_range("RHS is not reachable from current iterator");
     return UnsignedSubtract(rhs.m_offset_, m_offset_);
