@@ -1,5 +1,6 @@
 add_subdirectory(containers)
 add_subdirectory(iterators)
+add_subdirectory(type_traits)
 list(APPEND UTILITIES_HEADERS
                       iter_tools/cartesian_product.hpp
                       iter_tools/combinations.hpp
@@ -18,9 +19,6 @@ list(APPEND UTILITIES_HEADERS
                       printing/word_wrap_stream.hpp
                       strings/string_tools.hpp
                       strings/static_string.hpp
-                      type_traits/is_printable.hpp
-                      type_traits/tuple_utilities.hpp
-                      type_traits/type_traits_extensions.hpp
                       forward_stl.hpp
                       iter_tools.hpp
                       smart_enum.hpp
