@@ -1,6 +1,7 @@
 add_subdirectory(containers)
 add_subdirectory(iterators)
 add_subdirectory(iter_tools)
+add_subdirectory(type_traits)
 list(APPEND UTILITIES_HEADERS
                       macros/for_each.hpp
                       mathematician/combinatorics.hpp
@@ -11,9 +12,6 @@ list(APPEND UTILITIES_HEADERS
                       printing/word_wrap_stream.hpp
                       strings/string_tools.hpp
                       strings/static_string.hpp
-                      type_traits/is_printable.hpp
-                      type_traits/tuple_utilities.hpp
-                      type_traits/type_traits_extensions.hpp
                       forward_stl.hpp
                       iter_tools.hpp
                       smart_enum.hpp
