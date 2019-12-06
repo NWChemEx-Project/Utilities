@@ -1,88 +1,115 @@
 #pragma once
-#include "utilities/iter_tools/tuple_container.hpp"
-#include <limits>
-// For numeric_limits
+#include "utilities/containers/indexable_container_base.hpp"
+
 namespace utilities {
-namespace detail_ {
 
-/// Functor for calling the size member of each container.
-struct ZipSizeFunctor {
-    static constexpr std::size_t initial_value =
-      std::numeric_limits<std::size_t>::max();
-
-    template<std::size_t, typename T>
-    auto run(std::size_t curr_min, T&& container) const {
-        return std::min(curr_min, container.size());
-    }
-};
-
-struct ZipIncrementFunctor {
-    /// Functor for finding if any element is true via reduction
-    struct AnyTrue {
-        template<std::size_t, typename T>
-        bool run(bool val, T&& element) const {
-            return val || element;
-        }
-    };
-    struct Comparer {
-        template<std::size_t, typename lhs_type, typename rhs_type>
-        auto run(lhs_type&& lhs, rhs_type&& rhs) const {
-            return lhs == rhs;
-        }
-    };
-    template<typename IteratorType, std::size_t... I>
-    void run(const IteratorType& start, const IteratorType& end,
-             IteratorType& value, std::index_sequence<I...>) {
-        value       = std::make_tuple((++std::get<I>(value))...);
-        auto at_end = tuple_transform(value, end, Comparer());
-        bool done   = tuple_accumulate(at_end, AnyTrue(), false);
-        if(done) value = end;
-    }
-};
-
-} // namespace detail_
-
-/** @brief Wrapper function that makes a Zip container.
+/** @brief A container filled with elements resulting from zipping containers
+ *         together.
  *
- *  The purpose/usage of the resulting object is perhaps best explained with an
- *  example.  Consider the following snippet.
+ *  This class simulates a container filled with tuples such that the i-th
+ *  tuple is comprised of the i-th element of each container. More concretely,
+ *  given three containers `A, B, C`, and a Zip instance `Zip z(A,B,C)`, the
+ *  i-th element in `z` is `std::tuple{A[i], B[i], C[i]}`. If the zipped
+ *  containers do not have the same size, then this container sores n tuples,
+ *  where n is the length of the shortest container. This class does not
+ *  actually store all tuples, but rather generates them on-the-fly.
  *
- *  @code
- *  std::vector<int> list1({1,2,3,4});
- *  std::vector<int> list2({2,3,4,5});
- *  for(auto& x : Zip(list1.begin(),list2.begin())
- *      std::cout<< std::get<0>(x) << " " << std::get<1>(x) <<std::endl;
- *  @endcode
+ *  @note It is strongly recommended that you let this class figure out its type
+ *        like `Zip(container1, container2)` rather than trying to manually
+ *        specify it like `Zip<std::vector<int>, std::set<double>>`. In addition
+ *        to the latter being very verbose, it will also result in an
+ *        inefficient container (it will copy the containers); the template
+ *        deduction rules for this container have been set-up so that it should
+ *        do the right thing in each situation.
  *
- *  The result would be:
- *
- *  @verbatim
- *  1 2
- *  2 3
- *  3 4
- *  4 5
- *  @endverbatim
- *
- *  Thus the resulting class increments an arbitrary number of iterators in
- *  unison as if the tuple of elements were in stored in a container (they are
- *  generated on the fly and not actually stored).
- *
- *  @note If the lengths of the iterators are unequal iteration will stop when
- *  the shortest iterator runs out of elements.
- *
- * @tparam ContainerTypes The types of the containers to zip together.  Must
- *         minimally meet the concept of container.
- * @param containers The actual container instances to zip together.  Containers
- *        will be captured by reference or constant reference as appropriate.
- * @return A TupleContainerImpl instance that is usable in a foreach loop
- * @throws ??? Throws if any of the size() members throw.  Strong throw
- *             guarantee.
+ *  @tparam Containers The types of the containers. Types should be fully
+ *                     cv-qualified references to containers.
  */
-template<typename... ContainerTypes>
-auto Zip(ContainerTypes&&... containers) {
-    return detail_::TupleContainerImpl<
-      detail_::ZipIncrementFunctor, std::remove_reference_t<ContainerTypes>...>(
-      detail_::ZipSizeFunctor{}, std::forward<ContainerTypes>(containers)...);
+template<typename... Containers>
+class Zip : public IndexableContainerBase<Zip<Containers...>> {
+private:
+    /// Type of this instance
+    using my_type = Zip<Containers...>;
+    /// Type of the base class
+    using base_type = IndexableContainerBase<my_type>;
+
+public:
+    /// Type of an element in this container
+    using value_type =
+      std::tuple<typename std::remove_reference_t<Containers>::value_type...>;
+    /// Type used for indexing/offsets, is an unsigned integral POD type
+    using size_type = typename base_type::size_type;
+
+    /** @brief Constructs a new Zip instance by zipping together the provided
+     *         containers.
+     *
+     *  This ctor will create a new Zip instance which stores a copy of each
+     *  container passed by value, a read-/write- reference to each container
+     *  passed by reference, and a read-only reference to each constant
+     *  container passed by reference. The resulting instance will have n
+     *  elements where n is the shortest length among the zipped together
+     *  containers.
+     *
+     * @param[in] containers The containers to zip together.
+     *
+     * @throw ??? If copying the containers, or calling each container's begin
+     *            member throws. Same throw guarantee.
+     */
+    explicit Zip(Containers... containers);
+
+private:
+    /// Ensures IndexableContainerBase can access implementation
+    friend base_type;
+
+    /// Helper function for calling begin on an arbitrary number of containers
+    template<typename... Args>
+    static decltype(auto) call_begin_(Args&&... args) {
+        return std::make_tuple(args.begin()...);
+    }
+
+    /// Type of a tuple filled with iterators to the containers
+    using begin_itr_type =
+      decltype(my_type::call_begin_(std::declval<Containers>()...));
+
+    /// Implements size() for IndexableContainerBase
+    size_type size_() const noexcept { return m_size_; }
+    /// Implements operator[] for IndexableContainerBase
+    decltype(auto) at_(size_type i) const;
+
+    /// Tuple containing containers provided to this class
+    std::tuple<Containers...> m_values_;
+    /// Tuple of iterators such that m_begin_[i] == m_values_[i].begin()
+    begin_itr_type m_begin_;
+    /// The total number of iterations stored in this container
+    size_type m_size_;
+}; // class Zip
+
+// ---------------------------Implementations----------------------------------
+template<typename... Args>
+Zip(Args&&...)->Zip<Args...>;
+
+template<typename... Containers>
+Zip<Containers...>::Zip(Containers... containers) :
+  m_values_(containers...),
+  m_begin_(std::apply(
+    [](auto&&... args) {
+        return call_begin_(std::forward<decltype(args)>(args)...);
+    },
+    m_values_)),
+  m_size_([&]() {
+      std::array sizes{containers.size()...};
+      return *std::min_element(sizes.begin(), sizes.end());
+  }()) {}
+
+template<typename... Containers>
+decltype(auto) Zip<Containers...>::at_(size_type index) const {
+    begin_itr_type copy_begin(m_begin_);
+    return std::apply(
+      [=](auto&&... args) {
+          (std::advance(args, index), ...);
+          return std::tuple<decltype(*args)...>(*args...);
+      },
+      copy_begin);
 }
 
 } // namespace utilities

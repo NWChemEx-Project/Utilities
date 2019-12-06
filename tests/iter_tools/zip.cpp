@@ -1,100 +1,117 @@
-#include <array>
 #include <catch2/catch.hpp>
 #include <utilities/iter_tools/zip.hpp>
-#include <utilities/type_traits/type_traits_extensions.hpp>
 
 using namespace utilities;
 
-template<typename T>
-void check_state(T& zipper, std::size_t size) {
-    REQUIRE(zipper.size() == size);
-    const bool is_empty = (size == 0);
-    REQUIRE(zipper.empty() == is_empty);
-    if(is_empty)
-        REQUIRE(zipper.begin() == zipper.end());
-    else
-        REQUIRE(zipper.begin() != zipper.end());
+TEST_CASE("Zip<vector<int>, vector<string> > : ctor") {
+    std::vector v1{1, 2, 3};
+    std::vector<std::string> v2{"one", "two", "three"};
+    Zip z(std::vector<int>{1, 2, 3},
+          std::vector<std::string>{"one", "two", "three"});
+    SECTION("Zip type") {
+        STATIC_REQUIRE(
+          std::is_same_v<Zip<std::vector<int>, std::vector<std::string>>,
+                         decltype(z)>);
+    }
+    SECTION("Size") { REQUIRE(z.size() == 3); }
+    SECTION("Initial Value") {
+        SECTION("Correct") { REQUIRE(z[0] == std::tuple{1, "one"}); }
+        SECTION("Are read-/write- references") {
+            STATIC_REQUIRE(std::is_same_v<int&, decltype(std::get<0>(z[0]))>);
+            STATIC_REQUIRE(
+              std::is_same_v<std::string&, decltype(std::get<1>(z[0]))>);
+        }
+    }
 }
 
-TEST_CASE("Zip") {
-    SECTION("Empty zip") {
-        auto test_container = Zip();
-        check_state(test_container, 0);
+TEST_CASE("Zip<vector<int>&, vector<string>& > : ctor") {
+    std::vector v1{1, 2, 3};
+    std::vector<std::string> v2{"one", "two", "three"};
+    Zip z(v1, v2);
+    SECTION("Zip type") {
+        STATIC_REQUIRE(
+          std::is_same_v<Zip<std::vector<int>&, std::vector<std::string>&>,
+                         decltype(z)>);
     }
-
-    SECTION("Single container") {
-        std::vector<int> numbers{1, 2};
-        auto test_container = Zip(numbers);
-        check_state(test_container, 2);
-
-        auto itr = test_container.begin();
-        auto end = test_container.end();
-
-        SECTION("Test iteration") {
-            REQUIRE(std::get<0>(*itr) == 1);
-            auto& pitr = (++itr);
-            REQUIRE(&pitr == &itr);
-            REQUIRE(itr != end);
-            REQUIRE(std::get<0>(*itr) == 2);
-            ++itr;
-            REQUIRE(itr == end);
+    SECTION("Size") { REQUIRE(z.size() == 3); }
+    SECTION("Initial Value") {
+        SECTION("Correct") { REQUIRE(z[0] == std::tuple{1, "one"}); }
+        SECTION("Are references") {
+            REQUIRE(&std::get<0>(z[0]) == &v1[0]);
+            REQUIRE(&std::get<1>(z[0]) == &v2[0]);
+        }
+        SECTION("Are read-/write- references") {
+            STATIC_REQUIRE(std::is_same_v<int&, decltype(std::get<0>(z[0]))>);
+            STATIC_REQUIRE(
+              std::is_same_v<std::string&, decltype(std::get<1>(z[0]))>);
         }
     }
+}
 
-    SECTION("Two same size arrays") {
-        std::vector<int> numbers({1, 2, 3});
-        std::array<char, 3> letters({'a', 'b', 'c'});
-        auto test_container = Zip(numbers, letters);
-        check_state(test_container, 3);
-
-        SECTION("Foreach loop") {
-            std::size_t counter = 0;
-            for(auto& x : test_container) {
-                SECTION("Iteration test") {
-                    REQUIRE(std::get<0>(x) == numbers[counter]);
-                    REQUIRE(std::get<1>(x) == letters.at(counter));
-                }
-                ++counter;
-            }
+TEST_CASE("Zip<const vector<int>&, const vector<string>& > : ctor") {
+    const std::vector v1{1, 2, 3};
+    const std::vector<std::string> v2{"one", "two", "three"};
+    Zip z(v1, v2);
+    SECTION("Zip type") {
+        STATIC_REQUIRE(
+          std::is_same_v<
+            Zip<const std::vector<int>&, const std::vector<std::string>&>,
+            decltype(z)>);
+    }
+    SECTION("Size") { REQUIRE(z.size() == 3); }
+    SECTION("Initial Value") {
+        SECTION("Correct") { REQUIRE(z[0] == std::tuple{1, "one"}); }
+        SECTION("Are references") {
+            REQUIRE(&std::get<0>(z[0]) == &v1[0]);
+            REQUIRE(&std::get<1>(z[0]) == &v2[0]);
+        }
+        SECTION("Are read-only references") {
+            STATIC_REQUIRE(
+              std::is_same_v<const int&, decltype(std::get<0>(z[0]))>);
+            STATIC_REQUIRE(
+              std::is_same_v<const std::string&, decltype(std::get<1>(z[0]))>);
         }
     }
+}
 
-    SECTION("Different size arrays") {
-        std::vector<int> numbers({1, 2, 3});
-        std::vector<char> letters({'a', 'b'});
-        auto test_container = Zip(numbers, letters);
-        check_state(test_container, 2);
-        std::size_t counter = 0;
-        for(auto& x : test_container) {
-            SECTION("Iteration test") {
-                REQUIRE(std::get<0>(x) == numbers[counter]);
-                REQUIRE(std::get<1>(x) == letters[counter]);
-            }
-            ++counter;
-        }
+TEST_CASE("Zip<vector<int>&, vector<string>& > : size") {
+    std::vector v1{1, 2, 3};
+    SECTION("Same size") {
+        std::vector<std::string> v2{"one", "two", "three"};
+        Zip z(v1, v2);
+        REQUIRE(z.size() == 3);
     }
-
-    SECTION("Different size arrays (one empty)") {
-        std::vector<int> numbers({1, 2, 3});
-        std::vector<char> letters;
-        auto test_container = Zip(numbers, letters);
-        check_state(test_container, 0);
+    SECTION("Different sizes") {
+        std::vector<std::string> v2{"one", "two", "three", "four"};
+        Zip z(v1, v2);
+        REQUIRE(z.size() == 3);
     }
+}
 
-    SECTION("Const containers") {
-        const std::vector<int> numbers{1, 2, 3};
-        const std::vector<char> letters{'a', 'b', 'c'};
-        auto test_container = Zip(numbers, letters);
-        check_state(test_container, 3);
+TEST_CASE("Zip<vector<int>&, vector<string>& > : at_") {
+    std::vector v1{1, 2, 3};
+    SECTION("Same size") {
+        std::vector<std::string> v2{"one", "two", "three"};
+        Zip z(v1, v2);
+        SECTION("Element 0") { REQUIRE(z[0] == std::tuple{1, "one"}); }
+        SECTION("Element 1") { REQUIRE(z[1] == std::tuple{2, "two"}); }
+        SECTION("Element 2") { REQUIRE(z[2] == std::tuple{3, "three"}); }
     }
+    SECTION("Different sizes") {
+        std::vector<std::string> v2{"one", "two", "three", "four"};
+        Zip z(v1, v2);
+        SECTION("Element 0") { REQUIRE(z[0] == std::tuple{1, "one"}); }
+        SECTION("Element 1") { REQUIRE(z[1] == std::tuple{2, "two"}); }
+        SECTION("Element 2") { REQUIRE(z[2] == std::tuple{3, "three"}); }
+    }
+}
 
-    // SECTION("References to elements"){
-    //    const std::vector<int> numbers{1, 2, 3};
-    //    const std::vector<char> letters{'a', 'b', 'c'};
-    //    std::size_t counter = 0;
-    //    for(auto& i : Zip(numbers, letters)){
-    //        REQUIRE(&(std::get<0>(i)) == &(numbers[counter]));
-    //        REQUIRE(&(std::get<1>(i)) == &(letters[counter]));
-    //    }
-    //}
+TEST_CASE("Zip<vector<int>&, vector<string>&> : works in foreach loop") {
+    std::vector v1{1, 2, 3};
+    std::vector<std::string> v2{"one", "two", "three"};
+    std::size_t counter = 0;
+    for(auto && [x, y] : Zip(v1, v2)) {
+        REQUIRE(&x == &v1[counter]);
+        REQUIRE(&y == &v2[counter++]);
+    }
 }

@@ -1,15 +1,8 @@
 add_subdirectory(containers)
 add_subdirectory(iterators)
+add_subdirectory(iter_tools)
 add_subdirectory(type_traits)
 list(APPEND UTILITIES_HEADERS
-                      iter_tools/cartesian_product.hpp
-                      iter_tools/combinations.hpp
-                      iter_tools/enumerate.hpp
-                      iter_tools/permutations.hpp
-                      iter_tools/range.hpp
-                      iter_tools/range_container.hpp
-                      iter_tools/tuple_container.hpp
-                      iter_tools/zip.hpp
                       macros/for_each.hpp
                       mathematician/combinatorics.hpp
                       mathematician/integer_utils.hpp

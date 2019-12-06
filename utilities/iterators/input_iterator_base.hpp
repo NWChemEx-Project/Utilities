@@ -6,163 +6,184 @@ namespace utilities::iterators {
 /** @brief This class is designed to facilitate making your own input iterator
  *  class.
  *
- *  To use this class to quickly define an input iterator you'll need to define:
- *  - increment
- *  - dereference
- *  - are_equal
+ *  To use this class to quickly define an input iterator you should publicly
+ *  derive from this class and have your class implement the following
+ *  functions:
  *
- *  @tparam ParentType The type of the iterator we are implementing.
- *  @tparam ValueType The type of the elements you are storing in your
- *          container.
- *  @tparam SizeType The type of an index into your container. Default:
- *          std::size_t.
- *  @tparam DifferenceType The type of the difference between two SizeType
- *          instances.  Default: long int.
+ *  - `ParentType& increment()` - should increment the current iterator and
+ *    return `*this`. Implementation should feel free to throw if the
+ *    increment can not be done.
+ *  - `reference dereference() const` - should dereference the container and
+ *    return whatever type the corresponding container uses for a read/write
+ *    reference. Iterators to const containers should return const_reference.
+ *    Implementation should feel free to throw if the iterator is not in a
+ *    dereferencable state.
+ *  - `bool are_equal(const ParentType&)const noexcept` - should determine if
+ *    two iterators point to the same element. If they do it should return true
+ *    and if they do not it should return false.
+ *
+ *  Your class must also be copy constructable.
+ *
+ *  @tparam ParentType The type of your derived class. See the class description
+ *                     for the criteria it must meet.
  */
-template<typename ParentType,
-         typename ValueType = typename ParentType::value_type,
-         typename SizeType = std::size_t, typename DifferenceType = long int>
-struct InputIteratorBase {
-    /// The type of an element returned by this iterator.
-    using value_type = ValueType;
+template<typename ParentType>
+class InputIteratorBase {
+private:
+    /// Type of this base class
+    using my_type = InputIteratorBase<ParentType>;
+    /// Type of this base class when it is read-only
+    using const_my_type = const InputIteratorBase<ParentType>;
 
-    /// The type of a mutable reference to an element
-    using reference = value_type&;
-
-    /// The type of a non-mutable reference to an element
-    using const_reference = const value_type&;
-
-    /// The type of a pointer to an element
-    using pointer = value_type*;
-
-    /// The type of a pointer to a non-mutable element
-    using const_pointer = const value_type*;
-
-    /// The type of the index
-    using size_type = SizeType;
-
-    /// The type of the difference between two indices
-    using difference_type = DifferenceType;
-
+public:
     /// The concept tag this iterator obeys
     using iterator_category = std::input_iterator_tag;
 
-    /// Implement this so we can increment your iterator
-    virtual ParentType& increment() = 0;
+    virtual ~InputIteratorBase() noexcept = default;
 
-    /** @brief Implemented by the derived class to retrieve the element of the
-     *         container currently being pointed to.
+    /** @brief Defines the public API for dereferencing the iterator to a
+     *         (possibly) read-/write-able reference.
      *
-     *  It is only necessary for the derived class to implement the const
-     *  version of this function. The reason is that if the class is iterating
-     *  over a container in a const fashion this is what we want anyways. If
-     *  on the other hand we want the non-reference version we can const_cast
-     *  the return, knowing that the state of the container respected const. If
-     *  the caller didn't want the elements to always be const then `value_type`
-     *  is `const T` and reference is `const T&` so that when we const cast we
-     *  don't actually remove the const.
+     *  This function is ultimately implemented by calling the derived class's
+     *  `dereference()` member. Whether the returned instance is modifiable or
+     *  not is determined by the derived class. In particular the derived class
+     *  may return a read-only reference if the iterator is iterating over a
+     *  read-only container.
      *
-     *  @return A reference to the element currently being pointed at.
+     *  @return A (possibly) read-/write-able reference to the element this
+     *          iterator currently points to.
      *
-     *  @throw ??? If the implementation in the derived class throws. Same throw
-     *             guarantee.
+     *  @throws ??? if the derived class throws. Same exception guarantee.
      */
-    virtual const_reference dereference() const = 0;
+    decltype(auto) operator*() { return downcast_().dereference(); }
 
-    /// Implement to provide equality comparisons
-    virtual bool are_equal(const ParentType& rhs) const noexcept = 0;
-
-    /** @brief Allows access to the element currently pointed at by this
-     *  iterator.
+    /** @brief Defines the public API for dereferencing the iterator to a
+     *         read-only reference.
      *
-     *  This function simply calls dereference.
+     *  This function is ultimately implemented by calling the derived class's
+     *  `dereference() const` member.
      *
-     *  @return The element this iterator currently points to.
-     *  @throws exception if dereference throws.
+     *  @return A read-only reference to the element this iterator currently
+     *          points to.
+     *
+     *  @throws ??? if the derived class throws. Same exception guarantee.
      */
-    const_reference operator*() const { return dereference(); }
-
-    ///@copydoc operator*()const
-    reference operator*() {
-        const_reference temp = dereference();
-        return const_cast<reference>(temp); // NOLINT
-    }
+    decltype(auto) operator*() const { return downcast_().dereference(); }
 
     /** @brief Provides access to an element's member functions directly.
      *
-     * @returns The address of the current element for use with the arrow
-     * operator.
-     * @throws exception if the dereference operation throws.
+     *  This operator allows you to directly access the member functions of the
+     *  pointed to, (possibly) read-/write-able, instance via the syntax
+     *  `itr->member_fxn()` as opposed to the slightly messier
+     *  `(*itr).member_fxn()` syntax. Ultimately this function is implemented by
+     *  calling `dereference()`.
+     *
+     *  @returns The address of the instance currently being pointed to so that
+     *           it can be used with the arrow operator.
+     *
+     *  @throws ??? if the derived class throws. Same throw guarantee.
      */
-    const_pointer operator->() const { return &(operator*()); }
+    decltype(auto) operator-> () { return &(operator*()); }
 
     /** @brief Provides access to an element's member functions directly.
      *
-     * If the user specified the type of the element to be const then this
-     * ultimately will still return a const pointer
+     *  This operator allows you to directly access the member functions of the
+     *  pointed to, read-only, instance via the syntax `itr->member_fxn()` as
+     *  opposed to slightly messier `(*itr).member_fxn()` syntax. Ultimately
+     *  this function is implemented by calling `dereference() const`.
      *
-     * @returns The address of the current element for use with the arrow
-     * operator.
-     * @throws exception if the dereference operation throws.
+     *  @returns The address of the instance currently being pointed to so that
+     *           it can be used with the arrow operator.
+     *
+     *  @throws ??? if the derived class throws. Same throw guarantee.
      */
-    pointer operator->() { return &(operator*()); }
+    decltype(auto) operator-> () const { return &(operator*()); }
 
-    /** @brief Implements prefix increment.
+    /** @brief Increments the current iterator and returns it.
      *
-     *  Increments an iterator before returning the current value.  This
-     *  operation is implemented by calling increment.
+     *  This function increments the iterator before returning the iterator.
+     *  This is ultimately implemented by calling the derived class's
+     *  `increment()` method.
      *
-     *  @returns The iterator pointing to the value resulting from the
-     * increment.
-     *  @throws exception if increment throws
+     *  @returns The current iterator after it has been advanced by one.
      *
+     *  @throws ??? if the derived class's `increment()` method throws. Same
+     *              throw guarantee.
      */
-    ParentType& operator++() { return increment(); }
+    ParentType& operator++() { return downcast_().increment(); }
 
-    /** @brief Implements postfix increment.
+    /** @brief Returns the iterator before incrementing it.
      *
-     *  Increments an iterator after returning the current value.  This
-     *  operation is implemented in terms of the copy constructor and the prefix
-     *  increment operator.
+     *  Semantically this function returns the iterator and then increments it,
+     *  thereby allowing you to use the iterator with its pre-increment value.
+     *  This is actually accomplished by copying this instance, incrementing
+     *  the non-copied instance via `increment()`, and then returning the copy.
      *
-     *  @returns A copy of the current iterator pointing to the element before
-     *          the increment.
-     *  @throws exception if either the copy constructor or the prefix increment
-     *  operator throw.
+     *  @returns A copy of the current iterator as it was before calling this
+     *           function.
      *
+     *  @throws ??? if either the copy constructor or `increment()` throws.
+     *              Same throw guarantee.
      */
-    ParentType operator++(int) {
-        ParentType copy_of_me(static_cast<ParentType&>(*this));
-        ++(*this);
-        return copy_of_me;
-    }
+    ParentType operator++(int);
 
-    /** @brief Determines if two iterators are equivalent.
+    /** @brief Determines if two iterators point to the same element.
      *
-     * This function works by calling are_equal.  Hence the definition of
-     * equality used is that of the are_equal function.
+     *  This function ultimately works by calling the derived class's
+     *  `are_equal` member.  Hence the definition of equality resides with the
+     *  derived class.
      *
-     * @param[in] rhs The iterator to compare to.
-     * @return true if the two iterators are equal
-     * @throws None. No throw guarantee
+     *  @param[in] rhs The iterator to compare to.
+     *  @return true if the two iterators are equal and false otherwise.
+     *  @throws None. No throw guarantee
      */
-    bool operator==(const ParentType& rhs) const noexcept {
-        return are_equal(rhs);
-    }
+    bool operator==(const ParentType& rhs) const noexcept;
 
-    /** @brief Check to ensure two iterators are not identical.
+    /** @brief Determines if two iterators point to different elements.
      *
-     *  The definition of iterator equality is taken from operator==.  This
-     *  function
-     *  simply negates the result.
+     *  This function ultimately works by calling the derived class's
+     *  `are_equal` member and negating the result.  Hence the definition of
+     *  equality resides with the derived class and the definition of
+     *  "different" is "not equal".
      *
-     *  @param[in] rhs The iterator to compare against.
-     *  @returns True if the current iterator is not identical to @p rhs.
-     *  @throws None. No throw guarantee.
+     *  @param[in] rhs The iterator to compare to.
+     *  @return false if the two iterators are equal and true otherwise.
+     *  @throws None. No throw guarantee
      */
-    bool operator!=(const ParentType& rhs) const noexcept {
-        return !((*this) == rhs);
-    }
-};
+    bool operator!=(const ParentType& rhs) const noexcept;
+
+protected:
+    /// Downcasts this to a read-/write-able instance of the derived class
+    ParentType& downcast_() noexcept { return static_cast<ParentType&>(*this); }
+
+    /// Downcasts this instance to a read-only instance of the derived class
+    const ParentType& downcast_() const noexcept;
+}; // class InputIteratorBase
+
+// ------------------------------Implementations--------------------------------
+
+template<typename ParentType>
+ParentType InputIteratorBase<ParentType>::operator++(int) {
+    ParentType copy_of_me(downcast_());
+    ++(*this);
+    return copy_of_me;
+}
+
+template<typename ParentType>
+bool InputIteratorBase<ParentType>::operator==(const ParentType& rhs) const
+  noexcept {
+    return downcast_().are_equal(rhs);
+}
+
+template<typename ParentType>
+bool InputIteratorBase<ParentType>::operator!=(const ParentType& rhs) const
+  noexcept {
+    return !((*this) == rhs);
+}
+
+template<typename ParentType>
+const ParentType& InputIteratorBase<ParentType>::downcast_() const noexcept {
+    return static_cast<const ParentType&>(*this);
+}
 
 } // namespace utilities::iterators
