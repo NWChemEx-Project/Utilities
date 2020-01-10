@@ -9,14 +9,18 @@ At the moment this functionality can be expressed as falling into one of three
 sub libraries:
 
 - IterTools: Classes designed to make iteration easier.  This includes base
-             classes for writing your own iterators as well as classes for
-             iterating over common situations such as:  
-             - All permutations of a sequence  
-             - All combinations of a sequence       
-- Mathematician : Math functionality beyond that of the STL including:  
+  classes for writing your own iterators as well as classes for
+  iterating over common situations such as:  
+
+  - All permutations of a sequence      
+  - All combinations of a sequence       
+
+- Mathematician: Math functionality beyond that of the STL including:  
+
   - Binomial coefficients
   - Multinomial coefficients
-- TypeTraits : Structs to make meta-template programming easier
-  - Extended type intraspection (*i.e.* determining if a type has a member)
 
+- TypeTraits: Structs to make meta-template programming easier
+
+  - Extended type intraspection (*i.e.* determining if a type has a member)
 

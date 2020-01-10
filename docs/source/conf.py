@@ -12,7 +12,7 @@ import os
 # -- Project information -----------------------------------------------------
 
 project = u'utilities'
-copyright = u'2019, NWChemEx Team'
+copyright = u'2020, NWChemEx Team'
 author = u'NWChemEx Team'
 #src_dir = u'utilities'
 
