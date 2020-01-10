@@ -1,5 +1,5 @@
 #pragma once
-/** @file IterTools.hpp
+/** @file iter_tools.hpp
  *
  *  This file is a convenience header for the IterTools sublibrary of
  *  Utilities.
