@@ -1,4 +1,4 @@
-About the SDE Project
+About the Utilities Project
 =====================
 
 .. toctree::
