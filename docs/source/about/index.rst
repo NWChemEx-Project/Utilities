@@ -1,5 +1,5 @@
-About the Utilities Project
-=====================
+Utilities
+=========
 
 .. toctree::
    :maxdepth: 2

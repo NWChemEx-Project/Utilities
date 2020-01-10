@@ -22,11 +22,12 @@ following will suffice to build:
    make install
 
 Note that the configure will appear to hang when it gets to Catch2. 
-This is because it is building Catch2. Building of Catch2 can be 
-avoided by disabling tests (*i.e.*, passing `-DBUILD_TESTS=OFF` to the first
-invocation of `cmake`) or by providing CMake with an already built version of
-Catch2 by passing `-DCatch2_ROOT=/path/to/catch2` to the first invocation of 
-`cmake`.
+This is because it is building `Catch2 <https://github.com/catchorg/Catch2>`_
+testing framework. Building of Catch2 can be 
+avoided by disabling tests (*i.e.*, passing ``-DBUILD_TESTS=OFF`` to the first
+invocation of ``cmake``) or by providing CMake with an already built version of
+Catch2 by passing ``-DCatch2_ROOT=/path/to/catch2`` to the first invocation of 
+``cmake``.
 
 For finer-grained control over the build we direct the reader to the more
 thorough CPP build instructions located `here <https://cmakepackagingproject
@@ -37,19 +38,14 @@ Building the documentation
 ==========================
 
 You need to install Doxygen and the following Python packages (all can be
-installed with `pip`):
+installed with ``pip``):
 
 - sphinx_rtd_theme (The Read-The-Docs theme for sphinx)
-- sphinx (The thing that makes the documenation)
+- sphinx (The thing that makes the documentation)
 - breathe (Dependency of exhale, may get installed by it)
 - exhale (The thing that turns Doxygen output into ReST)
-You can build the documentation with:
 
-.. code-block:: bash
-
-    cd docs
-    make html
-
+You can build the documentation with ``make html`` within ``docs`` directory.
 You can view the documentation by opening `docs/build/html/index.html` on your
 browser.
 
