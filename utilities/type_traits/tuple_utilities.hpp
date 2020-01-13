@@ -3,7 +3,7 @@
 #include <tuple>
 #include <type_traits>
 
-/** @file TupleUtilities.hpp
+/** @file tuple_utilities.hpp
  *
  *  This file collects a series of useful utilities for doing template
  *  meta-programming using tuples.  Their actual definitions are a bit messy so
