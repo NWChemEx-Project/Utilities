@@ -2,7 +2,7 @@
 #include <cstddef>     // For size_t
 #include <type_traits> // For is_integral
 
-/** @file IntegerUtils.hpp
+/** @file integer_utils.hpp
  *
  *  This file contains utilities for working with POD types that are integral.
  *  In particular it includes:
