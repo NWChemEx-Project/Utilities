@@ -2,8 +2,6 @@ cmake_minimum_required(VERSION 3.8)
 project(utilities VERSION 1.0.0)
 
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
-set(FETCHCONTENT_SOURCE_DIR_CPP /home/ryan/CLionProjects/CMakePackagingProject)
-set(FETCHCONTENT_SOURCE_DIR_CMAKEPP_CORE /home/ryan/CLionProjects/CMakePPCore)
 include(get_cpp)
 
 cpp_add_library(
