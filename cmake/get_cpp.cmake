@@ -7,16 +7,16 @@ include_guard()
 # project's configure step.
 #]]
 function(get_cpp)
-    set(BUILD_TESTS OFF)
     include(FetchContent)
+    set(build_testing_old "${BUILD_TESTING}")
+    set(BUILD_TESTING OFF CACHE BOOL "" FORCE)
     FetchContent_Declare(
         cpp
         GIT_REPOSITORY https://github.com/CMakePP/CMakePackagingProject
         GIT_TAG rewrite
     )
     FetchContent_MakeAvailable(cpp)
-    list(APPEND CMAKE_MODULE_PATH "${cpp_SOURCE_DIR}/cmake")
-    set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" PARENT_SCOPE)
+    set(BUILD_TESTING "${build_testing_old}" CACHE BOOL "" FORCE)
 endfunction()
 
 # Call the function we just wrote to get CMakePP

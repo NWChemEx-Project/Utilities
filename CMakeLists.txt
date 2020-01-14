@@ -3,7 +3,10 @@ project(utilities VERSION 1.0.0)
 
 option(BUILD_TESTING "Should we build the tests?" OFF)
 
-list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+set(
+    CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${PROJECT_SOURCE_DIR}/cmake"
+    CACHE STRING "" FORCE
+)
 include(get_cpp)
 
 cpp_add_library(
