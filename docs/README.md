@@ -4,10 +4,10 @@ Building the documentation
 Building is done by running:
 
 ```
-python3 build_docs.py
+make html
 ```
 
-in the `SDE/docs` directory. If this runs successfully you will get two
+in the `Utilities/docs` directory. If this runs successfully you will get two
 additional directories: `build` and `doxyoutput`. The actual documentation can
 be viewed by opening `docs/build/html/index.html` in a web browser.
 
@@ -20,3 +20,4 @@ following Python packages (all available in `pip`):
 - exhale (The thing that turns Doxygen output into ReST)
 
 You also will need Doxygen.
+

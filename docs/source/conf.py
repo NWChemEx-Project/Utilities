@@ -11,10 +11,10 @@ import os
 
 # -- Project information -----------------------------------------------------
 
-project = u'Utilities'
-copyright = u'2019, NWChemEx Team'
+project = u'utilities'
+copyright = u'2020, NWChemEx Team'
 author = u'NWChemEx Team'
-src_dir = u'utilities'
+#src_dir = u'utilities'
 
 # The short X.Y version
 version = u'1.0.0'
@@ -59,12 +59,10 @@ exhale_args = {
     "doxygenStripFromPath" : "..",
     "createTreeView" : True,
     "exhaleExecutesDoxygen" : True,
-    "exhaleDoxygenStdin" : "INPUT = " + os.path.join(root_path, project,
-                                                     "detail_")
+    "exhaleDoxygenStdin" : "INPUT = " + os.path.join(root_path, project)
 }
-
 # Add any paths that contain templates here, relative to this directory.
-templates_path = []
+#templates_path = ['_templates']
 
 # The suffix(es) of source filenames.
 # You can specify multiple suffix as a list of string:
@@ -107,7 +105,7 @@ html_theme = 'sphinx_rtd_theme'
 # Add any paths that contain custom static files (such as style sheets) here,
 # relative to this directory. They are copied after the builtin static files,
 # so a file named "default.css" will overwrite the builtin "default.css".
-html_static_path = []
+#html_static_path = ['_static']
 
 # Custom sidebar templates, must be a dictionary that maps document names
 # to template names.

@@ -1,6 +1,7 @@
 #pragma once
 #include <type_traits>
 #include <utility>
+#ifndef DOXYGEN_SHOULD_SKIP_THIS
 
 /** @file type_traitsExtensions.hpp
  *
@@ -397,3 +398,5 @@ struct is_random_access_iterator
                 has_less_than_equal<T, T>, has_greater_than_equal<T, T>> {};
 
 } // namespace utilities
+#endif /* DOXYGEN_SHOULD_SKIP_THIS */
+
