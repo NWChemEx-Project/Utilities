@@ -1,7 +1,11 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.14)
 project(utilities VERSION 1.0.0)
 
+option(BUILD_TESTS "Should we build the tests?" OFF)
+
 list(APPEND CMAKE_MODULE_PATH "${PROJECT_SOURCE_DIR}/cmake")
+set(FETCHCONTENT_SOURCE_DIR_CPP /home/ryan/CLionProjects/CMakePackagingProject)
+set(FETCHCONTENT_SOURCE_DIR_CMAKEPP_CORE /home/ryan/CLionProjects/CMakePPCore)
 include(get_cpp)
 
 cpp_add_library(
@@ -13,7 +17,7 @@ cpp_add_library(
 if(BUILD_TESTS)
     cpp_find_or_build_dependency(
         Catch2
-        URL https://github.com/catchorg/Catch2
+        URL github.com/catchorg/Catch2
         BUILD_TARGET Catch2
         FIND_TARGET Catch2::Catch2
     )

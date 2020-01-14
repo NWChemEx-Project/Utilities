@@ -1,6 +1,11 @@
 include_guard()
 
-# Throw this in a function so options we set only affect it
+#[[
+# This function encapsulates the process of getting CMakePP using CMake's
+# FetchContent module. We have encapsulated it in a function so we can set the
+# options for it's configure step without affecting the options for the parent
+# project's configure step.
+#]]
 function(get_cpp)
     set(BUILD_TESTS OFF)
     include(FetchContent)
@@ -13,5 +18,9 @@ function(get_cpp)
     list(APPEND CMAKE_MODULE_PATH "${cpp_SOURCE_DIR}/cmake")
     set(CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" PARENT_SCOPE)
 endfunction()
+
+# Call the function we just wrote to get CMakePP
 get_cpp()
+
+# Include CMakePP
 include(cpp/cpp)
