@@ -1,13 +1,31 @@
-cmake_minimum_required(VERSION 3.8)
+cmake_minimum_required(VERSION 3.14)
 project(utilities VERSION 1.0.0)
 
-find_package(cpp REQUIRED)
-cpp_option(BUILD_TESTS ON)
+option(BUILD_TESTING "Should we build the tests?" OFF)
 
-add_subdirectory(utilities)
+set(
+    CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${PROJECT_SOURCE_DIR}/cmake"
+    CACHE STRING "" FORCE
+)
+include(get_cpp)
 
-if(BUILD_TESTS)
-    cpp_find_or_build_dependency(NAME Catch2 URL github.com/catchorg/Catch2)
-    enable_testing()
-    add_subdirectory(tests)
+cpp_add_library(
+    utilities
+    SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/utilities"
+    INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/utilities"
+)
+
+if("${BUILD_TESTING}")
+    cpp_find_or_build_dependency(
+        Catch2
+        URL github.com/catchorg/Catch2
+        BUILD_TARGET Catch2
+        FIND_TARGET Catch2::Catch2
+    )
+    cpp_add_tests(
+        test_utilities
+        SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/tests"
+        INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/utilities"
+        DEPENDS Catch2 utilities
+    )
 endif()

@@ -14,6 +14,9 @@ docs/source/api
 Debug/
 Release/
 
+# Install directories
+install/
+
 #Generated files not part of project
 .clang-format
 toolchain.cmake
