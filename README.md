@@ -1,6 +1,5 @@
-![](https://github.com/NWChemEx-Project/Utilities/workflows/.github/workflows/c-cpp.yaml/badge.svg)
-![](https://github.com/NWChemEx-Project/Utilities/workflows/.github/workflows/c-cpp.yaml/badge.svg?event=pull_request)
-![](https://github.com/hjjvandam/Utilities/workflows/C_C++_CI/badge.svg?branch=github-actions)
+![](https://github.com/NWChemEx-Project/Utilities/workflows/C_C++_CI/badge.svg)
+![](https://github.com/NWChemEx-Project/Utilities/workflows/C_C++_CI/badge.svg?event=pull_request)
 
 Utilities Repository
 ======================
