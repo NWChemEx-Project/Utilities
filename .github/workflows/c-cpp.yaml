@@ -9,6 +9,11 @@ jobs:
     
     steps:
     - uses: actions/checkout@v1
+    - name: get-cmake
+      run: |
+            wget https://github.com/Kitware/CMake/releases/download/v3.16.3/cmake-3.16.3-Linux-x86_64.sh
+            /bin/sh cmake-3.16.3-Linux-x86_64.sh
+            ls -l
     - name: cmake
       run:  cmake -H. -Bbuild
     - name: make
