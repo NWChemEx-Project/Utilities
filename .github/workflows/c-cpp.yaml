@@ -12,7 +12,7 @@ jobs:
     - name: get-cmake
       run: |
             wget https://github.com/Kitware/CMake/releases/download/v3.16.3/cmake-3.16.3-Linux-x86_64.sh
-            /bin/sh cmake-3.16.3-Linux-x86_64.sh
+            yes | /bin/sh cmake-3.16.3-Linux-x86_64.sh
             ls -l
     - name: cmake
       run:  cmake -H. -Bbuild
