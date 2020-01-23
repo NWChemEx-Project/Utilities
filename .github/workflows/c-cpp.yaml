@@ -13,9 +13,8 @@ jobs:
       run: |
             wget https://github.com/Kitware/CMake/releases/download/v3.16.3/cmake-3.16.3-Linux-x86_64.sh
             yes | /bin/sh cmake-3.16.3-Linux-x86_64.sh
+            ls -l cmake-3.16.3-Linux-x86_64/bin
     - name: cmake
-      run:  cmake-3.16.3-Linux-x86_64/bin/cmake -H. -Bbuild
+      run:  cmake-3.16.3-Linux-x86_64/bin/cmake -H. -Bbuild -DBUILD_TESTING=TRUE
     - name: make
-      run: |
-            cd build
-            make
+      run:  ctest --build-and-test build build --build-nocmake --build-generator "Unix Makefiles"
