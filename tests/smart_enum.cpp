@@ -1,6 +1,6 @@
-#include <utilities/smart_enum.hpp>
 #include <catch2/catch.hpp>
 #include <sstream>
+#include <utilities/smart_enum.hpp>
 
 using namespace utilities;
 

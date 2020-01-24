@@ -1,9 +1,11 @@
 #pragma once
-#include<ostream>
-#include<memory>
+#include <ostream>
+#include <memory>
 
 namespace utilities::printing {
-namespace detail_{ class WordWrapBuffer;}
+namespace detail_{
+class WordWrapBuffer;
+}
 
 /** @brief An std::ostream that automatically wraps its contents if they
  *         exceed the specified width.
@@ -20,7 +22,7 @@ namespace detail_{ class WordWrapBuffer;}
  */
 class WordWrapStream : public std::ostream {
 public:
-    ///The type used to specify the predefined width
+    /// The type used to specify the predefined width
     using width_type = unsigned long;
 
     /** @brief Bestows an existing ostream with word wrapping abalities
@@ -48,8 +50,8 @@ public:
      */
     ~WordWrapStream() noexcept override;
 private:
-    ///The instance that actually implements the class
+    /// The instance that actually implements the class
     std::unique_ptr<detail_::WordWrapBuffer> m_pimpl_;
 };
 
-} //End namespace
+} // namespace utilities::printing
