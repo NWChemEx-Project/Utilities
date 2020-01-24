@@ -1,9 +1,9 @@
 #pragma once
-#include <ostream>
 #include <memory>
+#include <ostream>
 
 namespace utilities::printing {
-namespace detail_{
+namespace detail_ {
 class WordWrapBuffer;
 }
 
@@ -49,6 +49,7 @@ public:
      *  @throw none No throw guarantee.
      */
     ~WordWrapStream() noexcept override;
+
 private:
     /// The instance that actually implements the class
     std::unique_ptr<detail_::WordWrapBuffer> m_pimpl_;
