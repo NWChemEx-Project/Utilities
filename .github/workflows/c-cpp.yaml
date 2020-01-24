@@ -14,7 +14,6 @@ jobs:
     - uses: DoozyX/clang-format-lint-action@v0.5
       with:
          extensions: 'h,hpp,cpp'
-         clangFormatVersion: 5
     - name: get-gcc
       run: |
             sudo add-apt-repository ppa:ubuntu-toolchain-r/test
