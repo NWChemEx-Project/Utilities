@@ -26,6 +26,6 @@ if("${BUILD_TESTING}")
         test_utilities
         SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/tests"
         INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/utilities"
-        DEPENDS Catch2 utilities
+        DEPENDS Catch2::Catch2 utilities
     )
 endif()
