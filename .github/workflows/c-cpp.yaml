@@ -9,6 +9,14 @@ jobs:
     
     steps:
     - uses: actions/checkout@v1
+    - name: get-gcc
+      run: |
+            sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+            sudo apt-get update
+            sudo apt-get install gcc-8 g++-8
+            sudo update-alternatives --remove-all gcc
+            sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 90 --slave /usr/bin/g++ g++ /usr/bin/g++-8
+            sudo update-alternatives --config gcc
     - name: get-cmake
       run: |
             wget https://github.com/Kitware/CMake/releases/download/v3.16.3/cmake-3.16.3-Linux-x86_64.sh
