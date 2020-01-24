@@ -9,6 +9,10 @@ jobs:
     
     steps:
     - uses: actions/checkout@v1
+    - uses: DoozyX/clang-format-lint-action@v0.5
+      with:
+         extensions: 'h,hpp,cpp'
+         clangFormatVersion: 9
     - name: get-gcc
       run: |
             sudo add-apt-repository ppa:ubuntu-toolchain-r/test
