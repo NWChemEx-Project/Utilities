@@ -9,6 +9,9 @@ jobs:
     
     steps:
     - uses: actions/checkout@v1
+    - uses: actions/setup-python@v1
+      with: 
+         python-version: '3.x'
     - name: get-clang-format
       run:  wget https://raw.githubusercontent.com/NWChemEx-Project/DeveloperTools/master/ci/lint/clang-format.in -O .clang-format
     - uses: DoozyX/clang-format-lint-action@v0.5
@@ -22,6 +25,8 @@ jobs:
             sudo apt-get install gcc-8 g++-8
             sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 95 --slave /usr/bin/g++ g++ /usr/bin/g++-8
             g++ --version
+    - name: get-gcovr
+      run:  pip install gcovr
     - name: get-cmake
       run: |
             wget https://github.com/Kitware/CMake/releases/download/v3.16.3/cmake-3.16.3-Linux-x86_64.sh
@@ -30,3 +35,7 @@ jobs:
       run:  cmake-3.16.3-Linux-x86_64/bin/cmake -H. -Bbuild -DBUILD_TESTING=TRUE -DCATCH_ENABLE_COVERAGE=ON -DCMAKE_CXX_FLAGS="--coverage -fprofile-abs-path" -DCMAKE_C_FLAGS="--coverage -fprofile-abs-path" -DCMAKE_EXE_LINKER_FLAGS="-fprofile-arcs"
     - name: ctest
       run:  cmake-3.16.3-Linux-x86_64/bin/ctest --build-and-test build build --build-nocmake --build-generator "Unix Makefiles" --test-command make test
+    - name: gcovr
+      run: |
+           gcovr --xml coverage.xml ./build
+           ls -al
