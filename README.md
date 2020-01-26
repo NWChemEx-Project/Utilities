@@ -1,5 +1,7 @@
 ![](https://github.com/NWChemEx-Project/Utilities/workflows/C_C++_CI/badge.svg)
 ![](https://github.com/NWChemEx-Project/Utilities/workflows/C_C++_CI/badge.svg?event=pull_request)
+![](https://github.com/:owner/:repo/workflows/C_C++_CI/badge.svg)
+![](https://github.com/:owner/:repo/workflows/C_C++_CI/badge.svg?event=pull_request)
 ![](https://codecov.io/gh/NWChemEx-Project/Utilities/branch/master/graph/badge.svg)
 ![](https://codecov.io/gh/:owner/:repo/branch/:branch/graph/badge.svg)
 
