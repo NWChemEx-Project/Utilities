@@ -41,3 +41,7 @@ jobs:
            cd ..
            gcovr --root Utilities --filter Utilities --xml Utilities/coverage.xml
            ls -al Utilities
+    - uses: codecov/codecov-action@v1
+      with:
+         token: ${{ secrets.CODECOV_TOKEN }}
+         file: ./coverage.xml
