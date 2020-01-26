@@ -5,6 +5,8 @@
 ![](https://codecov.io/gh/NWChemEx-Project/Utilities/branch/master/graph/badge.svg)
 [![Codecov](https://codecov.io/gh/:owner/:repo/branch/:branch/graph/badge.svg)](https://codecov.io/gh/:owner/:repo)
 [![Actions](https://github.com/:owner/:repo/workflows/C_C++_CI/badge.svg)](https://github.com/:owner/:repo)
+[![Codecov](https://codecov.io/gh/hjjvandam/Utilities/branch/master/graph/badge.svg)](https://codecov.io/gh/hjjvandam/Utilities)
+[![Actions](https://github.com/hjjvandam/Utilities/workflows/C_C++_CI/badge.svg)](https://github.com/hjjvandam/Utilities)
 
 Utilities Repository
 ======================
