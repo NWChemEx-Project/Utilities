@@ -1,12 +1,6 @@
-![](https://github.com/NWChemEx-Project/Utilities/workflows/C_C++_CI/badge.svg)
-![](https://github.com/NWChemEx-Project/Utilities/workflows/C_C++_CI/badge.svg?event=pull_request)
-![](https://github.com/:owner/:repo/workflows/C_C++_CI/badge.svg)
-![](https://github.com/:owner/:repo/workflows/C_C++_CI/badge.svg?event=pull_request)
-![](https://codecov.io/gh/NWChemEx-Project/Utilities/branch/master/graph/badge.svg)
-[![Codecov](https://codecov.io/gh/:owner/:repo/branch/:branch/graph/badge.svg)](https://codecov.io/gh/:owner/:repo)
-[![Actions](https://github.com/:owner/:repo/workflows/C_C++_CI/badge.svg)](https://github.com/:owner/:repo)
-[![Codecov](https://codecov.io/github/hjjvandam/Utilities/branch/github-actions/graphs/sunburst.svg?token=C0Za4faanD)](https://codecov.io/github/hjjvandam/Utilities/branch/github-actions)
 [![Actions](https://github.com/hjjvandam/Utilities/workflows/C_C++_CI/badge.svg)](https://github.com/hjjvandam/Utilities)
+
+[![Codecov](https://codecov.io/github/hjjvandam/Utilities/branch/github-actions/graphs/sunburst.svg?token=C0Za4faanD)](https://codecov.io/github/hjjvandam/Utilities/branch/github-actions)
 
 Utilities Repository
 ======================
