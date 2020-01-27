@@ -39,7 +39,7 @@ jobs:
     - name: gcovr
       run: |
            cd ..
-           gcovr --root Utilities --filter Utilities --xml Utilities/coverage.xml
+           gcovr --root Utilities --filter Utilities --exclude Utilities/tests --xml Utilities/coverage.xml
            ls -al Utilities
     - uses: codecov/codecov-action@v1
       with:
