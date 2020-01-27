@@ -1,6 +1,6 @@
-[![Actions](https://github.com/hjjvandam/Utilities/workflows/C_C++_CI/badge.svg)](https://github.com/hjjvandam/Utilities)
+[![Actions](https://github.com/NWChemEx-Project/Utilities/workflows/C_C++_CI/badge.svg)](https://github.com/NWChemEx-Project/Utilities)
 
-[![Codecov](https://codecov.io/github/hjjvandam/Utilities/branch/github-actions/graphs/sunburst.svg?token=C0Za4faanD)](https://codecov.io/github/hjjvandam/Utilities/branch/github-actions)
+[![Codecov](https://codecov.io/github/NWChemEx-Project/Utilities/branch/master/graphs/sunburst.svg?token=gdemefzIU7)](https://codecov.io/github/NWChemEx-Project/Utilities/branch/master)
 
 Utilities Repository
 ======================
