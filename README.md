@@ -1,3 +1,7 @@
+[![Actions](https://github.com/hjjvandam/Utilities/workflows/C_C++_CI/badge.svg)](https://github.com/hjjvandam/Utilities)
+
+[![Codecov](https://codecov.io/github/hjjvandam/Utilities/branch/github-actions/graphs/sunburst.svg?token=C0Za4faanD)](https://codecov.io/github/hjjvandam/Utilities/branch/github-actions)
+
 Utilities Repository
 ======================
 

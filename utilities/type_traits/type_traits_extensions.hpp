@@ -399,4 +399,3 @@ struct is_random_access_iterator
 
 } // namespace utilities
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
-

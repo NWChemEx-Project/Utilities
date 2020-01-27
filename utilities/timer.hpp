@@ -192,7 +192,7 @@ inline void Timer::record_(std::string desc, time_point t1, time_point t2) {
 }
 
 inline std::ostream& operator<<(std::ostream& os, const Timer& t) {
-    for(const auto& [desc, dt] : t) {
+    for(const auto & [desc, dt] : t) {
         using namespace std::chrono;
         auto h  = duration_cast<hours>(dt);
         auto m  = duration_cast<minutes>(dt) - h;

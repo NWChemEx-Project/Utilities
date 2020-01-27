@@ -1,9 +1,9 @@
 #pragma once
 #include "utilities/printing/word_wrap_stream.hpp"
 #include "utilities/strings/string_tools.hpp"
-#include <array>
 #include <algorithm> //For max_element
-#include <numeric>   //accumulate
+#include <array>
+#include <numeric> //accumulate
 #include <sstream>
 #include <stdexcept> //For runtime_error
 #include <string>
