@@ -10,7 +10,7 @@ jobs:
 
     steps:
       - name: obtain-source
-        uses: actions/checkout@v1
+        uses: actions/checkout@v2
       - name: new-branch
         env:
           hash_value: ${{ github.sha }}
@@ -24,31 +24,19 @@ jobs:
       - name: run-clang-format
         run: |
               find utilities -name '*.hpp' -or -name '*.cpp' | xargs clang-format-9 -style=file -i -fallback-style=none
-      - name: commit-changes
-        id: changes
-        run: |
-              diff_value=`git diff`
-              if [ -z "$diff_value" ]
-              then
-                  echo "::set-output name=changes::false"
-              else
-                  git config --local user.email "action@github.com"
-                  git config --local user.name "GitHub Action"
-                  git commit -m "linted source" -a
-                  echo "::set-output name=changes::true"
-              fi
-      - name: push-changes
-        if: steps.changes.outputs.changes == 'true'
-        uses: ad-m/github-push-action@master
+#      - name: commit-changes
+#        id: changes
+#        run: |
+#              diff_value=`git diff`
+#              if [ ! -z "$diff_value" ]
+#              then
+#                  git config --local user.email "action@github.com"
+#                  git config --local user.name "GitHub Action"
+#                  git commit -m "linted source" -a
+#              fi
+      - name: Create Pull Request
+        uses: peter-evans/create-pull-request@v2
         with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          branch: ${{ github.sha }}-#pr
-      - name: Create PR
-        if: steps.changes.outputs.changes == 'true'
-        uses: funivan/github-autopr@0.2.0
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          args: .head_commit.message .*#pr.*
+          token: ${{ secrets.GITHUB_TOKEN }}
 
 
