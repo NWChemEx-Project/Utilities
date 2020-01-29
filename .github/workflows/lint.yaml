@@ -1,0 +1,36 @@
+name: Lint Master
+on:
+  push:
+    branches:
+      - master
+
+jobs:
+  format-code:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v1
+      - name: new-branch
+        run: git checkout -b ${{ github.sha}}-#pr
+      - name: get-lint-settings
+        run:  wget https://raw.githubusercontent.com/NWChemEx-Project/DeveloperTools/master/ci/lint/clang-format.in -O .clang-format
+      - name: run-clang-format
+        run: |
+              find utilities -name '*.hpp' -or -name '*.cpp' | xargs clang-format -style=file -i -fallback-style=none
+      - name: detect-changes
+        run: |
+              diff_value=`git diff`
+              if [ -z "$diff_value" ]
+              then
+                  git add utilities/*
+                  git commit -m "linted source"
+                  git push origin ${{ github.sha }}-#pr
+              fi
+      - name: Create PR
+        uses: funivan/github-autopr@0.2.0
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          args: .head_commit.message .*#pr.*
+
+
