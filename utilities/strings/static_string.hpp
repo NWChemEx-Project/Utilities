@@ -43,8 +43,7 @@ public:
      */
     template<std::size_t Length>
     constexpr StaticString(const char (&str)[Length]) noexcept :
-      begin_(str),
-      size_(Length - 1) {}
+      begin_(str), size_(Length - 1) {}
 
     /**
      * @brief Returns the i-th character of the string.

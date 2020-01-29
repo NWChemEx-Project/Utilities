@@ -17,8 +17,7 @@ class WordWrapBuffer : public std::streambuf {
 public:
     // Takes the ostream we're wrapping and the width
     WordWrapBuffer(std::ostream* os, width_type w) noexcept :
-      m_os_(os),
-      m_w_(w) {}
+      m_os_(os), m_w_(w) {}
 
 protected:
     // This function does the heavy lifting
