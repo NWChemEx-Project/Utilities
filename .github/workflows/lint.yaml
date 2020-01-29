@@ -17,6 +17,8 @@ jobs:
         run: git checkout -b ${hash_value}-#pr
       - name: get-lint-settings
         run:  wget https://raw.githubusercontent.com/NWChemEx-Project/DeveloperTools/master/ci/lint/clang-format.in -O .clang-format
+      - name: get-clang-format
+        run: sudo apt-get install clang-format
       - name: run-clang-format
         run: |
               find utilities -name '*.hpp' -or -name '*.cpp' | xargs clang-format -style=file -i -fallback-style=none
