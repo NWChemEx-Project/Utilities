@@ -25,7 +25,7 @@ jobs:
               find utilities -name '*.hpp' -or -name '*.cpp' | xargs clang-format-9 -style=file -i -fallback-style=none
       - name: Create Pull Request
         uses: peter-evans/create-pull-request@v2
-        with:
-          token: ${{ secrets.CREATE_PULL_REQUEST_TOKEN }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.CREATE_PULL_REQUEST_TOKEN }}
 
 
