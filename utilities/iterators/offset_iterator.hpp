@@ -206,8 +206,7 @@ private:
 template<typename ContainerType>
 OFFSET_ITERATOR_TYPE::OffsetIterator(size_type offset,
                                      ContainerType* parent) noexcept :
-  m_offset_(offset),
-  m_parent_(parent) {}
+  m_offset_(offset), m_parent_(parent) {}
 
 template<typename ContainerType>
 OFFSET_ITERATOR_TYPE& OFFSET_ITERATOR_TYPE::increment() noexcept {
