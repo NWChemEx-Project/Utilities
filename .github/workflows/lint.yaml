@@ -1,6 +1,6 @@
 name: Lint Master
 on:
-  push:
+  pull-request:
     branches:
       - master
 
@@ -9,28 +9,44 @@ jobs:
     runs-on: ubuntu-latest
 
     steps:
-      - uses: actions/checkout@v1
+      - name: obtain-source
+        uses: actions/checkout@v1
       - name: new-branch
-        run: git checkout -b ${{ github.sha}}-#pr
+        env:
+          hash_value: ${{ github.sha }}
+        run: git checkout -b ${hash_value}-#pr
       - name: get-lint-settings
         run:  wget https://raw.githubusercontent.com/NWChemEx-Project/DeveloperTools/master/ci/lint/clang-format.in -O .clang-format
       - name: run-clang-format
         run: |
               find utilities -name '*.hpp' -or -name '*.cpp' | xargs clang-format -style=file -i -fallback-style=none
-      - name: detect-changes
+      - name: commit-changes
         run: |
               diff_value=`git diff`
               if [ -z "$diff_value" ]
               then
-                  git add utilities/*
-                  git commit -m "linted source"
-                  git push origin ${{ github.sha }}-#pr
+                  git config --local user.email "action@github.com"
+                  git config --local user.name "GitHub Action"
+                  git commit -m "linted source" -a
+                  echo "CHANGES"
+              else
+                  echo "NO CHANGES"
               fi
-      - name: Create PR
-        uses: funivan/github-autopr@0.2.0
+      - name: debug
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          args: .head_commit.message .*#pr.*
+          steps_context: ${{ toJson(steps) }}
+        run: echo "${steps_context}"
+#      - name: push-changes
+#        if: steps.commit-changes.outputs.
+#        uses: ad-m/github-push-action@master
+#        with:
+#          github_token: ${{ secrets.GITHUB_TOKEN }}
+#          branch: ${{ github.sha }}-#pr
+#      - name: Create PR
+#        uses: funivan/github-autopr@0.2.0
+#        env:
+#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+#        with:
+#          args: .head_commit.message .*#pr.*
 
 
