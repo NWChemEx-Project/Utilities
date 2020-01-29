@@ -37,21 +37,18 @@ jobs:
                   git commit -m "linted source" -a
                   echo "::set-output name=changes::true"
               fi
-      - name: Debug
-        run: echo "$output"
+      - name: push-changes
+        if: steps.changes.outputs.changes == 'true'
+        uses: ad-m/github-push-action@master
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}
+          branch: ${{ github.sha }}-#pr
+      - name: Create PR
+        if: steps.changes.outputs.changes == 'true'
+        uses: funivan/github-autopr@0.2.0
         env:
-          output: ${{ steps.changes.outputs.changes}}
-#      - name: push-changes
-#        if: steps.changes.outputs.
-#        uses: ad-m/github-push-action@master
-#        with:
-#          github_token: ${{ secrets.GITHUB_TOKEN }}
-#          branch: ${{ github.sha }}-#pr
-#      - name: Create PR
-#        uses: funivan/github-autopr@0.2.0
-#        env:
-#          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-#        with:
-#          args: .head_commit.message .*#pr.*
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        with:
+          args: .head_commit.message .*#pr.*
 
 
