@@ -35,8 +35,7 @@ struct CartIncrementFunctor {
         const iterator_type& start;
         std::size_t turn_on = 0;
         Reseter(const iterator_type& da_start, std::size_t on) :
-          start(da_start),
-          turn_on(on) {}
+          start(da_start), turn_on(on) {}
 
         template<std::size_t I, typename T>
         auto run(T&& itr) {
