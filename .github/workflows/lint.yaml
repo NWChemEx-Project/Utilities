@@ -30,19 +30,19 @@ jobs:
               diff_value=`git diff`
               if [ -z "$diff_value" ]
               then
-                  echo "NO CHANGES"
+                  echo "::set-output name=changes::false"
               else
                   git config --local user.email "action@github.com"
                   git config --local user.name "GitHub Action"
                   git commit -m "linted source" -a
-                  echo "CHANGES"
+                  echo "::set-output name=changes::true"
               fi
-      - name: Dump steps context
+      - name: Debug
+        run: echo "$output"
         env:
-          STEPS_CONTEXT: ${{ toJson(steps) }}
-        run: echo "$STEPS_CONTEXT"
+          output: ${{ steps.changes.outputs.changes}}
 #      - name: push-changes
-#        if: steps.commit-changes.outputs.
+#        if: steps.changes.outputs.
 #        uses: ad-m/github-push-action@master
 #        with:
 #          github_token: ${{ secrets.GITHUB_TOKEN }}
