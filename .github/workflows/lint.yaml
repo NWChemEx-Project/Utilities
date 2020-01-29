@@ -25,6 +25,7 @@ jobs:
         run: |
               find utilities -name '*.hpp' -or -name '*.cpp' | xargs clang-format-9 -style=file -i -fallback-style=none
       - name: commit-changes
+        id: changes
         run: |
               diff_value=`git diff`
               if [ -z "$diff_value" ]
