@@ -11,10 +11,10 @@ jobs:
     steps:
       - name: obtain-source
         uses: actions/checkout@v2
-      - name: new-branch
-        env:
-          hash_value: ${{ github.sha }}
-        run: git checkout -b ${hash_value}-#pr
+#      - name: new-branch
+#        env:
+#          hash_value: ${{ github.sha }}
+#        run: git checkout -b ${hash_value}-#pr
       - name: get-lint-settings
         run:  wget https://raw.githubusercontent.com/NWChemEx-Project/DeveloperTools/master/ci/lint/clang-format.in -O .clang-format
       - name: get-clang-format
