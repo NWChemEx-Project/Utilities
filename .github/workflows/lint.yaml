@@ -20,7 +20,7 @@ jobs:
       - name: get-clang-format
         run: |
               sudo apt-get update
-              sudo apt-get install clang-format
+              sudo apt-get install -f clang-format
       - name: run-clang-format
         run: |
               find utilities -name '*.hpp' -or -name '*.cpp' | xargs clang-format -style=file -i -fallback-style=none
