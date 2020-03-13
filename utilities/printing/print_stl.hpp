@@ -1,7 +1,16 @@
 #pragma once
-#include "utilities/forward_stl.hpp"
 #include "utilities/type_traits/is_printable.hpp"
+#include <array>
+#include <deque>
+#include <list>
+#include <map>
 #include <ostream>
+#include <queue>
+#include <set>
+#include <stack>
+#include <tuple>
+#include <utility>
+#include <vector>
 
 /** @file print_stl.hpp
  *
@@ -18,10 +27,11 @@ namespace detail_ {
 
 template<typename T>
 std::ostream& print_element(std::ostream& os, T&& value) {
-    if constexpr(type_traits::is_printable_v<T>) {
+    using clean_T = std::decay_t<T>;
+    if constexpr(type_traits::is_printable_v<clean_T>) {
         return os << std::forward<T>(value);
     } else {
-        return os << "<" << typeid(T).name() << " " << &value << ">";
+        return os << "<" << typeid(clean_T).name() << " " << &value << ">";
     }
 }
 

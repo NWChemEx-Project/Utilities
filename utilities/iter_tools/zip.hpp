@@ -1,5 +1,6 @@
 #pragma once
 #include "utilities/containers/indexable_container_base.hpp"
+#include <array>
 
 namespace utilities {
 
@@ -97,7 +98,8 @@ Zip<Containers...>::Zip(Containers... containers) :
     },
     m_values_)),
   m_size_([&]() {
-      std::array sizes{containers.size()...};
+      std::array<std::size_t, sizeof...(Containers)> sizes{
+        containers.size()...};
       return *std::min_element(sizes.begin(), sizes.end());
   }()) {}
 

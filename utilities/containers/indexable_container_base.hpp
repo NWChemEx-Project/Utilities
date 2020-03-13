@@ -1,6 +1,6 @@
 #pragma once
 #include "utilities/iterators/offset_iterator.hpp"
-
+#include <string>
 namespace utilities {
 
 /** @brief Code factorization for a container that supports indexing.

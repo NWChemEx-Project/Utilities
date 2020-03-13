@@ -1,6 +1,7 @@
 #pragma once
 #include "utilities/iter_tools/range.hpp"
 #include "utilities/iter_tools/zip.hpp"
+#include <array>
 
 namespace utilities {
 
@@ -48,7 +49,8 @@ template<typename... Containers>
 Enumerate<Containers...>::Enumerate(Containers... containers) :
   Zip<Range<std::size_t>, Containers...>(
     Range([&]() {
-        std::array sizes{containers.size()...};
+        std::array<std::size_t, sizeof...(Containers)> sizes{
+          containers.size()...};
         return *std::min_element(sizes.begin(), sizes.end());
     }()),
     containers...) {}
