@@ -243,7 +243,7 @@ TEST_CASE("std::ostream<<(std::tuple)") {
         REQUIRE(ss.str() == "()");
     }
     SECTION("Filled tuple") {
-        std::tuple t{"Hi", 1, 3.14};
+        std::tuple<std::string, int, double> t{"Hi", 1, 3.14};
         std::stringstream ss;
         ss << t;
         REQUIRE(ss.str() == "(Hi, 1, 3.14)");
@@ -337,13 +337,24 @@ TEST_CASE("std::ostream<<(std::vector)") {
 }
 
 TEST_CASE("Nesting") {
-    std::vector<std::map<int, double>> c{{{0, 1.1}, {1, 2.2}, {2, 3.3}},
-                                         {{0, 4.4}, {1, 5.5}, {2, 6.6}}};
-    std::stringstream ss;
-    ss << c;
-    auto corr =
-      "[{(0 : 1.1), (1 : 2.2), (2 : 3.3)}, {(0 : 4.4), (1 : 5.5), (2 : 6.6)}]";
-    REQUIRE(ss.str() == corr);
+    SECTION("vector<map>") {
+        std::vector<std::map<int, double>> c{{{0, 1.1}, {1, 2.2}, {2, 3.3}},
+                                             {{0, 4.4}, {1, 5.5}, {2, 6.6}}};
+        std::stringstream ss;
+        ss << c;
+        auto corr = "[{(0 : 1.1), (1 : 2.2), (2 : 3.3)}, {(0 : 4.4), (1 : "
+                    "5.5), (2 : 6.6)}]";
+        REQUIRE(ss.str() == corr);
+    }
+
+    SECTION("map<vector>") {
+        std::map<std::vector<int>, double> c{{{1, 2, 3}, {1.1}},
+                                             {{1, 2, 4}, {2.2}}};
+        std::stringstream ss;
+        ss << c;
+        auto corr = "{([1, 2, 3] : 1.1), ([1, 2, 4] : 2.2)}";
+        REQUIRE(ss.str() == corr);
+    }
 }
 
 struct ANonPrintableClass {};
