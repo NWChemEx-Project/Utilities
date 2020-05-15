@@ -27,10 +27,19 @@ jobs:
         run: |
               cmake-${cmake_version}-${arch}/bin/cmake -H. -Bbuild
               cmake-${cmake_version}-${arch}/bin/cmake --build build --target cxx_api
+      - name: Move Doxygen to Docs
+        run: |
+              mkdir docs/build
+              mkdir docs/build/html
+              mv build/html docs/build/html/cxx_api
+      - name: Build Sphinx
+        run: |
+              cd docs
+              make html
       - name: Deploy
         uses: peaceiris/actions-gh-pages@v3
         with:
           personal_token: ${{ secrets.CREATE_PULL_REQUEST_TOKEN }}
-          publish_dir: ./build/html
+          publish_dir: ./docs/build/html
 
 

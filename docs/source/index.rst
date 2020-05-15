@@ -7,7 +7,8 @@ Welcome to Utilities' documentation!
 
    about/index
    installation/index
-   api/library_root
+
+`C++ API <cxx_api/index.html>`_
 
 Indices and tables
 ==================
