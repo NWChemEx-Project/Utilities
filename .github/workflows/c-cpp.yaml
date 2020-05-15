@@ -23,6 +23,10 @@ jobs:
             sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 95 --slave /usr/bin/g++ g++ /usr/bin/g++-8 --slave /usr/bin/gcov gcov /usr/bin/gcov-8
             g++  --version
             gcov --version
+    - name: Get Doxygen
+      run: |
+            sudo apt update
+            sudo apt-get install -f doxygen
     - name: get-gcovr
       run:  pip install gcovr
     - name: get-cmake

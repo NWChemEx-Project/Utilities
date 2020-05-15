@@ -1,0 +1,47 @@
+name: Test Documentation
+on:
+  pull_request:
+    branches:
+      - master
+
+jobs:
+  Build-Documentation:
+    runs-on: ubuntu-latest
+    env:
+      cmake_version: 3.16.3
+      arch: Linux-x86_64
+    steps:
+      - name: Obtain Source
+        uses: actions/checkout@v2
+      - name: Get CMake
+        env:
+          cmake_url: https://github.com/Kitware/CMake/releases/download
+        run: |
+              wget ${cmake_url}/v${cmake_version}/cmake-${cmake_version}-${arch}.sh
+              yes | /bin/sh cmake-${cmake_version}-${arch}.sh
+      - name: Get Doxygen
+        run: |
+              sudo apt update
+              sudo apt-get install -f doxygen
+      - name: Build Doxygen Documentation
+        run: |
+              cmake-${cmake_version}-${arch}/bin/cmake -H. -Bbuild
+              cmake-${cmake_version}-${arch}/bin/cmake --build build --target cxx_api
+      - name: Move Doxygen Documentation to Docs
+        run: |
+              mkdir docs/build
+              mkdir docs/build/html
+              mv build/html docs/build/html/cxx_api
+      - name: Install Sphinx
+        run: |
+              sudo apt update
+              sudo apt-get install -f python3-venv
+              python3 -m venv venv
+              source venv/bin/activate
+              pip3 install sphinx sphinx_rtd_theme
+      - name: Build Sphinx Documentation
+        run: |
+              source venv/bin/activate
+              cd docs
+              make html
+
