@@ -23,16 +23,20 @@ jobs:
         run: |
               sudo apt update
               sudo apt-get install -f doxygen
-      - name: Build Documentation
+      - name: Build Doxygen Documentation
         run: |
               cmake-${cmake_version}-${arch}/bin/cmake -H. -Bbuild
               cmake-${cmake_version}-${arch}/bin/cmake --build build --target cxx_api
-      - name: Move Doxygen to Docs
+      - name: Move Doxygen Documentation to Docs
         run: |
               mkdir docs/build
               mkdir docs/build/html
               mv build/html docs/build/html/cxx_api
-      - name: Build Sphinx
+      - name: Install Sphinx
+        run: |
+              sudo apt update
+              sudo apt-get install -f python3-sphinx sphinx-rtd-theme-common
+      - name: Build Sphinx Documentation
         run: |
               cd docs
               make html
