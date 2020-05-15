@@ -1,0 +1,249 @@
+
+
+<!DOCTYPE html>
+<!--[if IE 8]><html class="no-js lt-ie9" lang="en" > <![endif]-->
+<!--[if gt IE 8]><!--> <html class="no-js" lang="en" > <!--<![endif]-->
+<head>
+  <meta charset="utf-8">
+  
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  
+  <title>Building the library &mdash; utilities 1.0.0 documentation</title>
+  
+
+  
+  
+  
+  
+
+  
+  <script type="text/javascript" src="../_static/js/modernizr.min.js"></script>
+  
+    
+      <script type="text/javascript" id="documentation_options" data-url_root="../" src="../_static/documentation_options.js"></script>
+        <script src="../_static/jquery.js"></script>
+        <script src="../_static/underscore.js"></script>
+        <script src="../_static/doctools.js"></script>
+        <script src="../_static/language_data.js"></script>
+    
+    <script type="text/javascript" src="../_static/js/theme.js"></script>
+
+    
+
+  
+  <link rel="stylesheet" href="../_static/css/theme.css" type="text/css" />
+  <link rel="stylesheet" href="../_static/pygments.css" type="text/css" />
+    <link rel="index" title="Index" href="../genindex.html" />
+    <link rel="search" title="Search" href="../search.html" />
+    <link rel="prev" title="&lt;no title&gt;" href="index.html" /> 
+</head>
+
+<body class="wy-body-for-nav">
+
+   
+  <div class="wy-grid-for-nav">
+    
+    <nav data-toggle="wy-nav-shift" class="wy-nav-side">
+      <div class="wy-side-scroll">
+        <div class="wy-side-nav-search" >
+          
+
+          
+            <a href="../index.html" class="icon icon-home"> utilities
+          
+
+          
+          </a>
+
+          
+            
+            
+              <div class="version">
+                1.0.0
+              </div>
+            
+          
+
+          
+<div role="search">
+  <form id="rtd-search-form" class="wy-form" action="../search.html" method="get">
+    <input type="text" name="q" placeholder="Search docs" />
+    <input type="hidden" name="check_keywords" value="yes" />
+    <input type="hidden" name="area" value="default" />
+  </form>
+</div>
+
+          
+        </div>
+
+        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
+          
+            
+            
+              
+            
+            
+              <p class="caption"><span class="caption-text">Contents:</span></p>
+<ul class="current">
+<li class="toctree-l1"><a class="reference internal" href="../about/about.html">About</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Building the library</a></li>
+<li class="toctree-l1"><a class="reference internal" href="#building-the-documentation">Building the documentation</a></li>
+</ul>
+
+            
+          
+        </div>
+      </div>
+    </nav>
+
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
+
+      
+      <nav class="wy-nav-top" aria-label="top navigation">
+        
+          <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
+          <a href="../index.html">utilities</a>
+        
+      </nav>
+
+
+      <div class="wy-nav-content">
+        
+        <div class="rst-content">
+        
+          
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+<div role="navigation" aria-label="breadcrumbs navigation">
+
+  <ul class="wy-breadcrumbs">
+    
+      <li><a href="../index.html">Docs</a> &raquo;</li>
+        
+          <li><a href="index.html">&lt;no title&gt;</a> &raquo;</li>
+        
+      <li>Building the library</li>
+    
+    
+      <li class="wy-breadcrumbs-aside">
+        
+            
+            <a href="../_sources/installation/building.rst.txt" rel="nofollow"> View page source</a>
+          
+        
+      </li>
+    
+  </ul>
+
+  
+  <hr/>
+</div>
+          <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
+           <div itemprop="articleBody">
+            
+  <div class="section" id="building-the-library">
+<h1>Building the library<a class="headerlink" href="#building-the-library" title="Permalink to this headline">¶</a></h1>
+<p>Utilities is built using <a class="reference external" href="https://github.com/CMakePackagingProject/CMakePackagingProject.git">CPP</a>.
+Assuming you have already installed CPP,
+and you are willing to let cmake build the dependencies (Catch2), then the
+following will suffice to build:</p>
+<div class="highlight-bash notranslate"><div class="highlight"><pre><span></span>git clone https://github.com/NWChemEx-Project/Utilities.git
+<span class="nb">cd</span> Utilities
+cmake -H. <span class="se">\</span>
+      -Bbuild <span class="se">\</span>
+      -DCMAKE_PREFIX_PATH<span class="o">=</span>&lt;where/you/installed/CPP&gt; <span class="se">\</span>
+      -DCMAKE_INSTALL_PREFIX<span class="o">=</span>&lt;where/you/want/to/install/Utilities&gt;
+<span class="nb">cd</span> build
+cmake --build .
+make
+<span class="c1">#May need to run as an admin depending on where you are installing Utilities to</span>
+make install
+</pre></div>
+</div>
+<p>Note that the configure will appear to hang when it gets to Catch2.
+This is because it is building <a class="reference external" href="https://github.com/catchorg/Catch2">Catch2</a>
+testing framework. Building of Catch2 can be
+avoided by disabling tests (<em>i.e.</em>, passing <code class="docutils literal notranslate"><span class="pre">-DBUILD_TESTS=OFF</span></code> to the first
+invocation of <code class="docutils literal notranslate"><span class="pre">cmake</span></code>) or by providing CMake with an already built version of
+Catch2 by passing <code class="docutils literal notranslate"><span class="pre">-DCatch2_ROOT=/path/to/catch2</span></code> to the first invocation of
+<code class="docutils literal notranslate"><span class="pre">cmake</span></code>.</p>
+<p>For finer-grained control over the build we direct the reader to the more
+thorough CPP build instructions located <a class="reference external" href="https://cmakepackagingproject.readthedocs.io/en/latest/end_user/quick_start.html">here</a> and note that Utilities
+depends on <a class="reference external" href="https://github.com/catchorg/Catch2">Catch2</a> for testing.</p>
+</div>
+<div class="section" id="building-the-documentation">
+<h1>Building the documentation<a class="headerlink" href="#building-the-documentation" title="Permalink to this headline">¶</a></h1>
+<p>You need to install Doxygen and the following Python packages (all can be
+installed with <code class="docutils literal notranslate"><span class="pre">pip</span></code>):</p>
+<ul class="simple">
+<li><p>sphinx_rtd_theme (The Read-The-Docs theme for sphinx)</p></li>
+<li><p>sphinx (The thing that makes the documentation)</p></li>
+<li><p>breathe (Dependency of exhale, may get installed by it)</p></li>
+<li><p>exhale (The thing that turns Doxygen output into ReST)</p></li>
+</ul>
+<p>You can build the documentation with <code class="docutils literal notranslate"><span class="pre">make</span> <span class="pre">html</span></code> within <code class="docutils literal notranslate"><span class="pre">docs</span></code> directory.
+You can view the documentation by opening <cite>docs/build/html/index.html</cite> on your
+browser.</p>
+</div>
+
+
+           </div>
+           
+          </div>
+          <footer>
+  
+    <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
+      
+      
+        <a href="index.html" class="btn btn-neutral float-left" title="&lt;no title&gt;" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+      
+    </div>
+  
+
+  <hr/>
+
+  <div role="contentinfo">
+    <p>
+        &copy; Copyright 2020, NWChemEx Team
+
+    </p>
+  </div>
+  Built with <a href="http://sphinx-doc.org/">Sphinx</a> using a <a href="https://github.com/rtfd/sphinx_rtd_theme">theme</a> provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+
+</footer>
+
+        </div>
+      </div>
+
+    </section>
+
+  </div>
+  
+
+
+  <script type="text/javascript">
+      jQuery(function () {
+          SphinxRtdTheme.Navigation.enable(true);
+      });
+  </script>
+
+  
+  
+    
+   
+
+</body>
+</html>
