@@ -41,6 +41,7 @@ jobs:
               pip3 install sphinx sphinx_rtd_theme
       - name: Build Sphinx Documentation
         run: |
+              source venv/bin/activate
               cd docs
               make html
       - name: Deploy
