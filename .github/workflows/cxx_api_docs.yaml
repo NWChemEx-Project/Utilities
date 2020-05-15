@@ -34,8 +34,7 @@ jobs:
               mv build/html docs/build/html/cxx_api
       - name: Install Sphinx
         run: |
-              sudo apt update
-              sudo apt-get install -f python3-sphinx sphinx-rtd-theme-common
+              pip3 install sphinx sphinx_rtd_theme
       - name: Build Sphinx Documentation
         run: |
               cd docs
