@@ -1,5 +1,5 @@
 include_guard()
-
+set(FETCHCONTENT_SOURCE_DIR_CPP /home/ryan/CMakePP/cmakepackagingproject)
 #[[
 # This function encapsulates the process of getting CMakePP using CMake's
 # FetchContent module. We have encapsulated it in a function so we can set the

@@ -1,6 +1,6 @@
 name: Build CXX API Documentation
 on:
-  push:
+  pull_request:
     branches:
       - master
 
