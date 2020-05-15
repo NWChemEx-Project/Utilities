@@ -1,4 +1,4 @@
-name: Build CXX API Documentation
+name: Test Documentation
 on:
   pull_request:
     branches:
@@ -44,10 +44,4 @@ jobs:
               source venv/bin/activate
               cd docs
               make html
-      - name: Deploy
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          personal_token: ${{ secrets.CREATE_PULL_REQUEST_TOKEN }}
-          publish_dir: ./docs/build/html
-
 

@@ -5,6 +5,8 @@
 Utilities Repository
 ======================
 
+[Documentation](https://nwchemex-project.github.io/Utilities/)
+
 The C++ standard library as well as the STL are great for providing many of the
 features one needs to write a code.  However, they leave much to be desired.
 This library is intended to be our "Boost" in that it's a series of 
