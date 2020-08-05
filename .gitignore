@@ -1,22 +1,4 @@
-#Files that are temporary
-*.tmp
-*.autosave
-
-#IDE Settings
-.idea/
-
-#Build directories
 docs/build
-docs/doxyoutput
-docs/source/api
-
-*-build-*/
-Debug/
-Release/
-
-# Install directories
-install/
-
-#Generated files not part of project
-.clang-format
-toolchain.cmake
+.idea/
+cmake-build-debug/
+tests/make_tutorials/test
