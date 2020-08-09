@@ -11,7 +11,6 @@ jobs:
     strategy:
       matrix:
         cmake_version: [3.16.3]
-        gcc_version: [9]
     steps:
     - uses: actions/checkout@v1
     - uses: actions/setup-python@v1
@@ -20,7 +19,7 @@ jobs:
     - name: Get dependencies
       env:
         cmake_version: ${{ matrix.cmake_version }}
-        gcc_version: ${{ matrix.gcc_version }}
+        gcc_version: 9
       run: sudo .github/workflows/scripts/get_dependencies.sh gcc cmake
     - name: Configure
       run:  cmake-3.16.3-Linux-x86_64/bin/cmake -H. -Bbuild -DBUILD_TESTING=TRUE -DCATCH_ENABLE_COVERAGE=ON -DCMAKE_CXX_FLAGS="--coverage" -DCMAKE_C_FLAGS="--coverage" -DCMAKE_EXE_LINKER_FLAGS="-fprofile-arcs"
