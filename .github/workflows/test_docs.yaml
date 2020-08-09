@@ -16,7 +16,7 @@ jobs:
       - name: Get dependencies
         env:
           cmake_version: ${{ matrix.cmake_version }}
-        run: sudo scripts/get_dependencies.sh cmake doxygen sphinx
+        run: ls;sudo ./scripts/get_dependencies.sh cmake doxygen sphinx
       - name: Build Doxygen Documentation
         run: |
               cmake-${cmake_version}-${arch}/bin/cmake -H. -Bbuild
