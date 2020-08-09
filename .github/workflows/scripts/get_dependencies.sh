@@ -10,7 +10,7 @@
 #   depend2: name of the second dependency
 # Other variables:
 #   cmake_version: the version of cmake to get in the format x.y.z
-#
+#   gcc_version: the major of the GCC version to install
 # Notes:
 #   - This script needs to be run in sudo mode to actually install dependencies
 #   - Python dependencies are installed in the virtual environment "venv"
@@ -42,6 +42,24 @@ get_doxygen() {
   sudo apt-get install -f doxygen
 }
 
+get_gcc() {
+  gcc_no_v="/usr/bin/gcc"
+  gcc_v="${gcc_no_v}-${1}"
+  gxx_no_v="/usr/bin/g++"
+  gxx_v="${gxx_no_v}-${1}"
+  gcov_no_v="/usr/bin/gcov"
+  gcov_v="${gcov_no_v}-${1}"
+
+  sudo add-apt-repository ppa:ubuntu-toolchain-r/test
+  sudo apt-get update
+  sudo apt-get install "gcc-${1}" "g++-${1}"
+  sudo update-alternatives --install ${gcc_no_v} gcc ${gcc_v} 95 --slave\
+                                     ${gxx_no_v} g++ ${gxx_v} --slave\
+                                     ${gcov_no_v} gcov ${gcov_v}
+  g++  --version
+  gcov --version
+}
+
 # Wraps installing Sphinx and the ReadTheDocs Theme
 #
 # Usage:
@@ -63,9 +81,11 @@ for depend in "$@"; do
   # Please use camel_case for dependency names and keep the if-statements in
   # alphabetical order.
   if [ "${depend}" = "cmake" ]; then
-    get_cmake ${cmake_version}
+    get_cmake "${cmake_version}"
   elif [ "${depend}" = "doxygen" ]; then
     get_doxygen
+  elif [ "${depend}" = "gcc" ]; then
+    get_gcc "${gcc_version}"
   elif [ "${depend}" = "sphinx" ]; then
     get_sphinx
   else

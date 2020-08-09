@@ -7,37 +7,26 @@ on:
 
 jobs:
   build:
-
     runs-on: ubuntu-latest
-    
+    strategy:
+      matrix:
+        cmake_version: [3.16.3]
+        gcc_version: [9]
     steps:
     - uses: actions/checkout@v1
     - uses: actions/setup-python@v1
       with: 
          python-version: '3.x'
-    - name: get-gcc
-      run: |
-            sudo add-apt-repository ppa:ubuntu-toolchain-r/test
-            sudo apt-get update
-            sudo apt-get install gcc-8 g++-8 
-            sudo update-alternatives --install /usr/bin/gcc gcc /usr/bin/gcc-8 95 --slave /usr/bin/g++ g++ /usr/bin/g++-8 --slave /usr/bin/gcov gcov /usr/bin/gcov-8
-            g++  --version
-            gcov --version
-    - name: Get Doxygen
-      run: |
-            sudo apt update
-            sudo apt-get install -f doxygen
-    - name: get-gcovr
-      run:  pip install gcovr
-    - name: get-cmake
-      run: |
-            wget https://github.com/Kitware/CMake/releases/download/v3.16.3/cmake-3.16.3-Linux-x86_64.sh
-            yes | /bin/sh cmake-3.16.3-Linux-x86_64.sh
-    - name: cmake
+    - name: Get dependencies
+      env:
+        cmake_version: ${{ matrix.cmake_version }}
+        gcc_version: ${{matrix.gcc_version }}
+      run: sudo .github/workflows/scripts/get_dependencies.sh gcc cmake
+    - name: Configure
       run:  cmake-3.16.3-Linux-x86_64/bin/cmake -H. -Bbuild -DBUILD_TESTING=TRUE -DCATCH_ENABLE_COVERAGE=ON -DCMAKE_CXX_FLAGS="--coverage" -DCMAKE_C_FLAGS="--coverage" -DCMAKE_EXE_LINKER_FLAGS="-fprofile-arcs"
-    - name: ctest
+    - name: Build and test
       run:  cmake-3.16.3-Linux-x86_64/bin/ctest --build-and-test build build --build-nocmake --build-generator "Unix Makefiles" --test-command make test
-    - name: gcovr
+    - name: Get coverage
       run: |
            cd ..
            gcovr --root Utilities --filter Utilities --exclude Utilities/tests --xml Utilities/coverage.xml
