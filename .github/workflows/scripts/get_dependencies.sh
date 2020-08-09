@@ -1,4 +1,5 @@
 #!/bin/sh
+gcc_version=8
 
 # Wraps the process of getting dependencies during CI.
 #
