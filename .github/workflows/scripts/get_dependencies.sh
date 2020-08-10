@@ -19,6 +19,15 @@
 #                               Internal Functions                             #
 ################################################################################
 
+# Wraps installing clang-format
+#
+# Usage:
+#   get_clang_format
+get_clang_format() {
+  sudo apt update
+  sudo apt-get install -f clang-format-9
+}
+
 # Wraps downloading and installing a specific version of CMake
 #
 # Usage:
@@ -42,6 +51,12 @@ get_doxygen() {
   sudo apt-get install -f doxygen
 }
 
+# Wraps installing GCC
+#
+# Usage:
+#   get_gcc <gcc_version>
+# Arguments:
+#   gcc_version: The major of the GCC to install (e.g., 8 or 9)
 get_gcc() {
   gcc_no_v="/usr/bin/gcc"
   gcc_v="${gcc_no_v}-${1}"
@@ -58,6 +73,14 @@ get_gcc() {
                                      ${gcov_no_v} gcov ${gcov_v}
   g++  --version
   gcov --version
+}
+
+# Wraps installing gcovr
+#
+# Usage:
+#   get_gcovr
+get_gcovr() {
+  pip install gcovr
 }
 
 # Wraps installing Sphinx and the ReadTheDocs Theme
@@ -80,12 +103,16 @@ for depend in "$@"; do
   echo "Getting dependency: ${depend}"
   # Please use camel_case for dependency names and keep the if-statements in
   # alphabetical order.
-  if [ "${depend}" = "cmake" ]; then
+  if [ "${depend}" = "clang_format" ]; then
+    get_clang_format
+  elif [ "${depend}" = "cmake" ]; then
     get_cmake "${cmake_version}"
   elif [ "${depend}" = "doxygen" ]; then
     get_doxygen
   elif [ "${depend}" = "gcc" ]; then
     get_gcc "${gcc_version}"
+  elif [ "${depend}" = "gcovr" ]; then
+    get_gcovr
   elif [ "${depend}" = "sphinx" ]; then
     get_sphinx
   else
