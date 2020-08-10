@@ -12,6 +12,6 @@ mkdir docs/build/html
 mv build/html docs/build/html/cxx_api
 
 #Step 3: Build the Sphinx documentation
-source venv/bin/activate
+. venv/bin/activate
 cd docs
 make html
