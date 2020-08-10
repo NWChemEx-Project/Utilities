@@ -91,7 +91,7 @@ get_sphinx() {
   sudo apt update
   sudo apt-get install -f python3-venv
   python3 -m venv venv
-  source venv/bin/activate
+  . venv/bin/activate
   pip3 install sphinx sphinx_rtd_theme
 }
 
