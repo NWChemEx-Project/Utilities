@@ -21,8 +21,9 @@
 
 set -e # Exit with error if any command fails
 
-clang_formart_cmd="clang-format-9"
+clang_format_cmd="clang-format-9"
 for dir2lint in "$@"; do
+  echo "${dir2lint}"
   find "${dir2lint}" -name '*.hpp' -or -name '*.cpp' | \
   xargs "${clang_format_cmd}" -style=file -i -fallback-style=none
 done
