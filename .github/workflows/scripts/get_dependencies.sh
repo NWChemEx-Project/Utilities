@@ -1,5 +1,15 @@
 #!/bin/sh
 
+################################################################################
+#
+# The master get_dependencies.sh script lives at
+# NWChemEx-Project/DeveloperTools/.gihub/workflows/scripts. The
+# get_dependencies.sh script contained in all other NWChemEx-Project
+# repositories is a synchronized copy of the master script. Thus to make changes
+# to the get_dependencies.sh file please make them to the master script.
+#
+################################################################################
+
 # Wraps the process of getting dependencies during CI.
 #
 # Usage:
@@ -98,6 +108,8 @@ get_sphinx() {
 ################################################################################
 #                               Main Script                                    #
 ################################################################################
+
+set -e # Exit with error if any command fails
 
 for depend in "$@"; do
   echo "Getting dependency: ${depend}"
