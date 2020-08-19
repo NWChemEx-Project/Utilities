@@ -3,7 +3,7 @@ file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/version.txt" VERSION)
 project(utilities VERSION "${VERSION}")
 
 option(BUILD_TESTING "Should we build the tests?" OFF)
-option(BUILD_DOCS "Should we build the documentation?" ON)
+option(BUILD_DOCS "Should we build the documentation?" OFF)
 
 set(
     CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${PROJECT_SOURCE_DIR}/cmake"
