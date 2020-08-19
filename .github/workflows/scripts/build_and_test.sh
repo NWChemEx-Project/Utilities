@@ -1,5 +1,4 @@
 #!/bin/sh
-
 ################################################################################
 #
 # The master build_and_test.sh script lives at
@@ -19,6 +18,8 @@
 #   cmake_version: the version of cmake being used in the format x.y.z
 #
 
+set -e # Exit with error if any command fails
+
 arch=Linux-x86_64
 cmake_root=cmake-${cmake_version}-${arch}
 cmake_command="${cmake_root}/bin/cmake"
@@ -28,9 +29,9 @@ toolchain_file=`pwd`/toolchain.cmake
 #Step 1: Write toolchain.cmake
 echo "set(BUILD_TESTING ON)" > ${toolchain_file}
 echo "set(CATCH_ENABLE_COVERAGE ON)" >> ${toolchain_file}
-echo "list(APPEND CMAKE_CXX_FLAGS --coverage)" >> ${toolchain_file}
-echo "list(APPEND CMAKE_C_FLAGS --coverage)" >> ${toolchain_file}
-echo "list(APPEND CMAKE_EXE_LINKER_FLAGS -fprofile-arcs)" >> ${toolchain_file}
+echo 'set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} --coverage")' >> ${toolchain_file}
+echo 'set(CMAKE_C_FLAGS "${CMAKE_C_FLAGS} --coverage")' >> ${toolchain_file}
+echo 'set(CMAKE_EXE_LINKER_FLAGS "${CMAKE_EXE_LINKER_FLAGS} -fprofile-arcs")' >> ${toolchain_file}
 cat ${toolchain_file}
 
 
