@@ -10,18 +10,14 @@ set(
     CACHE STRING "" FORCE
 )
 include(get_cpp)
+include(nwx_cxx_api_docs)
+nwx_cxx_api_docs("${CMAKE_CURRENT_SOURCE_DIR}/utilities")
 
 cpp_add_library(
     utilities
     SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/utilities"
     INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/utilities"
 )
-
-if("${BUILD_DOCS}")
-    find_package(Doxygen REQUIRED)
-    set(DOXYGEN_EXTRA_PACKAGES amsmath) # Extra LaTeX packages for documentation
-    doxygen_add_docs(cxx_api "${CMAKE_CURRENT_LIST_DIR}/utilities")
-endif()
 
 if("${BUILD_TESTING}")
     cpp_find_or_build_dependency(
