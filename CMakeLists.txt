@@ -25,6 +25,7 @@ if("${BUILD_TESTING}")
         URL github.com/catchorg/Catch2
         BUILD_TARGET Catch2
         FIND_TARGET Catch2::Catch2
+        VERSION 2.x
     )
     cpp_add_tests(
         test_utilities
