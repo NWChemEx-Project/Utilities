@@ -1,8 +1,8 @@
 #pragma once
 #include "utilities/iterators/random_access_iterator_base.hpp"
 #include "utilities/mathematician/integer_utils.hpp"
-#include <tuple>
 #include <stdexcept>
+#include <tuple>
 
 namespace utilities::iterators {
 
