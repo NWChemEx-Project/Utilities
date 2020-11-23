@@ -91,9 +91,9 @@ inline auto split_string(const std::string& str, char c) {
 template<typename T, typename U>
 auto join_string(T&& split_str, U&& delim) {
     std::string rv;
-    for(auto&& [i, x] : utilities::Enumerate(std::forward<T>(split_str))){
+    for(auto&& [i, x] : utilities::Enumerate(std::forward<T>(split_str))) {
         rv += x;
-        if(i != split_str.size() -1) rv += delim;
+        if(i != split_str.size() - 1) rv += delim;
     }
     return rv;
 }
