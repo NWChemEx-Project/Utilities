@@ -1,5 +1,6 @@
 #pragma once
 #include "utilities/containers/indexable_container_base.hpp"
+#include <algorithm>
 #include <array>
 
 namespace utilities {

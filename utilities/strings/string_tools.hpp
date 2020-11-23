@@ -1,4 +1,5 @@
 #pragma once
+#include "utilities/iter_tools/enumerate.hpp"
 #include <string>
 #include <vector>
 
@@ -58,6 +59,43 @@ inline std::vector<std::string> split_string(const std::string& str,
  */
 inline auto split_string(const std::string& str, char c) {
     return split_string(str, std::string(1, c));
+}
+
+/** @brief Concatenates the contents of a container using the provided delimiter
+ *         as glue.
+ *
+ *  This function is the inverse of sorts for split_string. Given a container
+ *  whose elements are strings, this function will concatenate the elements of
+ *  the container, optionally inserting a delimiter between elements. For
+ *  example:
+ *
+ *  @code
+ *  std::vector input{"foo", "bar"};
+ *  auto rv = join_string(input, "+");
+ *  assert(rv == "foo+bar");
+ *  @endcode
+ *
+ * @tparam T The type of the container. Assumed to be forward iterable.
+ * @tparam U The type of the delimiter. std::string::operator+=(U) must be
+ *           defined. Assumed to be either char or std::string.
+ *
+ * @param[in] split_str The container holding the split string. The contents of
+ *                      @p split_str will be joined to form the result.
+ * @param[in] delim     The character or string to use as "glue" when joining
+ *                      the contents of @p split_str.
+ * @return The contents of @p split_str concatenated together with @p delim.
+ *
+ * @throw std::bad_alloc if there is insufficient memory to allocate the result.
+ *                       Strong throw guarantee.
+ */
+template<typename T, typename U>
+auto join_string(T&& split_str, U&& delim) {
+    std::string rv;
+    for(auto&& [i, x] : utilities::Enumerate(std::forward<T>(split_str))){
+        rv += x;
+        if(i != split_str.size() -1) rv += delim;
+    }
+    return rv;
 }
 
 } // namespace utilities::strings
