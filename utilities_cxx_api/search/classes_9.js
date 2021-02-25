@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['negation',['Negation',['../structutilities_1_1Negation.html',1,'utilities']]]
+  ['negation_240',['Negation',['../structutilities_1_1Negation.html',1,'utilities']]]
 ];
