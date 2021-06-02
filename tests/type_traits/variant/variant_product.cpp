@@ -2,13 +2,12 @@
 #include <catch2/catch.hpp>
 #include <type_traits>
 
-using namespace utilities;
-using namespace utilities::detail_;
+using namespace utilities::type_traits::variant;
 
 TEST_CASE("variant_prod_t") {
     using ltuple = std::variant<char, long>;
     using rtuple = std::variant<int, double, float>;
-    using type   = variant_prod_t<std::pair, ltuple, rtuple>;
+    using type   = product_t<std::pair, ltuple, rtuple>;
     using pair0  = std::pair<char, int>;
     using pair1  = std::pair<char, double>;
     using pair2  = std::pair<char, float>;

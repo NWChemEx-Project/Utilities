@@ -1,7 +1,7 @@
 #pragma once
 #include <tuple>
 
-namespace utilities {
+namespace utilities::type_traits::tuple {
 
 /** @brief Type of resulting from concatentating several tuple types together.
  *
@@ -25,4 +25,4 @@ namespace utilities {
 template<typename... Args>
 using tuple_cat_t = decltype(std::tuple_cat(std::declval<Args>()...));
 
-} // namespace utilities
+} // namespace utilities::type_traits::tuple

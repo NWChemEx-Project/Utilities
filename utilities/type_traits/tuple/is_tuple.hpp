@@ -1,7 +1,7 @@
 #pragma once
 #include <type_traits>
 
-namespace utilities {
+namespace utilities::type_traits::tuple {
 
 /// Type trait for when @p T is not an std::tuple or std::pair has  value=false
 template<typename T>
@@ -19,4 +19,4 @@ struct IsTuple<std::pair<T, U>> : std::true_type {};
 template<typename T>
 static constexpr bool is_tuple_v = IsTuple<T>::value;
 
-} // namespace utilities
+} // namespace utilities::type_traits::tuple

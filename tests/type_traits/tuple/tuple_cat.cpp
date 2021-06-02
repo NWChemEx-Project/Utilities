@@ -2,7 +2,7 @@
 #include <catch2/catch.hpp>
 #include <type_traits>
 
-using namespace utilities;
+using namespace utilities::type_traits::tuple;
 
 TEST_CASE("tuple_cat_t") {
     SECTION("No tuples") {

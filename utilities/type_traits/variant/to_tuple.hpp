@@ -15,7 +15,7 @@
  *  they will not actually convert the instances.
  */
 
-namespace utilities {
+namespace utilities::type_traits::variant {
 namespace detail_ {
 
 /** @brief Primary template for converting a std::variant to a std::tuple
@@ -29,7 +29,7 @@ namespace detail_ {
  *            the code will fail to compile.
  */
 template<typename T>
-struct variant_to_tuple;
+struct to_tuple;
 
 /** @brief Specialization of variant_to_tuple for when the template paramter is
  *         a std::variant.
@@ -42,13 +42,13 @@ struct variant_to_tuple;
  *  @tparam Args The types in the std::variant.
  */
 template<typename... Args>
-struct variant_to_tuple<std::variant<Args...>> {
+struct to_tuple<std::variant<Args...>> {
     using type = std::tuple<Args...>;
 };
 } // namespace detail_
 
 /// Public API for getting the type of a tuple with the same types as a variant
 template<typename T>
-using variant_to_tuple_t = typename detail_::variant_to_tuple<T>::type;
+using to_tuple_t = typename detail_::to_tuple<T>::type;
 
-} // namespace utilities
+} // namespace utilities::type_traits::variant

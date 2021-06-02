@@ -2,8 +2,8 @@
 #include <catch2/catch.hpp>
 #include <type_traits>
 
-using namespace utilities;
-using namespace utilities::detail_;
+using namespace utilities::type_traits::tuple;
+using namespace utilities::type_traits::tuple::detail_;
 
 TEST_CASE("base_prod_t") {
     using type = base_prod_t<std::pair, int, double>;
@@ -24,7 +24,7 @@ TEST_CASE("base_prod_expand_r_t") {
 TEST_CASE("tuple_prod_t") {
     using ltuple = std::tuple<char, long>;
     using rtuple = std::tuple<int, double, float>;
-    using type   = tuple_prod_t<std::pair, ltuple, rtuple>;
+    using type   = product_t<std::pair, ltuple, rtuple>;
     using pair0  = std::pair<char, int>;
     using pair1  = std::pair<char, double>;
     using pair2  = std::pair<char, float>;
