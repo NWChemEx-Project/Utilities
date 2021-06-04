@@ -7,7 +7,10 @@ namespace utilities::type_traits::variant {
 
 /** @brief Creates a new variant by concatenating 0 or more variants.
  *
- *  @tparam Args The v
+ *  This is a typedef of a single variant obtained from concatenating the types
+ *  in 0 or more std::variant types.
+ *
+ *  @tparam Args 0 or more std::variant instances to concatenate.
  */
 template<typename... Args>
 using cat_t = tuple::to_variant_t<tuple::tuple_cat_t<to_tuple_t<Args>...>>;

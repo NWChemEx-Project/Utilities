@@ -14,7 +14,6 @@
  *  std::tuple and vice versa. *N.B.* These conversions are only of the type,
  *  they will not actually convert the instances.
  */
-
 namespace utilities::type_traits::variant {
 namespace detail_ {
 
