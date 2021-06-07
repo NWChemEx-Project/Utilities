@@ -1,5 +1,5 @@
 #include <catch2/catch.hpp>
-#include <utilities/type_traits/is_tuple.hpp>
+#include <utilities/type_traits/tuple/is_tuple.hpp>
 
 using namespace utilities;
 
