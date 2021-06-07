@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['pointer_370',['pointer',['../classutilities_1_1iterators_1_1OffsetIterator.html#a3cd822a4397f46d2375fe357c51e7946',1,'utilities::iterators::OffsetIterator']]]
+  ['key_5ftype_400',['key_type',['../classutilities_1_1Timer.html#a1d7f35e480303848404a8bba6ae5308d',1,'utilities::Timer']]]
 ];
