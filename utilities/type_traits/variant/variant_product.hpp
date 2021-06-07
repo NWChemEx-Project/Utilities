@@ -1,23 +1,23 @@
 #pragma once
 #include "utilities/type_traits/tuple/tuple_product.hpp"
 #include "utilities/type_traits/tuple/variant.hpp"
-#include "utilities/type_traits/variant/tuple.hpp"
+#include "utilities/type_traits/variant/to_tuple.hpp"
 #include <variant>
 
-namespace utilities {
+namespace utilities::type_traits::variant {
 namespace detail_ {
 /// Makes variant_prod_t easier to read
 template<template<typename, typename> typename Op, typename LHSVariant,
          typename RHSVariant>
 struct variant_prod {
     /// Convert LHSVariant to a tuple
-    using lhs_as_tuple = utilities::variant_to_tuple_t<LHSVariant>;
+    using lhs_as_tuple = to_tuple_t<LHSVariant>;
     /// Convert RHSVariant to a tuple
-    using rhs_as_tuple = utilities::variant_to_tuple_t<RHSVariant>;
+    using rhs_as_tuple = to_tuple_t<RHSVariant>;
     /// Take product of the two tuples, result is a tuple
-    using result_type = utilities::tuple_prod_t<Op, lhs_as_tuple, rhs_as_tuple>;
+    using result_type = tuple::product_t<Op, lhs_as_tuple, rhs_as_tuple>;
     /// Convert product tuple to a variant
-    using type = utilities::tuple_to_variant_t<result_type>;
+    using type = tuple::to_variant_t<result_type>;
 };
 
 } // namespace detail_
@@ -46,7 +46,7 @@ struct variant_prod {
  */
 template<template<typename, typename> typename Op, typename LHSVariant,
          typename RHSVariant>
-using variant_prod_t =
+using product_t =
   typename detail_::variant_prod<Op, LHSVariant, RHSVariant>::type;
 
-} // namespace utilities
+} // namespace utilities::type_traits::variant

@@ -2,7 +2,7 @@
 #include "utilities/type_traits/tuple/tuple_cat.hpp"
 #include <tuple>
 
-namespace utilities {
+namespace utilities::type_traits::tuple {
 namespace detail_ {
 
 /** @brief typedef of Op<LHSType, RHSType>
@@ -116,7 +116,7 @@ auto base_prod_expand_r_and_l(std::tuple<LHSTypes...>, std::tuple<RHSTypes...>)
  */
 template<template<typename, typename> typename Op, typename LHSTuple,
          typename RHSTuple>
-using tuple_prod_t = decltype(detail_::base_prod_expand_r_and_l<Op>(
+using product_t = decltype(detail_::base_prod_expand_r_and_l<Op>(
   std::declval<LHSTuple>(), std::declval<RHSTuple>()));
 
-} // namespace utilities
+} // namespace utilities::type_traits::tuple
