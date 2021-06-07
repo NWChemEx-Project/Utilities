@@ -1,8 +1,5 @@
 var searchData=
 [
-  ['table_5ftype_412',['table_type',['../classutilities_1_1printing_1_1detail___1_1TablePIMPL.html#aae913f38cd2f22c40e59aed2cdf1d66b',1,'utilities::printing::detail_::TablePIMPL::table_type()'],['../classutilities_1_1printing_1_1Table.html#aab9acfa712d854dbcaca6a139b11ed8e',1,'utilities::printing::Table::table_type()']]],
-  ['tuple_5fcat_5ft_413',['tuple_cat_t',['../namespaceutilities.html#a1a108b75497910a87b8dd415c9b5f5ba',1,'utilities']]],
-  ['tuple_5fprod_5ft_414',['tuple_prod_t',['../namespaceutilities.html#a87dbd91c8d1c2123fc7d612c1fa9701a',1,'utilities']]],
-  ['tuple_5fto_5fvariant_5ft_415',['tuple_to_variant_t',['../namespaceutilities.html#ab7521b5f0c212fb5e7d30e039fadca12',1,'utilities']]],
-  ['type_416',['type',['../structutilities_1_1detail___1_1variant__prod.html#a854d709d4cd367c05c148528a79753bf',1,'utilities::detail_::variant_prod']]]
+  ['value_5ftype_418',['value_type',['../classutilities_1_1MathSet.html#a6e6f8bcd3e0d25fb4a21dc739963bfc0',1,'utilities::MathSet::value_type()'],['../classutilities_1_1Combinations.html#ac685bd89ee559474fd7139053058a993',1,'utilities::Combinations::value_type()'],['../classutilities_1_1Permutations.html#a66d994a1527d9c88c27930ffc11ad4b0',1,'utilities::Permutations::value_type()'],['../classutilities_1_1Range.html#afdb09f59550e8cc26754118218503bc0',1,'utilities::Range::value_type()'],['../classutilities_1_1Zip.html#a1849ff2619f43c2c155acc7a1c2443bb',1,'utilities::Zip::value_type()'],['../classutilities_1_1iterators_1_1OffsetIterator.html#a01a9f772a4d36d9e5bd9c96a833aa6a6',1,'utilities::iterators::OffsetIterator::value_type()'],['../classutilities_1_1printing_1_1detail___1_1TablePIMPL.html#aeed9a3387eb8239595e21f710033aea6',1,'utilities::printing::detail_::TablePIMPL::value_type()'],['../classutilities_1_1printing_1_1Table.html#a8d59081280d3e23c7aaf5af893679cb3',1,'utilities::printing::Table::value_type()']]],
+  ['variant_5fto_5ftuple_5ft_419',['variant_to_tuple_t',['../namespaceutilities.html#a286981143c3710fa4b2625eaf09c93d7',1,'utilities']]]
 ];

@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>utilities: Member List</title>
+<title>utilities: utilities::type_traits::tuple::detail_::has_type&lt; Type2Look4, Tuple &gt; Struct Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -62,22 +62,36 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="namespaceutilities.html">utilities</a></li><li class="navelem"><a class="el" href="namespaceutilities_1_1detail__.html">detail_</a></li><li class="navelem"><a class="el" href="structutilities_1_1detail___1_1variant__prod.html">variant_prod</a></li>  </ul>
+<li class="navelem"><a class="el" href="namespaceutilities.html">utilities</a></li><li class="navelem"><b>type_traits</b></li><li class="navelem"><b>tuple</b></li><li class="navelem"><b>detail_</b></li><li class="navelem"><a class="el" href="structutilities_1_1type__traits_1_1tuple_1_1detail___1_1has__type.html">has_type</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
   <div class="headertitle">
-<div class="title">utilities::detail_::variant_prod&lt; Op, LHSVariant, RHSVariant &gt; Member List</div>  </div>
+<div class="title">utilities::type_traits::tuple::detail_::has_type&lt; Type2Look4, Tuple &gt; Struct Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>This is the complete list of members for <a class="el" href="structutilities_1_1detail___1_1variant__prod.html">utilities::detail_::variant_prod&lt; Op, LHSVariant, RHSVariant &gt;</a>, including all inherited members.</p>
-<table class="directory">
-  <tr class="even"><td class="entry"><a class="el" href="structutilities_1_1detail___1_1variant__prod.html#a0d94b51b6a6c3393d27661cf3071fdcd">lhs_as_tuple</a> typedef</td><td class="entry"><a class="el" href="structutilities_1_1detail___1_1variant__prod.html">utilities::detail_::variant_prod&lt; Op, LHSVariant, RHSVariant &gt;</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="structutilities_1_1detail___1_1variant__prod.html#abb4485f98dd37e2abe509056290c1241">result_type</a> typedef</td><td class="entry"><a class="el" href="structutilities_1_1detail___1_1variant__prod.html">utilities::detail_::variant_prod&lt; Op, LHSVariant, RHSVariant &gt;</a></td><td class="entry"></td></tr>
-  <tr class="even"><td class="entry"><a class="el" href="structutilities_1_1detail___1_1variant__prod.html#a3dd47770e87f465a9d3554b89103e742">rhs_as_tuple</a> typedef</td><td class="entry"><a class="el" href="structutilities_1_1detail___1_1variant__prod.html">utilities::detail_::variant_prod&lt; Op, LHSVariant, RHSVariant &gt;</a></td><td class="entry"></td></tr>
-  <tr><td class="entry"><a class="el" href="structutilities_1_1detail___1_1variant__prod.html#a854d709d4cd367c05c148528a79753bf">type</a> typedef</td><td class="entry"><a class="el" href="structutilities_1_1detail___1_1variant__prod.html">utilities::detail_::variant_prod&lt; Op, LHSVariant, RHSVariant &gt;</a></td><td class="entry"></td></tr>
-</table></div><!-- contents -->
+<p>Primary template for determining if a type is in a tuple.  
+ <a href="structutilities_1_1type__traits_1_1tuple_1_1detail___1_1has__type.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="tuple_2has__type_8hpp_source.html">has_type.hpp</a>&gt;</code></p>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><h3>template&lt;typename Type2Look4, typename Tuple&gt;<br />
+struct utilities::type_traits::tuple::detail_::has_type&lt; Type2Look4, Tuple &gt;</h3>
+
+<p>Primary template for determining if a type is in a tuple. </p>
+<p>This struct can be used to determine if <code>Type2Look4</code> appears in the tuple <code>Tuple</code>. The primary template is selected when <code>Tuple</code> is not an std::tuple; the primary template is not defined and thus a compilation error will arise if <code>Tuple</code> is not a tuple.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Type2Look4</td><td>The type we are attempting to find in <code>Tuple</code> </td></tr>
+    <tr><td class="paramname">Tuple</td><td>If this version of <a class="el" href="structutilities_1_1type__traits_1_1tuple_1_1detail___1_1has__type.html" title="Primary template for determining if a type is in a tuple.">has_type</a> is selected <code>Tuple</code> will be a type other than std::tuple. </td></tr>
+  </table>
+  </dd>
+</dl>
+</div><hr/>The documentation for this struct was generated from the following file:<ul>
+<li>utilities/type_traits/tuple/<a class="el" href="tuple_2has__type_8hpp_source.html">has_type.hpp</a></li>
+</ul>
+</div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

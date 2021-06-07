@@ -95,15 +95,6 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structutilities_1_1detail___1_1MCImpl.html">MCImpl</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Struct that actually implements the multinomial coefficient.  <a href="structutilities_1_1detail___1_1MCImpl.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structutilities_1_1detail___1_1tuple__to__variant.html">tuple_to_variant</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Primary template for converting a std::tuple to a std::variant.  <a href="structutilities_1_1detail___1_1tuple__to__variant.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structutilities_1_1detail___1_1tuple__to__variant_3_01std_1_1tuple_3_01Args_8_8_8_01_4_01_4.html">tuple_to_variant&lt; std::tuple&lt; Args... &gt; &gt;</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Specialization of <a class="el" href="structutilities_1_1detail___1_1tuple__to__variant.html" title="Primary template for converting a std::tuple to a std::variant.">tuple_to_variant</a> for when the template paramter is a std::tuple.  <a href="structutilities_1_1detail___1_1tuple__to__variant_3_01std_1_1tuple_3_01Args_8_8_8_01_4_01_4.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structutilities_1_1detail___1_1variant__prod.html">variant_prod</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Makes variant_prod_t easier to read.  <a href="structutilities_1_1detail___1_1variant__prod.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structutilities_1_1detail___1_1variant__to__tuple.html">variant_to_tuple</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Primary template for converting a std::variant to a std::tuple.  <a href="structutilities_1_1detail___1_1variant__to__tuple.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -113,14 +104,6 @@ Classes</h2></td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:aa9aacac6c60d13864479d722334ac9d4"><td class="memTemplParams" colspan="2">template&lt;template&lt; typename, typename &gt; typename Op, typename LHSType , typename RHSType &gt; </td></tr>
-<tr class="memitem:aa9aacac6c60d13864479d722334ac9d4"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceutilities_1_1detail__.html#aa9aacac6c60d13864479d722334ac9d4">base_prod_t</a> = Op&lt; LHSType, RHSType &gt;</td></tr>
-<tr class="memdesc:aa9aacac6c60d13864479d722334ac9d4"><td class="mdescLeft">&#160;</td><td class="mdescRight">typedef of Op&lt;LHSType, RHSType&gt;  <a href="namespaceutilities_1_1detail__.html#aa9aacac6c60d13864479d722334ac9d4">More...</a><br /></td></tr>
-<tr class="separator:aa9aacac6c60d13864479d722334ac9d4"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa06d56f3262337b0157b95a481f189e9"><td class="memTemplParams" colspan="2">template&lt;template&lt; typename, typename &gt; typename Op, typename LHSType , typename RTuple &gt; </td></tr>
-<tr class="memitem:aa06d56f3262337b0157b95a481f189e9"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceutilities_1_1detail__.html#aa06d56f3262337b0157b95a481f189e9">base_prod_expand_r_t</a> = decltype(<a class="el" href="namespaceutilities_1_1detail__.html#a6f338186e18f790d9bf0cd9d77bb1d35">base_prod_expand_r</a>&lt; Op, LHSType &gt;(std::declval&lt; RTuple &gt;()))</td></tr>
-<tr class="memdesc:aa06d56f3262337b0157b95a481f189e9"><td class="mdescLeft">&#160;</td><td class="mdescRight">A typdef to make it easier to get the return of base_prod_expand_r.  <a href="namespaceutilities_1_1detail__.html#aa06d56f3262337b0157b95a481f189e9">More...</a><br /></td></tr>
-<tr class="separator:aa06d56f3262337b0157b95a481f189e9"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:aeddd9d8d94a6cf1bf6d30157da8b71c8"><td class="memTemplParams" colspan="2">template&lt;std::size_t I, typename tuple_type &gt; </td></tr>
 <tr class="memitem:aeddd9d8d94a6cf1bf6d30157da8b71c8"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceutilities_1_1detail__.html#aeddd9d8d94a6cf1bf6d30157da8b71c8">recursion_done</a> = std::is_same&lt; std::integral_constant&lt; std::size_t, I &gt;, std::integral_constant&lt; std::size_t, std::tuple_size&lt; std::decay_t&lt; tuple_type &gt; &gt;::value &gt; &gt;</td></tr>
 <tr class="memdesc:aeddd9d8d94a6cf1bf6d30157da8b71c8"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type that will tell us if we have iterated over all elements of a tuple.  <a href="namespaceutilities_1_1detail__.html#aeddd9d8d94a6cf1bf6d30157da8b71c8">More...</a><br /></td></tr>
@@ -142,14 +125,6 @@ template&lt;std::size_t I, typename tuple_type &gt; </td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
-<tr class="memitem:a6f338186e18f790d9bf0cd9d77bb1d35"><td class="memTemplParams" colspan="2">template&lt;template&lt; typename, typename &gt; typename Op, typename LHSType , typename... RHSTypes&gt; </td></tr>
-<tr class="memitem:a6f338186e18f790d9bf0cd9d77bb1d35"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceutilities_1_1detail__.html#a6f338186e18f790d9bf0cd9d77bb1d35">base_prod_expand_r</a> (std::tuple&lt; RHSTypes... &gt;) -&gt; std::tuple&lt; <a class="el" href="namespaceutilities_1_1detail__.html#aa9aacac6c60d13864479d722334ac9d4">base_prod_t</a>&lt; Op, LHSType, RHSTypes &gt;... &gt;</td></tr>
-<tr class="memdesc:a6f338186e18f790d9bf0cd9d77bb1d35"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function which returns a tuple of base_prod_t types.  <a href="namespaceutilities_1_1detail__.html#a6f338186e18f790d9bf0cd9d77bb1d35">More...</a><br /></td></tr>
-<tr class="separator:a6f338186e18f790d9bf0cd9d77bb1d35"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a750d72f7315dcaabf142db0e5fcb692a"><td class="memTemplParams" colspan="2">template&lt;template&lt; typename, typename &gt; typename Op, typename... LHSTypes, typename... RHSTypes&gt; </td></tr>
-<tr class="memitem:a750d72f7315dcaabf142db0e5fcb692a"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceutilities_1_1detail__.html#a750d72f7315dcaabf142db0e5fcb692a">base_prod_expand_r_and_l</a> (std::tuple&lt; LHSTypes... &gt;, std::tuple&lt; RHSTypes... &gt;) -&gt; <a class="el" href="namespaceutilities.html#a1a108b75497910a87b8dd415c9b5f5ba">tuple_cat_t</a>&lt; <a class="el" href="namespaceutilities_1_1detail__.html#aa06d56f3262337b0157b95a481f189e9">base_prod_expand_r_t</a>&lt; Op, LHSTypes, std::tuple&lt; RHSTypes... &gt;&gt;... &gt;</td></tr>
-<tr class="memdesc:a750d72f7315dcaabf142db0e5fcb692a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Function which returns a tuple filled with pairs of types from two tuples.  <a href="namespaceutilities_1_1detail__.html#a750d72f7315dcaabf142db0e5fcb692a">More...</a><br /></td></tr>
-<tr class="separator:a750d72f7315dcaabf142db0e5fcb692a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a65f6b0b27eb811af5dfe47680247ea92"><td class="memTemplParams" colspan="2"><a id="a65f6b0b27eb811af5dfe47680247ea92"></a>
 template&lt;typename tuple_type , typename functor_type , std::size_t... I&gt; </td></tr>
 <tr class="memitem:a65f6b0b27eb811af5dfe47680247ea92"><td class="memTemplItemLeft" align="right" valign="top">auto&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceutilities_1_1detail__.html#a65f6b0b27eb811af5dfe47680247ea92">tuple_transform_impl</a> (tuple_type &amp;&amp;tuple, functor_type &amp;&amp;functor, std::index_sequence&lt; I... &gt;)</td></tr>
@@ -172,59 +147,6 @@ template&lt;std::size_t I, typename tuple_type , typename functor_type , typenam
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Name space for things not mean to see the light of day. </p>
 </div><h2 class="groupheader">Typedef Documentation</h2>
-<a id="aa06d56f3262337b0157b95a481f189e9"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa06d56f3262337b0157b95a481f189e9">&#9670;&nbsp;</a></span>base_prod_expand_r_t</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;template&lt; typename, typename &gt; typename Op, typename LHSType , typename RTuple &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">using <a class="el" href="namespaceutilities_1_1detail__.html#aa06d56f3262337b0157b95a481f189e9">utilities::detail_::base_prod_expand_r_t</a> = typedef decltype(<a class="el" href="namespaceutilities_1_1detail__.html#a6f338186e18f790d9bf0cd9d77bb1d35">base_prod_expand_r</a>&lt;Op, LHSType&gt;(std::declval&lt;RTuple&gt;()))</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>A typdef to make it easier to get the return of base_prod_expand_r. </p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">Op</td><td>A type templated on two types. Will be used to "glue" together pairs of <code>LHSType</code> and the types in <code>RHSTypes</code>. </td></tr>
-    <tr><td class="paramname">LHSType</td><td>The type which will be the first type parameter to <code>Op</code> </td></tr>
-    <tr><td class="paramname">RHSTypes</td><td>The types which will be paired with <code>LHSType</code> one at a time. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="aa9aacac6c60d13864479d722334ac9d4"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa9aacac6c60d13864479d722334ac9d4">&#9670;&nbsp;</a></span>base_prod_t</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;template&lt; typename, typename &gt; typename Op, typename LHSType , typename RHSType &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">using <a class="el" href="namespaceutilities_1_1detail__.html#aa9aacac6c60d13864479d722334ac9d4">utilities::detail_::base_prod_t</a> = typedef Op&lt;LHSType, RHSType&gt;</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>typedef of Op&lt;LHSType, RHSType&gt; </p>
-<p>This is the end point for expanding both parameter packs in tuple_product_t. It is the fundamental templated type which will be present in the final tuple.</p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">Op</td><td>A type that is templated on two types. </td></tr>
-    <tr><td class="paramname">LHSType</td><td>The first type which will be used as <code>Op's</code> first template type parameter. </td></tr>
-    <tr><td class="paramname">RHSType</td><td>The second type which will be used as <code>Op's</code> second template type parameter. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
 <a id="aeddd9d8d94a6cf1bf6d30157da8b71c8"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#aeddd9d8d94a6cf1bf6d30157da8b71c8">&#9670;&nbsp;</a></span>recursion_done</h2>
 
@@ -279,95 +201,6 @@ template&lt;std::size_t I, typename tuple_type &gt; </div>
 </div>
 </div>
 <h2 class="groupheader">Function Documentation</h2>
-<a id="a6f338186e18f790d9bf0cd9d77bb1d35"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a6f338186e18f790d9bf0cd9d77bb1d35">&#9670;&nbsp;</a></span>base_prod_expand_r()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;template&lt; typename, typename &gt; typename Op, typename LHSType , typename... RHSTypes&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">auto utilities::detail_::base_prod_expand_r </td>
-          <td>(</td>
-          <td class="paramtype">std::tuple&lt; RHSTypes... &gt;&#160;</td>
-          <td class="paramname"></td><td>)</td>
-          <td> -&gt;  std::tuple&lt; <a class="el" href="namespaceutilities_1_1detail__.html#aa9aacac6c60d13864479d722334ac9d4">base_prod_t</a>&lt; Op, LHSType, RHSTypes &gt;... &gt;</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Function which returns a tuple of base_prod_t types. </p>
-<p>This function declaration is used exclusively for its return type. More specifically we use the input argument to determine the parmater pack of an input tuple. Once we know the parameter pack we have the function return a new tuple resulting from pairing <code>LHSType</code> with each type in the parameter pack.</p>
-<dl class="section note"><dt>Note</dt><dd>This function is never actually defined and it should thus never be called. </dd></dl>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">Op</td><td>A type templated on two types. <code>Op</code> will be used to "glue" together all of the pairs formed from <code>LHSType</code> and the types in the <code>RHSTypes</code> parameter pack. </td></tr>
-    <tr><td class="paramname">LHSType</td><td>The type which will be the first type parameter to <code>Op</code> </td></tr>
-    <tr><td class="paramname">RHSTypes</td><td>The types which will be paired with <code>LHSType</code> one at a time. </td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">&lt;anonymous&gt;</td><td>A tuple. We only care about the tuple's type.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>A tuple resulting from combining LHSType with each type in the input tuple. </dd></dl>
-
-</div>
-</div>
-<a id="a750d72f7315dcaabf142db0e5fcb692a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a750d72f7315dcaabf142db0e5fcb692a">&#9670;&nbsp;</a></span>base_prod_expand_r_and_l()</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;template&lt; typename, typename &gt; typename Op, typename... LHSTypes, typename... RHSTypes&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">auto utilities::detail_::base_prod_expand_r_and_l </td>
-          <td>(</td>
-          <td class="paramtype">std::tuple&lt; LHSTypes... &gt;&#160;</td>
-          <td class="paramname">, </td>
-        </tr>
-        <tr>
-          <td class="paramkey"></td>
-          <td></td>
-          <td class="paramtype">std::tuple&lt; RHSTypes... &gt;&#160;</td>
-          <td class="paramname">&#160;</td>
-        </tr>
-        <tr>
-          <td></td>
-          <td>)</td>
-          <td></td><td> -&gt;  <a class="el" href="namespaceutilities.html#a1a108b75497910a87b8dd415c9b5f5ba">tuple_cat_t</a>&lt; <a class="el" href="namespaceutilities_1_1detail__.html#aa06d56f3262337b0157b95a481f189e9">base_prod_expand_r_t</a>&lt; Op, LHSTypes, std::tuple&lt; RHSTypes... &gt;&gt;... &gt;</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Function which returns a tuple filled with pairs of types from two tuples. </p>
-<p>This function is used to deduce the type of a tuple filled with templated types <code>Op</code> where the first template parameter is taken from the types in one tuple and the second template parameter is taken from the types of a second tuple.</p>
-<dl class="section note"><dt>Note</dt><dd>This function is not actually defined and is only used to for its ability to get at the tuple's parameter packs.</dd></dl>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">Op</td><td>A type templated on two types. <code>Op</code> will be used to "glue" together all of the pairs formed from cartesian product of the <code>LHSTypes</code> and <code>RHSTypes</code> parameter packs. </td></tr>
-    <tr><td class="paramname">LHSType</td><td>The first of two parameter packs to glue together. </td></tr>
-    <tr><td class="paramname">RHSTypes</td><td>The second parameter pack to glue together.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="params"><dt>Parameters</dt><dd>
-  <table class="params">
-    <tr><td class="paramdir">[in]</td><td class="paramname">&lt;anonymous&gt;</td><td>The tuple from which <code>LHSTypes</code> will be deduced. </td></tr>
-    <tr><td class="paramdir">[in]</td><td class="paramname">&lt;anonymous&gt;</td><td>The tuple from which <code>RHSTypes</code> will be deduced.</td></tr>
-  </table>
-  </dd>
-</dl>
-<dl class="section return"><dt>Returns</dt><dd>A tuple containing a series of <code>Op</code> types where the template parameters are the Cartesian product of the types in <code>LHSTypes</code> and <code>RHSTypes</code>. </dd></dl>
-
-</div>
-</div>
 <a id="a3758b4759605d7c6ca9bb4d5e69fdb57"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a3758b4759605d7c6ca9bb4d5e69fdb57">&#9670;&nbsp;</a></span>tuple_accumulate_impl()</h2>
 

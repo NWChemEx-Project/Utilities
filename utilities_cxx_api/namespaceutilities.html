@@ -147,15 +147,6 @@ Classes</h2></td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structutilities_1_1is__random__access__iterator.html">is_random_access_iterator</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">This struct will contain a value true if the type satisfies the C++ concept of "RandomAccessIterator".  <a href="structutilities_1_1is__random__access__iterator.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structutilities_1_1IsTuple.html">IsTuple</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type trait for when <code>T</code> is not an std::tuple or std::pair has value=false.  <a href="structutilities_1_1IsTuple.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structutilities_1_1IsTuple_3_01std_1_1pair_3_01T_00_01U_01_4_01_4.html">IsTuple&lt; std::pair&lt; T, U &gt; &gt;</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type trait for when <code>T</code> is an std::pair, has value = true.  <a href="structutilities_1_1IsTuple_3_01std_1_1pair_3_01T_00_01U_01_4_01_4.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structutilities_1_1IsTuple_3_01std_1_1tuple_3_01Args_8_8_8_01_4_01_4.html">IsTuple&lt; std::tuple&lt; Args... &gt; &gt;</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type trait for when <code>T</code> is an std::tuple, has value = true.  <a href="structutilities_1_1IsTuple_3_01std_1_1tuple_3_01Args_8_8_8_01_4_01_4.html#details">More...</a><br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:"><td class="memItemLeft" align="right" valign="top">class &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classutilities_1_1MathSet.html">MathSet</a></td></tr>
 <tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Implements an std::unordered_set-like object except that it knows about union, etc.  <a href="classutilities_1_1MathSet.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
@@ -193,19 +184,6 @@ Typedefs</h2></td></tr>
 <tr class="memitem:a46b8e7ca5123e28b92af40ff0e5bf2b8"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceutilities.html#a46b8e7ca5123e28b92af40ff0e5bf2b8">CaseInsensitiveMap</a> = std::map&lt; std::string, T, <a class="el" href="structutilities_1_1detail___1_1CaseInsensitiveLess__.html">detail_::CaseInsensitiveLess_</a> &gt;</td></tr>
 <tr class="memdesc:a46b8e7ca5123e28b92af40ff0e5bf2b8"><td class="mdescLeft">&#160;</td><td class="mdescRight">A case-insensitive std::map (the keys are assumed to be std::string otherwise it doesn't make a whole lot of sense to do a case-insensitive compare...)  <a href="namespaceutilities.html#a46b8e7ca5123e28b92af40ff0e5bf2b8">More...</a><br /></td></tr>
 <tr class="separator:a46b8e7ca5123e28b92af40ff0e5bf2b8"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a1a108b75497910a87b8dd415c9b5f5ba"><td class="memTemplParams" colspan="2">template&lt;typename... Args&gt; </td></tr>
-<tr class="memitem:a1a108b75497910a87b8dd415c9b5f5ba"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceutilities.html#a1a108b75497910a87b8dd415c9b5f5ba">tuple_cat_t</a> = decltype(std::tuple_cat(std::declval&lt; Args &gt;()...))</td></tr>
-<tr class="memdesc:a1a108b75497910a87b8dd415c9b5f5ba"><td class="mdescLeft">&#160;</td><td class="mdescRight">Type of resulting from concatentating several tuple types together.  <a href="namespaceutilities.html#a1a108b75497910a87b8dd415c9b5f5ba">More...</a><br /></td></tr>
-<tr class="separator:a1a108b75497910a87b8dd415c9b5f5ba"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:a87dbd91c8d1c2123fc7d612c1fa9701a"><td class="memTemplParams" colspan="2">template&lt;template&lt; typename, typename &gt; typename Op, typename LHSTuple , typename RHSTuple &gt; </td></tr>
-<tr class="memitem:a87dbd91c8d1c2123fc7d612c1fa9701a"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceutilities.html#a87dbd91c8d1c2123fc7d612c1fa9701a">tuple_prod_t</a> = decltype(<a class="el" href="namespaceutilities_1_1detail__.html#a750d72f7315dcaabf142db0e5fcb692a">detail_::base_prod_expand_r_and_l</a>&lt; Op &gt;(std::declval&lt; LHSTuple &gt;(), std::declval&lt; RHSTuple &gt;()))</td></tr>
-<tr class="memdesc:a87dbd91c8d1c2123fc7d612c1fa9701a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Takes the Cartesian product of two tuples.  <a href="namespaceutilities.html#a87dbd91c8d1c2123fc7d612c1fa9701a">More...</a><br /></td></tr>
-<tr class="separator:a87dbd91c8d1c2123fc7d612c1fa9701a"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ab7521b5f0c212fb5e7d30e039fadca12"><td class="memTemplParams" colspan="2"><a id="ab7521b5f0c212fb5e7d30e039fadca12"></a>
-template&lt;typename T &gt; </td></tr>
-<tr class="memitem:ab7521b5f0c212fb5e7d30e039fadca12"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceutilities.html#ab7521b5f0c212fb5e7d30e039fadca12">tuple_to_variant_t</a> = typename <a class="el" href="structutilities_1_1detail___1_1tuple__to__variant.html">detail_::tuple_to_variant</a>&lt; T &gt;::type</td></tr>
-<tr class="memdesc:ab7521b5f0c212fb5e7d30e039fadca12"><td class="mdescLeft">&#160;</td><td class="mdescRight">Public API for getting the type of a variant with the same types as a tuple. <br /></td></tr>
-<tr class="separator:ab7521b5f0c212fb5e7d30e039fadca12"><td class="memSeparator" colspan="2">&#160;</td></tr>
 <tr class="memitem:a476bf7a49a7f2af8f20b3ba5631e7379"><td class="memTemplParams" colspan="2">template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a476bf7a49a7f2af8f20b3ba5631e7379"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceutilities.html#a476bf7a49a7f2af8f20b3ba5631e7379">is_forward_iterator</a> = <a class="el" href="structutilities_1_1is__input__iterator.html">is_input_iterator</a>&lt; T &gt;</td></tr>
 <tr class="memdesc:a476bf7a49a7f2af8f20b3ba5631e7379"><td class="mdescLeft">&#160;</td><td class="mdescRight">This struct will contain a value true if the type satisfies the C++ concept of "ForwardIterator".  <a href="namespaceutilities.html#a476bf7a49a7f2af8f20b3ba5631e7379">More...</a><br /></td></tr>
@@ -215,10 +193,6 @@ template&lt;typename T &gt; </td></tr>
 <tr class="memitem:a286981143c3710fa4b2625eaf09c93d7"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceutilities.html#a286981143c3710fa4b2625eaf09c93d7">variant_to_tuple_t</a> = typename <a class="el" href="structutilities_1_1detail___1_1variant__to__tuple.html">detail_::variant_to_tuple</a>&lt; T &gt;::type</td></tr>
 <tr class="memdesc:a286981143c3710fa4b2625eaf09c93d7"><td class="mdescLeft">&#160;</td><td class="mdescRight">Public API for getting the type of a tuple with the same types as a variant. <br /></td></tr>
 <tr class="separator:a286981143c3710fa4b2625eaf09c93d7"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:aa956729c59e335dbb7d0d8d63ab4f703"><td class="memTemplParams" colspan="2">template&lt;template&lt; typename, typename &gt; typename Op, typename LHSVariant , typename RHSVariant &gt; </td></tr>
-<tr class="memitem:aa956729c59e335dbb7d0d8d63ab4f703"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceutilities.html#aa956729c59e335dbb7d0d8d63ab4f703">variant_prod_t</a> = typename <a class="el" href="structutilities_1_1detail___1_1variant__prod.html">detail_::variant_prod</a>&lt; Op, LHSVariant, RHSVariant &gt;::type</td></tr>
-<tr class="memdesc:aa956729c59e335dbb7d0d8d63ab4f703"><td class="mdescLeft">&#160;</td><td class="mdescRight">Takes the Cartesian product of two variants.  <a href="namespaceutilities.html#aa956729c59e335dbb7d0d8d63ab4f703">More...</a><br /></td></tr>
-<tr class="separator:aa956729c59e335dbb7d0d8d63ab4f703"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="func-members"></a>
 Functions</h2></td></tr>
@@ -430,98 +404,6 @@ template&lt;typename T &gt; </div>
 <dl class="section note"><dt>Note</dt><dd>A forward iterator is just an input iterator with a multipass guarantee. We currently are not checking for this hence this struct is only a typedef for clarity.</dd></dl>
 <dl class="section warning"><dt>Warning</dt><dd>This type will not check if the type is swappable. A type_trait, is_swappable exists in C++17 for this purpose. Implementing our own is a royal pain on account of how the STL actually does swapping...</dd></dl>
 <p>The full specificiation of what an "forward iterator" must have is available &lt; a href="http://en.cppreference.com/w/cpp/concept/ForwardIterator"&gt;here. </p>
-
-</div>
-</div>
-<a id="a1a108b75497910a87b8dd415c9b5f5ba"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a1a108b75497910a87b8dd415c9b5f5ba">&#9670;&nbsp;</a></span>tuple_cat_t</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;typename... Args&gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">using <a class="el" href="namespaceutilities.html#a1a108b75497910a87b8dd415c9b5f5ba">utilities::tuple_cat_t</a> = typedef decltype(std::tuple_cat(std::declval&lt;Args&gt;()...))</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Type of resulting from concatentating several tuple types together. </p>
-<p>This typedef</p>
-<p>As an example:</p>
-<div class="fragment"><div class="line"><span class="keyword">using</span> tuple0_t = std::tuple&lt;int, double&gt;;</div>
-<div class="line"><span class="keyword">using</span> tuple1_t = std::tuple&lt;char, bool&gt;;</div>
-<div class="line"><span class="keyword">using</span> tuple0p1_t = tuple_cat_t&lt;tuple0_t, tuple1_t&gt;;</div>
-</div><!-- fragment --><p>Results in the typedef <code>tuple0p1_t</code> being a typedef of <code>std::tuple&lt;int, double, char, bool&gt;</code>.</p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">Args</td><td>A series of 0 or more tuple types. Each type in the template parameter pack is expected to be an instantiation of std::tuple. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="a87dbd91c8d1c2123fc7d612c1fa9701a"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#a87dbd91c8d1c2123fc7d612c1fa9701a">&#9670;&nbsp;</a></span>tuple_prod_t</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;template&lt; typename, typename &gt; typename Op, typename LHSTuple , typename RHSTuple &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">using <a class="el" href="namespaceutilities.html#a87dbd91c8d1c2123fc7d612c1fa9701a">utilities::tuple_prod_t</a> = typedef decltype(<a class="el" href="namespaceutilities_1_1detail__.html#a750d72f7315dcaabf142db0e5fcb692a">detail_::base_prod_expand_r_and_l</a>&lt;Op&gt;( std::declval&lt;LHSTuple&gt;(), std::declval&lt;RHSTuple&gt;()))</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Takes the Cartesian product of two tuples. </p>
-<p>This typedef will be set to a tuple whose types are the Cartesian products of the types in <code>LHSTuple</code> with the types in <code>RHSTuple</code>. The type <code>Op</code> will be used to group the pairs. For example:</p>
-<div class="fragment"><div class="line"><span class="keyword">using</span> tuple0 = std::tuple&lt;int, double&gt;;</div>
-<div class="line"><span class="keyword">using</span> tuple1 = std::tuple&lt;float, char&gt;;</div>
-<div class="line"><span class="keyword">using</span> tuple01 = tuple_prod_t&lt;std::pair, tuple0, tuple1&gt;;</div>
-</div><!-- fragment --><p>will result in <code>tuple01</code> being a typedef of <code>std::tuple&lt;std::pair&lt;int, float&gt;, std::pair&lt;int, char&gt;, std::pair&lt;double, float&gt;, std::pair&lt;double, char&gt;&gt;</code>.</p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">Op</td><td>A type templated on two types. <code>Op</code> will be used to group the pairs formed from taking the cartesian product of the types in <code>LHSTuple</code> and <code>RHSTuple</code>. </td></tr>
-    <tr><td class="paramname">LHSTuple</td><td>The tuple containing the first members of the pairs. </td></tr>
-    <tr><td class="paramname">RHSTuple</td><td>The tuple containing the second members of the pairs. </td></tr>
-  </table>
-  </dd>
-</dl>
-
-</div>
-</div>
-<a id="aa956729c59e335dbb7d0d8d63ab4f703"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#aa956729c59e335dbb7d0d8d63ab4f703">&#9670;&nbsp;</a></span>variant_prod_t</h2>
-
-<div class="memitem">
-<div class="memproto">
-<div class="memtemplate">
-template&lt;template&lt; typename, typename &gt; typename Op, typename LHSVariant , typename RHSVariant &gt; </div>
-      <table class="memname">
-        <tr>
-          <td class="memname">using <a class="el" href="namespaceutilities.html#aa956729c59e335dbb7d0d8d63ab4f703">utilities::variant_prod_t</a> = typedef typename <a class="el" href="structutilities_1_1detail___1_1variant__prod.html">detail_::variant_prod</a>&lt;Op, LHSVariant, RHSVariant&gt;::type</td>
-        </tr>
-      </table>
-</div><div class="memdoc">
-
-<p>Takes the Cartesian product of two variants. </p>
-<p>This typedef will be set to a variant whose types are the Cartesian products of the types in <code>LHSVariant</code> with the types in <code>RHSVariant</code>. The type <code>Op</code> will be used to group the pairs. For example:</p>
-<div class="fragment"><div class="line"><span class="keyword">using</span> variant0 = std::variant&lt;int, double&gt;;</div>
-<div class="line"><span class="keyword">using</span> variant1 = std::variant&lt;float, char&gt;;</div>
-<div class="line"><span class="keyword">using</span> variant01 = variant_prod_t&lt;std::pair, variant0, variant1&gt;;</div>
-</div><!-- fragment --><p>will result in <code>variant01</code> being a typedef of <code>std::variant&lt;std::pair&lt;int, float&gt;, std::pair&lt;int, char&gt;, std::pair&lt;double, float&gt;, std::pair&lt;double, char&gt;&gt;</code>.</p>
-<dl class="tparams"><dt>Template Parameters</dt><dd>
-  <table class="tparams">
-    <tr><td class="paramname">Op</td><td>A type templated on two types. <code>Op</code> will be used to group the pairs formed from taking the cartesian product of the types in <code>LHSVariant</code> and <code>RHSVariant</code>. </td></tr>
-    <tr><td class="paramname">LHSVariant</td><td>The variant containing the first members of the pairs. </td></tr>
-    <tr><td class="paramname">RHSVariant</td><td>The variant containing the second members of the pairs. </td></tr>
-  </table>
-  </dd>
-</dl>
 
 </div>
 </div>

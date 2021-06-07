@@ -84,11 +84,11 @@ $(function() {
 <table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="nested-classes"></a>
 Classes</h2></td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structutilities_1_1detail___1_1tuple__to__variant.html">utilities::detail_::tuple_to_variant&lt; T &gt;</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Primary template for converting a std::tuple to a std::variant.  <a href="structutilities_1_1detail___1_1tuple__to__variant.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structutilities_1_1type__traits_1_1tuple_1_1detail___1_1to__variant.html">utilities::type_traits::tuple::detail_::to_variant&lt; T &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Primary template for converting a std::tuple to a std::variant.  <a href="structutilities_1_1type__traits_1_1tuple_1_1detail___1_1to__variant.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structutilities_1_1detail___1_1tuple__to__variant_3_01std_1_1tuple_3_01Args_8_8_8_01_4_01_4.html">utilities::detail_::tuple_to_variant&lt; std::tuple&lt; Args... &gt; &gt;</a></td></tr>
-<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Specialization of <a class="el" href="structutilities_1_1detail___1_1tuple__to__variant.html" title="Primary template for converting a std::tuple to a std::variant.">tuple_to_variant</a> for when the template paramter is a std::tuple.  <a href="structutilities_1_1detail___1_1tuple__to__variant_3_01std_1_1tuple_3_01Args_8_8_8_01_4_01_4.html#details">More...</a><br /></td></tr>
+<tr class="memitem:"><td class="memItemLeft" align="right" valign="top">struct &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="structutilities_1_1type__traits_1_1tuple_1_1detail___1_1to__variant_3_01std_1_1tuple_3_01Args_8_8_8_01_4_01_4.html">utilities::type_traits::tuple::detail_::to_variant&lt; std::tuple&lt; Args... &gt; &gt;</a></td></tr>
+<tr class="memdesc:"><td class="mdescLeft">&#160;</td><td class="mdescRight">Specialization of tuple_to_variant for when the template paramter is a std::tuple.  <a href="structutilities_1_1type__traits_1_1tuple_1_1detail___1_1to__variant_3_01std_1_1tuple_3_01Args_8_8_8_01_4_01_4.html#details">More...</a><br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="namespaces"></a>
@@ -96,17 +96,14 @@ Namespaces</h2></td></tr>
 <tr class="memitem:namespaceutilities"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceutilities.html">utilities</a></td></tr>
 <tr class="memdesc:namespaceutilities"><td class="mdescLeft">&#160;</td><td class="mdescRight">Main namespace for the Utilities library. <br /></td></tr>
 <tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:namespaceutilities_1_1detail__"><td class="memItemLeft" align="right" valign="top"> &#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="namespaceutilities_1_1detail__.html">utilities::detail_</a></td></tr>
-<tr class="memdesc:namespaceutilities_1_1detail__"><td class="mdescLeft">&#160;</td><td class="mdescRight">Name space for things not mean to see the light of day. <br /></td></tr>
-<tr class="separator:"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="typedef-members"></a>
 Typedefs</h2></td></tr>
-<tr class="memitem:ab7521b5f0c212fb5e7d30e039fadca12"><td class="memTemplParams" colspan="2"><a id="ab7521b5f0c212fb5e7d30e039fadca12"></a>
+<tr class="memitem:ab14b8d6db0735108a51e9bf02ad2ae2a"><td class="memTemplParams" colspan="2"><a id="ab14b8d6db0735108a51e9bf02ad2ae2a"></a>
 template&lt;typename T &gt; </td></tr>
-<tr class="memitem:ab7521b5f0c212fb5e7d30e039fadca12"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="namespaceutilities.html#ab7521b5f0c212fb5e7d30e039fadca12">utilities::tuple_to_variant_t</a> = typename detail_::tuple_to_variant&lt; T &gt;::type</td></tr>
-<tr class="memdesc:ab7521b5f0c212fb5e7d30e039fadca12"><td class="mdescLeft">&#160;</td><td class="mdescRight">Public API for getting the type of a variant with the same types as a tuple. <br /></td></tr>
-<tr class="separator:ab7521b5f0c212fb5e7d30e039fadca12"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ab14b8d6db0735108a51e9bf02ad2ae2a"><td class="memTemplItemLeft" align="right" valign="top">using&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="tuple_2variant_8hpp.html#ab14b8d6db0735108a51e9bf02ad2ae2a">utilities::type_traits::tuple::to_variant_t</a> = typename detail_::to_variant&lt; T &gt;::type</td></tr>
+<tr class="memdesc:ab14b8d6db0735108a51e9bf02ad2ae2a"><td class="mdescLeft">&#160;</td><td class="mdescRight">Public API for getting the type of a variant with the same types as a tuple. <br /></td></tr>
+<tr class="separator:ab14b8d6db0735108a51e9bf02ad2ae2a"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
 <div class="textblock"><p>Contains type traits for working with tuples as if they were variants. </p>

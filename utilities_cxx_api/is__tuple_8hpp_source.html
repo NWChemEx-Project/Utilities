@@ -73,24 +73,23 @@ $(function() {
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#include &lt;type_traits&gt;</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160; </div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="keyword">namespace </span><a class="code" href="namespaceutilities.html">utilities</a> {</div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="keyword">namespace </span>utilities::type_traits::tuple {</div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00008"></a><span class="lineno"><a class="line" href="structutilities_1_1IsTuple.html">    8</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structutilities_1_1IsTuple.html">IsTuple</a> : std::false_type {};</div>
+<div class="line"><a name="l00008"></a><span class="lineno"><a class="line" href="structutilities_1_1type__traits_1_1tuple_1_1IsTuple.html">    8</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structutilities_1_1type__traits_1_1tuple_1_1IsTuple.html">IsTuple</a> : std::false_type {};</div>
 <div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160; </div>
 <div class="line"><a name="l00011"></a><span class="lineno">   11</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Args&gt;</div>
-<div class="line"><a name="l00012"></a><span class="lineno"><a class="line" href="structutilities_1_1IsTuple_3_01std_1_1tuple_3_01Args_8_8_8_01_4_01_4.html">   12</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structutilities_1_1IsTuple.html">IsTuple</a>&lt;std::tuple&lt;Args...&gt;&gt; : std::true_type {};</div>
+<div class="line"><a name="l00012"></a><span class="lineno"><a class="line" href="structutilities_1_1type__traits_1_1tuple_1_1IsTuple_3_01std_1_1tuple_3_01Args_8_8_8_01_4_01_4.html">   12</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structutilities_1_1type__traits_1_1tuple_1_1IsTuple.html">IsTuple</a>&lt;std::tuple&lt;Args...&gt;&gt; : std::true_type {};</div>
 <div class="line"><a name="l00013"></a><span class="lineno">   13</span>&#160; </div>
 <div class="line"><a name="l00015"></a><span class="lineno">   15</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> U&gt;</div>
-<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="structutilities_1_1IsTuple_3_01std_1_1pair_3_01T_00_01U_01_4_01_4.html">   16</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structutilities_1_1IsTuple.html">IsTuple</a>&lt;std::pair&lt;T, U&gt;&gt; : std::true_type {};</div>
+<div class="line"><a name="l00016"></a><span class="lineno"><a class="line" href="structutilities_1_1type__traits_1_1tuple_1_1IsTuple_3_01std_1_1pair_3_01T_00_01U_01_4_01_4.html">   16</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structutilities_1_1type__traits_1_1tuple_1_1IsTuple.html">IsTuple</a>&lt;std::pair&lt;T, U&gt;&gt; : std::true_type {};</div>
 <div class="line"><a name="l00017"></a><span class="lineno">   17</span>&#160; </div>
 <div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> T&gt;</div>
-<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keyword">static</span> constexpr <span class="keywordtype">bool</span> is_tuple_v = <a class="code" href="structutilities_1_1IsTuple.html">IsTuple&lt;T&gt;::value</a>;</div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keyword">static</span> constexpr <span class="keywordtype">bool</span> is_tuple_v = <a class="code" href="structutilities_1_1type__traits_1_1tuple_1_1IsTuple.html">IsTuple&lt;T&gt;::value</a>;</div>
 <div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
-<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;} <span class="comment">// namespace utilities</span></div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;} <span class="comment">// namespace utilities::type_traits::tuple</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="anamespaceutilities_html"><div class="ttname"><a href="namespaceutilities.html">utilities</a></div><div class="ttdoc">Main namespace for the Utilities library.</div><div class="ttdef"><b>Definition:</b> case_insensitive_map.hpp:7</div></div>
-<div class="ttc" id="astructutilities_1_1IsTuple_html"><div class="ttname"><a href="structutilities_1_1IsTuple.html">utilities::IsTuple</a></div><div class="ttdoc">Type trait for when T is not an std::tuple or std::pair has value=false.</div><div class="ttdef"><b>Definition:</b> is_tuple.hpp:8</div></div>
+<div class="ttc" id="astructutilities_1_1type__traits_1_1tuple_1_1IsTuple_html"><div class="ttname"><a href="structutilities_1_1type__traits_1_1tuple_1_1IsTuple.html">utilities::type_traits::tuple::IsTuple</a></div><div class="ttdoc">Type trait for when T is not an std::tuple or std::pair has value=false.</div><div class="ttdef"><b>Definition:</b> is_tuple.hpp:8</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">

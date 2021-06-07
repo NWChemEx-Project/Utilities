@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>utilities: utilities::IsTuple&lt; std::pair&lt; T, U &gt; &gt; Struct Template Reference</title>
+<title>utilities: utilities::type_traits::variant::detail_::to_tuple&lt; std::variant&lt; Args... &gt; &gt; Struct Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -62,32 +62,43 @@ $(function() {
 
 <div id="nav-path" class="navpath">
   <ul>
-<li class="navelem"><a class="el" href="namespaceutilities.html">utilities</a></li><li class="navelem"><a class="el" href="structutilities_1_1IsTuple_3_01std_1_1pair_3_01T_00_01U_01_4_01_4.html">IsTuple&lt; std::pair&lt; T, U &gt; &gt;</a></li>  </ul>
+<li class="navelem"><a class="el" href="namespaceutilities.html">utilities</a></li><li class="navelem"><b>type_traits</b></li><li class="navelem"><b>variant</b></li><li class="navelem"><b>detail_</b></li><li class="navelem"><a class="el" href="structutilities_1_1type__traits_1_1variant_1_1detail___1_1to__tuple_3_01std_1_1variant_3_01Args_8_8_8_01_4_01_4.html">to_tuple&lt; std::variant&lt; Args... &gt; &gt;</a></li>  </ul>
 </div>
 </div><!-- top -->
 <div class="header">
+  <div class="summary">
+<a href="#pub-types">Public Types</a> &#124;
+<a href="structutilities_1_1type__traits_1_1variant_1_1detail___1_1to__tuple_3_01std_1_1variant_3_01Args_8_8_8_01_4_01_4-members.html">List of all members</a>  </div>
   <div class="headertitle">
-<div class="title">utilities::IsTuple&lt; std::pair&lt; T, U &gt; &gt; Struct Template Reference</div>  </div>
+<div class="title">utilities::type_traits::variant::detail_::to_tuple&lt; std::variant&lt; Args... &gt; &gt; Struct Template Reference</div>  </div>
 </div><!--header-->
 <div class="contents">
 
-<p>Type trait for when <code>T</code> is an std::pair, has value = true.  
- <a href="structutilities_1_1IsTuple_3_01std_1_1pair_3_01T_00_01U_01_4_01_4.html#details">More...</a></p>
+<p>Specialization of variant_to_tuple for when the template paramter is a std::variant.  
+ <a href="structutilities_1_1type__traits_1_1variant_1_1detail___1_1to__tuple_3_01std_1_1variant_3_01Args_8_8_8_01_4_01_4.html#details">More...</a></p>
 
-<p><code>#include &lt;<a class="el" href="is__tuple_8hpp_source.html">is_tuple.hpp</a>&gt;</code></p>
-<div class="dynheader">
-Inheritance diagram for utilities::IsTuple&lt; std::pair&lt; T, U &gt; &gt;:</div>
-<div class="dyncontent">
- <div class="center">
-  <img src="structutilities_1_1IsTuple_3_01std_1_1pair_3_01T_00_01U_01_4_01_4.png" alt=""/>
- </div></div>
+<p><code>#include &lt;<a class="el" href="to__tuple_8hpp_source.html">to_tuple.hpp</a>&gt;</code></p>
+<table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-types"></a>
+Public Types</h2></td></tr>
+<tr class="memitem:a7f341b5c5e8ebbc54d583533e14d363b"><td class="memItemLeft" align="right" valign="top"><a id="a7f341b5c5e8ebbc54d583533e14d363b"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>type</b> = std::tuple&lt; Args... &gt;</td></tr>
+<tr class="separator:a7f341b5c5e8ebbc54d583533e14d363b"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table>
 <a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
-<div class="textblock"><h3>template&lt;typename T, typename U&gt;<br />
-struct utilities::IsTuple&lt; std::pair&lt; T, U &gt; &gt;</h3>
+<div class="textblock"><h3>template&lt;typename... Args&gt;<br />
+struct utilities::type_traits::variant::detail_::to_tuple&lt; std::variant&lt; Args... &gt; &gt;</h3>
 
-<p>Type trait for when <code>T</code> is an std::pair, has value = true. </p>
+<p>Specialization of variant_to_tuple for when the template paramter is a std::variant. </p>
+<p>This specialization of variant_to_tuple is for when the template type parameter is an instantiation of std::variant. This class will contain a member type <code>type</code> set to the type of a std::tuple with the same template parameters as the std::variant it is specialized on.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">Args</td><td>The types in the std::variant. </td></tr>
+  </table>
+  </dd>
+</dl>
 </div><hr/>The documentation for this struct was generated from the following file:<ul>
-<li>utilities/type_traits/tuple/<a class="el" href="is__tuple_8hpp_source.html">is_tuple.hpp</a></li>
+<li>utilities/type_traits/variant/<a class="el" href="to__tuple_8hpp_source.html">to_tuple.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
