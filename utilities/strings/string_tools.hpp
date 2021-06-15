@@ -1,5 +1,6 @@
 #pragma once
 #include "utilities/iter_tools/enumerate.hpp"
+#include <regex>
 #include <string>
 #include <vector>
 
@@ -96,6 +97,29 @@ auto join_string(T&& split_str, U&& delim) {
         if(i != split_str.size() - 1) rv += delim;
     }
     return rv;
+}
+
+/** @brief Replaces all occurances of @p from in @p str with @p to.
+ *
+ *  @note Under the hood this uses regex to find @p from so if @p from contains
+ *        any special regex characters you'll have to escape them. The
+ *        special characters are: `.[]^$+*?{}()\`
+ *
+ *  @param[in] from The substring that we are replacing.
+ *  @param[in] to The substring each occurance of @p from will be replaced with.
+ *  @param[in] str The string we are replacing substrings of.
+ *
+ *  @return A deep copy of @p str with all occurances of @p from changed to
+ *          @p to.
+ *
+ *  @throw std::bad_alloc if there is insufficient memory to create the result.
+ *                        Strong throw guarantee.
+ *
+ *  @TODO: does `regex_replace` actually throw if it can't allocate?
+ */
+inline auto replace(const std::string& from, const std::string& to,
+                    const std::string& str) {
+    return std::regex_replace(str, std::regex(from), to);
 }
 
 } // namespace utilities::strings
