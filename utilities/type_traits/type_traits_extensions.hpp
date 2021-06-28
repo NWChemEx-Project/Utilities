@@ -397,5 +397,15 @@ struct is_random_access_iterator
                 has_less_than<T, T>, has_greater_than<T, T>,
                 has_less_than_equal<T, T>, has_greater_than_equal<T, T>> {};
 
+
+
+
+/// Type alias for SFINAE enable-if checks on polymorphic types
+template <typename Base, typename Derived, typename U = void>
+using enable_if_base_of_t = std::enable_if_t< std::is_base_of_v<Base,Derived>, U >;
+template <typename Base, typename Derived, typename U = void>
+using enable_if_not_base_of_t = 
+  std::enable_if_t< !std::is_base_of_v<Base,Derived>, U >;
+
 } // namespace utilities
 #endif /* DOXYGEN_SHOULD_SKIP_THIS */
