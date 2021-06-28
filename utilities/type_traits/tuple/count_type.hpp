@@ -40,6 +40,6 @@ struct count_type<Type2Look4, std::tuple<TupleTypes...>>
  *  @tparam Tuple The tuple we are searching.
  */
 template<typename Type2Look4, typename Tuple>
-static constexpr bool count_type_v = detail_::count_type<Type2Look4, Tuple>::value;
+static constexpr std::size_t count_type_v = detail_::count_type<Type2Look4, Tuple>::value;
 
 } // namespace utilities::type_traits::tuple
