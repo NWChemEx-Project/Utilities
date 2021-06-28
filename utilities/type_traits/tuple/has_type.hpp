@@ -1,6 +1,7 @@
 #pragma once
 #include <tuple>
 #include <type_traits>
+#include "utilities/type_traits/parameter_pack_traits.hpp"
 
 namespace utilities::type_traits::tuple {
 namespace detail_ {
@@ -19,6 +20,7 @@ namespace detail_ {
 template<typename Type2Look4, typename Tuple>
 struct has_type;
 
+#if 0
 /** @brief Specializes has_type for when the std::tuple is empty.
  *
  *  Looping over the types in the provided std::tuple ends when there are no
@@ -69,6 +71,17 @@ struct has_type<Type2Look4, std::tuple<Type0, OtherTypes...>>
 template<typename Type2Look4, typename... OtherTypes>
 struct has_type<Type2Look4, std::tuple<Type2Look4, OtherTypes...>>
   : std::true_type {};
+
+#else
+
+
+/// Implementation of `has_type` for tuple types
+template<typename Type2Look4, typename... TupleTypes>
+struct has_type<Type2Look4, std::tuple<TupleTypes...>>
+  : public utilities::type_traits::parameter_pack_contains_type< Type2Look4,
+                                                                 TupleTypes...> {};
+
+#endif
 } // namespace detail_
 
 /** @brief Global variable indicating whether @p Type2Look4 is in the tuple
