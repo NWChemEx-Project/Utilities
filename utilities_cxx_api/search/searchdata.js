@@ -6,7 +6,7 @@ var indexSectionsWithContent =
   3: "fiptv",
   4: "abcdefgimnoprstuvwz~",
   5: "i",
-  6: "cdiklprstvw",
+  6: "cdeiklprstvw",
   7: "_c",
   8: "tu"
 };

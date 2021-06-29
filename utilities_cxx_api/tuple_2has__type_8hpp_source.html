@@ -73,34 +73,31 @@ $(function() {
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#include &lt;tuple&gt;</span></div>
 <div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;type_traits&gt;</span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160; </div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="keyword">namespace </span>utilities::type_traits::tuple {</div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="keyword">namespace </span>detail_ {</div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160; </div>
-<div class="line"><a name="l00019"></a><span class="lineno">   19</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> Type2Look4, <span class="keyword">typename</span> Tuple&gt;</div>
-<div class="line"><a name="l00020"></a><span class="lineno"><a class="line" href="structutilities_1_1type__traits_1_1tuple_1_1detail___1_1has__type.html">   20</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structutilities_1_1type__traits_1_1tuple_1_1detail___1_1has__type.html">has_type</a>;</div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160; </div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> Type2Look4&gt;</div>
-<div class="line"><a name="l00032"></a><span class="lineno"><a class="line" href="structutilities_1_1type__traits_1_1tuple_1_1detail___1_1has__type_3_01Type2Look4_00_01std_1_1tuple_3_4_01_4.html">   32</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structutilities_1_1type__traits_1_1tuple_1_1detail___1_1has__type.html">has_type</a>&lt;Type2Look4, std::tuple&lt;&gt;&gt; : std::false_type {};</div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160; </div>
-<div class="line"><a name="l00054"></a><span class="lineno">   54</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> Type2Look4, <span class="keyword">typename</span> Type0, <span class="keyword">typename</span>... OtherTypes&gt;</div>
-<div class="line"><a name="l00055"></a><span class="lineno"><a class="line" href="structutilities_1_1type__traits_1_1tuple_1_1detail___1_1has__type_3_01Type2Look4_00_01std_1_1tupdc7959c696374f3ae26d836103f8b306.html">   55</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structutilities_1_1type__traits_1_1tuple_1_1detail___1_1has__type.html">has_type</a>&lt;Type2Look4, std::tuple&lt;Type0, OtherTypes...&gt;&gt;</div>
-<div class="line"><a name="l00056"></a><span class="lineno">   56</span>&#160;  : <a class="code" href="structutilities_1_1type__traits_1_1tuple_1_1detail___1_1has__type.html">has_type</a>&lt;Type2Look4, std::tuple&lt;OtherTypes...&gt;&gt; {};</div>
-<div class="line"><a name="l00057"></a><span class="lineno">   57</span>&#160; </div>
-<div class="line"><a name="l00069"></a><span class="lineno">   69</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> Type2Look4, <span class="keyword">typename</span>... OtherTypes&gt;</div>
-<div class="line"><a name="l00070"></a><span class="lineno"><a class="line" href="structutilities_1_1type__traits_1_1tuple_1_1detail___1_1has__type_3_01Type2Look4_00_01std_1_1tup296e6ab738fe4a3de033fd3fbddb81a9.html">   70</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structutilities_1_1type__traits_1_1tuple_1_1detail___1_1has__type.html">has_type</a>&lt;Type2Look4, std::tuple&lt;Type2Look4, OtherTypes...&gt;&gt;</div>
-<div class="line"><a name="l00071"></a><span class="lineno">   71</span>&#160;  : std::true_type {};</div>
-<div class="line"><a name="l00072"></a><span class="lineno">   72</span>&#160;} <span class="comment">// namespace detail_</span></div>
-<div class="line"><a name="l00073"></a><span class="lineno">   73</span>&#160; </div>
-<div class="line"><a name="l00084"></a><span class="lineno">   84</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> Type2Look4, <span class="keyword">typename</span> Tuple&gt;</div>
-<div class="line"><a name="l00085"></a><span class="lineno">   85</span>&#160;<span class="keyword">static</span> constexpr <span class="keywordtype">bool</span> has_type_v = <a class="code" href="structutilities_1_1type__traits_1_1tuple_1_1detail___1_1has__type.html">detail_::has_type&lt;Type2Look4, Tuple&gt;::value</a>;</div>
-<div class="line"><a name="l00086"></a><span class="lineno">   86</span>&#160; </div>
-<div class="line"><a name="l00087"></a><span class="lineno">   87</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> Type2Look4, <span class="keyword">typename</span> Tuple, <span class="keyword">typename</span> T = <span class="keywordtype">void</span>&gt;</div>
-<div class="line"><a name="l00088"></a><span class="lineno">   88</span>&#160;<span class="keyword">using</span> enable_if_has_type_t = std::enable_if_t&lt;has_type_v&lt;Type2Look4, Tuple&gt;, T&gt;;</div>
-<div class="line"><a name="l00089"></a><span class="lineno">   89</span>&#160; </div>
-<div class="line"><a name="l00090"></a><span class="lineno">   90</span>&#160;} <span class="comment">// namespace utilities::type_traits::tuple</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;utilities/type_traits/parameter_pack_traits.hpp&quot;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="keyword">namespace </span>utilities::type_traits::tuple {</div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">namespace </span>detail_ {</div>
+<div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
+<div class="line"><a name="l00020"></a><span class="lineno">   20</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> Type2Look4, <span class="keyword">typename</span> Tuple&gt;</div>
+<div class="line"><a name="l00021"></a><span class="lineno"><a class="line" href="structutilities_1_1type__traits_1_1tuple_1_1detail___1_1has__type.html">   21</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structutilities_1_1type__traits_1_1tuple_1_1detail___1_1has__type.html">has_type</a>;</div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160; </div>
+<div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> Type2Look4, <span class="keyword">typename</span>... TupleTypes&gt;</div>
+<div class="line"><a name="l00025"></a><span class="lineno"><a class="line" href="structutilities_1_1type__traits_1_1tuple_1_1detail___1_1has__type_3_01Type2Look4_00_01std_1_1tup4bc50b9408bb49259e69e63585ec4611.html">   25</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structutilities_1_1type__traits_1_1tuple_1_1detail___1_1has__type.html">has_type</a>&lt;Type2Look4, std::tuple&lt;TupleTypes...&gt;&gt;</div>
+<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;  : <span class="keyword">public</span> <a class="code" href="structutilities_1_1type__traits_1_1parameter__pack__contains__type.html">utilities::type_traits::parameter_pack_contains_type</a>&lt; Type2Look4,</div>
+<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;                                                                 TupleTypes...&gt; {};</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160; </div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;} <span class="comment">// namespace detail_</span></div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> Type2Look4, <span class="keyword">typename</span> Tuple&gt;</div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keyword">static</span> constexpr <span class="keywordtype">bool</span> has_type_v = <a class="code" href="structutilities_1_1type__traits_1_1tuple_1_1detail___1_1has__type.html">detail_::has_type&lt;Type2Look4, Tuple&gt;::value</a>;</div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> Type2Look4, <span class="keyword">typename</span> Tuple, <span class="keyword">typename</span> T = <span class="keywordtype">void</span>&gt;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;<span class="keyword">using</span> enable_if_has_type_t = std::enable_if_t&lt;has_type_v&lt;Type2Look4, Tuple&gt;, T&gt;;</div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;} <span class="comment">// namespace utilities::type_traits::tuple</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="astructutilities_1_1type__traits_1_1tuple_1_1detail___1_1has__type_html"><div class="ttname"><a href="structutilities_1_1type__traits_1_1tuple_1_1detail___1_1has__type.html">utilities::type_traits::tuple::detail_::has_type</a></div><div class="ttdoc">Primary template for determining if a type is in a tuple.</div><div class="ttdef"><b>Definition:</b> has_type.hpp:20</div></div>
+<div class="ttc" id="astructutilities_1_1type__traits_1_1parameter__pack__contains__type_html"><div class="ttname"><a href="structutilities_1_1type__traits_1_1parameter__pack__contains__type.html">utilities::type_traits::parameter_pack_contains_type</a></div><div class="ttdef"><b>Definition:</b> parameter_pack_traits.hpp:16</div></div>
+<div class="ttc" id="astructutilities_1_1type__traits_1_1tuple_1_1detail___1_1has__type_html"><div class="ttname"><a href="structutilities_1_1type__traits_1_1tuple_1_1detail___1_1has__type.html">utilities::type_traits::tuple::detail_::has_type</a></div><div class="ttdoc">Primary template for determining if a type is in a tuple.</div><div class="ttdef"><b>Definition:</b> has_type.hpp:21</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">
