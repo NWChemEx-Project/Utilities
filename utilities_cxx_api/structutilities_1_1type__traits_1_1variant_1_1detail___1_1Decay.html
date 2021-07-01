@@ -5,7 +5,7 @@
 <meta http-equiv="X-UA-Compatible" content="IE=9"/>
 <meta name="generator" content="Doxygen 1.8.17"/>
 <meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>utilities: Class Members</title>
+<title>utilities: utilities::type_traits::variant::detail_::Decay&lt; T &gt; Struct Template Reference</title>
 <link href="tabs.css" rel="stylesheet" type="text/css"/>
 <script type="text/javascript" src="jquery.js"></script>
 <script type="text/javascript" src="dynsections.js"></script>
@@ -46,7 +46,6 @@ $(function() {
 });
 /* @license-end */</script>
 <div id="main-nav"></div>
-</div><!-- top -->
 <!-- window showing the filter options -->
 <div id="MSearchSelectWindow"
      onmouseover="return searchBox.OnSearchSelectShow()"
@@ -61,33 +60,35 @@ $(function() {
 </iframe>
 </div>
 
+<div id="nav-path" class="navpath">
+  <ul>
+<li class="navelem"><a class="el" href="namespaceutilities.html">utilities</a></li><li class="navelem"><b>type_traits</b></li><li class="navelem"><b>variant</b></li><li class="navelem"><b>detail_</b></li><li class="navelem"><a class="el" href="structutilities_1_1type__traits_1_1variant_1_1detail___1_1Decay.html">Decay</a></li>  </ul>
+</div>
+</div><!-- top -->
+<div class="header">
+  <div class="headertitle">
+<div class="title">utilities::type_traits::variant::detail_::Decay&lt; T &gt; Struct Template Reference</div>  </div>
+</div><!--header-->
 <div class="contents">
-<div class="textblock">Here is a list of all documented class members with links to the class documentation for each member:</div>
 
-<h3><a id="index_t"></a>- t -</h3><ul>
-<li>Table()
-: <a class="el" href="classutilities_1_1printing_1_1Table.html#af0b83bb8c3f2433cd4b5f59441750bdc">utilities::printing::Table</a>
-</li>
-<li>table_type
-: <a class="el" href="classutilities_1_1printing_1_1detail___1_1TablePIMPL.html#aae913f38cd2f22c40e59aed2cdf1d66b">utilities::printing::detail_::TablePIMPL</a>
-, <a class="el" href="classutilities_1_1printing_1_1Table.html#aab9acfa712d854dbcaca6a139b11ed8e">utilities::printing::Table</a>
-</li>
-<li>TablePIMPL()
-: <a class="el" href="classutilities_1_1printing_1_1detail___1_1TablePIMPL.html#af350126106dfa82d85014f960cfb2644">utilities::printing::detail_::TablePIMPL</a>
-</li>
-<li>take_union()
-: <a class="el" href="classutilities_1_1MathSet.html#afb42cb65fb8dd4aa17a9cf4fced91f5e">utilities::MathSet&lt; element_type &gt;</a>
-</li>
-<li>time_it()
-: <a class="el" href="classutilities_1_1Timer.html#a6af925bbe8f07b1d72999262ec119330">utilities::Timer</a>
-</li>
-<li>Timer()
-: <a class="el" href="classutilities_1_1Timer.html#a24ec269d46c0534eafe3e26780171909">utilities::Timer</a>
-</li>
-<li>type
-: <a class="el" href="structutilities_1_1type__traits_1_1variant_1_1detail___1_1AddConst_3_01std_1_1variant_3_01Args_8_8_8_01_4_01_4.html#a25fa1db43a3e2bb6e8e8356c1bf72316">utilities::type_traits::variant::detail_::AddConst&lt; std::variant&lt; Args... &gt; &gt;</a>
-, <a class="el" href="structutilities_1_1type__traits_1_1variant_1_1detail___1_1variant__prod.html#ac88e9cac590d168e73e51b550cfd2646">utilities::type_traits::variant::detail_::variant_prod&lt; Op, LHSVariant, RHSVariant &gt;</a>
-</li>
+<p>Primary template for removing qualifiers from types in a std::variant.  
+ <a href="structutilities_1_1type__traits_1_1variant_1_1detail___1_1Decay.html#details">More...</a></p>
+
+<p><code>#include &lt;<a class="el" href="decay_8hpp_source.html">decay.hpp</a>&gt;</code></p>
+<a name="details" id="details"></a><h2 class="groupheader">Detailed Description</h2>
+<div class="textblock"><h3>template&lt;typename T&gt;<br />
+struct utilities::type_traits::variant::detail_::Decay&lt; T &gt;</h3>
+
+<p>Primary template for removing qualifiers from types in a std::variant. </p>
+<p>The primary template is selected when <code>T</code> is not an std::variant. Since the primary template is not defined, a compilation error will occur.</p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">T</td><td>The std::variant whose types are being cleaned up. If the primary template is selected <code>T</code> is not actually an std::variant. </td></tr>
+  </table>
+  </dd>
+</dl>
+</div><hr/>The documentation for this struct was generated from the following file:<ul>
+<li>utilities/type_traits/variant/<a class="el" href="decay_8hpp_source.html">decay.hpp</a></li>
 </ul>
 </div><!-- contents -->
 <!-- start footer part -->
