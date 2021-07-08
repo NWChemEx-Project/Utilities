@@ -3,7 +3,7 @@
 #include <variant>     // for std::variant
 
 namespace utilities::type_traits::variant {
-namespace detail_{
+namespace detail_ {
 
 /** @brief Primary template for removing qualifiers from types in a std::variant
  *
@@ -28,7 +28,7 @@ struct Decay;
  *
  *  @tparam Args The parameter pack of types we are cleaning up.
  */
-template<typename...Args>
+template<typename... Args>
 struct Decay<std::variant<Args...>> {
     using type = std::variant<std::decay_t<Args>...>;
 };
@@ -49,6 +49,5 @@ struct Decay<std::variant<Args...>> {
  */
 template<typename T>
 using decay_t = typename detail_::Decay<T>::type;
-
 
 } // namespace utilities::type_traits::variant
