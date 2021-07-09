@@ -1,7 +1,7 @@
 #pragma once
+#include "utilities/type_traits/parameter_pack_traits.hpp"
 #include <tuple>
 #include <type_traits>
-#include "utilities/type_traits/parameter_pack_traits.hpp"
 
 namespace utilities::type_traits::tuple {
 namespace detail_ {
@@ -23,8 +23,9 @@ struct has_type;
 /// Implementation of `has_type` for tuple types
 template<typename Type2Look4, typename... TupleTypes>
 struct has_type<Type2Look4, std::tuple<TupleTypes...>>
-  : public utilities::type_traits::parameter_pack_contains_type< Type2Look4,
-                                                                 TupleTypes...> {};
+  : public utilities::type_traits::parameter_pack_contains_type<Type2Look4,
+                                                                TupleTypes...> {
+};
 
 } // namespace detail_
 

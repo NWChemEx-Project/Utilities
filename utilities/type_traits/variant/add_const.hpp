@@ -27,7 +27,7 @@ struct AddConst;
  *
  *  @tparam Args The types in the original variant.
  */
-template<typename...Args>
+template<typename... Args>
 struct AddConst<std::variant<Args...>> {
     /// Type of the variant with all types made const
     using type = std::variant<std::add_const_t<Args>...>;
