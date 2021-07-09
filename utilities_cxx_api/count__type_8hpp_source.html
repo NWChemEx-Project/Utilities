@@ -71,31 +71,31 @@ $(function() {
 </div><!--header-->
 <div class="contents">
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#pragma once</span></div>
-<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#include &lt;tuple&gt;</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;type_traits&gt;</span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &quot;utilities/type_traits/parameter_pack_traits.hpp&quot;</span></div>
+<div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#include &quot;utilities/type_traits/parameter_pack_traits.hpp&quot;</span></div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;tuple&gt;</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;type_traits&gt;</span></div>
 <div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160; </div>
 <div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="keyword">namespace </span>utilities::type_traits::tuple {</div>
 <div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">namespace </span>detail_ {</div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
-<div class="line"><a name="l00021"></a><span class="lineno">   21</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> Type2Look4, <span class="keyword">typename</span> Tuple&gt;</div>
-<div class="line"><a name="l00022"></a><span class="lineno"><a class="line" href="structutilities_1_1type__traits_1_1tuple_1_1detail___1_1count__type.html">   22</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structutilities_1_1type__traits_1_1tuple_1_1detail___1_1count__type.html">count_type</a>;</div>
-<div class="line"><a name="l00023"></a><span class="lineno">   23</span>&#160; </div>
+<div class="line"><a name="l00022"></a><span class="lineno">   22</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> Type2Look4, <span class="keyword">typename</span> Tuple&gt;</div>
+<div class="line"><a name="l00023"></a><span class="lineno"><a class="line" href="structutilities_1_1type__traits_1_1tuple_1_1detail___1_1count__type.html">   23</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structutilities_1_1type__traits_1_1tuple_1_1detail___1_1count__type.html">count_type</a>;</div>
 <div class="line"><a name="l00024"></a><span class="lineno">   24</span>&#160; </div>
 <div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> Type2Look4, <span class="keyword">typename</span>... TupleTypes&gt;</div>
 <div class="line"><a name="l00027"></a><span class="lineno"><a class="line" href="structutilities_1_1type__traits_1_1tuple_1_1detail___1_1count__type_3_01Type2Look4_00_01std_1_1t36f4c051d7a537456e029822254f917e.html">   27</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structutilities_1_1type__traits_1_1tuple_1_1detail___1_1count__type.html">count_type</a>&lt;Type2Look4, std::tuple&lt;TupleTypes...&gt;&gt;</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;  : <span class="keyword">public</span> <a class="code" href="structutilities_1_1type__traits_1_1parameter__pack__count__type.html">utilities::type_traits::parameter_pack_count_type</a>&lt; Type2Look4,</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;                                                              TupleTypes...&gt; {};</div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;  : <span class="keyword">public</span> <a class="code" href="structutilities_1_1type__traits_1_1parameter__pack__count__type.html">utilities::type_traits::parameter_pack_count_type</a>&lt;Type2Look4,</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;                                                             TupleTypes...&gt; {};</div>
 <div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160; </div>
 <div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;} <span class="comment">// namespace detail_</span></div>
 <div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
 <div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> Type2Look4, <span class="keyword">typename</span> Tuple&gt;</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="keyword">static</span> constexpr std::size_t count_type_v = <a class="code" href="structutilities_1_1type__traits_1_1tuple_1_1detail___1_1count__type.html">detail_::count_type&lt;Type2Look4, Tuple&gt;::value</a>;</div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160; </div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;} <span class="comment">// namespace utilities::type_traits::tuple</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;<span class="keyword">static</span> constexpr std::size_t count_type_v =</div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;  <a class="code" href="structutilities_1_1type__traits_1_1tuple_1_1detail___1_1count__type.html">detail_::count_type&lt;Type2Look4, Tuple&gt;::value</a>;</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;} <span class="comment">// namespace utilities::type_traits::tuple</span></div>
 </div><!-- fragment --></div><!-- contents -->
-<div class="ttc" id="astructutilities_1_1type__traits_1_1tuple_1_1detail___1_1count__type_html"><div class="ttname"><a href="structutilities_1_1type__traits_1_1tuple_1_1detail___1_1count__type.html">utilities::type_traits::tuple::detail_::count_type</a></div><div class="ttdoc">Primary template for counting the number of times a type appears in a tuple.</div><div class="ttdef"><b>Definition:</b> count_type.hpp:22</div></div>
-<div class="ttc" id="astructutilities_1_1type__traits_1_1parameter__pack__count__type_html"><div class="ttname"><a href="structutilities_1_1type__traits_1_1parameter__pack__count__type.html">utilities::type_traits::parameter_pack_count_type</a></div><div class="ttdef"><b>Definition:</b> parameter_pack_traits.hpp:74</div></div>
+<div class="ttc" id="astructutilities_1_1type__traits_1_1tuple_1_1detail___1_1count__type_html"><div class="ttname"><a href="structutilities_1_1type__traits_1_1tuple_1_1detail___1_1count__type.html">utilities::type_traits::tuple::detail_::count_type</a></div><div class="ttdoc">Primary template for counting the number of times a type appears in a tuple.</div><div class="ttdef"><b>Definition:</b> count_type.hpp:23</div></div>
+<div class="ttc" id="astructutilities_1_1type__traits_1_1parameter__pack__count__type_html"><div class="ttname"><a href="structutilities_1_1type__traits_1_1parameter__pack__count__type.html">utilities::type_traits::parameter_pack_count_type</a></div><div class="ttdef"><b>Definition:</b> parameter_pack_traits.hpp:70</div></div>
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
 Generated by &#160;<a href="http://www.doxygen.org/index.html">
