@@ -28,12 +28,28 @@ protected:
         // Break paragraph into sentences
         auto sentences = strings::split_string(std::string(s, s + n), "\n");
 
+	// Tracks if currently in a table.
+	// A table starts when a line starts with a '+' character and ends when
+	// an empty line is encountered.
+	bool in_table = false;
+	
         const auto nsentences = sentences.size();
         for(std::size_t si = 0; si < nsentences; ++si) { // Loop over sentences
             auto sentence = sentences[si];
+
+	    // Detect start of a table when line starts with '+' character
+	    if (sentence[0] == '+') {
+		in_table = true;
+	    }
+	    // End of table if an empty line is encountered
+	    else if (in_table && sentence.empty()) {
+		in_table = false;
+	    }
+	    
             while(!sentence.empty()) {
                 const unsigned short size = sentence.size();
-                if(m_nchars_ + size <= m_w_) { // Whole thing fits
+		    
+		if(m_nchars_ + size <= m_w_) { // Whole thing fits
                     (*m_os_) << sentence;
                     m_nchars_ += size;
                     break;
@@ -57,7 +73,10 @@ protected:
                     continue;
                 }
 
-                if(no_spaces_left) {
+		// Output the entire line if the remaining characters cannot fit
+		// in an empty line, or we are currently in a table and ignoring
+		// the character limit
+                if(no_spaces_left || in_table) {
                     (*m_os_) << sentence;
                     break;
                 }
