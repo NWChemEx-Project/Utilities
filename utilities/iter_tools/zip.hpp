@@ -88,7 +88,7 @@ private:
 
 // ---------------------------Implementations----------------------------------
 template<typename... Args>
-Zip(Args&&...)->Zip<Args...>;
+Zip(Args&&...) -> Zip<Args...>;
 
 template<typename... Containers>
 Zip<Containers...>::Zip(Containers... containers) :

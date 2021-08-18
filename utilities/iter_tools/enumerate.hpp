@@ -43,7 +43,7 @@ public:
 // -------------------------------Implementations-------------------------------
 
 template<typename... Args>
-Enumerate(Args&&...)->Enumerate<Args...>;
+Enumerate(Args&&...) -> Enumerate<Args...>;
 
 template<typename... Containers>
 Enumerate<Containers...>::Enumerate(Containers... containers) :

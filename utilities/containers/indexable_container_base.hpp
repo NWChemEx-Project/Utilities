@@ -292,8 +292,8 @@ DerivedType& IndexableContainerBase<DerivedType>::downcast_() noexcept {
 }
 
 template<typename DerivedType>
-const DerivedType& IndexableContainerBase<DerivedType>::downcast_() const
-  noexcept {
+const DerivedType& IndexableContainerBase<DerivedType>::downcast_()
+  const noexcept {
     return static_cast<const DerivedType&>(*this);
 }
 
