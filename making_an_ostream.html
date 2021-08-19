@@ -90,7 +90,7 @@
               
             
             
-              <p class="caption"><span class="caption-text">Contents:</span></p>
+              <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="about/about.html">About</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation/building.html">Building the library</a></li>
@@ -173,10 +173,10 @@ documentation relating to how to do this.</p>
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline">¶</a></h2>
 <p>So in the opening we said we want to inherit from <code class="docutils literal notranslate"><span class="pre">std::ostream</span></code>. This is
 actually the easy part because that always looks like:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyStream</span> <span class="o">:</span> <span class="k">public</span> <span class="n">MyBuffer</span><span class="p">,</span> <span class="k">public</span> <span class="n">std</span><span class="o">::</span><span class="n">ostream</span> <span class="p">{</span>
-<span class="k">public</span><span class="o">:</span>
-    <span class="n">MyStream</span><span class="p">()</span> <span class="o">:</span> <span class="n">MyBuffer</span><span class="p">(),</span> <span class="n">std</span><span class="o">::</span><span class="n">ostream</span><span class="p">(</span><span class="k">this</span><span class="p">)</span> <span class="p">{}</span>
-<span class="p">};</span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyStream</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">MyBuffer</span><span class="p">,</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">ostream</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="k">public</span><span class="o">:</span><span class="w"></span>
+<span class="w">    </span><span class="n">MyStream</span><span class="p">()</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">MyBuffer</span><span class="p">(),</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">ostream</span><span class="p">(</span><span class="k">this</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
+<span class="p">};</span><span class="w"></span>
 </pre></div>
 </div>
 <p>More specifically <code class="docutils literal notranslate"><span class="pre">std::ostream</span></code> has no virtual functions so you can’t change
@@ -235,14 +235,14 @@ If it can not put anymore data into that buffer, an overflow occurs. The actual
 writes to the buffer go through <code class="docutils literal notranslate"><span class="pre">sputc</span></code> or <code class="docutils literal notranslate"><span class="pre">sputn</span></code> depending on the number
 of characters to write. <code class="docutils literal notranslate"><span class="pre">sputc</span></code> is called when there is a single character to
 write and looks something like:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">int_type</span> <span class="nf">sputc</span><span class="p">(</span><span class="n">char_type</span> <span class="n">c</span><span class="p">)</span> <span class="p">{</span>
-    <span class="n">int_type</span> <span class="n">ic</span> <span class="o">=</span> <span class="n">traits_type</span><span class="o">::</span><span class="n">to_int_type</span><span class="p">(</span><span class="n">c</span><span class="p">);</span> <span class="c1">//Turn c into an integer type</span>
-    <span class="k">if</span><span class="p">(</span> <span class="o">!</span><span class="n">pptr</span><span class="p">()</span> <span class="o">||</span> <span class="n">pptr</span><span class="p">()</span> <span class="o">==</span> <span class="n">epptr</span><span class="p">()</span> <span class="p">)</span> <span class="c1">//overflow</span>
-            <span class="k">return</span> <span class="n">overflow</span><span class="p">(</span><span class="n">ic</span><span class="p">);</span>
-    <span class="o">*</span><span class="n">pptr</span><span class="p">()</span> <span class="o">=</span> <span class="n">c</span><span class="p">;</span>
-    <span class="n">pbump</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span> <span class="c1">//advances the put pointer by 1</span>
-    <span class="k">return</span> <span class="nl">ic</span><span class="p">:</span>
-<span class="p">}</span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">int_type</span><span class="w"> </span><span class="nf">sputc</span><span class="p">(</span><span class="n">char_type</span><span class="w"> </span><span class="n">c</span><span class="p">)</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<span class="w">    </span><span class="n">int_type</span><span class="w"> </span><span class="n">ic</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">traits_type</span><span class="o">::</span><span class="n">to_int_type</span><span class="p">(</span><span class="n">c</span><span class="p">);</span><span class="w"> </span><span class="c1">//Turn c into an integer type</span>
+<span class="w">    </span><span class="k">if</span><span class="p">(</span><span class="w"> </span><span class="o">!</span><span class="n">pptr</span><span class="p">()</span><span class="w"> </span><span class="o">||</span><span class="w"> </span><span class="n">pptr</span><span class="p">()</span><span class="w"> </span><span class="o">==</span><span class="w"> </span><span class="n">epptr</span><span class="p">()</span><span class="w"> </span><span class="p">)</span><span class="w"> </span><span class="c1">//overflow</span>
+<span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">overflow</span><span class="p">(</span><span class="n">ic</span><span class="p">);</span><span class="w"></span>
+<span class="w">    </span><span class="o">*</span><span class="n">pptr</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">c</span><span class="p">;</span><span class="w"></span>
+<span class="w">    </span><span class="n">pbump</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w"> </span><span class="c1">//advances the put pointer by 1</span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nl">ic</span><span class="p">:</span><span class="w"></span>
+<span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
 <p>Basically <code class="docutils literal notranslate"><span class="pre">sputc</span></code> takes care of writing characters to the buffer, one at a
@@ -252,7 +252,7 @@ signals failure to handle the overflow. If you want your buffer class to be an
 output buffer, then you need to override <code class="docutils literal notranslate"><span class="pre">overflow</span></code> as shown below.</p>
 <p>Writing one character at a time is inefficient, which is why
 <code class="docutils literal notranslate"><span class="pre">std::basic_streambuf</span></code> also has <code class="docutils literal notranslate"><span class="pre">sputn</span></code>. <code class="docutils literal notranslate"><span class="pre">sputn</span></code>’s signature is:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">streamsize</span> <span class="nf">sputn</span><span class="p">(</span><span class="k">const</span> <span class="n">char_type</span><span class="o">&amp;</span> <span class="n">s</span><span class="p">,</span> <span class="n">streamsize</span> <span class="n">n</span><span class="p">);</span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">streamsize</span><span class="w"> </span><span class="nf">sputn</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="n">char_type</span><span class="o">&amp;</span><span class="w"> </span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="n">streamsize</span><span class="w"> </span><span class="n">n</span><span class="p">);</span><span class="w"></span>
 </pre></div>
 </div>
 <p>When called, <code class="docutils literal notranslate"><span class="pre">sputn</span></code> attempts to write at most <code class="docutils literal notranslate"><span class="pre">n</span></code> characters from the
@@ -283,7 +283,7 @@ relevant for writing a custom output buffer.</p>
 <h2>xsputn<a class="headerlink" href="#xsputn" title="Permalink to this headline">¶</a></h2>
 <p>This function will ultimately be called everytime the stream wants to write more
 than one character. It’s signature is:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">streamsize</span> <span class="n">xsputn</span><span class="p">(</span><span class="k">const</span> <span class="kt">char</span><span class="o">*</span> <span class="n">s</span><span class="p">,</span> <span class="n">std</span><span class="o">::</span><span class="n">streamsize</span> <span class="n">n</span><span class="p">)</span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">streamsize</span><span class="w"> </span><span class="n">xsputn</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">streamsize</span><span class="w"> </span><span class="n">n</span><span class="p">)</span><span class="w"></span>
 </pre></div>
 </div>
 <p>It takes a pointer to an array of characters and the length of that array. Your
@@ -298,7 +298,7 @@ characters have been written.</p>
 <section id="overflow">
 <h2>overflow<a class="headerlink" href="#overflow" title="Permalink to this headline">¶</a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">overflow</span></code> is called when the <code class="docutils literal notranslate"><span class="pre">pptr()</span></code> is no longer valid. Its signature is:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">int_type</span> <span class="nf">overflow</span><span class="p">(</span><span class="n">int_type</span> <span class="n">c</span><span class="p">);</span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">int_type</span><span class="w"> </span><span class="nf">overflow</span><span class="p">(</span><span class="n">int_type</span><span class="w"> </span><span class="n">c</span><span class="p">);</span><span class="w"></span>
 </pre></div>
 </div>
 <p>The input value, <code class="docutils literal notranslate"><span class="pre">c</span></code>, is the character which could not fit in the internal
@@ -312,7 +312,7 @@ output. The return is <code class="docutils literal notranslate"><span class="pr
 <h2>synch<a class="headerlink" href="#synch" title="Permalink to this headline">¶</a></h2>
 <p>If a user calls flush on the <code class="docutils literal notranslate"><span class="pre">std::ostream</span></code> object it ultimately will call
 <code class="docutils literal notranslate"><span class="pre">synch</span></code>. <code class="docutils literal notranslate"><span class="pre">synch</span></code>’s signature is:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span> <span class="n">synch</span><span class="p">()</span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="n">synch</span><span class="p">()</span><span class="w"></span>
 </pre></div>
 </div>
 <p>It returns 0 if successful and -1 if it fails. Your implementation should dump
@@ -320,15 +320,15 @@ whatever’s in the internal output buffer to the output and reset the pointers.
 </section>
 <section id="seekoff">
 <h2>seekoff<a class="headerlink" href="#seekoff" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">pos_type</span> <span class="n">seekoff</span><span class="p">(</span><span class="n">off_type</span> <span class="n">off</span><span class="p">,</span>
-                 <span class="n">ios_base</span><span class="o">::</span><span class="n">seekdir</span> <span class="n">way</span><span class="p">,</span>
-                 <span class="n">ios_base</span><span class="o">::</span><span class="n">openmode</span> <span class="n">which</span><span class="p">)</span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">pos_type</span><span class="w"> </span><span class="n">seekoff</span><span class="p">(</span><span class="n">off_type</span><span class="w"> </span><span class="n">off</span><span class="p">,</span><span class="w"></span>
+<span class="w">                 </span><span class="n">ios_base</span><span class="o">::</span><span class="n">seekdir</span><span class="w"> </span><span class="n">way</span><span class="p">,</span><span class="w"></span>
+<span class="w">                 </span><span class="n">ios_base</span><span class="o">::</span><span class="n">openmode</span><span class="w"> </span><span class="n">which</span><span class="p">)</span><span class="w"></span>
 </pre></div>
 </div>
 </section>
 <section id="seekpos">
 <h2>seekpos<a class="headerlink" href="#seekpos" title="Permalink to this headline">¶</a></h2>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">pos_type</span> <span class="n">seekpos</span><span class="p">(</span><span class="n">pos_type</span> <span class="n">pos</span><span class="p">,</span> <span class="n">ios_base</span><span class="o">::</span><span class="n">openmode</span> <span class="n">which</span><span class="p">)</span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">pos_type</span><span class="w"> </span><span class="n">seekpos</span><span class="p">(</span><span class="n">pos_type</span><span class="w"> </span><span class="n">pos</span><span class="p">,</span><span class="w"> </span><span class="n">ios_base</span><span class="o">::</span><span class="n">openmode</span><span class="w"> </span><span class="n">which</span><span class="p">)</span><span class="w"></span>
 </pre></div>
 </div>
 </section>
