@@ -83,7 +83,7 @@ public:
      *
      *  @throws ??? if the derived class throws. Same throw guarantee.
      */
-    decltype(auto) operator-> () { return &(operator*()); }
+    decltype(auto) operator->() { return &(operator*()); }
 
     /** @brief Provides access to an element's member functions directly.
      *
@@ -97,7 +97,7 @@ public:
      *
      *  @throws ??? if the derived class throws. Same throw guarantee.
      */
-    decltype(auto) operator-> () const { return &(operator*()); }
+    decltype(auto) operator->() const { return &(operator*()); }
 
     /** @brief Increments the current iterator and returns it.
      *
@@ -170,14 +170,14 @@ ParentType InputIteratorBase<ParentType>::operator++(int) {
 }
 
 template<typename ParentType>
-bool InputIteratorBase<ParentType>::operator==(const ParentType& rhs) const
-  noexcept {
+bool InputIteratorBase<ParentType>::operator==(
+  const ParentType& rhs) const noexcept {
     return downcast_().are_equal(rhs);
 }
 
 template<typename ParentType>
-bool InputIteratorBase<ParentType>::operator!=(const ParentType& rhs) const
-  noexcept {
+bool InputIteratorBase<ParentType>::operator!=(
+  const ParentType& rhs) const noexcept {
     return !((*this) == rhs);
 }
 

@@ -184,13 +184,13 @@ HAS_MEMBER(empty);
  *  @param[in] NAME name of the member for function
  *  @param[in] symbol the symbol the check for
  */
-#define HAS_OPERATOR(NAME, symbol)                                          \
-    template<typename T, typename U, typename = void>                       \
-    struct has_##NAME : std::false_type {};                                 \
-    template<typename T, typename U>                                        \
-    struct has_##NAME<T, U,                                                 \
-                      typename VoidType<decltype(                           \
-                        std::declval<T>() symbol std::declval<U>())>::type> \
+#define HAS_OPERATOR(NAME, symbol)                                            \
+    template<typename T, typename U, typename = void>                         \
+    struct has_##NAME : std::false_type {};                                   \
+    template<typename T, typename U>                                          \
+    struct has_##NAME<T, U,                                                   \
+                      typename VoidType<decltype(std::declval<T>() symbol     \
+                                                   std::declval<U>())>::type> \
       : std::true_type {}
 
 HAS_OPERATOR(equal_to, ==);
