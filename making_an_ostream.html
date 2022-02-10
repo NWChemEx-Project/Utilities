@@ -80,7 +80,7 @@ documentation relating to how to do this.</p>
 <h2>Overview<a class="headerlink" href="#overview" title="Permalink to this headline"></a></h2>
 <p>So in the opening we said we want to inherit from <code class="docutils literal notranslate"><span class="pre">std::ostream</span></code>. This is
 actually the easy part because that always looks like:</p>
-<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">class</span> <span class="nc">MyStream</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">MyBuffer</span><span class="p">,</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">ostream</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
+<div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyStream</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">MyBuffer</span><span class="p">,</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">ostream</span><span class="w"> </span><span class="p">{</span><span class="w"></span>
 <span class="k">public</span><span class="o">:</span><span class="w"></span>
 <span class="w">    </span><span class="n">MyStream</span><span class="p">()</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="n">MyBuffer</span><span class="p">(),</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">ostream</span><span class="p">(</span><span class="k">this</span><span class="p">)</span><span class="w"> </span><span class="p">{}</span><span class="w"></span>
 <span class="p">};</span><span class="w"></span>
@@ -148,7 +148,7 @@ write and looks something like:</p>
 <span class="w">            </span><span class="k">return</span><span class="w"> </span><span class="n">overflow</span><span class="p">(</span><span class="n">ic</span><span class="p">);</span><span class="w"></span>
 <span class="w">    </span><span class="o">*</span><span class="n">pptr</span><span class="p">()</span><span class="w"> </span><span class="o">=</span><span class="w"> </span><span class="n">c</span><span class="p">;</span><span class="w"></span>
 <span class="w">    </span><span class="n">pbump</span><span class="p">(</span><span class="mi">1</span><span class="p">);</span><span class="w"> </span><span class="c1">//advances the put pointer by 1</span>
-<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="nl">ic</span><span class="p">:</span><span class="w"></span>
+<span class="w">    </span><span class="k">return</span><span class="w"> </span><span class="n">ic</span><span class="o">:</span><span class="w"></span>
 <span class="p">}</span><span class="w"></span>
 </pre></div>
 </div>
