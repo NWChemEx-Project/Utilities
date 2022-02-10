@@ -2,6 +2,7 @@
 #include "utilities/type_traits/is_printable.hpp"
 #include <array>
 #include <deque>
+#include <forward_list>
 #include <list>
 #include <map>
 #include <ostream>
@@ -9,6 +10,8 @@
 #include <set>
 #include <stack>
 #include <tuple>
+#include <unordered_map>
+#include <unordered_set>
 #include <utility>
 #include <vector>
 
