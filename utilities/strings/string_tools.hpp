@@ -125,9 +125,9 @@ inline auto replace(const std::string& from, const std::string& to,
 }
 
 /** @brief Lowercase the entirety of @p str.
- * 
+ *
  * @param[in] str String to be lowercased.
- * 
+ *
  * @return A deep copy of @p str with all applicable characters lowercased.
  */
 inline std::string tolower_string(const std::string& str) {
@@ -142,9 +142,9 @@ inline std::string tolower_string(const std::string& str) {
 }
 
 /** @brief Uppercase the entirety of @p str.
- * 
+ *
  * @param[in] str String to be uppercased.
- * 
+ *
  * @return A deep copy of @p str with all applicable characters uppercased.
  */
 inline std::string toupper_string(const std::string& str) {
