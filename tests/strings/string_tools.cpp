@@ -82,3 +82,41 @@ TEST_CASE("replace") {
         REQUIRE(rv == corr);
     }
 }
+
+TEST_CASE("tolower_string") {
+    SECTION("Empty string") { REQUIRE(tolower_string("") == ""); }
+    SECTION("ALL CAPS") { REQUIRE(tolower_string("ALL CAPS") == "all caps"); }
+    SECTION("all lowercase") {
+        REQUIRE(tolower_string("all lowercase") == "all lowercase");
+    }
+    SECTION("Mixed case") {
+        REQUIRE(tolower_string("MiXEd cAsE") == "mixed case");
+    }
+    SECTION("Special symbols") {
+        REQUIRE(tolower_string("\0\n\t!@#$%^&*()-_=+\"\';:,.<>/?\\|`~") ==
+                "\0\n\t!@#$%^&*()-_=+\"\';:,.<>/?\\|`~");
+    }
+    SECTION("Full sentence") {
+        REQUIRE(tolower_string("This is a full sentence! (with a side note)") ==
+                "this is a full sentence! (with a side note)");
+    }
+}
+
+TEST_CASE("toupper_string") {
+    SECTION("Empty string") { REQUIRE(toupper_string("") == ""); }
+    SECTION("ALL CAPS") { REQUIRE(toupper_string("ALL CAPS") == "ALL CAPS"); }
+    SECTION("all lowercase") {
+        REQUIRE(toupper_string("all lowercase") == "ALL LOWERCASE");
+    }
+    SECTION("Mixed case") {
+        REQUIRE(toupper_string("MiXEd cAsE") == "MIXED CASE");
+    }
+    SECTION("Special symbols") {
+        REQUIRE(toupper_string("\0\n\t!@#$%^&*()-_=+\"\';:,.<>/?\\|`~") ==
+                "\0\n\t!@#$%^&*()-_=+\"\';:,.<>/?\\|`~");
+    }
+    SECTION("Full sentence") {
+        REQUIRE(toupper_string("This is a full sentence! (with a side note)") ==
+                "THIS IS A FULL SENTENCE! (WITH A SIDE NOTE)");
+    }
+}

@@ -1,5 +1,7 @@
 #pragma once
 #include "utilities/iter_tools/enumerate.hpp"
+#include <algorithm>
+#include <cctype>
 #include <regex>
 #include <string>
 #include <vector>
@@ -120,6 +122,37 @@ auto join_string(T&& split_str, U&& delim) {
 inline auto replace(const std::string& from, const std::string& to,
                     const std::string& str) {
     return std::regex_replace(str, std::regex(from), to);
+}
+
+/** @brief Lowercase the entirety of @p str.
+ *
+ * @param[in] str String to be lowercased.
+ *
+ * @return A deep copy of @p str with all applicable characters lowercased.
+ */
+inline std::string tolower_string(std::string str) {
+    // Lowercase each character in the string
+    std::transform(tmp_str.begin(), tmp_str.end(), tmp_str.begin(),
+                   [](unsigned char c) { return std::tolower(c); });
+
+    return tmp_str;
+}
+
+/** @brief Uppercase the entirety of @p str.
+ *
+ * @param[in] str String to be uppercased.
+ *
+ * @return A deep copy of @p str with all applicable characters uppercased.
+ */
+inline std::string toupper_string(const std::string& str) {
+    // Make a copy
+    std::string tmp_str = str;
+
+    // Uppercase each character in the string
+    std::transform(tmp_str.begin(), tmp_str.end(), tmp_str.begin(),
+                   [](unsigned char c) { return std::toupper(c); });
+
+    return tmp_str;
 }
 
 } // namespace utilities::strings
