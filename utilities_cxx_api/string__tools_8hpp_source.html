@@ -72,53 +72,74 @@ $(function() {
 <div class="contents">
 <div class="fragment"><div class="line"><a name="l00001"></a><span class="lineno">    1</span>&#160;<span class="preprocessor">#pragma once</span></div>
 <div class="line"><a name="l00002"></a><span class="lineno">    2</span>&#160;<span class="preprocessor">#include &quot;utilities/iter_tools/enumerate.hpp&quot;</span></div>
-<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;regex&gt;</span></div>
-<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
-<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
-<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160; </div>
-<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="keyword">namespace </span>utilities::strings {</div>
+<div class="line"><a name="l00003"></a><span class="lineno">    3</span>&#160;<span class="preprocessor">#include &lt;algorithm&gt;</span></div>
+<div class="line"><a name="l00004"></a><span class="lineno">    4</span>&#160;<span class="preprocessor">#include &lt;cctype&gt;</span></div>
+<div class="line"><a name="l00005"></a><span class="lineno">    5</span>&#160;<span class="preprocessor">#include &lt;regex&gt;</span></div>
+<div class="line"><a name="l00006"></a><span class="lineno">    6</span>&#160;<span class="preprocessor">#include &lt;string&gt;</span></div>
+<div class="line"><a name="l00007"></a><span class="lineno">    7</span>&#160;<span class="preprocessor">#include &lt;vector&gt;</span></div>
 <div class="line"><a name="l00008"></a><span class="lineno">    8</span>&#160; </div>
-<div class="line"><a name="l00026"></a><span class="lineno">   26</span>&#160;<span class="keyword">inline</span> std::vector&lt;std::string&gt; split_string(<span class="keyword">const</span> std::string&amp; str,</div>
-<div class="line"><a name="l00027"></a><span class="lineno">   27</span>&#160;                                             <span class="keyword">const</span> std::string&amp; delimiter) {</div>
-<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;    std::vector&lt;std::string&gt; strings;</div>
-<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160; </div>
-<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    <span class="comment">// Handle case that string is empty</span></div>
-<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160;    <span class="keywordflow">if</span>(str.empty()) <span class="keywordflow">return</span> strings;</div>
-<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160; </div>
-<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    std::string::size_type pos  = 0;</div>
-<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160;    std::string::size_type prev = 0;</div>
-<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    <span class="keywordflow">while</span>((pos = str.find(delimiter, prev)) != std::string::npos) {</div>
-<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;        strings.push_back(str.substr(prev, pos - prev));</div>
-<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;        prev = pos + delimiter.size();</div>
-<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;    }</div>
-<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160; </div>
-<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    <span class="comment">// We&#39;re out of delimiters, but haven&#39;t printed from the last delimiter to</span></div>
-<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160;    <span class="comment">// the end, so one more push_back</span></div>
-<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    strings.push_back(str.substr(prev));</div>
-<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160; </div>
-<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    <span class="keywordflow">return</span> strings;</div>
-<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160;}</div>
-<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160; </div>
-<div class="line"><a name="l00061"></a><span class="lineno">   61</span>&#160;<span class="keyword">inline</span> <span class="keyword">auto</span> split_string(<span class="keyword">const</span> std::string&amp; str, <span class="keywordtype">char</span> c) {</div>
-<div class="line"><a name="l00062"></a><span class="lineno">   62</span>&#160;    <span class="keywordflow">return</span> split_string(str, std::string(1, c));</div>
-<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;}</div>
-<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160; </div>
-<div class="line"><a name="l00092"></a><span class="lineno">   92</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> U&gt;</div>
-<div class="line"><a name="l00093"></a><span class="lineno">   93</span>&#160;<span class="keyword">auto</span> join_string(T&amp;&amp; split_str, U&amp;&amp; delim) {</div>
-<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;    std::string rv;</div>
-<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;    <span class="keywordflow">for</span>(<span class="keyword">auto</span>&amp;&amp; [i, x] : <a class="code" href="classutilities_1_1Enumerate.html">utilities::Enumerate</a>(std::forward&lt;T&gt;(split_str))) {</div>
-<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;        rv += x;</div>
-<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;        <span class="keywordflow">if</span>(i != split_str.size() - 1) rv += delim;</div>
-<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;    }</div>
-<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;    <span class="keywordflow">return</span> rv;</div>
-<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;}</div>
-<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160; </div>
-<div class="line"><a name="l00120"></a><span class="lineno">  120</span>&#160;<span class="keyword">inline</span> <span class="keyword">auto</span> replace(<span class="keyword">const</span> std::string&amp; from, <span class="keyword">const</span> std::string&amp; to,</div>
-<div class="line"><a name="l00121"></a><span class="lineno">  121</span>&#160;                    <span class="keyword">const</span> std::string&amp; str) {</div>
-<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;    <span class="keywordflow">return</span> std::regex_replace(str, std::regex(from), to);</div>
-<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;}</div>
-<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160; </div>
-<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;} <span class="comment">// namespace utilities::strings</span></div>
+<div class="line"><a name="l00009"></a><span class="lineno">    9</span>&#160;<span class="keyword">namespace </span>utilities::strings {</div>
+<div class="line"><a name="l00010"></a><span class="lineno">   10</span>&#160; </div>
+<div class="line"><a name="l00028"></a><span class="lineno">   28</span>&#160;<span class="keyword">inline</span> std::vector&lt;std::string&gt; split_string(<span class="keyword">const</span> std::string&amp; str,</div>
+<div class="line"><a name="l00029"></a><span class="lineno">   29</span>&#160;                                             <span class="keyword">const</span> std::string&amp; delimiter) {</div>
+<div class="line"><a name="l00030"></a><span class="lineno">   30</span>&#160;    std::vector&lt;std::string&gt; strings;</div>
+<div class="line"><a name="l00031"></a><span class="lineno">   31</span>&#160; </div>
+<div class="line"><a name="l00032"></a><span class="lineno">   32</span>&#160;    <span class="comment">// Handle case that string is empty</span></div>
+<div class="line"><a name="l00033"></a><span class="lineno">   33</span>&#160;    <span class="keywordflow">if</span>(str.empty()) <span class="keywordflow">return</span> strings;</div>
+<div class="line"><a name="l00034"></a><span class="lineno">   34</span>&#160; </div>
+<div class="line"><a name="l00035"></a><span class="lineno">   35</span>&#160;    std::string::size_type pos  = 0;</div>
+<div class="line"><a name="l00036"></a><span class="lineno">   36</span>&#160;    std::string::size_type prev = 0;</div>
+<div class="line"><a name="l00037"></a><span class="lineno">   37</span>&#160;    <span class="keywordflow">while</span>((pos = str.find(delimiter, prev)) != std::string::npos) {</div>
+<div class="line"><a name="l00038"></a><span class="lineno">   38</span>&#160;        strings.push_back(str.substr(prev, pos - prev));</div>
+<div class="line"><a name="l00039"></a><span class="lineno">   39</span>&#160;        prev = pos + delimiter.size();</div>
+<div class="line"><a name="l00040"></a><span class="lineno">   40</span>&#160;    }</div>
+<div class="line"><a name="l00041"></a><span class="lineno">   41</span>&#160; </div>
+<div class="line"><a name="l00042"></a><span class="lineno">   42</span>&#160;    <span class="comment">// We&#39;re out of delimiters, but haven&#39;t printed from the last delimiter to</span></div>
+<div class="line"><a name="l00043"></a><span class="lineno">   43</span>&#160;    <span class="comment">// the end, so one more push_back</span></div>
+<div class="line"><a name="l00044"></a><span class="lineno">   44</span>&#160;    strings.push_back(str.substr(prev));</div>
+<div class="line"><a name="l00045"></a><span class="lineno">   45</span>&#160; </div>
+<div class="line"><a name="l00046"></a><span class="lineno">   46</span>&#160;    <span class="keywordflow">return</span> strings;</div>
+<div class="line"><a name="l00047"></a><span class="lineno">   47</span>&#160;}</div>
+<div class="line"><a name="l00048"></a><span class="lineno">   48</span>&#160; </div>
+<div class="line"><a name="l00063"></a><span class="lineno">   63</span>&#160;<span class="keyword">inline</span> <span class="keyword">auto</span> split_string(<span class="keyword">const</span> std::string&amp; str, <span class="keywordtype">char</span> c) {</div>
+<div class="line"><a name="l00064"></a><span class="lineno">   64</span>&#160;    <span class="keywordflow">return</span> split_string(str, std::string(1, c));</div>
+<div class="line"><a name="l00065"></a><span class="lineno">   65</span>&#160;}</div>
+<div class="line"><a name="l00066"></a><span class="lineno">   66</span>&#160; </div>
+<div class="line"><a name="l00094"></a><span class="lineno">   94</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span> U&gt;</div>
+<div class="line"><a name="l00095"></a><span class="lineno">   95</span>&#160;<span class="keyword">auto</span> join_string(T&amp;&amp; split_str, U&amp;&amp; delim) {</div>
+<div class="line"><a name="l00096"></a><span class="lineno">   96</span>&#160;    std::string rv;</div>
+<div class="line"><a name="l00097"></a><span class="lineno">   97</span>&#160;    <span class="keywordflow">for</span>(<span class="keyword">auto</span>&amp;&amp; [i, x] : <a class="code" href="classutilities_1_1Enumerate.html">utilities::Enumerate</a>(std::forward&lt;T&gt;(split_str))) {</div>
+<div class="line"><a name="l00098"></a><span class="lineno">   98</span>&#160;        rv += x;</div>
+<div class="line"><a name="l00099"></a><span class="lineno">   99</span>&#160;        <span class="keywordflow">if</span>(i != split_str.size() - 1) rv += delim;</div>
+<div class="line"><a name="l00100"></a><span class="lineno">  100</span>&#160;    }</div>
+<div class="line"><a name="l00101"></a><span class="lineno">  101</span>&#160;    <span class="keywordflow">return</span> rv;</div>
+<div class="line"><a name="l00102"></a><span class="lineno">  102</span>&#160;}</div>
+<div class="line"><a name="l00103"></a><span class="lineno">  103</span>&#160; </div>
+<div class="line"><a name="l00122"></a><span class="lineno">  122</span>&#160;<span class="keyword">inline</span> <span class="keyword">auto</span> replace(<span class="keyword">const</span> std::string&amp; from, <span class="keyword">const</span> std::string&amp; to,</div>
+<div class="line"><a name="l00123"></a><span class="lineno">  123</span>&#160;                    <span class="keyword">const</span> std::string&amp; str) {</div>
+<div class="line"><a name="l00124"></a><span class="lineno">  124</span>&#160;    <span class="keywordflow">return</span> std::regex_replace(str, std::regex(from), to);</div>
+<div class="line"><a name="l00125"></a><span class="lineno">  125</span>&#160;}</div>
+<div class="line"><a name="l00126"></a><span class="lineno">  126</span>&#160; </div>
+<div class="line"><a name="l00133"></a><span class="lineno">  133</span>&#160;<span class="keyword">inline</span> std::string tolower_string(std::string str) {</div>
+<div class="line"><a name="l00134"></a><span class="lineno">  134</span>&#160;    <span class="comment">// Lowercase each character in the string</span></div>
+<div class="line"><a name="l00135"></a><span class="lineno">  135</span>&#160;    std::transform(tmp_str.begin(), tmp_str.end(), tmp_str.begin(),</div>
+<div class="line"><a name="l00136"></a><span class="lineno">  136</span>&#160;                   [](<span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> c) { return std::tolower(c); });</div>
+<div class="line"><a name="l00137"></a><span class="lineno">  137</span>&#160; </div>
+<div class="line"><a name="l00138"></a><span class="lineno">  138</span>&#160;    <span class="keywordflow">return</span> tmp_str;</div>
+<div class="line"><a name="l00139"></a><span class="lineno">  139</span>&#160;}</div>
+<div class="line"><a name="l00140"></a><span class="lineno">  140</span>&#160; </div>
+<div class="line"><a name="l00147"></a><span class="lineno">  147</span>&#160;<span class="keyword">inline</span> std::string toupper_string(<span class="keyword">const</span> std::string&amp; str) {</div>
+<div class="line"><a name="l00148"></a><span class="lineno">  148</span>&#160;    <span class="comment">// Make a copy</span></div>
+<div class="line"><a name="l00149"></a><span class="lineno">  149</span>&#160;    std::string tmp_str = str;</div>
+<div class="line"><a name="l00150"></a><span class="lineno">  150</span>&#160; </div>
+<div class="line"><a name="l00151"></a><span class="lineno">  151</span>&#160;    <span class="comment">// Uppercase each character in the string</span></div>
+<div class="line"><a name="l00152"></a><span class="lineno">  152</span>&#160;    std::transform(tmp_str.begin(), tmp_str.end(), tmp_str.begin(),</div>
+<div class="line"><a name="l00153"></a><span class="lineno">  153</span>&#160;                   [](<span class="keywordtype">unsigned</span> <span class="keywordtype">char</span> c) { return std::toupper(c); });</div>
+<div class="line"><a name="l00154"></a><span class="lineno">  154</span>&#160; </div>
+<div class="line"><a name="l00155"></a><span class="lineno">  155</span>&#160;    <span class="keywordflow">return</span> tmp_str;</div>
+<div class="line"><a name="l00156"></a><span class="lineno">  156</span>&#160;}</div>
+<div class="line"><a name="l00157"></a><span class="lineno">  157</span>&#160; </div>
+<div class="line"><a name="l00158"></a><span class="lineno">  158</span>&#160;} <span class="comment">// namespace utilities::strings</span></div>
 </div><!-- fragment --></div><!-- contents -->
 <div class="ttc" id="aclassutilities_1_1Enumerate_html"><div class="ttname"><a href="classutilities_1_1Enumerate.html">utilities::Enumerate</a></div><div class="ttdoc">Enumerates the elements in a container.</div><div class="ttdef"><b>Definition:</b> enumerate.hpp:24</div></div>
 <!-- start footer part -->
