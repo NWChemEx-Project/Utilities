@@ -131,7 +131,6 @@ inline auto replace(const std::string& from, const std::string& to,
  * @return A deep copy of @p str with all applicable characters lowercased.
  */
 inline std::string tolower_string(std::string str) {
-
     // Lowercase each character in the string
     std::transform(tmp_str.begin(), tmp_str.end(), tmp_str.begin(),
                    [](unsigned char c) { return std::tolower(c); });
