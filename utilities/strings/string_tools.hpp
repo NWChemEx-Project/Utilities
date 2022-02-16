@@ -132,10 +132,10 @@ inline auto replace(const std::string& from, const std::string& to,
  */
 inline std::string tolower_string(std::string str) {
     // Lowercase each character in the string
-    std::transform(tmp_str.begin(), tmp_str.end(), tmp_str.begin(),
+    std::transform(str.begin(), str.end(), str.begin(),
                    [](unsigned char c) { return std::tolower(c); });
 
-    return tmp_str;
+    return str;
 }
 
 /** @brief Uppercase the entirety of @p str.
@@ -144,15 +144,12 @@ inline std::string tolower_string(std::string str) {
  *
  * @return A deep copy of @p str with all applicable characters uppercased.
  */
-inline std::string toupper_string(const std::string& str) {
-    // Make a copy
-    std::string tmp_str = str;
-
+inline std::string toupper_string(std::string str) {
     // Uppercase each character in the string
-    std::transform(tmp_str.begin(), tmp_str.end(), tmp_str.begin(),
+    std::transform(str.begin(), str.end(), str.begin(),
                    [](unsigned char c) { return std::toupper(c); });
 
-    return tmp_str;
+    return str;
 }
 
 } // namespace utilities::strings
