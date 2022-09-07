@@ -186,7 +186,7 @@ std::ostream& print_tuple(std::ostream& os, T&& rhs, char odelim = '(',
 // Stuff below hwere is just boiler-plate for calling the above functions for
 // ever class in the STL
 
-namespace std{
+namespace std {
 /** @brief Makes std::array printable.
  *
  *  @tparam T The type of the element stored in the array.
