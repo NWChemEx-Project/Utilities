@@ -181,10 +181,12 @@ std::ostream& print_tuple(std::ostream& os, T&& rhs, char odelim = '(',
 }
 
 } // namespace detail_
+} // namespace utilities::printing
 
 // Stuff below hwere is just boiler-plate for calling the above functions for
 // ever class in the STL
 
+namespace std{
 /** @brief Makes std::array printable.
  *
  *  @tparam T The type of the element stored in the array.
@@ -558,5 +560,4 @@ template<typename T, typename Alloc>
 std::ostream& operator<<(std::ostream& os, const std::vector<T, Alloc>& v) {
     return utilities::printing::detail_::print_list(os, v);
 }
-
-} // namespace utilities::printing
+} // namespace std
