@@ -38,27 +38,23 @@ using matrix_t = std::vector<std::vector<double>>;
 TEST_CASE("Demangler : template") {
     REQUIRE(Demangler::demangle<int>() == corr1);
     REQUIRE(Demangler::demangle<double>() == corr2);
-    //for clang support commented
-    //REQUIRE(Demangler::demangle<matrix_t>() == corr3);
+    REQUIRE(Demangler::demangle<matrix_t>() == corr3);
 }
 
 TEST_CASE("Demangler : type_info") {
     REQUIRE(Demangler::demangle(typeid(int)) == corr1);
     REQUIRE(Demangler::demangle(typeid(double)) == corr2);
-    //for clang support commented
-    //REQUIRE(Demangler::demangle(typeid(matrix_t)) == corr3);
+    REQUIRE(Demangler::demangle(typeid(matrix_t)) == corr3);
 }
 
 TEST_CASE("Demangler : type_index") {
     REQUIRE(Demangler::demangle(std::type_index(typeid(int))) == corr1);
     REQUIRE(Demangler::demangle(std::type_index(typeid(double))) == corr2);
-    //for clang support commented
-    //REQUIRE(Demangler::demangle(std::type_index(typeid(matrix_t))) == corr3);
+    REQUIRE(Demangler::demangle(std::type_index(typeid(matrix_t))) == corr3);
 }
 
 TEST_CASE("Demangler : string literal") {
     REQUIRE(Demangler::demangle(typeid(int).name()) == corr1);
     REQUIRE(Demangler::demangle(typeid(double).name()) == corr2);
-    //for clang support commented
-    //REQUIRE(Demangler::demangle(typeid(matrix_t).name()) == corr3);
+    REQUIRE(Demangler::demangle(typeid(matrix_t).name()) == corr3);
 }
