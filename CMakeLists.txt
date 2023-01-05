@@ -16,6 +16,14 @@ cmake_minimum_required(VERSION 3.14)
 file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/version.txt" VERSION)
 project(utilities VERSION "${VERSION}")
 
+include(FetchContent)
+FetchContent_Declare(
+        nwx_cmake
+        GIT_REPOSITORY https://github.com/NWChemEx-Project/NWXCMake
+)
+FetchContent_MakeAvailable(nwx_cmake)
+list(APPEND CMAKE_MODULE_PATH "${nwx_cmake_SOURCE_DIR}/cmake")
+
 option(BUILD_TESTING "Should we build the tests?" OFF)
 option(BUILD_DOCS "Should we build the documentation?" OFF)
 
