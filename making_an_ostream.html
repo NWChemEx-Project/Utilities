@@ -1,75 +1,36 @@
-
-
 <!DOCTYPE html>
 <html class="writer-html5" lang="en" >
 <head>
   <meta charset="utf-8" />
-  <meta name="generator" content="Docutils 0.19: https://docutils.sourceforge.io/" />
-
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  
   <title>Making an ostream Class &mdash; utilities 1.0.0 documentation</title>
-  
-
-  
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
-  <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
-
-  
-  
-
-  
-  
-
-  
-
-  
+      <link rel="stylesheet" href="_static/pygments.css" type="text/css" />
+      <link rel="stylesheet" href="_static/css/theme.css" type="text/css" />
   <!--[if lt IE 9]>
     <script src="_static/js/html5shiv.min.js"></script>
   <![endif]-->
   
-    
-      <script type="text/javascript" id="documentation_options" data-url_root="./" src="_static/documentation_options.js"></script>
         <script data-url_root="./" id="documentation_options" src="_static/documentation_options.js"></script>
+        <script src="_static/jquery.js"></script>
+        <script src="_static/underscore.js"></script>
+        <script src="_static/_sphinx_javascript_frameworks_compat.js"></script>
         <script src="_static/doctools.js"></script>
         <script src="_static/sphinx_highlight.js"></script>
-    
-    <script type="text/javascript" src="_static/js/theme.js"></script>
-
-    
+    <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
     <link rel="search" title="Search" href="search.html" /> 
 </head>
 
-<body class="wy-body-for-nav">
-
-   
+<body class="wy-body-for-nav"> 
   <div class="wy-grid-for-nav">
-    
     <nav data-toggle="wy-nav-shift" class="wy-nav-side">
       <div class="wy-side-scroll">
         <div class="wy-side-nav-search" >
-          
-
-          
             <a href="index.html" class="icon icon-home"> utilities
-          
-
-          
           </a>
-
-          
-            
-            
               <div class="version">
                 1.0.0
               </div>
-            
-          
-
-          
 <div role="search">
   <form id="rtd-search-form" class="wy-form" action="search.html" method="get">
     <input type="text" name="q" placeholder="Search docs" />
@@ -77,18 +38,7 @@
     <input type="hidden" name="area" value="default" />
   </form>
 </div>
-
-          
-        </div>
-
-        
-        <div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="main navigation">
-          
-            
-            
-              
-            
-            
+        </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
 <ul>
 <li class="toctree-l1"><a class="reference internal" href="about/about.html">About</a></li>
@@ -96,80 +46,39 @@
 <li class="toctree-l1"><a class="reference internal" href="installation/building.html#building-the-documentation">Building the documentation</a></li>
 </ul>
 
-            
-          
         </div>
-        
       </div>
     </nav>
 
-    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap">
-
-      
-      <nav class="wy-nav-top" aria-label="top navigation">
-        
+    <section data-toggle="wy-nav-shift" class="wy-nav-content-wrap"><nav class="wy-nav-top" aria-label="Mobile navigation menu" >
           <i data-toggle="wy-nav-top" class="fa fa-bars"></i>
           <a href="index.html">utilities</a>
-        
       </nav>
 
-
       <div class="wy-nav-content">
-        
         <div class="rst-content">
-        
-          
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-<div role="navigation" aria-label="breadcrumbs navigation">
-
+          <div role="navigation" aria-label="Page navigation">
   <ul class="wy-breadcrumbs">
-    
-      <li><a href="index.html" class="icon icon-home"></a> &raquo;</li>
-        
-      <li>Making an ostream Class</li>
-    
-    
+      <li><a href="index.html" class="icon icon-home"></a></li>
+      <li class="breadcrumb-item active">Making an ostream Class</li>
       <li class="wy-breadcrumbs-aside">
-        
-          
             <a href="_sources/making_an_ostream.rst.txt" rel="nofollow"> View page source</a>
-          
-        
       </li>
-    
   </ul>
-
-  
   <hr/>
 </div>
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
-            
-  <section id="making-an-ostream-class">
-<h1>Making an ostream Class<a class="headerlink" href="#making-an-ostream-class" title="Permalink to this heading">¶</a></h1>
+             
+  <div class="section" id="making-an-ostream-class">
+<h1>Making an ostream Class<a class="headerlink" href="#making-an-ostream-class" title="Permalink to this heading"></a></h1>
 <p>It is common C++ practice to make an object of type <code class="docutils literal notranslate"><span class="pre">T</span></code> printable by
 overloading the <code class="docutils literal notranslate"><span class="pre">std::ostream&amp;</span> <span class="pre">operator&lt;&lt;(std::ostream&amp;,</span> <span class="pre">T)</span></code> function. Thus if
 you want to do special printing a common strategy is to implement a class that
 derives from <code class="docutils literal notranslate"><span class="pre">std::ostream</span></code>. Being blunt it’s quite hard to find good
 documentation relating to how to do this.</p>
-<section id="overview">
-<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this heading">¶</a></h2>
+<div class="section" id="overview">
+<h2>Overview<a class="headerlink" href="#overview" title="Permalink to this heading"></a></h2>
 <p>So in the opening we said we want to inherit from <code class="docutils literal notranslate"><span class="pre">std::ostream</span></code>. This is
 actually the easy part because that always looks like:</p>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="k">class</span><span class="w"> </span><span class="nc">MyStream</span><span class="w"> </span><span class="o">:</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">MyBuffer</span><span class="p">,</span><span class="w"> </span><span class="k">public</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">ostream</span><span class="w"> </span><span class="p">{</span>
@@ -201,9 +110,9 @@ similar typedef of <code class="docutils literal notranslate"><span class="pre">
 that the buffer class we write has the same template type parameter.</p>
 <p>This is where things get tricky, as the documentation for
 the virtual functions is a bit archaic.</p>
-</section>
-<section id="std-basic-streambuf">
-<h2>std::basic_streambuf<a class="headerlink" href="#std-basic-streambuf" title="Permalink to this heading">¶</a></h2>
+</div>
+<div class="section" id="std-basic-streambuf">
+<h2>std::basic_streambuf<a class="headerlink" href="#std-basic-streambuf" title="Permalink to this heading"></a></h2>
 <p>This is the class that actually does all the work for a stream. Internally it
 can have buffers for input and/or output. These buffers are described by six
 pointers, which are referred to by the names of the member functions for
@@ -277,9 +186,9 @@ specified absolute position.</p></li>
 </ul>
 <p>The following sections provide more details on the virtual functions that are
 relevant for writing a custom output buffer.</p>
-</section>
-<section id="xsputn">
-<h2>xsputn<a class="headerlink" href="#xsputn" title="Permalink to this heading">¶</a></h2>
+</div>
+<div class="section" id="xsputn">
+<h2>xsputn<a class="headerlink" href="#xsputn" title="Permalink to this heading"></a></h2>
 <p>This function will ultimately be called everytime the stream wants to write more
 than one character. It’s signature is:</p>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">std</span><span class="o">::</span><span class="n">streamsize</span><span class="w"> </span><span class="n">xsputn</span><span class="p">(</span><span class="k">const</span><span class="w"> </span><span class="kt">char</span><span class="o">*</span><span class="w"> </span><span class="n">s</span><span class="p">,</span><span class="w"> </span><span class="n">std</span><span class="o">::</span><span class="n">streamsize</span><span class="w"> </span><span class="n">n</span><span class="p">)</span>
@@ -293,9 +202,9 @@ the nuumber of characters it actually wrote.</p>
 <p>The base class provides a default implementation, which just calls <code class="docutils literal notranslate"><span class="pre">sputc</span></code>
 until <code class="docutils literal notranslate"><span class="pre">sputc</span></code> returns <code class="docutils literal notranslate"><span class="pre">traits_type::eof()</span></code> (hence signaling an error) or all
 characters have been written.</p>
-</section>
-<section id="overflow">
-<h2>overflow<a class="headerlink" href="#overflow" title="Permalink to this heading">¶</a></h2>
+</div>
+<div class="section" id="overflow">
+<h2>overflow<a class="headerlink" href="#overflow" title="Permalink to this heading"></a></h2>
 <p><code class="docutils literal notranslate"><span class="pre">overflow</span></code> is called when the <code class="docutils literal notranslate"><span class="pre">pptr()</span></code> is no longer valid. Its signature is:</p>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">int_type</span><span class="w"> </span><span class="nf">overflow</span><span class="p">(</span><span class="n">int_type</span><span class="w"> </span><span class="n">c</span><span class="p">);</span>
 </pre></div>
@@ -306,9 +215,9 @@ output buffer (if you do this you need to adjust, <code class="docutils literal 
 <code class="docutils literal notranslate"><span class="pre">epptr()</span></code>). If you do not make room then you need to write  <code class="docutils literal notranslate"><span class="pre">c</span></code> to the
 output. The return is <code class="docutils literal notranslate"><span class="pre">c</span></code>, if <code class="docutils literal notranslate"><span class="pre">overflow</span></code> was successful or
 <code class="docutils literal notranslate"><span class="pre">traits_type::eof()</span></code> if an error occurred.</p>
-</section>
-<section id="synch">
-<h2>synch<a class="headerlink" href="#synch" title="Permalink to this heading">¶</a></h2>
+</div>
+<div class="section" id="synch">
+<h2>synch<a class="headerlink" href="#synch" title="Permalink to this heading"></a></h2>
 <p>If a user calls flush on the <code class="docutils literal notranslate"><span class="pre">std::ostream</span></code> object it ultimately will call
 <code class="docutils literal notranslate"><span class="pre">synch</span></code>. <code class="docutils literal notranslate"><span class="pre">synch</span></code>’s signature is:</p>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="kt">int</span><span class="w"> </span><span class="n">synch</span><span class="p">()</span>
@@ -316,65 +225,49 @@ output. The return is <code class="docutils literal notranslate"><span class="pr
 </div>
 <p>It returns 0 if successful and -1 if it fails. Your implementation should dump
 whatever’s in the internal output buffer to the output and reset the pointers.</p>
-</section>
-<section id="seekoff">
-<h2>seekoff<a class="headerlink" href="#seekoff" title="Permalink to this heading">¶</a></h2>
+</div>
+<div class="section" id="seekoff">
+<h2>seekoff<a class="headerlink" href="#seekoff" title="Permalink to this heading"></a></h2>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">pos_type</span><span class="w"> </span><span class="n">seekoff</span><span class="p">(</span><span class="n">off_type</span><span class="w"> </span><span class="n">off</span><span class="p">,</span>
 <span class="w">                 </span><span class="n">ios_base</span><span class="o">::</span><span class="n">seekdir</span><span class="w"> </span><span class="n">way</span><span class="p">,</span>
 <span class="w">                 </span><span class="n">ios_base</span><span class="o">::</span><span class="n">openmode</span><span class="w"> </span><span class="n">which</span><span class="p">)</span>
 </pre></div>
 </div>
-</section>
-<section id="seekpos">
-<h2>seekpos<a class="headerlink" href="#seekpos" title="Permalink to this heading">¶</a></h2>
+</div>
+<div class="section" id="seekpos">
+<h2>seekpos<a class="headerlink" href="#seekpos" title="Permalink to this heading"></a></h2>
 <div class="highlight-c++ notranslate"><div class="highlight"><pre><span></span><span class="n">pos_type</span><span class="w"> </span><span class="n">seekpos</span><span class="p">(</span><span class="n">pos_type</span><span class="w"> </span><span class="n">pos</span><span class="p">,</span><span class="w"> </span><span class="n">ios_base</span><span class="o">::</span><span class="n">openmode</span><span class="w"> </span><span class="n">which</span><span class="p">)</span>
 </pre></div>
 </div>
-</section>
-</section>
+</div>
+</div>
 
 
            </div>
-           
           </div>
           <footer>
 
   <hr/>
 
   <div role="contentinfo">
-    <p>
-        &#169; Copyright 2020, NWChemEx Team.
-
-    </p>
+    <p>&#169; Copyright 2020, NWChemEx Team.</p>
   </div>
-    
-    
-    
-    Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
-    
+
+  Built with <a href="https://www.sphinx-doc.org/">Sphinx</a> using a
     <a href="https://github.com/readthedocs/sphinx_rtd_theme">theme</a>
-    
-    provided by <a href="https://readthedocs.org">Read the Docs</a>. 
+    provided by <a href="https://readthedocs.org">Read the Docs</a>.
+   
 
 </footer>
         </div>
       </div>
-
     </section>
-
   </div>
-  
-
-  <script type="text/javascript">
+  <script>
       jQuery(function () {
           SphinxRtdTheme.Navigation.enable(true);
       });
-  </script>
-
-  
-  
-    
-   
+  </script> 
 
 </body>
 </html>
