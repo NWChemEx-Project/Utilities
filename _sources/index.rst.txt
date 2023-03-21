@@ -22,7 +22,8 @@ Welcome to Utilities' documentation!
    about/index
    installation/index
 
-`C++ API <https://nwchemex-project.github.io/Utilities/utilities_cxx_api/index.html>`_
+   structure
+   C++ API <https://nwchemex-project.github.io/Utilities/utilities_cxx_api/index.html>
 
 Indices and tables
 ==================
