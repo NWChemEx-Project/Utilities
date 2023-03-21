@@ -5,6 +5,7 @@ on:
       - master
       - fix-doc
 
+
 jobs:
   Build-Documentation:
     uses: NWChemEx-Project/.github/.github/workflows/deploy_docs_tmpl.yaml@master
