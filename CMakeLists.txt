@@ -24,7 +24,7 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(nwx_cmake)
 list(APPEND CMAKE_MODULE_PATH "${nwx_cmake_SOURCE_DIR}/cmake")
 
-option(BUILD_TESTING "Should we build the tests?" ON)
+option(BUILD_TESTING "Should we build the tests?" OFF)
 option(BUILD_DOCS "Should we build the documentation?" ON)
 
 set(

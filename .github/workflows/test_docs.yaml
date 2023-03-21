@@ -7,7 +7,6 @@ on:
     branches:
       - fix-doc
 
-
 jobs:
   Build-Documentation:
     uses: NWChemEx-Project/.github/.github/workflows/test_docs_tmpl.yaml@master
