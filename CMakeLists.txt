@@ -18,8 +18,8 @@ project(utilities VERSION "${VERSION}")
 
 include(FetchContent)
 FetchContent_Declare(
-        nwx_cmake
-        GIT_REPOSITORY https://github.com/NWChemEx-Project/NWXCMake
+    nwx_cmake
+    GIT_REPOSITORY https://github.com/NWChemEx-Project/NWXCMake
 )
 FetchContent_MakeAvailable(nwx_cmake)
 list(APPEND CMAKE_MODULE_PATH "${nwx_cmake_SOURCE_DIR}/cmake")
@@ -31,29 +31,30 @@ set(
     CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${PROJECT_SOURCE_DIR}/cmake"
     CACHE STRING "" FORCE
 )
-include(get_cpp)
+include(get_cmaize)
 include(nwx_cxx_api_docs)
 nwx_cxx_api_docs("${CMAKE_CURRENT_SOURCE_DIR}/utilities")
 
-cpp_add_library(
+cmaize_add_library(
     utilities
     SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/utilities"
     INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/utilities"
 )
 
 if("${BUILD_TESTING}")
-    cpp_find_or_build_dependency(
+    cmaize_find_or_build_dependency(
         Catch2
         URL github.com/catchorg/Catch2
         BUILD_TARGET Catch2
         FIND_TARGET Catch2::Catch2
         VERSION v2.13.8
     )
-    cpp_add_tests(
+    cmaize_add_tests(
         test_utilities
         SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/tests"
         INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/utilities"
-        DEPENDS Catch2::Catch2 utilities
+        DEPENDS Catch2 utilities
     )
 endif()
 
+cmaize_add_package(${PROJECT_NAME} NAMESPACE nwx::)
