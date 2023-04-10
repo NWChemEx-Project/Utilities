@@ -38,7 +38,7 @@ nwx_cxx_api_docs("${CMAKE_CURRENT_SOURCE_DIR}/utilities")
 cmaize_add_library(
     utilities
     SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/utilities"
-    INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/utilities"
+    INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/utilities"
 )
 
 if("${BUILD_TESTING}")
@@ -52,7 +52,7 @@ if("${BUILD_TESTING}")
     cmaize_add_tests(
         test_utilities
         SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/tests"
-        INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/utilities"
+        INCLUDE_DIRS "${CMAKE_CURRENT_LIST_DIR}/utilities"
         DEPENDS Catch2 utilities
     )
 endif()
