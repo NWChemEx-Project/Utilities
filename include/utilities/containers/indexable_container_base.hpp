@@ -92,12 +92,13 @@ public:
      *
      *  @return The requested element as a (possibly) read/write reference.
      *
-     *  @throw std::out_of_range if @p index is not in the range [0, size()).
-     *                           Strong throw guarantee.
+     *  @throw None No throw guarantee. If @p index is not in the range
+     *         [0, size()) this call is undefined behavior.
      */
-    decltype(auto) operator[](size_type index);
+    decltype(auto) operator[](size_type index) noexcept;
 
-    /** @brief Retrieves an element from the container by index.
+    /** @brief Retrieves an element from the container by index (no bounds
+     * check).
      *
      *  This function is used to retrieve an element given its index in the
      *  container. This function ultimately works by calling the derived class's
@@ -109,10 +110,42 @@ public:
      *
      *  @return The requested element as a read-only reference.
      *
-     *  @throw std::out_of_range if @p index is not in the range [0, size()).
-     *                           Strong throw guarantee.
+     *  @throw None No throw guarantee. If @p index is not in the range
+     *         [0, size()) this call is undefined behavior.
      */
-    decltype(auto) operator[](size_type index) const;
+    decltype(auto) operator[](size_type index) const noexcept;
+
+    /** @brief Retrieves an element from the container by index.
+     *
+     *  This function is used to retrieve an element given its index in the
+     *  container. This function ultimately works by calling the derived class's
+     *  `size_()` (for the bounds check) and `at_(size_type)` (for the
+     *  retrieval) members.
+     *
+     *  @param[in] index The index of the element to return. Must be in the
+     *                   range [0, size()).
+     *
+     *  @return The requested element as a (possibly) read/write reference.
+     *
+     *  @throw std::out_of_range if @p index is not in the range [0, size()).
+     *         Strong throw guarantee.
+     */
+    decltype(auto) at(size_type index);
+
+    /** @brief Retrieves an element from the container by index.
+     *
+     *  Sames as the non-const version, except that the resulting object is
+     *  read-only.
+     *
+     *  @param[in] index The index of the element to return. Must be in the
+     *                   range [0, size()).
+     *
+     *  @return The requested element as a read-only reference.
+     *
+     *  @throw std::out_of_range if @p index is not in the range [0, size()).
+     *         Strong throw guarantee.
+     */
+    decltype(auto) at(size_type index) const;
 
     /** @brief Returns an iterator pointing at the first element in the
      *         container.
@@ -281,14 +314,24 @@ bool operator!=(const IndexableContainerBase<DerivedType>& lhs,
 
 template<typename DerivedType>
 decltype(auto) IndexableContainerBase<DerivedType>::operator[](
-  size_type index) {
-    check_index_(index);
+  size_type index) noexcept {
     return downcast_().at_(index);
 }
 
 template<typename DerivedType>
 decltype(auto) IndexableContainerBase<DerivedType>::operator[](
-  size_type index) const {
+  size_type index) const noexcept {
+    return downcast_().at_(index);
+}
+
+template<typename DerivedType>
+decltype(auto) IndexableContainerBase<DerivedType>::at(size_type index) {
+    check_index_(index);
+    return downcast_().at_(index);
+}
+
+template<typename DerivedType>
+decltype(auto) IndexableContainerBase<DerivedType>::at(size_type index) const {
     check_index_(index);
     return downcast_().at_(index);
 }

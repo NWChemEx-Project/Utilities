@@ -77,9 +77,6 @@ TEST_CASE("IndexableContainerBase<ByReference> : operator[]") {
     SECTION("Is by read-/write-reference") {
         STATIC_REQUIRE(std::is_same_v<int&, decltype(c[0])>);
     }
-    SECTION("Throws if index is out of range") {
-        REQUIRE_THROWS_AS(c[1], std::out_of_range);
-    }
 }
 
 TEST_CASE("IndexableContainerBase<ByValue> : operator[]") {
@@ -88,9 +85,6 @@ TEST_CASE("IndexableContainerBase<ByValue> : operator[]") {
     SECTION("Good access") { REQUIRE(c[0] == 2); }
     SECTION("Is by value") {
         STATIC_REQUIRE(std::is_same_v<int, decltype(c[0])>);
-    }
-    SECTION("Throws if index is out of range") {
-        REQUIRE_THROWS_AS(c[1], std::out_of_range);
     }
 }
 
@@ -102,9 +96,6 @@ TEST_CASE("IndexableContainerBase<ByReference> : operator[] const") {
     SECTION("Is read-only reference") {
         STATIC_REQUIRE(std::is_same_v<const int&, decltype(const_c[0])>);
     }
-    SECTION("Throws if index is out of range") {
-        REQUIRE_THROWS_AS(const_c[1], std::out_of_range);
-    }
 }
 
 TEST_CASE("IndexableContainerBase<ByValue> : operator[] const") {
@@ -115,8 +106,55 @@ TEST_CASE("IndexableContainerBase<ByValue> : operator[] const") {
     SECTION("Is by value") {
         STATIC_REQUIRE(std::is_same_v<int, decltype(const_c[0])>);
     }
+}
+
+TEST_CASE("IndexableContainerBase<ByReference> : at") {
+    ByReference c;
+    c.data.push_back(2);
+    SECTION("Good access") { REQUIRE(c.at(0) == 2); }
+    SECTION("Is by read-/write-reference") {
+        STATIC_REQUIRE(std::is_same_v<int&, decltype(c.at(0))>);
+    }
     SECTION("Throws if index is out of range") {
-        REQUIRE_THROWS_AS(const_c[1], std::out_of_range);
+        REQUIRE_THROWS_AS(c.at(1), std::out_of_range);
+    }
+}
+
+TEST_CASE("IndexableContainerBase<ByValue> : at") {
+    ByValue c;
+    c.data.push_back(2);
+    SECTION("Good access") { REQUIRE(c.at(0) == 2); }
+    SECTION("Is by value") {
+        STATIC_REQUIRE(std::is_same_v<int, decltype(c.at(0))>);
+    }
+    SECTION("Throws if index is out of range") {
+        REQUIRE_THROWS_AS(c.at(1), std::out_of_range);
+    }
+}
+
+TEST_CASE("IndexableContainerBase<ByReference> : at const") {
+    ByReference c;
+    c.data.push_back(2);
+    const ByReference& const_c = c;
+    SECTION("Good access") { REQUIRE(const_c.at(0) == 2); }
+    SECTION("Is read-only reference") {
+        STATIC_REQUIRE(std::is_same_v<const int&, decltype(const_c.at(0))>);
+    }
+    SECTION("Throws if index is out of range") {
+        REQUIRE_THROWS_AS(const_c.at(1), std::out_of_range);
+    }
+}
+
+TEST_CASE("IndexableContainerBase<ByValue> : at const") {
+    ByValue c;
+    c.data.push_back(2);
+    const ByValue& const_c = c;
+    SECTION("Good access") { REQUIRE(const_c.at(0) == 2); }
+    SECTION("Is by value") {
+        STATIC_REQUIRE(std::is_same_v<int, decltype(const_c.at(0))>);
+    }
+    SECTION("Throws if index is out of range") {
+        REQUIRE_THROWS_AS(const_c.at(1), std::out_of_range);
     }
 }
 
