@@ -15,7 +15,6 @@
  */
 
 #pragma once
-#include "utilities/type_traits/is_printable.hpp"
 #include <array>
 #include <deque>
 #include <forward_list>
@@ -46,14 +45,7 @@ namespace utilities::printing {
 namespace detail_ {
 
 template<typename T>
-std::ostream& print_element(std::ostream& os, T&& value) {
-    using clean_T = std::decay_t<T>;
-    if constexpr(type_traits::is_printable_v<clean_T>) {
-        return os << std::forward<T>(value);
-    } else {
-        return os << "<" << typeid(clean_T).name() << " " << &value << ">";
-    }
-}
+std::ostream& print_element(std::ostream& os, T&& value);
 
 /** @brief Implements printing of queue-like containers
  *
@@ -77,17 +69,7 @@ std::ostream& print_element(std::ostream& os, T&& value) {
  * @throw ??? if std::ostream<< throws. Same guarantee.
  */
 template<typename T, typename Fxn>
-std::ostream& print_queue(std::ostream& os, Fxn&& f, T&& rhs) {
-    os << '[';
-    bool printed = false;
-    while(!rhs.empty()) {
-        if(printed) os << ", ";
-        print_element(os, f(rhs));
-        rhs.pop();
-        printed = true;
-    }
-    return os << ']';
-}
+std::ostream& print_queue(std::ostream& os, Fxn&& f, T&& rhs);
 
 /** @brief Prints a list-like container.
  *
@@ -109,17 +91,7 @@ std::ostream& print_queue(std::ostream& os, Fxn&& f, T&& rhs) {
  */
 template<typename T>
 std::ostream& print_list(std::ostream& os, T&& rhs, char odelim = '[',
-                         char cdelim = ']') {
-    os << odelim;
-    bool printed = false;
-    for(const auto& x : rhs) {
-        using x_type = decltype(x);
-        if(printed) os << ", ";
-        print_element(os, x);
-        printed = true;
-    }
-    return os << cdelim;
-}
+                         char cdelim = ']');
 
 /** @brief Prints an associative container.
  *
@@ -140,19 +112,7 @@ std::ostream& print_list(std::ostream& os, T&& rhs, char odelim = '[',
  */
 template<typename T>
 std::ostream& print_associative(std::ostream& os, T&& rhs, char odelim = '{',
-                                char cdelim = '}') {
-    os << odelim;
-    bool printed = false;
-    for(const auto& x : rhs) {
-        using x_type = decltype(x);
-        if(printed) os << ", ";
-        os << "(";
-        print_element(os, x.first) << " : ";
-        print_element(os, x.second) << ")";
-        printed = true;
-    }
-    return os << cdelim;
-}
+                                char cdelim = '}');
 
 /** @brief Function for printing tuple/pairs
  *
@@ -179,22 +139,7 @@ std::ostream& print_associative(std::ostream& os, T&& rhs, char odelim = '{',
  */
 template<std::size_t depth, typename T>
 std::ostream& print_tuple(std::ostream& os, T&& rhs, char odelim = '(',
-                          char cdelim = ')') {
-    constexpr auto max_depth = std::tuple_size_v<std::decay_t<T>>;
-    if constexpr(depth == max_depth && depth == 0) {
-        return os << odelim << cdelim;
-    } else if constexpr(depth == max_depth) {
-        return os << cdelim;
-    } else if constexpr(depth == 0) {
-        os << odelim;
-        print_element(os, std::get<0>(rhs));
-        return print_tuple<depth + 1>(os, std::forward<T>(rhs), odelim, cdelim);
-    } else {
-        os << ", ";
-        print_element(os, std::get<depth>(rhs));
-        return print_tuple<depth + 1>(os, std::forward<T>(rhs), odelim, cdelim);
-    }
-}
+                          char cdelim = ')');
 
 } // namespace detail_
 
@@ -214,9 +159,7 @@ std::ostream& print_tuple(std::ostream& os, T&& rhs, char odelim = '(',
  *  @throw ??? if the ostream's operator<< throws. Same exception guarantee.
  */
 template<typename T, std::size_t N>
-std::ostream& operator<<(std::ostream& os, const std::array<T, N>& a) {
-    return utilities::printing::detail_::print_list(os, a);
-}
+std::ostream& operator<<(std::ostream& os, const std::array<T, N>& a);
 
 /** @brief Makes std::deque printable.
  *
@@ -231,9 +174,7 @@ std::ostream& operator<<(std::ostream& os, const std::array<T, N>& a) {
  *  @throw ??? if the ostream's operator<< throws. Same exception guarantee.
  */
 template<typename T, typename Alloc>
-std::ostream& operator<<(std::ostream& os, const std::deque<T, Alloc>& d) {
-    return utilities::printing::detail_::print_list(os, d);
-}
+std::ostream& operator<<(std::ostream& os, const std::deque<T, Alloc>& d);
 
 /** @brief Makes std::forward_list printable.
  *
@@ -250,9 +191,7 @@ std::ostream& operator<<(std::ostream& os, const std::deque<T, Alloc>& d) {
  */
 template<typename T, typename Alloc>
 std::ostream& operator<<(std::ostream& os,
-                         const std::forward_list<T, Alloc>& f) {
-    return utilities::printing::detail_::print_list(os, f);
-}
+                         const std::forward_list<T, Alloc>& f);
 
 /** @brief Makes std::list printable.
  *
@@ -288,9 +227,7 @@ std::ostream& operator<<(std::ostream& os,
  */
 template<typename Key, typename T, typename Compare, typename Alloc>
 std::ostream& operator<<(std::ostream& os,
-                         const std::map<Key, T, Compare, Alloc>& m) {
-    return utilities::printing::detail_::print_associative(os, m);
-}
+                         const std::map<Key, T, Compare, Alloc>& m);
 
 /** @brief Makes std::multimap printable.
  *
@@ -309,9 +246,7 @@ std::ostream& operator<<(std::ostream& os,
  */
 template<typename Key, typename T, typename Compare, typename Alloc>
 std::ostream& operator<<(std::ostream& os,
-                         const std::multimap<Key, T, Compare, Alloc>& m) {
-    return utilities::printing::detail_::print_associative(os, m);
-}
+                         const std::multimap<Key, T, Compare, Alloc>& m);
 
 /** @brief Makes std::multiset printable.
  *
@@ -329,9 +264,7 @@ std::ostream& operator<<(std::ostream& os,
  */
 template<typename T, typename Compare, typename Alloc>
 std::ostream& operator<<(std::ostream& os,
-                         const std::multiset<T, Compare, Alloc>& s) {
-    return utilities::printing::detail_::print_list(os, s, '{', '}');
-}
+                         const std::multiset<T, Compare, Alloc>& s);
 
 /** @brief Makes std::optional printable
  *
@@ -347,13 +280,7 @@ std::ostream& operator<<(std::ostream& os,
  * @throw ??? if std::ostream::operator<< throws. Same guarantee.
  */
 template<typename T>
-std::ostream& operator<<(std::ostream& os, const std::optional<T>& o) {
-    if(o.has_value())
-        utilities::printing::detail_::print_element(os, o.value());
-    else
-        os << "nullopt";
-    return os;
-}
+std::ostream& operator<<(std::ostream& os, const std::optional<T>& o);
 
 /** @brief Makes std::pair printable.
  *
@@ -368,9 +295,7 @@ std::ostream& operator<<(std::ostream& os, const std::optional<T>& o) {
  *  @throw ??? if the ostream's operator<< throws. Same exception guarantee.
  */
 template<typename T1, typename T2>
-std::ostream& operator<<(std::ostream& os, const std::pair<T1, T2>& p) {
-    return utilities::printing::detail_::print_tuple<0>(os, p);
-}
+std::ostream& operator<<(std::ostream& os, const std::pair<T1, T2>& p);
 
 /** @brief Makes std::priority_queue printable.
  *
@@ -389,10 +314,7 @@ std::ostream& operator<<(std::ostream& os, const std::pair<T1, T2>& p) {
  */
 template<typename T, typename Container, typename Compare>
 std::ostream& operator<<(std::ostream& os,
-                         std::priority_queue<T, Container, Compare> q) {
-    auto l = [](const decltype(q)& q) { return q.top(); };
-    return utilities::printing::detail_::print_queue(os, l, std::move(q));
-}
+                         std::priority_queue<T, Container, Compare> q);
 
 /** @brief Makes std::queue printable.
  *
@@ -407,15 +329,10 @@ std::ostream& operator<<(std::ostream& os,
  *  @throw ??? if the ostream's operator<< throws. Same exception guarantee.
  */
 template<typename T, typename Container>
-std::ostream& operator<<(std::ostream& os, std::queue<T, Container> q) {
-    auto l = [](const decltype(q)& q) { return q.front(); };
-    return utilities::printing::detail_::print_queue(os, l, std::move(q));
-}
+std::ostream& operator<<(std::ostream& os, std::queue<T, Container> q);
 
 template<typename T>
-std::ostream& operator<<(std::ostream& os, const std::reference_wrapper<T>& r) {
-    return utilities::printing::detail_::print_element(os, r.get());
-}
+std::ostream& operator<<(std::ostream& os, const std::reference_wrapper<T>& r);
 
 /** @brief Makes std::set printable.
  *
@@ -432,9 +349,7 @@ std::ostream& operator<<(std::ostream& os, const std::reference_wrapper<T>& r) {
  */
 template<typename T, typename Compare, typename Alloc>
 std::ostream& operator<<(std::ostream& os,
-                         const std::set<T, Compare, Alloc>& s) {
-    return utilities::printing::detail_::print_list(os, s, '{', '}');
-}
+                         const std::set<T, Compare, Alloc>& s);
 
 /** @brief Makes std::stack printable.
  *
@@ -449,10 +364,7 @@ std::ostream& operator<<(std::ostream& os,
  *  @throw ??? if the ostream's operator<< throws. Same exception guarantee.
  */
 template<typename T, typename Container>
-std::ostream& operator<<(std::ostream& os, std::stack<T, Container> s) {
-    auto l = [](const decltype(s)& s) { return s.top(); };
-    return utilities::printing::detail_::print_queue(os, l, std::move(s));
-}
+std::ostream& operator<<(std::ostream& os, std::stack<T, Container> s);
 
 /** @brief Makes std::tuple printable.
  *
@@ -466,9 +378,7 @@ std::ostream& operator<<(std::ostream& os, std::stack<T, Container> s) {
  *  @throw ??? if the ostream's operator<< throws. Same exception guarantee.
  */
 template<typename... Types>
-std::ostream& operator<<(std::ostream& os, const std::tuple<Types...>& t) {
-    return utilities::printing::detail_::print_tuple<0>(os, t);
-}
+std::ostream& operator<<(std::ostream& os, const std::tuple<Types...>& t);
 
 /** @brief Makes std::unordered_map printable.
  *
@@ -488,9 +398,7 @@ std::ostream& operator<<(std::ostream& os, const std::tuple<Types...>& t) {
  */
 template<typename Key, typename T, typename Hash, typename Pred, typename Alloc>
 std::ostream& operator<<(
-  std::ostream& os, const std::unordered_map<Key, T, Hash, Pred, Alloc>& m) {
-    return utilities::printing::detail_::print_associative(os, m);
-}
+  std::ostream& os, const std::unordered_map<Key, T, Hash, Pred, Alloc>& m);
 
 /** @brief Makes std::unordered_multimap printable.
  *
@@ -511,9 +419,7 @@ std::ostream& operator<<(
 template<typename Key, typename T, typename Hash, typename Pred, typename Alloc>
 std::ostream& operator<<(
   std::ostream& os,
-  const std::unordered_multimap<Key, T, Hash, Pred, Alloc>& m) {
-    return utilities::printing::detail_::print_associative(os, m);
-}
+  const std::unordered_multimap<Key, T, Hash, Pred, Alloc>& m);
 
 /** @brief Makes std::unordered_multiset printable.
  *
@@ -532,9 +438,7 @@ std::ostream& operator<<(
  */
 template<typename Key, typename Hash, typename Pred, typename Alloc>
 std::ostream& operator<<(
-  std::ostream& os, const std::unordered_multiset<Key, Hash, Pred, Alloc>& s) {
-    return utilities::printing::detail_::print_list(os, s, '{', '}');
-}
+  std::ostream& os, const std::unordered_multiset<Key, Hash, Pred, Alloc>& s);
 
 /** @brief Makes std::unordered_set printable.
  *
@@ -553,9 +457,7 @@ std::ostream& operator<<(
  */
 template<typename Key, typename Hash, typename Pred, typename Alloc>
 std::ostream& operator<<(std::ostream& os,
-                         const std::unordered_set<Key, Hash, Pred, Alloc>& s) {
-    return utilities::printing::detail_::print_list(os, s, '{', '}');
-}
+                         const std::unordered_set<Key, Hash, Pred, Alloc>& s);
 
 /** @brief Makes std::vector printable.
  *
@@ -571,8 +473,8 @@ std::ostream& operator<<(std::ostream& os,
  *  @throw ??? if the ostream's operator<< throws. Same exception guarantee.
  */
 template<typename T, typename Alloc>
-std::ostream& operator<<(std::ostream& os, const std::vector<T, Alloc>& v) {
-    return utilities::printing::detail_::print_list(os, v);
-}
+std::ostream& operator<<(std::ostream& os, const std::vector<T, Alloc>& v);
 
 } // namespace utilities::printing
+
+#include "utilities/printing/print_stl.ipp"
