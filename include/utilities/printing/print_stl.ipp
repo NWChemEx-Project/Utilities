@@ -34,7 +34,6 @@ std::ostream& print_element(std::ostream& os, T&& value) {
     }
 }
 
-
 template<typename T, typename Fxn>
 std::ostream& print_queue(std::ostream& os, Fxn&& f, T&& rhs) {
     os << '[';

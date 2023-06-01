@@ -15,9 +15,9 @@
  */
 
 #pragma once
+#include "utilities/printing/print_stl.hpp"
 #include <ostream>
 #include <type_traits>
-#include "utilities/printing/print_stl.hpp"
 
 namespace utilities::type_traits {
 namespace detail_ {
