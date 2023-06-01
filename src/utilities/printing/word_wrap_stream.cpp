@@ -38,7 +38,6 @@ public:
 protected:
     // This function does the heavy lifting
     std::streamsize xsputn(const char* s, std::streamsize n) override {
-
         // Break paragraph into sentences
         auto sentences = strings::split_string(std::string(s, s + n), "\n");
 
