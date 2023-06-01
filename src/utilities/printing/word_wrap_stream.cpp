@@ -38,8 +38,6 @@ public:
 protected:
     // This function does the heavy lifting
     std::streamsize xsputn(const char* s, std::streamsize n) override {
-        using itr_type = std::istream_iterator<std::string>;
-        std::istringstream iss(std::string(s, s + n));
 
         // Break paragraph into sentences
         auto sentences = strings::split_string(std::string(s, s + n), "\n");

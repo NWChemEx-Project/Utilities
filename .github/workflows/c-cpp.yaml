@@ -15,12 +15,12 @@ jobs:
       ninja_build: true
     secrets:
       CMAIZE_GITHUB_TOKEN: ${{ secrets.CMAIZE_GITHUB_TOKEN }}
-  # build-with-clang:
-  #   uses: NWChemEx-Project/.github/.github/workflows/c-cpp_tmpl.yaml@master
-  #   with: 
-  #     dependencies: 'clang gcovr cmake'
-  #     clang-build: true
-  #     gcc-build: false
-  #   secrets:
-  #     CMAIZE_GITHUB_TOKEN: ${{ secrets.CMAIZE_GITHUB_TOKEN }}
+  build-with-clang:
+    uses: NWChemEx-Project/.github/.github/workflows/c-cpp_tmpl.yaml@master
+    with: 
+      dependencies: 'clang gcovr cmake'
+      clang-build: true
+      gcc-build: false
+    secrets:
+      CMAIZE_GITHUB_TOKEN: ${{ secrets.CMAIZE_GITHUB_TOKEN }}
 
