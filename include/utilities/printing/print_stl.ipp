@@ -20,11 +20,11 @@
 #include "utilities/type_traits/is_printable.hpp"
 
 /** @file print_stl.ipp
- * 
- *  The new operator<< functions need to be declared before 
+ *
+ *  The new operator<< functions need to be declared before
  *  type_traits::is_printable is checked. The implementation of those functions
  *  is then handled here.
- * 
+ *
  */
 namespace utilities::printing {
 
