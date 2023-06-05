@@ -18,7 +18,7 @@ jobs:
   build-with-clang:
     uses: NWChemEx-Project/.github/.github/workflows/c-cpp_tmpl.yaml@master
     with: 
-      dependencies: 'clang gcovr cmake'
+      dependencies: 'ninja clang gcovr cmake'
       clang-build: true
       gcc-build: false
       ninja_build: true
