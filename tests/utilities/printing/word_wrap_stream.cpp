@@ -17,8 +17,10 @@
 #include <catch2/catch.hpp>
 #include <sstream>
 #include <utilities/printing/word_wrap_stream.hpp>
-using namespace utilities::printing;
 #include <iostream>
+
+using namespace utilities::printing;
+
 TEST_CASE("WordWrapStream") {
     std::stringstream ss;
     std::stringstream corr;

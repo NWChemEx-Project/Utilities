@@ -24,9 +24,6 @@
 #include <vector>
 
 namespace utilities::printing {
-// namespace detail_ {
-// class WordWrapBuffer;
-// }
 
 /** @brief An std::ostream that automatically wraps its contents if they
  *         exceed the specified width.
@@ -60,17 +57,6 @@ public:
      */
     explicit WordWrapStream(std::ostream* os, width_type w = 80) :
       std::ostream(this), m_os_(os), m_w_(w) {}
-
-    // /** @brief Default dtor
-    //  *
-    //  *  This dtor does not do anything special to the wrapped ostream. Notably
-    //  *  this means that it does not flush it. Since the ostream's lifetime must
-    //  *  exceed the WordWrapStream's lifetime, the user is free to flush the
-    //  *  stream after this dtor is called.
-    //  *
-    //  *  @throw none No throw guarantee.
-    //  */
-    // ~WordWrapStream() noexcept override;
 
 protected:
     // This function does the heavy lifting
