@@ -22,12 +22,12 @@ using namespace utilities::printing;
 
 const auto corr1 = "int";
 const auto corr2 = "double";
-#if __clang__
+#if __APPLE__ && __clang__
 const auto corr3 = "std::__1::vector<std::__1::vector<double, "
                    "std::__1::allocator<double> >, "
                    "std::__1::allocator<std::__1::vector<double, "
                    "std::__1::allocator<double> > > >";
-#elif __GNUC__
+#else
 const auto corr3 = "std::vector<std::vector<double, std::allocator<double> >,"
                    " std::allocator<std::vector<double, std::allocator<double> "
                    "> > >";
