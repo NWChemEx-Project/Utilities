@@ -15,9 +15,9 @@
  */
 
 #include <catch2/catch.hpp>
+#include <iostream>
 #include <sstream>
 #include <utilities/printing/word_wrap_stream.hpp>
-#include <iostream>
 
 using namespace utilities::printing;
 
