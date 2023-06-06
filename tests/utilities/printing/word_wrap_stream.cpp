@@ -15,10 +15,12 @@
  */
 
 #include <catch2/catch.hpp>
+#include <iostream>
 #include <sstream>
 #include <utilities/printing/word_wrap_stream.hpp>
+
 using namespace utilities::printing;
-#include <iostream>
+
 TEST_CASE("WordWrapStream") {
     std::stringstream ss;
     std::stringstream corr;

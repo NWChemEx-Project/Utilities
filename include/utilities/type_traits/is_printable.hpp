@@ -15,11 +15,14 @@
  */
 
 #pragma once
+#include "utilities/printing/print_stl.hpp"
 #include <ostream>
 #include <type_traits>
 
 namespace utilities::type_traits {
 namespace detail_ {
+
+using namespace utilities::printing;
 
 /// Typedef of the result of calling std::ostream<< on an object of type @p T
 template<typename T>
