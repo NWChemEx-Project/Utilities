@@ -25,7 +25,5 @@
  *  client a means of avoiding unnecessary includes.
  */
 //#include <utilities/iter_tools/cartesian_product.hpp>
-#include <utilities/iter_tools/combinations.hpp>
 #include <utilities/iter_tools/enumerate.hpp>
-#include <utilities/iter_tools/permutations.hpp>
 #include <utilities/iter_tools/zip.hpp>
