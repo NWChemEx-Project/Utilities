@@ -24,24 +24,25 @@ FetchContent_Declare(
 FetchContent_MakeAvailable(nwx_cmake)
 list(APPEND CMAKE_MODULE_PATH "${nwx_cmake_SOURCE_DIR}/cmake")
 
-option(BUILD_TESTING "Should we build the tests?" OFF)
-option(BUILD_DOCS "Should we build the documentation?" OFF)
-
 set(
     CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${PROJECT_SOURCE_DIR}/cmake"
     CACHE STRING "" FORCE
 )
 include(get_cmaize)
 include(nwx_versions)
-include(nwx_cxx_api_docs)
-nwx_cxx_api_docs("${CMAKE_CURRENT_SOURCE_DIR}/utilities")
 
-set(utilities_inc_dir "${CMAKE_CURRENT_LIST_DIR}/include")
-set(utilities_src_dir "${CMAKE_CURRENT_LIST_DIR}/src")
+option(BUILD_TESTING "Should we build the tests?" OFF)
+option(BUILD_DOCS "Should we build the documentation?" OFF)
+
+set(utilities_inc_dir "${CMAKE_CURRENT_LIST_DIR}/include/${PROJECT_NAME}")
+set(utilities_src_dir "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}")
+
+include(nwx_cxx_api_docs)
+nwx_cxx_api_docs("README.md" "${project_inc_dir}" "${project_src_dir}")
 
 cmaize_add_library(
     ${PROJECT_NAME}
-    SOURCE_DIR "${utilities_src_dir}/${PROJECT_NAME}"
+    SOURCE_DIR "${utilities_src_dir}"
     INCLUDE_DIRS "${utilities_inc_dir}"
 )
 
