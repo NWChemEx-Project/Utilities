@@ -29,7 +29,7 @@ const auto corr3 = "std::__1::vector<std::__1::vector<double, "
                    "std::__1::allocator<double>>>>";
 #else
 const auto corr3 = "std::vector<std::vector<double, std::allocator<double>>,"
-                   " std::allocator<std::vector<double, std::allocator<double> "
+                   " std::allocator<std::vector<double, std::allocator<double>"
                    ">>>";
 #endif
 
