@@ -24,13 +24,12 @@
 
 namespace utilities::printing {
 
-// Removes all whitespace characters that are immediately 
+// Removes all whitespace characters that are immediately
 // before a closing angle bracket in a string.
 std::string remove_spaces(const std::string& str) {
     static const std::regex r("\\s+(?=\\>)");
     return std::regex_replace(str, r, "");
 }
-
 
 std::string Demangler::demangle(const char* t) {
 #if __has_include(<cxxabi.h>)
