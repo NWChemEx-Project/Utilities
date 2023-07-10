@@ -16,12 +16,20 @@
 
 #include "utilities/printing/demangler.hpp"
 #include <memory>
+#include <regex>
 
 #if __has_include(<cxxabi.h>)
 #include <cxxabi.h>
 #endif
 
 namespace utilities::printing {
+
+// Removes all whitespace characters that are immediately
+// before a closing angle bracket in a string.
+std::string remove_spaces(const std::string& str) {
+    static const std::regex r("\\s+(?=\\>)");
+    return std::regex_replace(str, r, "");
+}
 
 std::string Demangler::demangle(const char* t) {
 #if __has_include(<cxxabi.h>)
@@ -30,10 +38,10 @@ std::string Demangler::demangle(const char* t) {
     std::unique_ptr<char, void (*)(void*)> res{
       abi::__cxa_demangle(t, nullptr, nullptr, &status), std::free};
 
-    return status == 0 ? res.get() : t;
+    return status == 0 ? remove_spaces(res.get()) : remove_spaces(t);
 #else // Not a known compiler
 
-    return t;
+    return remove_spaces(t);
 #endif
 }
 
