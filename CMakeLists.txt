@@ -55,8 +55,14 @@ if("${BUILD_TESTING}")
         VERSION ${NWX_CATCH2_VERSION}
     )
     cmaize_add_tests(
-        test_utilities
-        SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/tests/${PROJECT_NAME}"
+        test_unit_utilities
+        SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/tests/unit_${PROJECT_NAME}"
+        INCLUDE_DIRS "${utilities_src_dir}"
+        DEPENDS Catch2 ${PROJECT_NAME}
+    )
+    cmaize_add_tests(
+        test_integration_${PROJECT_NAME}
+        SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/tests/integration_${PROJECT_NAME}"
         INCLUDE_DIRS "${utilities_src_dir}"
         DEPENDS Catch2 ${PROJECT_NAME}
     )
