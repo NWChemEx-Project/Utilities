@@ -23,7 +23,6 @@ jobs:
   ###
 
   update-base-image:
-    needs: docker-file-changes
     uses: NWChemEx-Project/Utilities/.github/workflows/build_base.yaml@master
     secrets: inherit
 
