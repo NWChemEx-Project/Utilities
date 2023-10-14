@@ -15,7 +15,7 @@
 cmake_minimum_required(VERSION 3.14)
 file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/version.txt" VERSION)
 project(utilities VERSION "${VERSION}")
-
+set(CMAKE_CXX_STANDARD 17) 
 include(FetchContent)
 FetchContent_Declare(
     nwx_cmake
