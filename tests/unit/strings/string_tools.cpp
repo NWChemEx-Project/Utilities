@@ -133,6 +133,6 @@ TEST_CASE("toupper_string") {
     }
     SECTION("Full sentence") {
         REQUIRE(toupper_string("This is a full sentence! (with a side note)") ==
-                "THIS IS A FULL SENTENCE! (WITH A side NOTE)");
+                "THIS IS A FULL SENTENCE! (WITH A SIDE NOTE)");
     }
 }
