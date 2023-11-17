@@ -22,7 +22,7 @@ on:
 
 jobs:
   Common-Pull-Request:
-    uses: NWChemEx-Project/.github/.github/workflows/common_pull_request.yaml@master
+    uses: NWChemEx-Project/.github/.github/workflows/common_pull_request.yaml@license_and_format_patch
     with:
       config_file: '.github/.licenserc.yaml'
       source_dir: 'include src tests'
