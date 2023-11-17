@@ -199,7 +199,8 @@ std::ostream& operator<<(
 }
 
 template<typename Key, typename Hash, typename Pred, typename Alloc>
-std::ostream& operator<<(std::ostream& os, const std::unordered_multiset<Key, Hash, Pred, Alloc>& s) {
+std::ostream& operator<<(
+  std::ostream& os, const std::unordered_multiset<Key, Hash, Pred, Alloc>& s) {
     return utilities::printing::detail_::print_list(os, s, '{', '}');
 }
 
