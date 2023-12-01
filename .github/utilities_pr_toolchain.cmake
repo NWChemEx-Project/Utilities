@@ -1,1 +1,1 @@
-set(BUILD_TESTING OFF)
+
