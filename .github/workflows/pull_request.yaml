@@ -22,10 +22,11 @@ on:
 
 jobs:
   Common-Pull-Request:
-    uses: NWChemEx-Project/.github/.github/workflows/common_pull_request.yaml@master
+    uses: NWChemEx-Project/.github/.github/workflows/common_pull_request.yaml@repo_toolchain
     with:
       config_file: '.github/.licenserc.yaml'
       source_dir: 'include src tests'
       compilers: '["gcc-11", "clang-11"]'
       doc_target: 'utilities_cxx_api'
+      repo_toolchain: '.github/utilities_pr_toolchain.cmake'
     secrets: inherit
