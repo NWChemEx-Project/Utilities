@@ -14,14 +14,14 @@
   ~ limitations under the License.
 -->
 
-[![Actions](https://github.com/NWChemEx-Project/Utilities/workflows/C_C++_CI/badge.svg)](https://github.com/NWChemEx-Project/Utilities)
+[![Actions](https://github.com/NWChemEx/Utilities/workflows/C_C++_CI/badge.svg)](https://github.com/NWChemEx/Utilities)
 
-[![Codecov](https://codecov.io/github/NWChemEx-Project/Utilities/branch/master/graphs/sunburst.svg?token=gdemefzIU7)](https://codecov.io/github/NWChemEx-Project/Utilities/branch/master)
+[![Codecov](https://codecov.io/github/NWChemEx/Utilities/branch/master/graphs/sunburst.svg?token=gdemefzIU7)](https://codecov.io/github/NWChemEx/Utilities/branch/master)
 
 Utilities Repository
 ======================
 
-[Documentation](https://nwchemex-project.github.io/Utilities/)
+[Documentation](https://nwchemex.github.io/Utilities/)
 
 The C++ standard library as well as the STL are great for providing many of the
 features one needs to write a code.  However, they leave much to be desired.
@@ -50,7 +50,7 @@ hence the first step is to build and install CPP if you have not done so
 already. Then building Utilities can be accomplished by:
 
 ```bash
-git clone https://github.com/NWChemEx-Project/Utilities.git
+git clone https://github.com/NWChemEx/Utilities.git
 cd Utilities
 cmake -H. -Bbuild -DCMAKE_PREFIX_PATH=<where/you/installed/CPP> \
                   -DCMAKE_INSTALL_PREFIX=<where/you/want/to/install/Utilities>
