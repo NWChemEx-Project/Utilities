@@ -23,7 +23,7 @@ following will suffice to build:
 
 .. code-block:: bash
 
-   git clone https://github.com/NWChemEx-Project/Utilities.git
+   git clone https://github.com/NWChemEx/Utilities.git
    cd Utilities
    cmake -H. \
          -Bbuild \
