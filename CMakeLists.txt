@@ -28,8 +28,9 @@ set(
     CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${PROJECT_SOURCE_DIR}/cmake"
     CACHE STRING "" FORCE
 )
-include(get_cmaize)
 include(nwx_versions)
+include(get_cmaize)
+
 
 option(BUILD_TESTING "Should we build the tests?" OFF)
 option(BUILD_DOCS "Should we build the documentation?" OFF)
