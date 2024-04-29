@@ -16,11 +16,12 @@
         <script src="_static/jquery.js?v=5d32c60e"></script>
         <script src="_static/_sphinx_javascript_frameworks_compat.js?v=2cd50e6c"></script>
         <script src="_static/documentation_options.js?v=8d563738"></script>
-        <script src="_static/doctools.js?v=888ff710"></script>
+        <script src="_static/doctools.js?v=9a2dae69"></script>
         <script src="_static/sphinx_highlight.js?v=dc90522c"></script>
     <script src="_static/js/theme.js"></script>
     <link rel="index" title="Index" href="genindex.html" />
-    <link rel="search" title="Search" href="search.html" /> 
+    <link rel="search" title="Search" href="search.html" />
+    <link rel="prev" title="Building the library" href="installation/building.html" /> 
 </head>
 
 <body class="wy-body-for-nav"> 
@@ -46,10 +47,20 @@
 </div>
         </div><div class="wy-menu wy-menu-vertical" data-spy="affix" role="navigation" aria-label="Navigation menu">
               <p class="caption" role="heading"><span class="caption-text">Contents:</span></p>
-<ul>
+<ul class="current">
 <li class="toctree-l1"><a class="reference internal" href="about/about.html">About</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation/building.html">Building the library</a></li>
 <li class="toctree-l1"><a class="reference internal" href="installation/building.html#building-the-documentation">Building the documentation</a></li>
+<li class="toctree-l1 current"><a class="current reference internal" href="#">Making an ostream Class</a><ul>
+<li class="toctree-l2"><a class="reference internal" href="#overview">Overview</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#std-basic-streambuf">std::basic_streambuf</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#xsputn">xsputn</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#overflow">overflow</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#synch">synch</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#seekoff">seekoff</a></li>
+<li class="toctree-l2"><a class="reference internal" href="#seekpos">seekpos</a></li>
+</ul>
+</li>
 </ul>
 
         </div>
@@ -251,7 +262,9 @@ whatever’s in the internal output buffer to the output and reset the pointers.
 
            </div>
           </div>
-          <footer>
+          <footer><div class="rst-footer-buttons" role="navigation" aria-label="Footer">
+        <a href="installation/building.html" class="btn btn-neutral float-left" title="Building the library" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left" aria-hidden="true"></span> Previous</a>
+    </div>
 
   <hr/>
 

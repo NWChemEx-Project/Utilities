@@ -21,6 +21,7 @@ Welcome to Utilities' documentation!
 
    about/index
    installation/index
+   making_an_ostream
 
 `C++ API <https://nwchemex.github.io/Utilities/utilities_cxx_api/index.html>`_
 
