@@ -58,7 +58,6 @@ std::ostream& print_list(std::ostream& os, T&& rhs, char odelim, char cdelim) {
     os << odelim;
     bool printed = false;
     for(const auto& x : rhs) {
-        using x_type = decltype(x);
         if(printed) os << ", ";
         print_element(os, x);
         printed = true;
@@ -72,7 +71,6 @@ std::ostream& print_associative(std::ostream& os, T&& rhs, char odelim,
     os << odelim;
     bool printed = false;
     for(const auto& x : rhs) {
-        using x_type = decltype(x);
         if(printed) os << ", ";
         os << "(";
         print_element(os, x.first) << " : ";
