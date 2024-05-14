@@ -113,7 +113,7 @@ TEST_CASE("RandomAccessRAIteratorBase<RAIterator> : operator[]") {
     RAIterator itr;
     SECTION("Value") {
         auto rv = itr[2];
-        REQUIRE(itr[2] == 2);
+        REQUIRE(rv == 2);
     }
     SECTION("Is not an alias") {
         STATIC_REQUIRE(std::is_same_v<int, decltype(itr[2])>);

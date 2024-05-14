@@ -22,7 +22,7 @@ using namespace utilities::printing;
 
 const auto corr1 = "int";
 const auto corr2 = "double";
-#if __APPLE__ && __clang__
+#if _LIBCPP_VERSION
 const auto corr3 = "std::__1::vector<std::__1::vector<double, "
                    "std::__1::allocator<double>>, "
                    "std::__1::allocator<std::__1::vector<double, "
