@@ -27,6 +27,10 @@ const auto corr3 = "std::__1::vector<std::__1::vector<double, "
                    "std::__1::allocator<double>>, "
                    "std::__1::allocator<std::__1::vector<double, "
                    "std::__1::allocator<double>>>>";
+#elif _WIN64 || _WIN32
+const auto corr3 = "class std::vector<class std::vector<double,class "
+                   "std::allocator<double>>,class std::allocator<class "
+                   "std::vector<double,class std::allocator<double>>>>";
 #else
 const auto corr3 = "std::vector<std::vector<double, std::allocator<double>>,"
                    " std::allocator<std::vector<double, std::allocator<double>"
