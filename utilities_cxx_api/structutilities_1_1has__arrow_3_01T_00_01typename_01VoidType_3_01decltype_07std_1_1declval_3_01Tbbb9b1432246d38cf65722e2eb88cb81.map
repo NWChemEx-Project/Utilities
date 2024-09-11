@@ -1,0 +1,4 @@
+<map id="utilities::has_arrow&lt; T, typename VoidType&lt; decltype(std::declval&lt; T &gt;().operator&#45;&gt;())&gt;::type &gt;" name="utilities::has_arrow&lt; T, typename VoidType&lt; decltype(std::declval&lt; T &gt;().operator&#45;&gt;())&gt;::type &gt;">
+<area shape="rect" id="node1" title=" " alt="" coords="5,80,228,151"/>
+<area shape="rect" id="node2" title=" " alt="" coords="61,5,173,32"/>
+</map>

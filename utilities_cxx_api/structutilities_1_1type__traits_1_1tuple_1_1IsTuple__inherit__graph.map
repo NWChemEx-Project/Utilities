@@ -1,0 +1,4 @@
+<map id="utilities::type_traits::tuple::IsTuple&lt; T &gt;" name="utilities::type_traits::tuple::IsTuple&lt; T &gt;">
+<area shape="rect" id="node1" title="Type trait for when T is not an std::tuple or std::pair has value=false." alt="" coords="5,80,160,121"/>
+<area shape="rect" id="node2" title=" " alt="" coords="23,5,142,32"/>
+</map>
