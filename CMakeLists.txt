@@ -13,58 +13,51 @@
 # limitations under the License.
 
 cmake_minimum_required(VERSION 3.14)
-file(STRINGS "${CMAKE_CURRENT_SOURCE_DIR}/version.txt" VERSION)
-project(utilities VERSION "${VERSION}")
-set(CMAKE_CXX_STANDARD 17) 
-include(FetchContent)
-FetchContent_Declare(
-    nwx_cmake
-    GIT_REPOSITORY https://github.com/NWChemEx/NWXCMake
-)
-FetchContent_MakeAvailable(nwx_cmake)
-list(APPEND CMAKE_MODULE_PATH "${nwx_cmake_SOURCE_DIR}/cmake")
 
-set(
-    CMAKE_MODULE_PATH "${CMAKE_MODULE_PATH}" "${PROJECT_SOURCE_DIR}/cmake"
-    CACHE STRING "" FORCE
-)
+#Downloads common CMake modules used throughout NWChemEx
+include(cmake/get_nwx_cmake.cmake)
+
+#Sets the version to whatever git thinks it is
+include(get_version_from_git)
+get_version_from_git(utilities_version "${CMAKE_CURRENT_LIST_DIR}")
+project(utilities VERSION "${utilities_version}" LANGUAGES CXX)
+
 include(nwx_versions)
 include(get_cmaize)
-
-
-option(BUILD_TESTING "Should we build the tests?" OFF)
-option(BUILD_DOCS "Should we build the documentation?" OFF)
-
-set(utilities_inc_dir "${CMAKE_CURRENT_LIST_DIR}/include/${PROJECT_NAME}")
-set(utilities_src_dir "${CMAKE_CURRENT_LIST_DIR}/src/${PROJECT_NAME}")
-
 include(nwx_cxx_api_docs)
-nwx_cxx_api_docs("README.md" "${project_inc_dir}" "${project_src_dir}")
+
+### Paths ###
+set(UTILITIES_INCLUDE_DIR "${CMAKE_CURRENT_LIST_DIR}/include")
+set(UTILITIES_SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/src")
+
+nwx_cxx_api_docs("${UTILITIES_SOURCE_DIR}" "${UTILITIES_INCLUDE_DIR}")
+
+### Options ###
+cmaize_option_list(
+    BUILD_TESTING OFF "Should we build the tests?"
+)
 
 cmaize_add_library(
     ${PROJECT_NAME}
-    SOURCE_DIR "${utilities_src_dir}"
-    INCLUDE_DIRS "${utilities_inc_dir}"
+    SOURCE_DIR "${UTILITIES_SOURCE_DIR}/${PROJECT_NAME}"
+    INCLUDE_DIRS "${UTILITIES_INCLUDE_DIR}/${PROJECT_NAME}"
 )
 
 if("${BUILD_TESTING}")
+    set(UTILITIES_TEST_DIR "${CMAKE_CURRENT_LIST_DIR}/tests/unit_tests")
+
     cmaize_find_or_build_dependency(
         Catch2
         URL github.com/catchorg/Catch2
         BUILD_TARGET Catch2
         FIND_TARGET Catch2::Catch2
-        VERSION ${NWX_CATCH2_VERSION}
+        VERSION v3.6.0
     )
+
     cmaize_add_tests(
-        test_unit_utilities
-        SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/tests/unit"
-        INCLUDE_DIRS "${utilities_src_dir}"
-        DEPENDS Catch2 ${PROJECT_NAME}
-    )
-    cmaize_add_tests(
-        test_integration_${PROJECT_NAME}
-        SOURCE_DIR "${CMAKE_CURRENT_LIST_DIR}/tests/integration"
-        INCLUDE_DIRS "${utilities_src_dir}"
+        test_unit_${PROJECT_NAME}
+        SOURCE_DIR "${UTILITIES_TEST_DIR}"
+        INCLUDE_DIRS "${UTILITIES_SOURCE_DIR}/${PROJECT_NAME}"
         DEPENDS Catch2 ${PROJECT_NAME}
     )
 endif()
