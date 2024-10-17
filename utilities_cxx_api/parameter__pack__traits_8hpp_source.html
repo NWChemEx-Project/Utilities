@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">utilities
-   &#160;<span id="projectnumber">0.1.19</span>
+   &#160;<span id="projectnumber">0.1.20</span>
    </div>
   </td>
  </tr>
@@ -146,11 +146,28 @@ $(function() {
 <div class="line"><a name="l00187"></a><span class="lineno">  187</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> BaseType2Look4, <span class="keyword">typename</span>... SearchTypes&gt;</div>
 <div class="line"><a name="l00188"></a><span class="lineno">  188</span>&#160;<span class="keyword">inline</span> constexpr std::size_t parameter_pack_count_derived_type_v =</div>
 <div class="line"><a name="l00189"></a><span class="lineno">  189</span>&#160;  <a class="code" href="structutilities_1_1type__traits_1_1parameter__pack__count__derived__type.html">parameter_pack_count_derived_type</a>&lt;BaseType2Look4, SearchTypes...&gt;::value;</div>
-<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160;} <span class="comment">// namespace utilities::type_traits</span></div>
+<div class="line"><a name="l00190"></a><span class="lineno">  190</span>&#160; </div>
+<div class="line"><a name="l00197"></a><span class="lineno">  197</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span> T, <span class="keyword">typename</span>... Ts&gt;</div>
+<div class="line"><a name="l00198"></a><span class="lineno"><a class="line" href="structutilities_1_1type__traits_1_1remove__duplicate__types.html">  198</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structutilities_1_1type__traits_1_1remove__duplicate__types.html">remove_duplicate_types</a> {</div>
+<div class="line"><a name="l00199"></a><span class="lineno">  199</span>&#160;    <span class="keyword">using</span> type = T;</div>
+<div class="line"><a name="l00200"></a><span class="lineno">  200</span>&#160;};</div>
+<div class="line"><a name="l00201"></a><span class="lineno">  201</span>&#160; </div>
+<div class="line"><a name="l00202"></a><span class="lineno">  202</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Ts, <span class="keyword">typename</span> U, <span class="keyword">typename</span>... Us&gt;</div>
+<div class="line"><a name="l00203"></a><span class="lineno"><a class="line" href="structutilities_1_1type__traits_1_1remove__duplicate__types_3_01std_1_1tuple_3_01Ts_8_8_8_01_4_00_01U_00_01Us_8_8_8_01_4.html">  203</a></span>&#160;<span class="keyword">struct </span><a class="code" href="structutilities_1_1type__traits_1_1remove__duplicate__types.html">remove_duplicate_types</a>&lt;std::tuple&lt;Ts...&gt;, U, Us...&gt;</div>
+<div class="line"><a name="l00204"></a><span class="lineno">  204</span>&#160;  : std::conditional_t&lt;(std::is_same_v&lt;U, Ts&gt; || ...),</div>
+<div class="line"><a name="l00205"></a><span class="lineno">  205</span>&#160;                       remove_duplicate_types&lt;std::tuple&lt;Ts...&gt;, Us...&gt;,</div>
+<div class="line"><a name="l00206"></a><span class="lineno">  206</span>&#160;                       remove_duplicate_types&lt;std::tuple&lt;Ts..., U&gt;, Us...&gt;&gt; {};</div>
+<div class="line"><a name="l00207"></a><span class="lineno">  207</span>&#160; </div>
+<div class="line"><a name="l00208"></a><span class="lineno">  208</span>&#160;<span class="keyword">template</span>&lt;<span class="keyword">typename</span>... Ts&gt;</div>
+<div class="line"><a name="l00209"></a><span class="lineno">  209</span>&#160;<span class="keyword">using</span> unique_types_t =</div>
+<div class="line"><a name="l00210"></a><span class="lineno">  210</span>&#160;  <span class="keyword">typename</span> <a class="code" href="structutilities_1_1type__traits_1_1remove__duplicate__types.html">remove_duplicate_types&lt;std::tuple&lt;&gt;</a>, Ts...&gt;::type;</div>
+<div class="line"><a name="l00211"></a><span class="lineno">  211</span>&#160; </div>
+<div class="line"><a name="l00212"></a><span class="lineno">  212</span>&#160;} <span class="comment">// namespace utilities::type_traits</span></div>
 <div class="ttc" id="astructutilities_1_1type__traits_1_1parameter__pack__contains__derived__type_html"><div class="ttname"><a href="structutilities_1_1type__traits_1_1parameter__pack__contains__derived__type.html">utilities::type_traits::parameter_pack_contains_derived_type</a></div><div class="ttdef"><b>Definition:</b> parameter_pack_traits.hpp:60</div></div>
 <div class="ttc" id="astructutilities_1_1type__traits_1_1parameter__pack__contains__type_html"><div class="ttname"><a href="structutilities_1_1type__traits_1_1parameter__pack__contains__type.html">utilities::type_traits::parameter_pack_contains_type</a></div><div class="ttdef"><b>Definition:</b> parameter_pack_traits.hpp:33</div></div>
 <div class="ttc" id="astructutilities_1_1type__traits_1_1parameter__pack__count__derived__type_html"><div class="ttname"><a href="structutilities_1_1type__traits_1_1parameter__pack__count__derived__type.html">utilities::type_traits::parameter_pack_count_derived_type</a></div><div class="ttdef"><b>Definition:</b> parameter_pack_traits.hpp:148</div></div>
 <div class="ttc" id="astructutilities_1_1type__traits_1_1parameter__pack__count__type_html"><div class="ttname"><a href="structutilities_1_1type__traits_1_1parameter__pack__count__type.html">utilities::type_traits::parameter_pack_count_type</a></div><div class="ttdef"><b>Definition:</b> parameter_pack_traits.hpp:86</div></div>
+<div class="ttc" id="astructutilities_1_1type__traits_1_1remove__duplicate__types_html"><div class="ttname"><a href="structutilities_1_1type__traits_1_1remove__duplicate__types.html">utilities::type_traits::remove_duplicate_types</a></div><div class="ttdoc">Primary template for remove_duplicate_types.</div><div class="ttdef"><b>Definition:</b> parameter_pack_traits.hpp:198</div></div>
 </div><!-- fragment --></div><!-- contents -->
 <!-- start footer part -->
 <hr class="footer"/><address class="footer"><small>
