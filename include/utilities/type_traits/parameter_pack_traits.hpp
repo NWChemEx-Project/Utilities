@@ -187,4 +187,26 @@ struct parameter_pack_count_derived_type<BaseType2Look4, Type0, Tail...>
 template<typename BaseType2Look4, typename... SearchTypes>
 inline constexpr std::size_t parameter_pack_count_derived_type_v =
   parameter_pack_count_derived_type<BaseType2Look4, SearchTypes...>::value;
+
+/** @brief Primary template for remove_duplicate_types.
+ *
+ *  The implementation of remove_duplicate_types and unique_types_t was stolen
+ *  from https://tinyurl.com/npe4emkf.
+ *
+ */
+template<typename T, typename... Ts>
+struct remove_duplicate_types {
+    using type = T;
+};
+
+template<typename... Ts, typename U, typename... Us>
+struct remove_duplicate_types<std::tuple<Ts...>, U, Us...>
+  : std::conditional_t<(std::is_same_v<U, Ts> || ...),
+                       remove_duplicate_types<std::tuple<Ts...>, Us...>,
+                       remove_duplicate_types<std::tuple<Ts..., U>, Us...>> {};
+
+template<typename... Ts>
+using unique_types_t =
+  typename remove_duplicate_types<std::tuple<>, Ts...>::type;
+
 } // namespace utilities::type_traits

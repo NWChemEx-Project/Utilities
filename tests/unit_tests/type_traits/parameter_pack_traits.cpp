@@ -211,3 +211,50 @@ TEST_CASE("parameter_pack_count_derived_type_v: parameter pack w/ base+derived "
       parameter_pack_count_derived_type_v<Base, int, Derived, double, Base> ==
       2ul);
 }
+
+TEST_CASE("remove_duplicate_types") {
+    SECTION("No duplicate types") {
+        using corr_type = std::tuple<int, double, char>;
+        using type2test =
+          remove_duplicate_types<std::tuple<>, int, double, char>;
+        STATIC_REQUIRE(std::is_same_v<corr_type, typename type2test::type>);
+    }
+    SECTION("One duplicate types") {
+        using corr_type = std::tuple<int, char>;
+        using type2test = remove_duplicate_types<std::tuple<>, int, int, char>;
+        STATIC_REQUIRE(std::is_same_v<corr_type, typename type2test::type>);
+    }
+    SECTION("One duplicate type (2x)") {
+        using corr_type = std::tuple<int>;
+        using type2test = remove_duplicate_types<std::tuple<>, int, int, int>;
+        STATIC_REQUIRE(std::is_same_v<corr_type, typename type2test::type>);
+    }
+    SECTION("Two duplicate types") {
+        using corr_type = std::tuple<int, double>;
+        using type2test =
+          remove_duplicate_types<std::tuple<>, int, double, int, double>;
+        STATIC_REQUIRE(std::is_same_v<corr_type, typename type2test::type>);
+    }
+    SECTION("No types") {
+        using corr_type = std::tuple<>;
+        using type2test = remove_duplicate_types<std::tuple<>>;
+        STATIC_REQUIRE(std::is_same_v<corr_type, typename type2test::type>);
+    }
+}
+
+TEST_CASE("unique_types_t") {
+    // This is just an alias for remove_duplicates_types::types, which we know
+    // works so just spot check it
+    SECTION("No duplicate types") {
+        using corr_type = std::tuple<int, double>;
+        STATIC_REQUIRE(std::is_same_v<corr_type, unique_types_t<int, double>>);
+    }
+    SECTION("Duplicate types") {
+        using corr_type = std::tuple<int>;
+        STATIC_REQUIRE(std::is_same_v<corr_type, unique_types_t<int, int>>);
+    }
+    SECTION("No types") {
+        using corr_type = std::tuple<>;
+        STATIC_REQUIRE(std::is_same_v<corr_type, unique_types_t<>>);
+    }
+}
