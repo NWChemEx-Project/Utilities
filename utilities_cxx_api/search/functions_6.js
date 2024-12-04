@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['mathset_273',['MathSet',['../classutilities_1_1MathSet.html#ac3b77280d1600cc28084912d19c5fd9c',1,'utilities::MathSet::MathSet()=default'],['../classutilities_1_1MathSet.html#ad5b61fb3016fb66ad0abc897691c00c5',1,'utilities::MathSet::MathSet(const MathSet &amp;)=default'],['../classutilities_1_1MathSet.html#acbdd711ee56c27845fdbfaefed3099e7',1,'utilities::MathSet::MathSet(MathSet &amp;&amp;) noexcept=default'],['../classutilities_1_1MathSet.html#ad05a4d8f5cceafaef55912ade3ee6a5b',1,'utilities::MathSet::MathSet(std::initializer_list&lt; element_type &gt; il)']]],
-  ['max_5fsize_274',['max_size',['../classutilities_1_1MathSet.html#a5a30d8ffce12bbeec654be7e7021ee64',1,'utilities::MathSet']]]
+  ['lhs_310',['lhs',['../classutilities_1_1dsl_1_1BinaryOp.html#a65ccbf5e6d355692e0e5c63458699844',1,'utilities::dsl::BinaryOp::lhs()'],['../classutilities_1_1dsl_1_1BinaryOp.html#a380d6681f78e603caca8c5e561f0bac8',1,'utilities::dsl::BinaryOp::lhs() const']]]
 ];

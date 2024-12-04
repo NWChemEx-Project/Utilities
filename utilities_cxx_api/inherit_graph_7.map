@@ -1,12 +1,12 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" title=" " alt="" coords="5,274,124,301"/>
-<area shape="rect" id="node2" href="$structutilities_1_1has__arrow.html" title="Checks if a type has the arrow operator." alt="" coords="204,5,351,47"/>
-<area shape="rect" id="node3" href="$structutilities_1_1has__dereference.html" title="Checks if a type is dereference&#45;able via the star operator." alt="" coords="184,71,371,112"/>
-<area shape="rect" id="node4" href="$structutilities_1_1has__postfix__decrement.html" title="Checks if a type implements the postfix decrement operator." alt="" coords="172,136,383,177"/>
-<area shape="rect" id="node5" href="$structutilities_1_1has__postfix__increment.html" title="Checks if a type implements the postfix increment operator." alt="" coords="174,201,381,243"/>
-<area shape="rect" id="node6" href="$structutilities_1_1has__prefix__decrement.html" title="Checks if a type implements the prefix decrement operator." alt="" coords="172,267,383,308"/>
-<area shape="rect" id="node7" href="$structutilities_1_1has__prefix__increment.html" title="Checks if a type implements the prefix increment operator." alt="" coords="174,332,381,373"/>
-<area shape="rect" id="node8" href="$structutilities_1_1is__indexable.html" title="Checks if a type implements the index operator." alt="" coords="197,397,358,439"/>
-<area shape="rect" id="node9" href="$structutilities_1_1type__traits_1_1IsPrintable.html" title="Used to determine if an object can be forwarded to an std::ostream." alt="" coords="172,463,383,504"/>
-<area shape="rect" id="node10" href="$structutilities_1_1type__traits_1_1tuple_1_1IsTuple.html" title="Type trait for when T is not an std::tuple or std::pair has value=false." alt="" coords="200,528,355,569"/>
+<area shape="rect" id="node1" href="$classutilities_1_1dsl_1_1Term.html" title="Base class for all elements of the DSL." alt="" coords="5,173,144,214"/>
+<area shape="rect" id="node2" href="$classutilities_1_1dsl_1_1BinaryOp.html" title=" " alt="" coords="192,5,419,61"/>
+<area shape="rect" id="node4" href="$classutilities_1_1dsl_1_1BinaryOp.html" title=" " alt="" coords="207,85,404,141"/>
+<area shape="rect" id="node6" href="$classutilities_1_1dsl_1_1BinaryOp.html" title=" " alt="" coords="193,165,418,221"/>
+<area shape="rect" id="node8" href="$classutilities_1_1dsl_1_1BinaryOp.html" title=" " alt="" coords="198,245,413,301"/>
+<area shape="rect" id="node10" href="$classutilities_1_1dsl_1_1BinaryOp.html" title="Code factorization for binary operations." alt="" coords="213,325,398,381"/>
+<area shape="rect" id="node3" href="$classutilities_1_1dsl_1_1Subtract.html" title="Represents the subtraction of two terms." alt="" coords="467,13,639,54"/>
+<area shape="rect" id="node5" href="$classutilities_1_1dsl_1_1Add.html" title="Represents the addition of two terms." alt="" coords="467,93,639,134"/>
+<area shape="rect" id="node7" href="$classutilities_1_1dsl_1_1Multiply.html" title="Represents the multiplication of two terms." alt="" coords="467,173,639,214"/>
+<area shape="rect" id="node9" href="$classutilities_1_1dsl_1_1Divide.html" title="Represents the division of two terms." alt="" coords="467,253,639,294"/>
 </map>

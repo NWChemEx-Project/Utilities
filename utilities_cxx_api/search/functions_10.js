@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['_7emathset_318',['~MathSet',['../classutilities_1_1MathSet.html#a0fadd2e754bceaca39c9c72a83fb5a23',1,'utilities::MathSet']]]
+  ['zip_357',['Zip',['../classutilities_1_1Zip.html#abd671b3d6c774a1560ee47bb5b527d16',1,'utilities::Zip']]]
 ];

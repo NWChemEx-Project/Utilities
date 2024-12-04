@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['zip_317',['Zip',['../classutilities_1_1Zip.html#abd671b3d6c774a1560ee47bb5b527d16',1,'utilities::Zip']]]
+  ['wordwrapstream_356',['WordWrapStream',['../classutilities_1_1printing_1_1WordWrapStream.html#ab02def432286d66cd25f4e37def706ed',1,'utilities::printing::WordWrapStream']]]
 ];

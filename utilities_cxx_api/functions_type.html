@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">utilities
-   &#160;<span id="projectnumber">0.1.20</span>
+   &#160;<span id="projectnumber">0.1.21</span>
    </div>
   </td>
  </tr>
@@ -69,9 +69,16 @@ $(function() {
 : <a class="el" href="classutilities_1_1IndexableContainerBase.html#a4a63123c05b94040e275b4487cb9fa28">utilities::IndexableContainerBase&lt; DerivedType &gt;</a>
 , <a class="el" href="classutilities_1_1MathSet.html#abdebb81711f65a4ea5242840630a3703">utilities::MathSet&lt; element_type &gt;</a>
 </li>
+<li>const_lhs_reference
+: <a class="el" href="classutilities_1_1dsl_1_1BinaryOp.html#a9b14f933eac638ac3676ae5515ed3c6a">utilities::dsl::BinaryOp&lt; DerivedType, LHSType, RHSType &gt;</a>
+</li>
 <li>const_reference
-: <a class="el" href="classutilities_1_1iterators_1_1OffsetIterator.html#a4c76a275f85dc59e8c082e32c0454ba5">utilities::iterators::OffsetIterator&lt; ContainerType &gt;</a>
+: <a class="el" href="classutilities_1_1dsl_1_1TermTraits.html#a1d210892370791b4a876f4e381aa3cc6">utilities::dsl::TermTraits&lt; T &gt;</a>
+, <a class="el" href="classutilities_1_1iterators_1_1OffsetIterator.html#a4c76a275f85dc59e8c082e32c0454ba5">utilities::iterators::OffsetIterator&lt; ContainerType &gt;</a>
 , <a class="el" href="classutilities_1_1MathSet.html#a3795237e0e4899d2ca6e5af53503ab67">utilities::MathSet&lt; element_type &gt;</a>
+</li>
+<li>const_rhs_reference
+: <a class="el" href="classutilities_1_1dsl_1_1BinaryOp.html#a88380391fb2ef2df9508cd01f24ad3b1">utilities::dsl::BinaryOp&lt; DerivedType, LHSType, RHSType &gt;</a>
 </li>
 </ul>
 
@@ -84,6 +91,13 @@ $(function() {
 </li>
 <li>duration
 : <a class="el" href="classutilities_1_1Timer.html#a1c21177d2b7658b9214ca573e0d879b5">utilities::Timer</a>
+</li>
+</ul>
+
+
+<h3><a id="index_h"></a>- h -</h3><ul>
+<li>holder_type
+: <a class="el" href="classutilities_1_1dsl_1_1TermTraits.html#ae120036da1197b954f1c628009e68d64">utilities::dsl::TermTraits&lt; T &gt;</a>
 </li>
 </ul>
 
@@ -112,6 +126,12 @@ $(function() {
 <li>lhs_as_tuple
 : <a class="el" href="structutilities_1_1type__traits_1_1variant_1_1detail___1_1variant__prod.html#ae0049e7f0574f7368fb29a22cbbdab28">utilities::type_traits::variant::detail_::variant_prod&lt; Op, LHSVariant, RHSVariant &gt;</a>
 </li>
+<li>lhs_reference
+: <a class="el" href="classutilities_1_1dsl_1_1BinaryOp.html#a42b7c53907f554d98ad65b1c5ef566f2">utilities::dsl::BinaryOp&lt; DerivedType, LHSType, RHSType &gt;</a>
+</li>
+<li>lhs_type
+: <a class="el" href="classutilities_1_1dsl_1_1BinaryOp.html#ada8389511328195694ee31e8ab7e96c5">utilities::dsl::BinaryOp&lt; DerivedType, LHSType, RHSType &gt;</a>
+</li>
 </ul>
 
 
@@ -124,7 +144,8 @@ $(function() {
 
 <h3><a id="index_r"></a>- r -</h3><ul>
 <li>reference
-: <a class="el" href="classutilities_1_1iterators_1_1OffsetIterator.html#a1e11986c8f1bae0512fb3bdbfae46cba">utilities::iterators::OffsetIterator&lt; ContainerType &gt;</a>
+: <a class="el" href="classutilities_1_1dsl_1_1TermTraits.html#a20be0872de940d2281f5e9a931021b37">utilities::dsl::TermTraits&lt; T &gt;</a>
+, <a class="el" href="classutilities_1_1iterators_1_1OffsetIterator.html#a1e11986c8f1bae0512fb3bdbfae46cba">utilities::iterators::OffsetIterator&lt; ContainerType &gt;</a>
 , <a class="el" href="classutilities_1_1MathSet.html#adf20eac83446da208fe4c46049fa7732">utilities::MathSet&lt; element_type &gt;</a>
 </li>
 <li>result_type
@@ -132,6 +153,12 @@ $(function() {
 </li>
 <li>rhs_as_tuple
 : <a class="el" href="structutilities_1_1type__traits_1_1variant_1_1detail___1_1variant__prod.html#a0f1935f59ee547c7c18698a54edee588">utilities::type_traits::variant::detail_::variant_prod&lt; Op, LHSVariant, RHSVariant &gt;</a>
+</li>
+<li>rhs_reference
+: <a class="el" href="classutilities_1_1dsl_1_1BinaryOp.html#a1c46690c54f12b736a253dc4f85e819c">utilities::dsl::BinaryOp&lt; DerivedType, LHSType, RHSType &gt;</a>
+</li>
+<li>rhs_type
+: <a class="el" href="classutilities_1_1dsl_1_1BinaryOp.html#a82826dbcd8fb9ffefa8e210565f1aa5b">utilities::dsl::BinaryOp&lt; DerivedType, LHSType, RHSType &gt;</a>
 </li>
 </ul>
 
@@ -157,7 +184,8 @@ $(function() {
 
 <h3><a id="index_v"></a>- v -</h3><ul>
 <li>value_type
-: <a class="el" href="classutilities_1_1iterators_1_1OffsetIterator.html#a01a9f772a4d36d9e5bd9c96a833aa6a6">utilities::iterators::OffsetIterator&lt; ContainerType &gt;</a>
+: <a class="el" href="classutilities_1_1dsl_1_1TermTraits.html#a6b353bee1c493fbb04fbdecd6983c042">utilities::dsl::TermTraits&lt; T &gt;</a>
+, <a class="el" href="classutilities_1_1iterators_1_1OffsetIterator.html#a01a9f772a4d36d9e5bd9c96a833aa6a6">utilities::iterators::OffsetIterator&lt; ContainerType &gt;</a>
 , <a class="el" href="classutilities_1_1MathSet.html#a6e6f8bcd3e0d25fb4a21dc739963bfc0">utilities::MathSet&lt; element_type &gt;</a>
 , <a class="el" href="classutilities_1_1Range.html#afdb09f59550e8cc26754118218503bc0">utilities::Range&lt; ElementType &gt;</a>
 , <a class="el" href="classutilities_1_1Zip.html#a1849ff2619f43c2c155acc7a1c2443bb">utilities::Zip&lt; Containers &gt;</a>

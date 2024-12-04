@@ -1,3 +1,6 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$classutilities_1_1MathSet.html" title="Implements an std::unordered_set&#45;like object except that it knows about union, etc." alt="" coords="5,5,148,47"/>
+<area shape="rect" id="node1" href="$classutilities_1_1IndexableContainerBase.html" title=" " alt="" coords="5,35,223,76"/>
+<area shape="rect" id="node2" href="$classutilities_1_1Zip.html" title=" " alt="" coords="271,5,493,47"/>
+<area shape="rect" id="node4" href="$classutilities_1_1Zip.html" title="A container filled with elements resulting from zipping containers together." alt="" coords="282,71,482,98"/>
+<area shape="rect" id="node3" href="$classutilities_1_1Enumerate.html" title="Enumerates the elements in a container." alt="" coords="541,5,692,47"/>
 </map>
