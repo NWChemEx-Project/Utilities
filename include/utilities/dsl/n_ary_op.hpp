@@ -71,7 +71,9 @@ public:
      *             throws. Same throw guarantee.
      */
     template<typename... Args2>
-    NAryOp(Args2&&... args) : m_objects_(std::forward<Args2>(args)...) {}
+    NAryOp(Args2&&... args) :
+      m_objects_(TermTraits<std::decay_t<Args2>>::make_holder(
+        std::forward<Args2>(args))...) {}
 
     // -------------------------------------------------------------------------
     // -- Getters and setters
@@ -93,7 +95,7 @@ public:
      */
     template<std::size_t I>
     object_reference<I> object() {
-        return std::get<I>(m_objects_);
+        return traits_i_type<I>::unwrap_holder(std::get<I>(m_objects_));
     }
 
     /** @brief Returns a read-only reference to the `I`-th object in the
@@ -112,7 +114,7 @@ public:
      */
     template<std::size_t I>
     const_object_reference<I> object() const {
-        return std::get<I>(m_objects_);
+        return traits_i_type<I>::unwrap_holder(std::get<I>(m_objects_));
     }
 
     // -------------------------------------------------------------------------

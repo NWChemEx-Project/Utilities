@@ -27,8 +27,8 @@ namespace utilities::dsl {
  *  @tparam DerivedType Type of the object *this is implementing.
  *
  *  Users of the DSL need to implement operator+, operator-, etc. for their
- *  leaves. The returns of those functions are DSL Term objects. Those objects
- *  can then further be composed. The Term class implements further
+ *  leaves. The returns of those functions are DSL Term objects. Those
+ * objects can then further be composed. The Term class implements further
  *  composition with DSL objects.
  */
 template<typename DerivedType>
@@ -119,8 +119,6 @@ public:
     decltype(auto) downcast() const {
         return static_cast<const DerivedType&>(*this);
     }
-
-private:
 };
 
 } // namespace utilities::dsl
