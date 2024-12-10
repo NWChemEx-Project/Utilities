@@ -68,17 +68,22 @@ public:
     using reference =
       std::conditional_t<is_const_v, const_reference, value_type&>;
 
+    using const_pointer = const value_type*;
+
+    using pointer = std::conditional_t<is_const_v, const_pointer, value_type*>;
+
     /** @brief Is @p T part of the DSL layer?
      *
      *  Terms that are part of the DSL layer are often unnamed temporaries and
      *  their storage must be handled specially. This member variable is used
-     *  to determine if @p T either derives from dsl::Term, or if it is a
-     *  floating point type (floating point types are often specified inline as
-     *  if they were part of the DSL).
+     *  to determine if @p T either derives from dsl::Term, or if it is a type
+     *  often used to specify literals (e.g., floating point and string types
+     *  are often specified inline as if they were part of the DSL).
      */
     static constexpr bool is_dsl_term_v =
       std::is_base_of_v<Term<value_type>, value_type> ||
-      std::is_floating_point_v<value_type>;
+      std::is_floating_point_v<value_type> ||
+      std::is_same_v<value_type, std::string>;
 
     /** @brief The type terms will hold @p T as.
      *
@@ -90,8 +95,52 @@ public:
      *  object that is part of the DSL then @p T is captured by value (DSL
      *  terms are expected to be light-weight and temporary).
      */
-    using holder_type =
-      std::conditional_t<is_dsl_term_v, value_type, reference>;
+    using holder_type = std::conditional_t<is_dsl_term_v, value_type, pointer>;
+
+    /** @brief Wraps the process of converting @p input into holder_type.
+     *
+     *  @tparam U The type of @p input. Assumed to be implicitly convertible to
+     *            holder_type (if holder type is value-like) or to be the type
+     *            of value that holder_type points to (if holder_type is
+     *            pointer like).
+     *
+     *  Objects are held differently depending on whether or not the DSL needs
+     *  to manage their lifetime. This method wraps the logic for converting
+     *  @p input into a holder_type object.
+     *
+     *  @param[in] input The value to convert to a holder.
+     *
+     *  @throw None No throw guarantee
+     */
+    template<typename U>
+    static decltype(auto) make_holder(U&& input) {
+        if constexpr(!is_dsl_term_v) {
+            return &input;
+        } else {
+            return std::forward<U>(input);
+        }
+    }
+
+    /** @brief Wraps the logic of unwrapping a holder_type object.
+     *
+     *  @tparam U The type of @p input. Expected to be implicitly convertible
+     *            to holder_type.
+     *
+     *  This method is the inverse of `make_holder`. See the description for
+     *  `make_holder` for more information.
+     *
+     *  @param[in] input The holder_type object being converted.
+     *
+     *  @throw None No throw guarantee.
+     */
+    template<typename U>
+    static decltype(auto) unwrap_holder(U&& input) {
+        if constexpr(!is_dsl_term_v) {
+            return *input;
+        } else {
+            return std::forward<U>(input);
+        }
+    }
 };
 
 } // namespace utilities::dsl

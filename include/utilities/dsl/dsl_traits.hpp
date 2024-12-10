@@ -15,38 +15,18 @@
  */
 
 #pragma once
-
-/** @file dsl_fwd.hpp
- *
- *  This file forward declares the classes needed to power the DSL. The
- *  forward declarations are primarily useful for declaring interfaces and
- *  for template meta-programming.
- */
+#include <type_traits>
+#include <utilities/dsl/dsl_fwd.hpp>
 
 namespace utilities::dsl {
 
-template<typename LHSType, typename RHSType>
-class Add;
-
-template<typename DerivedType, typename LHSType, typename RHSType>
-class BinaryOp;
-
-template<typename LHSType, typename RHSType>
-class Divide;
-
-template<typename LHSType, typename RHSType>
-class Multiply;
-
-template<typename DerivedType, typename... Args>
-class NAryOp;
-
-template<typename LHSType, typename RHSType>
-class Subtract;
-
-template<typename DerivedType>
-class Term;
+template<typename T>
+struct IsTerm : public std::false_type {};
 
 template<typename T>
-class TermTraits;
+struct IsTerm<Term<T>> : public std::true_type {};
+
+template<typename T>
+constexpr bool is_term_v = IsTerm<T>::value;
 
 } // namespace utilities::dsl

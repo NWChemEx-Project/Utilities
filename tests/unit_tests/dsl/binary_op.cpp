@@ -21,7 +21,8 @@
  *
  * The classes which derive from BinaryOp are strong types. We thus only need
  * to test the BinaryOp infrastructure for one derived class (we must test
- * through the derived class because of the CRTP usage).
+ * through the derived class because of the CRTP usage). We do not need to
+ * retest the NAry base infrastructure.
  */
 
 TEMPLATE_LIST_TEST_CASE("BinaryOp", "", test_utilities::binary_types) {

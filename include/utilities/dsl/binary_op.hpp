@@ -17,25 +17,27 @@
 #pragma once
 #include <tuple>
 #include <type_traits>
-#include <utilities/dsl/term.hpp>
-#include <utilities/dsl/term_traits.hpp>
+#include <utilities/dsl/n_ary_op.hpp>
 
 namespace utilities::dsl {
 
 /** @brief Code factorization for binary operations.
  *
  *  @tparam DerivedType the operation *this is implementing.
- *  @tparam LHSType The const-qualified type of the object on the left side of
- *                  the operation.
- *  @tparam RHSType The const-qualified type of the object on the right side of
- *                  the operation.
+ *  @tparam LHSType The const-qualified type of the object on the left side
+ * of the operation.
+ *  @tparam RHSType The const-qualified type of the object on the right side
+ * of the operation.
  *
- *  The DSL implementation of most of the binary operations are the same and is
- *  implemented by this class.
+ *  The DSL implementation of most of the binary operations are the same and
+ * is implemented by this class.
  */
 template<typename DerivedType, typename LHSType, typename RHSType>
-class BinaryOp : public Term<DerivedType> {
+class BinaryOp : public NAryOp<DerivedType, LHSType, RHSType> {
 private:
+    /// Type *this inherits from
+    using base_type = NAryOp<DerivedType, LHSType, RHSType>;
+
     /// Works out the types associated with LHSType
     using lhs_traits = TermTraits<LHSType>;
 
@@ -46,7 +48,8 @@ public:
     /// Unqualified type of the object on the left side of the operator
     using lhs_type = typename lhs_traits::value_type;
 
-    /// Type acting like `lhs_type&`, but respecting const-ness of @p LHSType
+    /// Type acting like `lhs_type&`, but respecting const-ness of @p
+    /// LHSType
     using lhs_reference = typename lhs_traits::reference;
 
     /// Type acting like `const lhs_type&`
@@ -55,54 +58,41 @@ public:
     /// Unqualified type of the object on the right side of the operator
     using rhs_type = typename rhs_traits::value_type;
 
-    /// Type acting like `rhs_type&`, but respecting const-ness of @p RHSType
+    /// Type acting like `rhs_type&`, but respecting const-ness of @p
+    /// RHSType
     using rhs_reference = typename rhs_traits::reference;
 
     /// Type acting like `const rhs_type&`.
     using const_rhs_reference = typename rhs_traits::const_reference;
 
-    /** @brief Creates a new binary operation by aliasing @p l and @p r.
-     *
-     *  Generally speaking binary operations will want to alias the terms on
-     *  the left and right of the operator (as opposed to copying them or taking
-     *  ownership). This ctor takes references to the two objects and stores
-     *  them internally as `TermTraits<T>::holder_type` objects (where T is
-     *  @p LHSType and @p RHSType respectively for @p lhs and @p rhs). Thus
-     *  whether *this ultimately owns the objects referenced by @p lhs and
-     *  @p rhs are controlled by the respective specializations of `TermTraits`.
-     *
-     *  @param[in] l An alias to the object on the left side of the operator.
-     *  @param[in] r An alias to the object on the right side of the operator.
-     *
-     *  @throw ??? Throws if converting either @p l or @p r to the holder type
-     *             throws. Same throw guarantee.
-     */
-    BinaryOp(lhs_reference l, rhs_reference r) : m_lhs_(l), m_rhs_(r) {}
+    /// Uses the base class's ctors
+    using base_type::base_type;
 
     // -------------------------------------------------------------------------
     // -- Getters and setters
     // -------------------------------------------------------------------------
 
-    /** @brief Returns a (possibly) mutable reference to the object on the left
-     *         of the operator.
+    /** @brief Returns a (possibly) mutable reference to the object on the
+     * left of the operator.
      *
-     *  *this is associated with two objects. The one that was on the left side
-     *  of the operator is termed "lhs" and can be accessed via this method.
+     *  *this is associated with two objects. The one that was on the left
+     * side of the operator is termed "lhs" and can be accessed via this
+     * method.
      *
-     *  @return A (possibly) mutable reference to the object which was on the
-     *          left of the operator. The mutable-ness of the return is
+     *  @return A (possibly) mutable reference to the object which was on
+     * the left of the operator. The mutable-ness of the return is
      *          controlled by TermTraits<LHSType>.
      *
      *  @throw ??? Throws if converting from the held type to lhs_reference
      *             throws. Same throw guarantee.
      */
-    lhs_reference lhs() { return m_lhs_; }
+    lhs_reference lhs() { return this->template object<0>(); }
 
-    /** @brief Returns a read-only reference to the object on the left of the
-     *         operator.
+    /** @brief Returns a read-only reference to the object on the left of
+     * the operator.
      *
-     *  This method is identical to the non-const version except that the return
-     *  is guaranteed to be read-only.
+     *  This method is identical to the non-const version except that the
+     * return is guaranteed to be read-only.
      *
      *  @return A read-only reference to the object on the left of the
      *          operator.
@@ -110,28 +100,29 @@ public:
      *  @throw ??? Throws if converting from the held type to
      *             const_lhs_reference throws. Same throw guarantee.
      */
-    const_lhs_reference lhs() const { return m_lhs_; }
+    const_lhs_reference lhs() const { return this->template object<0>(); }
 
-    /** @brief Returns a (possibly) mutable reference to the object on the right
-     *         of the operator.
+    /** @brief Returns a (possibly) mutable reference to the object on the
+     * right of the operator.
      *
-     *  *this is associated with two objects. The one that was on the right side
-     *  of the operator is termed "rhs" and can be accessed via this method.
+     *  *this is associated with two objects. The one that was on the right
+     * side of the operator is termed "rhs" and can be accessed via this
+     * method.
      *
-     *  @return A (possibly) mutable reference to the object which was on the
-     *          right of the operator. The mutable-ness of the return is
+     *  @return A (possibly) mutable reference to the object which was on
+     * the right of the operator. The mutable-ness of the return is
      *          controlled by TermTraits<RHSType>.
      *
      *  @throw ??? Throws if converting from the held type to rhs_reference
      *             throws. Same throw guarantee.
      */
-    rhs_reference rhs() { return m_rhs_; }
+    rhs_reference rhs() { return this->template object<1>(); }
 
-    /** @brief Returns a read-only reference to the object on the right of the
-     *         operator.
+    /** @brief Returns a read-only reference to the object on the right of
+     * the operator.
      *
-     *  This method is identical to the non-const version except that the return
-     *  is guaranteed to be read-only.
+     *  This method is identical to the non-const version except that the
+     * return is guaranteed to be read-only.
      *
      *  @return A read-only reference to the object on the right of the
      *          operator.
@@ -139,7 +130,7 @@ public:
      *  @throw ??? Throws if converting from the held type to
      *             const_rhs_reference throws. Same throw guarantee.
      */
-    const_rhs_reference rhs() const { return m_rhs_; }
+    const_rhs_reference rhs() const { return this->template object<1>(); }
 
     // -------------------------------------------------------------------------
     // -- Utility methods
@@ -152,14 +143,15 @@ public:
      *  @tparam RHSType2 The type of rhs in @p other.
      *
      *  Two BinaryOp objects are the same if they:
-     *  - Implement the same operation, e.g., both are implementing addition,
+     *  - Implement the same operation, e.g., both are implementing
+     * addition,
      *  - Both have the same value of lhs, and
      *  - Both have the same value of rhs.
      *
-     *  It should be noted that following C++ convention, value comparisons are
-     *  done with const references and thus the const-ness of @tparam LHSType
-     *  and @tparam RHSType vs the respective const-ness of @tparam LHSType2
-     *  and @tparam RHSType2 is not considered.
+     *  It should be noted that following C++ convention, value comparisons
+     * are done with const references and thus the const-ness of @tparam
+     * LHSType and @tparam RHSType vs the respective const-ness of @tparam
+     * LHSType2 and @tparam RHSType2 is not considered.
      *
      *  @param[in] other The object to compare to.
      *
@@ -177,12 +169,13 @@ public:
      *  @tparam LHSType2 The type of lhs in @p other.
      *  @tparam RHSType2 The type of rhs in @p other.
      *
-     *  This method defines "different" as not value equal. See the description
-     *  for operator== for the definition of value equal.
+     *  This method defines "different" as not value equal. See the
+     * description for operator== for the definition of value equal.
      *
      *  @param[in] other The object to compare to *this.
      *
-     *  @return False if *this is value equal to @p other and true otherwise.
+     *  @return False if *this is value equal to @p other and true
+     * otherwise.
      *
      *  @throw None No throw guarantee.
      */
