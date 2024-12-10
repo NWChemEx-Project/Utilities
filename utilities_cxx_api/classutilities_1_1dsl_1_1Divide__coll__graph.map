@@ -1,5 +1,6 @@
 <map id="utilities::dsl::Divide&lt; LHSType, RHSType &gt;" name="utilities::dsl::Divide&lt; LHSType, RHSType &gt;">
-<area shape="rect" id="node1" title="Represents the division of two terms." alt="" coords="27,199,199,240"/>
-<area shape="rect" id="node2" href="$classutilities_1_1dsl_1_1BinaryOp.html" title=" " alt="" coords="5,95,220,151"/>
-<area shape="rect" id="node3" href="$classutilities_1_1dsl_1_1Term.html" title="Base class for all elements of the DSL." alt="" coords="43,5,182,47"/>
+<area shape="rect" id="node1" title="Represents the division of two terms." alt="" coords="27,288,199,329"/>
+<area shape="rect" id="node2" href="$classutilities_1_1dsl_1_1BinaryOp.html" title=" " alt="" coords="5,184,220,240"/>
+<area shape="rect" id="node3" href="$classutilities_1_1dsl_1_1NAryOp.html" title="Code factorization for n&#45;ary operations." alt="" coords="27,95,198,136"/>
+<area shape="rect" id="node4" href="$classutilities_1_1dsl_1_1Term.html" title="Base class for all elements of the DSL." alt="" coords="43,5,182,47"/>
 </map>

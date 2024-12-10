@@ -1,19 +1,17 @@
 var searchData=
 [
-  ['indexablecontainerbase_232',['IndexableContainerBase',['../classutilities_1_1IndexableContainerBase.html',1,'utilities']]],
-  ['indexablecontainerbase_3c_20range_3c_20elementtype_20_3e_20_3e_233',['IndexableContainerBase&lt; Range&lt; ElementType &gt; &gt;',['../classutilities_1_1IndexableContainerBase.html',1,'utilities']]],
-  ['indexablecontainerbase_3c_20zip_3c_20containers_2e_2e_2e_20_3e_20_3e_234',['IndexableContainerBase&lt; Zip&lt; Containers... &gt; &gt;',['../classutilities_1_1IndexableContainerBase.html',1,'utilities']]],
-  ['inputiteratorbase_235',['InputIteratorBase',['../classutilities_1_1iterators_1_1InputIteratorBase.html',1,'utilities::iterators']]],
-  ['is_5fbidirectional_5fiterator_236',['is_bidirectional_iterator',['../structutilities_1_1is__bidirectional__iterator.html',1,'utilities']]],
-  ['is_5fcontainer_237',['is_container',['../structutilities_1_1is__container.html',1,'utilities']]],
-  ['is_5findexable_238',['is_indexable',['../structutilities_1_1is__indexable.html',1,'utilities']]],
-  ['is_5findexable_3c_20t_2c_20typename_20voidtype_3c_20decltype_28std_3a_3adeclval_3c_20t_20_3e_28_29_5b0_5d_29_3e_3a_3atype_20_3e_239',['is_indexable&lt; T, typename VoidType&lt; decltype(std::declval&lt; T &gt;()[0])&gt;::type &gt;',['../structutilities_1_1is__indexable_3_01T_00_01typename_01VoidType_3_01decltype_07std_1_1declval_3_e36cb9467602774b885ccc2b25a87a84.html',1,'utilities']]],
-  ['is_5finput_5fiterator_240',['is_input_iterator',['../structutilities_1_1is__input__iterator.html',1,'utilities']]],
-  ['is_5fiterator_241',['is_iterator',['../structutilities_1_1is__iterator.html',1,'utilities']]],
-  ['is_5frandom_5faccess_5fiterator_242',['is_random_access_iterator',['../structutilities_1_1is__random__access__iterator.html',1,'utilities']]],
-  ['isprintable_243',['IsPrintable',['../structutilities_1_1type__traits_1_1IsPrintable.html',1,'utilities::type_traits']]],
-  ['isprintable_3c_20t_2c_20std_3a_3avoid_5ft_3c_20detail_5f_3a_3aresult_5fof_5finsertion_3c_20t_20_3e_20_3e_20_3e_244',['IsPrintable&lt; T, std::void_t&lt; detail_::result_of_insertion&lt; T &gt; &gt; &gt;',['../structutilities_1_1type__traits_1_1IsPrintable_3_01T_00_01std_1_1void__t_3_01detail___1_1result_01a759b69b8b85aeaa0e46baf82b3767.html',1,'utilities::type_traits']]],
-  ['istuple_245',['IsTuple',['../structutilities_1_1type__traits_1_1tuple_1_1IsTuple.html',1,'utilities::type_traits::tuple']]],
-  ['istuple_3c_20std_3a_3apair_3c_20t_2c_20u_20_3e_20_3e_246',['IsTuple&lt; std::pair&lt; T, U &gt; &gt;',['../structutilities_1_1type__traits_1_1tuple_1_1IsTuple_3_01std_1_1pair_3_01T_00_01U_01_4_01_4.html',1,'utilities::type_traits::tuple']]],
-  ['istuple_3c_20std_3a_3atuple_3c_20args_2e_2e_2e_20_3e_20_3e_247',['IsTuple&lt; std::tuple&lt; Args... &gt; &gt;',['../structutilities_1_1type__traits_1_1tuple_1_1IsTuple_3_01std_1_1tuple_3_01Args_8_8_8_01_4_01_4.html',1,'utilities::type_traits::tuple']]]
+  ['has_5farrow_231',['has_arrow',['../structutilities_1_1has__arrow.html',1,'utilities']]],
+  ['has_5farrow_3c_20t_2c_20typename_20voidtype_3c_20decltype_28std_3a_3adeclval_3c_20t_20_3e_28_29_2eoperator_2d_3e_28_29_29_3e_3a_3atype_20_3e_232',['has_arrow&lt; T, typename VoidType&lt; decltype(std::declval&lt; T &gt;().operator-&gt;())&gt;::type &gt;',['../structutilities_1_1has__arrow_3_01T_00_01typename_01VoidType_3_01decltype_07std_1_1declval_3_01Tc2e084b9cef720d782218e5746e3baf5.html',1,'utilities']]],
+  ['has_5fdereference_233',['has_dereference',['../structutilities_1_1has__dereference.html',1,'utilities']]],
+  ['has_5fdereference_3c_20t_2c_20typename_20voidtype_3c_20decltype_28_2astd_3a_3adeclval_3c_20t_20_3e_28_29_29_3e_3a_3atype_20_3e_234',['has_dereference&lt; T, typename VoidType&lt; decltype(*std::declval&lt; T &gt;())&gt;::type &gt;',['../structutilities_1_1has__dereference_3_01T_00_01typename_01VoidType_3_01decltype_07_5std_1_1declvf530c08b2e833f04bbccaec8d005ee1a.html',1,'utilities']]],
+  ['has_5fpostfix_5fdecrement_235',['has_postfix_decrement',['../structutilities_1_1has__postfix__decrement.html',1,'utilities']]],
+  ['has_5fpostfix_5fdecrement_3c_20t_2c_20typename_20voidtype_3c_20decltype_28std_3a_3adeclval_3c_20t_20_3e_28_29_20_2d_2d_29_3e_3a_3atype_20_3e_236',['has_postfix_decrement&lt; T, typename VoidType&lt; decltype(std::declval&lt; T &gt;() --)&gt;::type &gt;',['../structutilities_1_1has__postfix__decrement_3_01T_00_01typename_01VoidType_3_01decltype_07std_1_189de70649f76f38765574e30217d956d.html',1,'utilities']]],
+  ['has_5fpostfix_5fincrement_237',['has_postfix_increment',['../structutilities_1_1has__postfix__increment.html',1,'utilities']]],
+  ['has_5fpostfix_5fincrement_3c_20t_2c_20typename_20voidtype_3c_20decltype_28std_3a_3adeclval_3c_20t_20_3e_28_29_2b_2b_29_3e_3a_3atype_20_3e_238',['has_postfix_increment&lt; T, typename VoidType&lt; decltype(std::declval&lt; T &gt;()++)&gt;::type &gt;',['../structutilities_1_1has__postfix__increment_3_01T_00_01typename_01VoidType_3_01decltype_07std_1_10d94e0a57d4a324f9146bbcb393f1467.html',1,'utilities']]],
+  ['has_5fprefix_5fdecrement_239',['has_prefix_decrement',['../structutilities_1_1has__prefix__decrement.html',1,'utilities']]],
+  ['has_5fprefix_5fdecrement_3c_20t_2c_20typename_20voidtype_3c_20decltype_28_2d_2dstd_3a_3adeclval_3c_20t_20_3e_28_29_29_3e_3a_3atype_20_3e_240',['has_prefix_decrement&lt; T, typename VoidType&lt; decltype(--std::declval&lt; T &gt;())&gt;::type &gt;',['../structutilities_1_1has__prefix__decrement_3_01T_00_01typename_01VoidType_3_01decltype_07--std_1_6eca0d7d721834388c670a1a20244a9f.html',1,'utilities']]],
+  ['has_5fprefix_5fincrement_241',['has_prefix_increment',['../structutilities_1_1has__prefix__increment.html',1,'utilities']]],
+  ['has_5fprefix_5fincrement_3c_20t_2c_20typename_20voidtype_3c_20decltype_28_2b_2bstd_3a_3adeclval_3c_20t_20_3e_28_29_29_3e_3a_3atype_20_3e_242',['has_prefix_increment&lt; T, typename VoidType&lt; decltype(++std::declval&lt; T &gt;())&gt;::type &gt;',['../structutilities_1_1has__prefix__increment_3_01T_00_01typename_01VoidType_3_01decltype_07_09_09stf2cc41068d5dfe0687b63a3abe932aa2.html',1,'utilities']]],
+  ['has_5ftype_243',['has_type',['../structutilities_1_1type__traits_1_1tuple_1_1detail___1_1has__type.html',1,'utilities::type_traits::tuple::detail_']]],
+  ['has_5ftype_3c_20type2look4_2c_20std_3a_3atuple_3c_20tupletypes_2e_2e_2e_20_3e_20_3e_244',['has_type&lt; Type2Look4, std::tuple&lt; TupleTypes... &gt; &gt;',['../structutilities_1_1type__traits_1_1tuple_1_1detail___1_1has__type_3_01Type2Look4_00_01std_1_1tup4bc50b9408bb49259e69e63585ec4611.html',1,'utilities::type_traits::tuple::detail_']]]
 ];

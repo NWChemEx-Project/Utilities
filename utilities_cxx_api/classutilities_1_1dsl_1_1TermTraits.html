@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">utilities
-   &#160;<span id="projectnumber">0.1.21</span>
+   &#160;<span id="projectnumber">0.1.22</span>
    </div>
   </td>
  </tr>
@@ -68,6 +68,7 @@ $(function() {
 <div class="header">
   <div class="summary">
 <a href="#pub-types">Public Types</a> &#124;
+<a href="#pub-static-methods">Static Public Member Functions</a> &#124;
 <a href="#pub-static-attribs">Static Public Attributes</a> &#124;
 <a href="classutilities_1_1dsl_1_1TermTraits-members.html">List of all members</a>  </div>
   <div class="headertitle">
@@ -91,9 +92,26 @@ Public Types</h2></td></tr>
 <tr class="memitem:a20be0872de940d2281f5e9a931021b37"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classutilities_1_1dsl_1_1TermTraits.html#a20be0872de940d2281f5e9a931021b37">reference</a> = std::conditional_t&lt; <a class="el" href="classutilities_1_1dsl_1_1TermTraits.html#aa6d9b7e6f62b8a88ba1ac47d2f787f7c">is_const_v</a>, <a class="el" href="classutilities_1_1dsl_1_1TermTraits.html#a1d210892370791b4a876f4e381aa3cc6">const_reference</a>, <a class="el" href="classutilities_1_1dsl_1_1TermTraits.html#a6b353bee1c493fbb04fbdecd6983c042">value_type</a> &amp; &gt;</td></tr>
 <tr class="memdesc:a20be0872de940d2281f5e9a931021b37"><td class="mdescLeft">&#160;</td><td class="mdescRight">The type of a (possibly) mutable reference to an object of type <code>T</code>.  <a href="classutilities_1_1dsl_1_1TermTraits.html#a20be0872de940d2281f5e9a931021b37">More...</a><br /></td></tr>
 <tr class="separator:a20be0872de940d2281f5e9a931021b37"><td class="memSeparator" colspan="2">&#160;</td></tr>
-<tr class="memitem:ae120036da1197b954f1c628009e68d64"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classutilities_1_1dsl_1_1TermTraits.html#ae120036da1197b954f1c628009e68d64">holder_type</a> = std::conditional_t&lt; <a class="el" href="classutilities_1_1dsl_1_1TermTraits.html#a6a29b69f45d0feddb981864d66a0b0d4">is_dsl_term_v</a>, <a class="el" href="classutilities_1_1dsl_1_1TermTraits.html#a6b353bee1c493fbb04fbdecd6983c042">value_type</a>, <a class="el" href="classutilities_1_1dsl_1_1TermTraits.html#a20be0872de940d2281f5e9a931021b37">reference</a> &gt;</td></tr>
-<tr class="memdesc:ae120036da1197b954f1c628009e68d64"><td class="mdescLeft">&#160;</td><td class="mdescRight">The type terms will hold <code>T</code> as.  <a href="classutilities_1_1dsl_1_1TermTraits.html#ae120036da1197b954f1c628009e68d64">More...</a><br /></td></tr>
-<tr class="separator:ae120036da1197b954f1c628009e68d64"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:acff96e8ad8a512e9c035e86d405f9165"><td class="memItemLeft" align="right" valign="top"><a id="acff96e8ad8a512e9c035e86d405f9165"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>const_pointer</b> = const <a class="el" href="classutilities_1_1dsl_1_1TermTraits.html#a6b353bee1c493fbb04fbdecd6983c042">value_type</a> *</td></tr>
+<tr class="separator:acff96e8ad8a512e9c035e86d405f9165"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a6e2d4f37ad9512d519e7b8fc2721bb63"><td class="memItemLeft" align="right" valign="top"><a id="a6e2d4f37ad9512d519e7b8fc2721bb63"></a>
+using&#160;</td><td class="memItemRight" valign="bottom"><b>pointer</b> = std::conditional_t&lt; <a class="el" href="classutilities_1_1dsl_1_1TermTraits.html#aa6d9b7e6f62b8a88ba1ac47d2f787f7c">is_const_v</a>, const_pointer, <a class="el" href="classutilities_1_1dsl_1_1TermTraits.html#a6b353bee1c493fbb04fbdecd6983c042">value_type</a> * &gt;</td></tr>
+<tr class="separator:a6e2d4f37ad9512d519e7b8fc2721bb63"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:ad628bd406f07423f7c73332a6d48ad36"><td class="memItemLeft" align="right" valign="top">using&#160;</td><td class="memItemRight" valign="bottom"><a class="el" href="classutilities_1_1dsl_1_1TermTraits.html#ad628bd406f07423f7c73332a6d48ad36">holder_type</a> = std::conditional_t&lt; <a class="el" href="classutilities_1_1dsl_1_1TermTraits.html#a6a29b69f45d0feddb981864d66a0b0d4">is_dsl_term_v</a>, <a class="el" href="classutilities_1_1dsl_1_1TermTraits.html#a6b353bee1c493fbb04fbdecd6983c042">value_type</a>, pointer &gt;</td></tr>
+<tr class="memdesc:ad628bd406f07423f7c73332a6d48ad36"><td class="mdescLeft">&#160;</td><td class="mdescRight">The type terms will hold <code>T</code> as.  <a href="classutilities_1_1dsl_1_1TermTraits.html#ad628bd406f07423f7c73332a6d48ad36">More...</a><br /></td></tr>
+<tr class="separator:ad628bd406f07423f7c73332a6d48ad36"><td class="memSeparator" colspan="2">&#160;</td></tr>
+</table><table class="memberdecls">
+<tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-methods"></a>
+Static Public Member Functions</h2></td></tr>
+<tr class="memitem:a042ffe505c97dbb8c5baf753367993d5"><td class="memTemplParams" colspan="2">template&lt;typename U &gt; </td></tr>
+<tr class="memitem:a042ffe505c97dbb8c5baf753367993d5"><td class="memTemplItemLeft" align="right" valign="top">static decltype(auto)&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classutilities_1_1dsl_1_1TermTraits.html#a042ffe505c97dbb8c5baf753367993d5">make_holder</a> (U &amp;&amp;input)</td></tr>
+<tr class="memdesc:a042ffe505c97dbb8c5baf753367993d5"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wraps the process of converting <code>input</code> into holder_type.  <a href="classutilities_1_1dsl_1_1TermTraits.html#a042ffe505c97dbb8c5baf753367993d5">More...</a><br /></td></tr>
+<tr class="separator:a042ffe505c97dbb8c5baf753367993d5"><td class="memSeparator" colspan="2">&#160;</td></tr>
+<tr class="memitem:a3460508cd7a53cc84da92c2474284ced"><td class="memTemplParams" colspan="2">template&lt;typename U &gt; </td></tr>
+<tr class="memitem:a3460508cd7a53cc84da92c2474284ced"><td class="memTemplItemLeft" align="right" valign="top">static decltype(auto)&#160;</td><td class="memTemplItemRight" valign="bottom"><a class="el" href="classutilities_1_1dsl_1_1TermTraits.html#a3460508cd7a53cc84da92c2474284ced">unwrap_holder</a> (U &amp;&amp;input)</td></tr>
+<tr class="memdesc:a3460508cd7a53cc84da92c2474284ced"><td class="mdescLeft">&#160;</td><td class="mdescRight">Wraps the logic of unwrapping a holder_type object.  <a href="classutilities_1_1dsl_1_1TermTraits.html#a3460508cd7a53cc84da92c2474284ced">More...</a><br /></td></tr>
+<tr class="separator:a3460508cd7a53cc84da92c2474284ced"><td class="memSeparator" colspan="2">&#160;</td></tr>
 </table><table class="memberdecls">
 <tr class="heading"><td colspan="2"><h2 class="groupheader"><a name="pub-static-attribs"></a>
 Static Public Attributes</h2></td></tr>
@@ -137,8 +155,8 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
-<a id="ae120036da1197b954f1c628009e68d64"></a>
-<h2 class="memtitle"><span class="permalink"><a href="#ae120036da1197b954f1c628009e68d64">&#9670;&nbsp;</a></span>holder_type</h2>
+<a id="ad628bd406f07423f7c73332a6d48ad36"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#ad628bd406f07423f7c73332a6d48ad36">&#9670;&nbsp;</a></span>holder_type</h2>
 
 <div class="memitem">
 <div class="memproto">
@@ -146,7 +164,7 @@ template&lt;typename T &gt; </div>
 template&lt;typename T &gt; </div>
       <table class="memname">
         <tr>
-          <td class="memname">using <a class="el" href="classutilities_1_1dsl_1_1TermTraits.html">utilities::dsl::TermTraits</a>&lt; T &gt;::<a class="el" href="classutilities_1_1dsl_1_1TermTraits.html#ae120036da1197b954f1c628009e68d64">holder_type</a> =  std::conditional_t&lt;<a class="el" href="classutilities_1_1dsl_1_1TermTraits.html#a6a29b69f45d0feddb981864d66a0b0d4">is_dsl_term_v</a>, <a class="el" href="classutilities_1_1dsl_1_1TermTraits.html#a6b353bee1c493fbb04fbdecd6983c042">value_type</a>, <a class="el" href="classutilities_1_1dsl_1_1TermTraits.html#a20be0872de940d2281f5e9a931021b37">reference</a>&gt;</td>
+          <td class="memname">using <a class="el" href="classutilities_1_1dsl_1_1TermTraits.html">utilities::dsl::TermTraits</a>&lt; T &gt;::<a class="el" href="classutilities_1_1dsl_1_1TermTraits.html#ad628bd406f07423f7c73332a6d48ad36">holder_type</a> =  std::conditional_t&lt;<a class="el" href="classutilities_1_1dsl_1_1TermTraits.html#a6a29b69f45d0feddb981864d66a0b0d4">is_dsl_term_v</a>, <a class="el" href="classutilities_1_1dsl_1_1TermTraits.html#a6b353bee1c493fbb04fbdecd6983c042">value_type</a>, pointer&gt;</td>
         </tr>
       </table>
 </div><div class="memdoc">
@@ -198,6 +216,109 @@ template&lt;typename T &gt; </div>
 
 </div>
 </div>
+<h2 class="groupheader">Member Function Documentation</h2>
+<a id="a042ffe505c97dbb8c5baf753367993d5"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a042ffe505c97dbb8c5baf753367993d5">&#9670;&nbsp;</a></span>make_holder()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<div class="memtemplate">
+template&lt;typename U &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static decltype(auto) <a class="el" href="classutilities_1_1dsl_1_1TermTraits.html">utilities::dsl::TermTraits</a>&lt; T &gt;::make_holder </td>
+          <td>(</td>
+          <td class="paramtype">U &amp;&amp;&#160;</td>
+          <td class="paramname"><em>input</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Wraps the process of converting <code>input</code> into holder_type. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">U</td><td>The type of <code>input</code>. Assumed to be implicitly convertible to holder_type (if holder type is value-like) or to be the type of value that holder_type points to (if holder_type is pointer like).</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>Objects are held differently depending on whether or not the DSL needs to manage their lifetime. This method wraps the logic for converting <code>input</code> into a holder_type object.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">input</td><td>The value to convert to a holder.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">None</td><td>No throw guarantee </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
+<a id="a3460508cd7a53cc84da92c2474284ced"></a>
+<h2 class="memtitle"><span class="permalink"><a href="#a3460508cd7a53cc84da92c2474284ced">&#9670;&nbsp;</a></span>unwrap_holder()</h2>
+
+<div class="memitem">
+<div class="memproto">
+<div class="memtemplate">
+template&lt;typename T &gt; </div>
+<div class="memtemplate">
+template&lt;typename U &gt; </div>
+<table class="mlabels">
+  <tr>
+  <td class="mlabels-left">
+      <table class="memname">
+        <tr>
+          <td class="memname">static decltype(auto) <a class="el" href="classutilities_1_1dsl_1_1TermTraits.html">utilities::dsl::TermTraits</a>&lt; T &gt;::unwrap_holder </td>
+          <td>(</td>
+          <td class="paramtype">U &amp;&amp;&#160;</td>
+          <td class="paramname"><em>input</em></td><td>)</td>
+          <td></td>
+        </tr>
+      </table>
+  </td>
+  <td class="mlabels-right">
+<span class="mlabels"><span class="mlabel">inline</span><span class="mlabel">static</span></span>  </td>
+  </tr>
+</table>
+</div><div class="memdoc">
+
+<p>Wraps the logic of unwrapping a holder_type object. </p>
+<dl class="tparams"><dt>Template Parameters</dt><dd>
+  <table class="tparams">
+    <tr><td class="paramname">U</td><td>The type of <code>input</code>. Expected to be implicitly convertible to holder_type.</td></tr>
+  </table>
+  </dd>
+</dl>
+<p>This method is the inverse of <code>make_holder</code>. See the description for <code>make_holder</code> for more information.</p>
+<dl class="params"><dt>Parameters</dt><dd>
+  <table class="params">
+    <tr><td class="paramdir">[in]</td><td class="paramname">input</td><td>The holder_type object being converted.</td></tr>
+  </table>
+  </dd>
+</dl>
+<dl class="exception"><dt>Exceptions</dt><dd>
+  <table class="exception">
+    <tr><td class="paramname">None</td><td>No throw guarantee. </td></tr>
+  </table>
+  </dd>
+</dl>
+
+</div>
+</div>
 <h2 class="groupheader">Member Data Documentation</h2>
 <a id="a6a29b69f45d0feddb981864d66a0b0d4"></a>
 <h2 class="memtitle"><span class="permalink"><a href="#a6a29b69f45d0feddb981864d66a0b0d4">&#9670;&nbsp;</a></span>is_dsl_term_v</h2>
@@ -222,11 +343,12 @@ template&lt;typename T &gt; </div>
 </div><div class="memdoc">
 <b>Initial value:</b><div class="fragment"><div class="line">=</div>
 <div class="line">      std::is_base_of_v&lt;Term&lt;value_type&gt;, <a class="code" href="classutilities_1_1dsl_1_1TermTraits.html#a6b353bee1c493fbb04fbdecd6983c042">value_type</a>&gt; ||</div>
-<div class="line">      std::is_floating_point_v&lt;value_type&gt;</div>
+<div class="line">      std::is_floating_point_v&lt;value_type&gt; ||</div>
+<div class="line">      std::is_same_v&lt;value_type, std::string&gt;</div>
 <div class="ttc" id="aclassutilities_1_1dsl_1_1TermTraits_html_a6b353bee1c493fbb04fbdecd6983c042"><div class="ttname"><a href="classutilities_1_1dsl_1_1TermTraits.html#a6b353bee1c493fbb04fbdecd6983c042">utilities::dsl::TermTraits::value_type</a></div><div class="ttdeci">std::decay_t&lt; T &gt; value_type</div><div class="ttdoc">The type of T with all qualifiers removed.</div><div class="ttdef"><b>Definition:</b> term_traits.hpp:50</div></div>
 </div><!-- fragment -->
 <p>Is <code>T</code> part of the DSL layer? </p>
-<p>Terms that are part of the DSL layer are often unnamed temporaries and their storage must be handled specially. This member variable is used to determine if <code>T</code> either derives from <a class="el" href="classutilities_1_1dsl_1_1Term.html" title="Base class for all elements of the DSL.">dsl::Term</a>, or if it is a floating point type (floating point types are often specified inline as if they were part of the DSL). </p>
+<p>Terms that are part of the DSL layer are often unnamed temporaries and their storage must be handled specially. This member variable is used to determine if <code>T</code> either derives from <a class="el" href="classutilities_1_1dsl_1_1Term.html" title="Base class for all elements of the DSL.">dsl::Term</a>, or if it is a type often used to specify literals (e.g., floating point and string types are often specified inline as if they were part of the DSL). </p>
 
 </div>
 </div>

@@ -1,4 +1,5 @@
 var searchData=
 [
-  ['negation_251',['Negation',['../structutilities_1_1Negation.html',1,'utilities']]]
+  ['mathset_264',['MathSet',['../classutilities_1_1MathSet.html',1,'utilities']]],
+  ['multiply_265',['Multiply',['../classutilities_1_1dsl_1_1Multiply.html',1,'utilities::dsl']]]
 ];

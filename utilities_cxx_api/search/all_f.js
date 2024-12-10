@@ -1,22 +1,8 @@
 var searchData=
 [
-  ['take_5funion_158',['take_union',['../classutilities_1_1MathSet.html#afb42cb65fb8dd4aa17a9cf4fced91f5e',1,'utilities::MathSet']]],
-  ['term_159',['Term',['../classutilities_1_1dsl_1_1Term.html',1,'utilities::dsl']]],
-  ['termtraits_160',['TermTraits',['../classutilities_1_1dsl_1_1TermTraits.html',1,'utilities::dsl']]],
-  ['time_5fit_161',['time_it',['../classutilities_1_1Timer.html#a6af925bbe8f07b1d72999262ec119330',1,'utilities::Timer']]],
-  ['timer_162',['Timer',['../classutilities_1_1Timer.html#a24ec269d46c0534eafe3e26780171909',1,'utilities::Timer::Timer()'],['../classutilities_1_1Timer.html',1,'utilities::Timer']]],
-  ['to_5ftuple_163',['to_tuple',['../structutilities_1_1type__traits_1_1variant_1_1detail___1_1to__tuple.html',1,'utilities::type_traits::variant::detail_']]],
-  ['to_5ftuple_3c_20std_3a_3avariant_3c_20args_2e_2e_2e_20_3e_20_3e_164',['to_tuple&lt; std::variant&lt; Args... &gt; &gt;',['../structutilities_1_1type__traits_1_1variant_1_1detail___1_1to__tuple_3_01std_1_1variant_3_01Args_8_8_8_01_4_01_4.html',1,'utilities::type_traits::variant::detail_']]],
-  ['to_5fvariant_165',['to_variant',['../structutilities_1_1type__traits_1_1tuple_1_1detail___1_1to__variant.html',1,'utilities::type_traits::tuple::detail_']]],
-  ['to_5fvariant_3c_20std_3a_3atuple_3c_20args_2e_2e_2e_20_3e_20_3e_166',['to_variant&lt; std::tuple&lt; Args... &gt; &gt;',['../structutilities_1_1type__traits_1_1tuple_1_1detail___1_1to__variant_3_01std_1_1tuple_3_01Args_8_8_8_01_4_01_4.html',1,'utilities::type_traits::tuple::detail_']]],
-  ['to_5fvariant_5ft_167',['to_variant_t',['../tuple_2variant_8hpp.html#ab14b8d6db0735108a51e9bf02ad2ae2a',1,'utilities::type_traits::tuple']]],
-  ['todo_20list_168',['Todo List',['../todo.html',1,'']]],
-  ['tuple_2ehpp_169',['tuple.hpp',['../variant_2tuple_8hpp.html',1,'']]],
-  ['tuple_5faccumulate_170',['tuple_accumulate',['../namespaceutilities.html#ae651021596ff36720a7654eb78fce2b5',1,'utilities']]],
-  ['tuple_5faccumulate_5fimpl_171',['tuple_accumulate_impl',['../tuple__utilities_8hpp.html#a3758b4759605d7c6ca9bb4d5e69fdb57',1,'utilities::detail_']]],
-  ['tuple_5ffind_5fif_172',['tuple_find_if',['../namespaceutilities.html#a2be3eccba3a5a2e170aec27390a6d1d5',1,'utilities']]],
-  ['tuple_5ftransform_173',['tuple_transform',['../namespaceutilities.html#ad027649c245bd7e411e2155305cef0b2',1,'utilities::tuple_transform(tuple_type &amp;&amp;tuple, functor_type &amp;&amp;functor)'],['../namespaceutilities.html#ace8cac62cfa90cdf3463f1112b5b6bcc',1,'utilities::tuple_transform(lhs_type &amp;&amp;lhs, rhs_type &amp;&amp;rhs, functor_type &amp;&amp;functor)']]],
-  ['tuple_5ftransform_5fimpl_174',['tuple_transform_impl',['../tuple__utilities_8hpp.html#a65f6b0b27eb811af5dfe47680247ea92',1,'utilities::detail_::tuple_transform_impl(tuple_type &amp;&amp;tuple, functor_type &amp;&amp;functor, std::index_sequence&lt; I... &gt;)'],['../tuple__utilities_8hpp.html#ae5545286e54a5a7e81fd3d97d18aca72',1,'utilities::detail_::tuple_transform_impl(lhs_type &amp;&amp;lhs, rhs_type &amp;&amp;rhs, functor_type &amp;&amp;functor, std::index_sequence&lt; I... &gt;)']]],
-  ['tuple_5futilities_2ehpp_175',['tuple_utilities.hpp',['../tuple__utilities_8hpp.html',1,'']]],
-  ['type_176',['type',['../structutilities_1_1type__traits_1_1variant_1_1detail___1_1AddConst_3_01std_1_1variant_3_01Args_8_8_8_01_4_01_4.html#a25fa1db43a3e2bb6e8e8356c1bf72316',1,'utilities::type_traits::variant::detail_::AddConst&lt; std::variant&lt; Args... &gt; &gt;::type()'],['../structutilities_1_1type__traits_1_1variant_1_1detail___1_1variant__prod.html#ac88e9cac590d168e73e51b550cfd2646',1,'utilities::type_traits::variant::detail_::variant_prod::type()']]]
+  ['size_164',['size',['../classutilities_1_1IndexableContainerBase.html#a44d61c5622fad0691278da6aed0ffad4',1,'utilities::IndexableContainerBase::size()'],['../classutilities_1_1MathSet.html#ab8454232d0498d058e0f617d9257daba',1,'utilities::MathSet::size()']]],
+  ['size_5ftype_165',['size_type',['../classutilities_1_1IndexableContainerBase.html#abffb9e1bccc5e96f6a255e3879cf5cbd',1,'utilities::IndexableContainerBase::size_type()'],['../classutilities_1_1MathSet.html#ae46ad1cab222e71c72aa252d0783156c',1,'utilities::MathSet::size_type()'],['../classutilities_1_1Range.html#aa676614c38fa5b05bdbaafec860d030e',1,'utilities::Range::size_type()'],['../classutilities_1_1Zip.html#a41bc821607e6ccc11a0bbdafdb3b27f0',1,'utilities::Zip::size_type()'],['../classutilities_1_1iterators_1_1OffsetIterator.html#a00abd3e87e713cdaff487b479dd54849',1,'utilities::iterators::OffsetIterator::size_type()']]],
+  ['subtract_166',['Subtract',['../classutilities_1_1dsl_1_1Subtract.html',1,'utilities::dsl']]],
+  ['symmetric_5fdifference_167',['symmetric_difference',['../classutilities_1_1MathSet.html#a5f5472e7149329cb5164e574cb11655f',1,'utilities::MathSet']]],
+  ['symmetric_5fdifference_5fassign_168',['symmetric_difference_assign',['../classutilities_1_1MathSet.html#a77e8d3683c0ae8f032448984bc14e1d9',1,'utilities::MathSet']]]
 ];

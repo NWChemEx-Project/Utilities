@@ -1,5 +1,4 @@
 var searchData=
 [
-  ['mathset_249',['MathSet',['../classutilities_1_1MathSet.html',1,'utilities']]],
-  ['multiply_250',['Multiply',['../classutilities_1_1dsl_1_1Multiply.html',1,'utilities::dsl']]]
+  ['lettercomparer_5f_263',['LetterComparer_',['../structutilities_1_1detail___1_1CaseInsensitiveLess___1_1LetterComparer__.html',1,'utilities::detail_::CaseInsensitiveLess_']]]
 ];

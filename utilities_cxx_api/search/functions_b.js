@@ -1,6 +1,7 @@
 var searchData=
 [
-  ['size_342',['size',['../classutilities_1_1IndexableContainerBase.html#a44d61c5622fad0691278da6aed0ffad4',1,'utilities::IndexableContainerBase::size()'],['../classutilities_1_1MathSet.html#ab8454232d0498d058e0f617d9257daba',1,'utilities::MathSet::size() const noexcept']]],
-  ['symmetric_5fdifference_343',['symmetric_difference',['../classutilities_1_1MathSet.html#a5f5472e7149329cb5164e574cb11655f',1,'utilities::MathSet']]],
-  ['symmetric_5fdifference_5fassign_344',['symmetric_difference_assign',['../classutilities_1_1MathSet.html#a77e8d3683c0ae8f032448984bc14e1d9',1,'utilities::MathSet']]]
+  ['range_358',['Range',['../classutilities_1_1Range.html#a48a05a44b53b709ef80b636ed7f3ece8',1,'utilities::Range::Range(ElementType range_end) noexcept'],['../classutilities_1_1Range.html#a16fa024f07d057500187db50dbd3144b',1,'utilities::Range::Range(ElementType range_begin, ElementType range_end, size_type inc=1) noexcept']]],
+  ['record_359',['record',['../classutilities_1_1Timer.html#a29e0c333dbdb835d7ed3885ffdbaff9b',1,'utilities::Timer']]],
+  ['reset_360',['reset',['../classutilities_1_1Timer.html#a3c220cce95a9ab336b329a60863e8315',1,'utilities::Timer']]],
+  ['rhs_361',['rhs',['../classutilities_1_1dsl_1_1BinaryOp.html#a05aaf85c0d590c69332decdface5ab7e',1,'utilities::dsl::BinaryOp::rhs()'],['../classutilities_1_1dsl_1_1BinaryOp.html#ab7ce1bc32f46eba5938c80dca8f8bbfc',1,'utilities::dsl::BinaryOp::rhs() const']]]
 ];

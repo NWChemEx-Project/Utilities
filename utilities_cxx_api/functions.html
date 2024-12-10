@@ -22,7 +22,7 @@
  <tr style="height: 56px;">
   <td id="projectalign" style="padding-left: 0.5em;">
    <div id="projectname">utilities
-   &#160;<span id="projectnumber">0.1.21</span>
+   &#160;<span id="projectnumber">0.1.22</span>
    </div>
   </td>
  </tr>
@@ -76,9 +76,6 @@ $(function() {
 : <a class="el" href="classutilities_1_1IndexableContainerBase.html#a42154c41ac8331aaaef69b616e093ee5">utilities::IndexableContainerBase&lt; DerivedType &gt;</a>
 , <a class="el" href="classutilities_1_1MathSet.html#a183b982a525316dd8a918da398d361e5">utilities::MathSet&lt; element_type &gt;</a>
 </li>
-<li>BinaryOp()
-: <a class="el" href="classutilities_1_1dsl_1_1BinaryOp.html#a8a4257ae26258c38283e4b785369b1a1">utilities::dsl::BinaryOp&lt; DerivedType, LHSType, RHSType &gt;</a>
-</li>
 </ul>
 
 
@@ -97,6 +94,9 @@ $(function() {
 </li>
 <li>const_lhs_reference
 : <a class="el" href="classutilities_1_1dsl_1_1BinaryOp.html#a9b14f933eac638ac3676ae5515ed3c6a">utilities::dsl::BinaryOp&lt; DerivedType, LHSType, RHSType &gt;</a>
+</li>
+<li>const_object_reference
+: <a class="el" href="classutilities_1_1dsl_1_1NAryOp.html#ab36402697d93369948e0c844bf1bfc9a">utilities::dsl::NAryOp&lt; DerivedType, Args &gt;</a>
 </li>
 <li>const_reference
 : <a class="el" href="classutilities_1_1dsl_1_1TermTraits.html#a1d210892370791b4a876f4e381aa3cc6">utilities::dsl::TermTraits&lt; T &gt;</a>
@@ -153,7 +153,7 @@ $(function() {
 
 <h3><a id="index_h"></a>- h -</h3><ul>
 <li>holder_type
-: <a class="el" href="classutilities_1_1dsl_1_1TermTraits.html#ae120036da1197b954f1c628009e68d64">utilities::dsl::TermTraits&lt; T &gt;</a>
+: <a class="el" href="classutilities_1_1dsl_1_1TermTraits.html#ad628bd406f07423f7c73332a6d48ad36">utilities::dsl::TermTraits&lt; T &gt;</a>
 </li>
 </ul>
 
@@ -207,6 +207,9 @@ $(function() {
 
 
 <h3><a id="index_m"></a>- m -</h3><ul>
+<li>make_holder()
+: <a class="el" href="classutilities_1_1dsl_1_1TermTraits.html#a042ffe505c97dbb8c5baf753367993d5">utilities::dsl::TermTraits&lt; T &gt;</a>
+</li>
 <li>MathSet()
 : <a class="el" href="classutilities_1_1MathSet.html#ac3b77280d1600cc28084912d19c5fd9c">utilities::MathSet&lt; element_type &gt;</a>
 </li>
@@ -216,12 +219,29 @@ $(function() {
 </ul>
 
 
+<h3><a id="index_n"></a>- n -</h3><ul>
+<li>NAryOp
+: <a class="el" href="classutilities_1_1dsl_1_1NAryOp.html#a5d9ece965ce773168bd4b13566b3b221">utilities::dsl::NAryOp&lt; DerivedType, Args &gt;</a>
+</li>
+</ul>
+
+
 <h3><a id="index_o"></a>- o -</h3><ul>
+<li>object()
+: <a class="el" href="classutilities_1_1dsl_1_1NAryOp.html#a479ec7a0d35f08ee97c25aa3413719ed">utilities::dsl::NAryOp&lt; DerivedType, Args &gt;</a>
+</li>
+<li>object_reference
+: <a class="el" href="classutilities_1_1dsl_1_1NAryOp.html#ac7912db5ffb3dcf13e07e372224d81d4">utilities::dsl::NAryOp&lt; DerivedType, Args &gt;</a>
+</li>
+<li>object_type
+: <a class="el" href="classutilities_1_1dsl_1_1NAryOp.html#a3039a3abd3545a3970c6d46681ffe83e">utilities::dsl::NAryOp&lt; DerivedType, Args &gt;</a>
+</li>
 <li>OffsetIterator()
-: <a class="el" href="classutilities_1_1iterators_1_1OffsetIterator.html#a2983d0022cdb16e5e6b79ae7b7570d39">utilities::iterators::OffsetIterator&lt; ContainerType &gt;</a>
+: <a class="el" href="classutilities_1_1iterators_1_1OffsetIterator.html#a0163a137654845acbdb7bf2b14cc6017">utilities::iterators::OffsetIterator&lt; ContainerType &gt;</a>
 </li>
 <li>operator!=()
 : <a class="el" href="classutilities_1_1dsl_1_1BinaryOp.html#ad86ecb584c8faf05ecadb95676970444">utilities::dsl::BinaryOp&lt; DerivedType, LHSType, RHSType &gt;</a>
+, <a class="el" href="classutilities_1_1dsl_1_1NAryOp.html#a4d42133005c951c03a449b4dfbef5cbd">utilities::dsl::NAryOp&lt; DerivedType, Args &gt;</a>
 , <a class="el" href="classutilities_1_1IndexableContainerBase.html#a71944cf326d967694d7394081e67c166">utilities::IndexableContainerBase&lt; DerivedType &gt;</a>
 , <a class="el" href="classutilities_1_1iterators_1_1InputIteratorBase.html#aad20a3a17e5f9943008112b00f8f2c47">utilities::iterators::InputIteratorBase&lt; ParentType &gt;</a>
 , <a class="el" href="classutilities_1_1MathSet.html#ad506f8768c2f967f3db701553e12573b">utilities::MathSet&lt; element_type &gt;</a>
@@ -239,7 +259,7 @@ $(function() {
 , <a class="el" href="structutilities_1_1iterators_1_1RandomAccessIteratorBase.html#a942223007a00a9ecadae2bc818fb1885">utilities::iterators::RandomAccessIteratorBase&lt; ParentType &gt;</a>
 </li>
 <li>operator++()
-: <a class="el" href="classutilities_1_1iterators_1_1InputIteratorBase.html#a7130bfdbfbcb17d4545a12d7b4ae8718">utilities::iterators::InputIteratorBase&lt; ParentType &gt;</a>
+: <a class="el" href="classutilities_1_1iterators_1_1InputIteratorBase.html#a67ef028f5619ca1837f19a93e260349b">utilities::iterators::InputIteratorBase&lt; ParentType &gt;</a>
 </li>
 <li>operator+=()
 : <a class="el" href="structutilities_1_1iterators_1_1RandomAccessIteratorBase.html#aba40fa49994cd5db57e6c6237030261a">utilities::iterators::RandomAccessIteratorBase&lt; ParentType &gt;</a>
@@ -277,6 +297,7 @@ $(function() {
 </li>
 <li>operator==()
 : <a class="el" href="classutilities_1_1dsl_1_1BinaryOp.html#a5d7bdc26dd238dda2bc6b9eafbea7617">utilities::dsl::BinaryOp&lt; DerivedType, LHSType, RHSType &gt;</a>
+, <a class="el" href="classutilities_1_1dsl_1_1NAryOp.html#a17d2c279f6b6473fe2822e2f5f2eff05">utilities::dsl::NAryOp&lt; DerivedType, Args &gt;</a>
 , <a class="el" href="classutilities_1_1IndexableContainerBase.html#a36214ed92d82cef2963cbba092bbbefd">utilities::IndexableContainerBase&lt; DerivedType &gt;</a>
 , <a class="el" href="classutilities_1_1iterators_1_1InputIteratorBase.html#a0cf23f56e4236bd05c49feb993ddbdc0">utilities::iterators::InputIteratorBase&lt; ParentType &gt;</a>
 , <a class="el" href="classutilities_1_1MathSet.html#a711db54e75e43668c9212a2b1c956069">utilities::MathSet&lt; element_type &gt;</a>
@@ -380,6 +401,9 @@ $(function() {
 <h3><a id="index_u"></a>- u -</h3><ul>
 <li>union_assign()
 : <a class="el" href="classutilities_1_1MathSet.html#ab4b6b18497b7d5c34a3d2f12928e9c27">utilities::MathSet&lt; element_type &gt;</a>
+</li>
+<li>unwrap_holder()
+: <a class="el" href="classutilities_1_1dsl_1_1TermTraits.html#a3460508cd7a53cc84da92c2474284ced">utilities::dsl::TermTraits&lt; T &gt;</a>
 </li>
 </ul>
 
