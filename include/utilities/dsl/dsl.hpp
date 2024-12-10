@@ -16,7 +16,10 @@
 
 #pragma once
 #include <utilities/dsl/add.hpp>
+#include <utilities/dsl/binary_op.hpp>
 #include <utilities/dsl/divide.hpp>
+#include <utilities/dsl/function_call.hpp>
 #include <utilities/dsl/multiply.hpp>
+#include <utilities/dsl/n_ary_op.hpp>
 #include <utilities/dsl/subtract.hpp>
 #include <utilities/dsl/term.hpp>

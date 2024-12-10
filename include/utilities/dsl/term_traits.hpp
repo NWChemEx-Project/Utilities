@@ -72,13 +72,14 @@ public:
      *
      *  Terms that are part of the DSL layer are often unnamed temporaries and
      *  their storage must be handled specially. This member variable is used
-     *  to determine if @p T either derives from dsl::Term, or if it is a
-     *  floating point type (floating point types are often specified inline as
-     *  if they were part of the DSL).
+     *  to determine if @p T either derives from dsl::Term, or if it is a type
+     *  often used to specify literals (e.g., floating point and string types
+     *  are often specified inline as if they were part of the DSL).
      */
     static constexpr bool is_dsl_term_v =
       std::is_base_of_v<Term<value_type>, value_type> ||
-      std::is_floating_point_v<value_type>;
+      std::is_floating_point_v<value_type> ||
+      std::is_same_v<value_type, std::string>;
 
     /** @brief The type terms will hold @p T as.
      *

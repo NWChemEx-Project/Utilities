@@ -71,6 +71,26 @@ TEST_CASE("TermTraits<const double>") {
     STATIC_REQUIRE(std::is_same_v<traits::holder_type, double>);
 }
 
+TEST_CASE("TermTraits<std::string>") {
+    using traits = dsl::TermTraits<std::string>;
+    STATIC_REQUIRE_FALSE(traits::is_const_v);
+    STATIC_REQUIRE(std::is_same_v<traits::value_type, std::string>);
+    STATIC_REQUIRE(std::is_same_v<traits::const_reference, const std::string&>);
+    STATIC_REQUIRE(std::is_same_v<traits::reference, std::string&>);
+    STATIC_REQUIRE(traits::is_dsl_term_v);
+    STATIC_REQUIRE(std::is_same_v<traits::holder_type, std::string>);
+}
+
+TEST_CASE("TermTraits<const std::string>") {
+    using traits = dsl::TermTraits<const std::string>;
+    STATIC_REQUIRE(traits::is_const_v);
+    STATIC_REQUIRE(std::is_same_v<traits::value_type, std::string>);
+    STATIC_REQUIRE(std::is_same_v<traits::const_reference, const std::string&>);
+    STATIC_REQUIRE(std::is_same_v<traits::reference, const std::string&>);
+    STATIC_REQUIRE(traits::is_dsl_term_v);
+    STATIC_REQUIRE(std::is_same_v<traits::holder_type, std::string>);
+}
+
 TEST_CASE("TermTraits<Add<int, double>>") {
     using op_t   = dsl::Add<int, double>;
     using traits = dsl::TermTraits<op_t>;

@@ -17,6 +17,7 @@
 #pragma once
 #include <type_traits>
 #include <utilities/dsl/dsl_fwd.hpp>
+#include <utilities/dsl/dsl_traits.hpp>
 #include <utility>
 
 namespace utilities::dsl {
@@ -32,13 +33,17 @@ namespace utilities::dsl {
  */
 template<typename DerivedType>
 class Term {
+private:
+    template<typename T>
+    using enable_if_term_t = std::enable_if_t<is_term_v<T>>;
+
 public:
     /** @brief Adds *this to @p rhs.
      *
      *  @tparam RHSType The type of @p rhs.
      *
-     *  This method will create an object representing left addition by *this
-     *  to @p rhs.
+     *  This method will create an object representing left addition by
+     * *this to @p rhs.
      *
      *  @param[in] rhs The object to *this will be added.
      *
@@ -47,7 +52,7 @@ public:
      */
     template<typename RHSType>
     auto operator+(RHSType&& rhs) {
-        auto& lhs      = static_cast<DerivedType&>(*this);
+        auto& lhs      = downcast();
         using no_ref_t = std::remove_reference_t<RHSType>;
         return Add<DerivedType, no_ref_t>(lhs, std::forward<RHSType>(rhs));
     }
@@ -56,8 +61,8 @@ public:
      *
      *  @tparam RHSType The type of @p rhs.
      *
-     *  This method will create an object representing subtracting @p rhs from
-     *  *this.
+     *  This method will create an object representing subtracting @p rhs
+     * from *this.
      *
      *  @param[in] rhs The object to be subtracted from *this.
      *
@@ -66,7 +71,7 @@ public:
      */
     template<typename RHSType>
     auto operator-(RHSType&& rhs) {
-        auto& lhs      = static_cast<DerivedType&>(*this);
+        auto& lhs      = downcast();
         using no_ref_t = std::remove_reference_t<RHSType>;
         return Subtract<DerivedType, no_ref_t>(lhs, std::forward<RHSType>(rhs));
     }
@@ -75,8 +80,8 @@ public:
      *
      *  @tparam RHSType The type of @p rhs.
      *
-     *  This method will create an object representing left multiplication by
-     *  *this to @p rhs.
+     *  This method will create an object representing left multiplication
+     * by *this to @p rhs.
      *
      *  @param[in] rhs The object *this will be multiply.
      *
@@ -85,7 +90,7 @@ public:
      */
     template<typename RHSType>
     auto operator*(RHSType&& rhs) {
-        auto& lhs      = static_cast<DerivedType&>(*this);
+        auto& lhs      = downcast();
         using no_ref_t = std::remove_reference_t<RHSType>;
         return Multiply<DerivedType, no_ref_t>(lhs, std::forward<RHSType>(rhs));
     }
@@ -104,7 +109,7 @@ public:
      */
     template<typename RHSType>
     auto operator/(RHSType&& rhs) {
-        auto& lhs      = static_cast<DerivedType&>(*this);
+        auto& lhs      = downcast();
         using no_ref_t = std::remove_reference_t<RHSType>;
         return Divide<DerivedType, no_ref_t>(lhs, std::forward<RHSType>(rhs));
     }
@@ -114,6 +119,8 @@ public:
     decltype(auto) downcast() const {
         return static_cast<const DerivedType&>(*this);
     }
+
+private:
 };
 
 } // namespace utilities::dsl

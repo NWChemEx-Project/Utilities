@@ -32,6 +32,14 @@ TEST_CASE("Term") {
     using lhs_type = utilities::dsl::Add<int, int>;
     lhs_type a(four, two);
 
+    SECTION("operator=") {
+        int four1(0), two1(0);
+        lhs_type b(four1, two1);
+        b = a;
+        REQUIRE(b.lhs() == four);
+        REQUIRE(b.rhs() == two);
+    }
+
     SECTION("operator+") {
         utilities::dsl::Add<lhs_type, int> corr(a, forty_two);
         REQUIRE((a + forty_two) == corr);

@@ -37,6 +37,9 @@ class Divide;
 template<typename LHSType, typename RHSType>
 class Multiply;
 
+template<typename DerivedType, typename... Args>
+class NAryOp;
+
 template<typename LHSType, typename RHSType>
 class Subtract;
 

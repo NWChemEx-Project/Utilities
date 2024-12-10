@@ -17,8 +17,7 @@
 #pragma once
 #include <tuple>
 #include <type_traits>
-#include <utilities/dsl/term.hpp>
-#include <utilities/dsl/term_traits.hpp>
+#include <utilities/dsl/n_ary_op.hpp>
 
 namespace utilities::dsl {
 
@@ -34,8 +33,11 @@ namespace utilities::dsl {
  *  implemented by this class.
  */
 template<typename DerivedType, typename LHSType, typename RHSType>
-class BinaryOp : public Term<DerivedType> {
+class BinaryOp : public NAryOp<DerivedType, LHSType, RHSType> {
 private:
+    /// Type *this inherits from
+    using base_type = NAryOp<DerivedType, LHSType, RHSType>;
+
     /// Works out the types associated with LHSType
     using lhs_traits = TermTraits<LHSType>;
 
@@ -61,23 +63,8 @@ public:
     /// Type acting like `const rhs_type&`.
     using const_rhs_reference = typename rhs_traits::const_reference;
 
-    /** @brief Creates a new binary operation by aliasing @p l and @p r.
-     *
-     *  Generally speaking binary operations will want to alias the terms on
-     *  the left and right of the operator (as opposed to copying them or taking
-     *  ownership). This ctor takes references to the two objects and stores
-     *  them internally as `TermTraits<T>::holder_type` objects (where T is
-     *  @p LHSType and @p RHSType respectively for @p lhs and @p rhs). Thus
-     *  whether *this ultimately owns the objects referenced by @p lhs and
-     *  @p rhs are controlled by the respective specializations of `TermTraits`.
-     *
-     *  @param[in] l An alias to the object on the left side of the operator.
-     *  @param[in] r An alias to the object on the right side of the operator.
-     *
-     *  @throw ??? Throws if converting either @p l or @p r to the holder type
-     *             throws. Same throw guarantee.
-     */
-    BinaryOp(lhs_reference l, rhs_reference r) : m_lhs_(l), m_rhs_(r) {}
+    /// Uses the base class's ctors
+    using base_type::base_type;
 
     // -------------------------------------------------------------------------
     // -- Getters and setters
@@ -96,7 +83,7 @@ public:
      *  @throw ??? Throws if converting from the held type to lhs_reference
      *             throws. Same throw guarantee.
      */
-    lhs_reference lhs() { return m_lhs_; }
+    lhs_reference lhs() { return this->template object<0>(); }
 
     /** @brief Returns a read-only reference to the object on the left of the
      *         operator.
@@ -110,7 +97,7 @@ public:
      *  @throw ??? Throws if converting from the held type to
      *             const_lhs_reference throws. Same throw guarantee.
      */
-    const_lhs_reference lhs() const { return m_lhs_; }
+    const_lhs_reference lhs() const { return this->template object<0>(); }
 
     /** @brief Returns a (possibly) mutable reference to the object on the right
      *         of the operator.
@@ -125,7 +112,7 @@ public:
      *  @throw ??? Throws if converting from the held type to rhs_reference
      *             throws. Same throw guarantee.
      */
-    rhs_reference rhs() { return m_rhs_; }
+    rhs_reference rhs() { return this->template object<1>(); }
 
     /** @brief Returns a read-only reference to the object on the right of the
      *         operator.
@@ -139,84 +126,7 @@ public:
      *  @throw ??? Throws if converting from the held type to
      *             const_rhs_reference throws. Same throw guarantee.
      */
-    const_rhs_reference rhs() const { return m_rhs_; }
-
-    // -------------------------------------------------------------------------
-    // -- Utility methods
-    // -------------------------------------------------------------------------
-
-    /** @brief Is *this the same binary op as @p other?
-     *
-     *  @tparam DerivedType2 The type @p other implements.
-     *  @tparam LHSType2 The type of lhs in @p other.
-     *  @tparam RHSType2 The type of rhs in @p other.
-     *
-     *  Two BinaryOp objects are the same if they:
-     *  - Implement the same operation, e.g., both are implementing addition,
-     *  - Both have the same value of lhs, and
-     *  - Both have the same value of rhs.
-     *
-     *  It should be noted that following C++ convention, value comparisons are
-     *  done with const references and thus the const-ness of @tparam LHSType
-     *  and @tparam RHSType vs the respective const-ness of @tparam LHSType2
-     *  and @tparam RHSType2 is not considered.
-     *
-     *  @param[in] other The object to compare to.
-     *
-     *  @return True if *this is value equal and false otherwise.
-     *
-     *  @throw None No throw guarantee.
-     */
-    template<typename DerivedType2, typename LHSType2, typename RHSType2>
-    bool operator==(
-      const BinaryOp<DerivedType2, LHSType2, RHSType2>& other) const noexcept;
-
-    /** @brief Is *this different than @p other?
-     *
-     *  @tparam DerivedType2 The type @p other implements.
-     *  @tparam LHSType2 The type of lhs in @p other.
-     *  @tparam RHSType2 The type of rhs in @p other.
-     *
-     *  This method defines "different" as not value equal. See the description
-     *  for operator== for the definition of value equal.
-     *
-     *  @param[in] other The object to compare to *this.
-     *
-     *  @return False if *this is value equal to @p other and true otherwise.
-     *
-     *  @throw None No throw guarantee.
-     */
-    template<typename DerivedType2, typename LHSType2, typename RHSType2>
-    bool operator!=(
-      const BinaryOp<DerivedType2, LHSType2, RHSType2>& other) const noexcept {
-        return !((*this) == other);
-    }
-
-private:
-    /// The object on the left side of the operator
-    typename lhs_traits::holder_type m_lhs_;
-
-    /// The object on the right side of the operator
-    typename rhs_traits::holder_type m_rhs_;
+    const_rhs_reference rhs() const { return this->template object<1>(); }
 };
-
-// -----------------------------------------------------------------------------
-// -- Out of line inline definitions
-// -----------------------------------------------------------------------------
-
-template<typename DerivedType, typename LHSType, typename RHSType>
-template<typename DerivedType2, typename LHSType2, typename RHSType2>
-bool BinaryOp<DerivedType, LHSType, RHSType>::operator==(
-  const BinaryOp<DerivedType2, LHSType2, RHSType2>& other) const noexcept {
-    using lhs2_type       = typename TermTraits<LHSType2>::value_type;
-    using rhs2_type       = typename TermTraits<RHSType2>::value_type;
-    constexpr auto l_same = std::is_same_v<lhs_type, lhs2_type>;
-    constexpr auto r_same = std::is_same_v<rhs_type, rhs2_type>;
-    if constexpr(l_same && r_same) {
-        return std::tie(lhs(), rhs()) == std::tie(other.lhs(), other.rhs());
-    } else {
-        return false;
-    }
-}
 
 } // namespace utilities::dsl
