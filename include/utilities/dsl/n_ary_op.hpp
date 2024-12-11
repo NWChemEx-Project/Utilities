@@ -71,7 +71,7 @@ public:
      *             throws. Same throw guarantee.
      */
     template<typename... Args2>
-    NAryOp(Args2&&... args) :
+    explicit NAryOp(Args2&&... args) :
       m_objects_(TermTraits<std::decay_t<Args2>>::make_holder(
         std::forward<Args2>(args))...) {}
 
