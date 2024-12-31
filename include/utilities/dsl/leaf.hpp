@@ -3,6 +3,12 @@
 
 namespace utilities::dsl {
 
+/** @brief Type-erases a node of the abstract syntax tree.
+ *
+ *  This class type-erases a true leaf of the AST (nodes with no descendents)
+ *  or an effective leaf (node and descendents of that node are treated as
+ *  a single entity).
+ */
 class Leaf {
 private:
     /// Base type of the holder
@@ -167,22 +173,57 @@ public:
      */
     void reset() noexcept { m_holder_ = nullptr; }
 
+    /** @brief Exchanges the state of *this with that of @p other.
+     *
+     *  @param[in,out] other The object to swap state with. After this operation
+     *                       @p other will contain the state which was
+     *                       previously in *this.
+     *
+     *  @throw None No throw guarantee.
+     */
     void swap(Leaf& other) { m_holder_.swap(other.m_holder_); }
 
-    bool operator==(const Leaf& rhs) noexcept {
+    /** @brief Determines if *this and @p rhs are value equal.
+     *
+     *  Two leaves are value equal if:
+     *  1. They both are empty, or
+     *  2. They both contain objects and the objects compare value equal.
+     *
+     *  @param[in] rhs The leaf to compare to.
+     *
+     *  @return True if *this and @p rhs are value equal and false otherwise.
+     *
+     *  @throw None No throw guarantee.
+     */
+    bool operator==(const Leaf& rhs) const noexcept {
         if(has_value() != rhs.has_value()) return false;
         if(!has_value()) return true;
         return m_holder_->are_equal(*rhs.m_holder_);
     }
 
-    bool operator!=(const Leaf& rhs) noexcept { return !((*this) == rhs); }
+    /** @brief Determines if *this differs from @p rhs.
+     *
+     *  Two leaves differ if they are not value equal. See the description of
+     *  operator== for the definition of value equal.
+     *
+     *  @param[in] rhs The leaf to compare to.
+     *
+     *  @return False if *this and @p rhs are value equal and true otherwise.
+     *
+     *  @throw None No throw guarantee.
+     */
+    bool operator!=(const Leaf& rhs) const noexcept {
+        return !((*this) == rhs);
+    }
 
 private:
+    /// Wraps asserting that *this holds a value
     void assert_value_() const {
         if(has_value()) return;
         throw std::runtime_error("Leaf does not wrap a value.");
     }
 
+    /// Wraps asserting that *this can be converted to type @p T
     template<typename T>
     void assert_convertible_() const {
         assert_value_();
@@ -190,17 +231,44 @@ private:
         throw std::runtime_error("Wrapped object is not convertible to T");
     }
 
+    /// The type-erased object
     leaf_pointer m_holder_;
 };
 
+/** @brief Wraps an object in a Leaf object.
+ *
+ *  @tparam T The type of the object to wrap.
+ *
+ *  @param[in] value The object to wrap in a Leaf.
+ *
+ *  @return A newly constructed Leaf object wrapping @p value.
+ */
 template<typename T>
 auto make_leaf(T&& value) {
     using holder_type = detail_::QualifiedLeafHolder<T&&>;
     return Leaf(std::make_unique<holder_type>(std::forward<T>(value)));
 }
 
-template<typename T>
-auto unwrap_leaf(Leaf& leaf) {
+/** @brief Extracts an object from a Leaf object.
+ *
+ *  @param T The cv-qualified type of the object to unwrap.
+ *
+ *  This free function is the preferred means of unwrapping a Leaf object. This
+ *  call wraps calling `value` method of @p leaf.
+ *
+ *  @param[in] leaf The Leaf object to extract the object from.
+ *
+ *  @return The unwrapped object.
+ *
+ *  @throw std::runtime_error if @p leaf does not contain a value or if the
+ *                            object in @p leaf can not be unwrapped to type
+ *                            @p T.
+ */
+template<typename T, typename LeafType>
+decltype(auto) unwrap_leaf(LeafType&& leaf) {
+    using clean_type = std::decay_t<LeafType>;
+    static_assert(std::is_same_v<clean_type, Leaf>, "Input must be a Leaf.");
+
     return leaf.template value<T>();
 }
 

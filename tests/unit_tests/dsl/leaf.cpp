@@ -78,6 +78,24 @@ TEMPLATE_LIST_TEST_CASE("Leaf", "", types_to_test) {
         REQUIRE(&ref0 == &value0);
 
         cref ref1 = wrap_cref.template value<ctype>();
+        REQUIRE(ref1 == cvalue0);
+        REQUIRE(&ref1 == &cvalue0);
+
+        ref ref2   = wrap_value.template value<type>();
+        cref cref2 = wrap_value.template value<ctype>();
+        REQUIRE(ref2 == value0);
+        REQUIRE(cref2 == value0);
+
+        cref ref3 = wrap_cvalue.template value<ctype>();
+        REQUIRE(ref3 == cvalue0);
+
+        ref ref4   = wrap_rref.template value<type>();
+        cref cref4 = wrap_rref.template value<ctype>();
+        REQUIRE(ref4 == value1);
+        REQUIRE(cref4 == value1);
+
+        cref ref5 = wrap_crref.template value<ctype>();
+        REQUIRE(ref5 == cvalue1);
 
         using except_t = std::runtime_error;
         REQUIRE_THROWS_AS(defaulted.template value<type>(), except_t);
@@ -99,6 +117,44 @@ TEMPLATE_LIST_TEST_CASE("Leaf", "", types_to_test) {
         REQUIRE(&ref0 == &cref0);
         REQUIRE(ref0 == value0);
         REQUIRE(&ref0 == &value0);
+
+        cref ref1 = wrap_cref.template value<ctype>();
+        REQUIRE(ref1 == cvalue0);
+        REQUIRE(&ref1 == &cvalue0);
+
+        cref ref2  = wrap_value.template value<type>();
+        cref cref2 = wrap_value.template value<ctype>();
+        REQUIRE(ref2 == value0);
+        REQUIRE(cref2 == value0);
+
+        cref ref3 = wrap_cvalue.template value<ctype>();
+        REQUIRE(ref3 == cvalue0);
+
+        cref ref4  = wrap_rref.template value<type>();
+        cref cref4 = wrap_rref.template value<ctype>();
+        REQUIRE(ref4 == value1);
+        REQUIRE(cref4 == value1);
+
+        cref ref5 = wrap_crref.template value<ctype>();
+        REQUIRE(ref5 == cvalue1);
+
+        using except_t = std::runtime_error;
+        REQUIRE_THROWS_AS(defaulted.template value<type>(), except_t);
+        REQUIRE_THROWS_AS(wrap_cref.template value<type>(), except_t);
+    }
+
+    SECTION("reset") {
+        REQUIRE(wrap_ref.has_value());
+        wrap_ref.reset();
+        REQUIRE_FALSE(wrap_ref.has_value());
+    }
+
+    SECTION("swap") {
+        Leaf copy_wrap_ref(wrap_ref);
+        Leaf copy_wrap_rref(wrap_rref);
+        wrap_ref.swap(wrap_rref);
+        REQUIRE(wrap_ref == copy_wrap_rref);
+        REQUIRE(wrap_rref == copy_wrap_ref);
     }
 
     SECTION("operator==") {
@@ -128,5 +184,37 @@ TEMPLATE_LIST_TEST_CASE("Leaf", "", types_to_test) {
         // Just negates operator== so spot checking is fine.
         REQUIRE(defaulted != wrap_ref);
         REQUIRE_FALSE(wrap_ref != wrap_cref);
+    }
+
+    SECTION("unwrap_leaf") {
+        ref ref0   = unwrap_leaf<type>(wrap_ref);
+        cref cref0 = unwrap_leaf<ctype>(wrap_ref);
+        REQUIRE(&ref0 == &cref0);
+        REQUIRE(ref0 == value0);
+        REQUIRE(&ref0 == &value0);
+
+        cref ref1 = unwrap_leaf<ctype>(wrap_cref);
+        REQUIRE(ref1 == cvalue0);
+        REQUIRE(&ref1 == &cvalue0);
+
+        ref ref2   = unwrap_leaf<type>(wrap_value);
+        cref cref2 = unwrap_leaf<ctype>(wrap_value);
+        REQUIRE(ref2 == value0);
+        REQUIRE(cref2 == value0);
+
+        cref ref3 = unwrap_leaf<ctype>(wrap_cvalue);
+        REQUIRE(ref3 == cvalue0);
+
+        ref ref4   = unwrap_leaf<type>(wrap_rref);
+        cref cref4 = unwrap_leaf<ctype>(wrap_rref);
+        REQUIRE(ref4 == value1);
+        REQUIRE(cref4 == value1);
+
+        cref ref5 = unwrap_leaf<ctype>(wrap_crref);
+        REQUIRE(ref5 == cvalue1);
+
+        using except_t = std::runtime_error;
+        REQUIRE_THROWS_AS(unwrap_leaf<type>(defaulted), except_t);
+        REQUIRE_THROWS_AS(unwrap_leaf<type>(wrap_cref), except_t);
     }
 }
