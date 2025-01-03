@@ -1,11 +1,7 @@
 var searchData=
 [
-  ['take_5funion_365',['take_union',['../classutilities_1_1MathSet.html#afb42cb65fb8dd4aa17a9cf4fced91f5e',1,'utilities::MathSet']]],
-  ['time_5fit_366',['time_it',['../classutilities_1_1Timer.html#a6af925bbe8f07b1d72999262ec119330',1,'utilities::Timer']]],
-  ['timer_367',['Timer',['../classutilities_1_1Timer.html#a24ec269d46c0534eafe3e26780171909',1,'utilities::Timer']]],
-  ['tuple_5faccumulate_368',['tuple_accumulate',['../namespaceutilities.html#ae651021596ff36720a7654eb78fce2b5',1,'utilities']]],
-  ['tuple_5faccumulate_5fimpl_369',['tuple_accumulate_impl',['../tuple__utilities_8hpp.html#a3758b4759605d7c6ca9bb4d5e69fdb57',1,'utilities::detail_']]],
-  ['tuple_5ffind_5fif_370',['tuple_find_if',['../namespaceutilities.html#a2be3eccba3a5a2e170aec27390a6d1d5',1,'utilities']]],
-  ['tuple_5ftransform_371',['tuple_transform',['../namespaceutilities.html#ad027649c245bd7e411e2155305cef0b2',1,'utilities::tuple_transform(tuple_type &amp;&amp;tuple, functor_type &amp;&amp;functor)'],['../namespaceutilities.html#ace8cac62cfa90cdf3463f1112b5b6bcc',1,'utilities::tuple_transform(lhs_type &amp;&amp;lhs, rhs_type &amp;&amp;rhs, functor_type &amp;&amp;functor)']]],
-  ['tuple_5ftransform_5fimpl_372',['tuple_transform_impl',['../tuple__utilities_8hpp.html#a65f6b0b27eb811af5dfe47680247ea92',1,'utilities::detail_::tuple_transform_impl(tuple_type &amp;&amp;tuple, functor_type &amp;&amp;functor, std::index_sequence&lt; I... &gt;)'],['../tuple__utilities_8hpp.html#ae5545286e54a5a7e81fd3d97d18aca72',1,'utilities::detail_::tuple_transform_impl(lhs_type &amp;&amp;lhs, rhs_type &amp;&amp;rhs, functor_type &amp;&amp;functor, std::index_sequence&lt; I... &gt;)']]]
+  ['range_398',['Range',['../classutilities_1_1Range.html#a48a05a44b53b709ef80b636ed7f3ece8',1,'utilities::Range::Range(ElementType range_end) noexcept'],['../classutilities_1_1Range.html#a16fa024f07d057500187db50dbd3144b',1,'utilities::Range::Range(ElementType range_begin, ElementType range_end, size_type inc=1) noexcept']]],
+  ['record_399',['record',['../classutilities_1_1Timer.html#a29e0c333dbdb835d7ed3885ffdbaff9b',1,'utilities::Timer']]],
+  ['reset_400',['reset',['../classutilities_1_1dsl_1_1Leaf.html#a64fb24e55b24fe1a3fd9a26585de1971',1,'utilities::dsl::Leaf::reset()'],['../classutilities_1_1Timer.html#a3c220cce95a9ab336b329a60863e8315',1,'utilities::Timer::reset()']]],
+  ['rhs_401',['rhs',['../classutilities_1_1dsl_1_1BinaryOp.html#a05aaf85c0d590c69332decdface5ab7e',1,'utilities::dsl::BinaryOp::rhs()'],['../classutilities_1_1dsl_1_1BinaryOp.html#ab7ce1bc32f46eba5938c80dca8f8bbfc',1,'utilities::dsl::BinaryOp::rhs() const']]]
 ];

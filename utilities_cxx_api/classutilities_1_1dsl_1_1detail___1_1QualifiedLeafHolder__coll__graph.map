@@ -1,0 +1,5 @@
+<map id="utilities::dsl::detail_::QualifiedLeafHolder&lt; T &gt;" name="utilities::dsl::detail_::QualifiedLeafHolder&lt; T &gt;">
+<area shape="rect" id="node1" title="Leaf holder accounting for aliasing vs. copying." alt="" coords="5,199,209,240"/>
+<area shape="rect" id="node2" href="$classutilities_1_1dsl_1_1detail___1_1LeafHolder.html" title=" " alt="" coords="7,95,208,151"/>
+<area shape="rect" id="node3" href="$classutilities_1_1dsl_1_1detail___1_1LeafHolderBase.html" title="Defines API for interacting with type&#45;erased leaf objects." alt="" coords="36,5,179,47"/>
+</map>

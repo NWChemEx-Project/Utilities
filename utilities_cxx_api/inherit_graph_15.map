@@ -1,3 +1,7 @@
 <map id="Graphical Class Hierarchy" name="Graphical Class Hierarchy">
-<area shape="rect" id="node1" href="$structutilities_1_1Negation.html" title="Sets the member value to the opposite of the input value." alt="" coords="5,5,181,32"/>
+<area shape="rect" id="node1" href="$classutilities_1_1iterators_1_1InputIteratorBase.html" title="This class is designed to facilitate making your own input iterator class." alt="" coords="5,45,160,101"/>
+<area shape="rect" id="node2" href="$structutilities_1_1iterators_1_1BidirectionalIteratorBase.html" title="This class is designed to facilitate making your own bidirectional iterator class." alt="" coords="208,45,400,101"/>
+<area shape="rect" id="node3" href="$structutilities_1_1iterators_1_1RandomAccessIteratorBase.html" title=" " alt="" coords="448,5,711,61"/>
+<area shape="rect" id="node5" href="$structutilities_1_1iterators_1_1RandomAccessIteratorBase.html" title="This class is designed to facilitate making your own random access iterator class." alt="" coords="475,85,684,141"/>
+<area shape="rect" id="node4" href="$classutilities_1_1iterators_1_1OffsetIterator.html" title="Implements a random access iterator given a random access container that defines operator[] const." alt="" coords="759,5,953,61"/>
 </map>

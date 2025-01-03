@@ -1,4 +1,4 @@
 var searchData=
 [
-  ['_7emathset_379',['~MathSet',['../classutilities_1_1MathSet.html#a0fadd2e754bceaca39c9c72a83fb5a23',1,'utilities::MathSet']]]
+  ['wordwrapstream_419',['WordWrapStream',['../classutilities_1_1printing_1_1WordWrapStream.html#ab02def432286d66cd25f4e37def706ed',1,'utilities::printing::WordWrapStream']]]
 ];

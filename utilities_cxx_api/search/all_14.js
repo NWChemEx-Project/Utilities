@@ -1,5 +1,5 @@
 var searchData=
 [
-  ['zip_202',['Zip',['../classutilities_1_1Zip.html',1,'utilities::Zip&lt; Containers &gt;'],['../classutilities_1_1Zip.html#abd671b3d6c774a1560ee47bb5b527d16',1,'utilities::Zip::Zip()']]],
-  ['zip_3c_20range_3c_20std_3a_3asize_5ft_20_3e_2c_20containers_2e_2e_2e_20_3e_203',['Zip&lt; Range&lt; std::size_t &gt;, Containers... &gt;',['../classutilities_1_1Zip.html',1,'utilities']]]
+  ['width_5ftype_222',['width_type',['../classutilities_1_1printing_1_1WordWrapStream.html#a58c85d8b1907ba93930a8b220999e204',1,'utilities::printing::WordWrapStream']]],
+  ['wordwrapstream_223',['WordWrapStream',['../classutilities_1_1printing_1_1WordWrapStream.html',1,'utilities::printing::WordWrapStream'],['../classutilities_1_1printing_1_1WordWrapStream.html#ab02def432286d66cd25f4e37def706ed',1,'utilities::printing::WordWrapStream::WordWrapStream()']]]
 ];
