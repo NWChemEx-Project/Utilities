@@ -15,7 +15,7 @@
  */
 
 #pragma once
-#include <tuple>
+#include <array>
 #include <type_traits>
 #include <utilities/dsl/leaf.hpp>
 #include <utilities/dsl/term.hpp>

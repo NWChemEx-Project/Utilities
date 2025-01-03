@@ -28,12 +28,10 @@ using namespace utilities::dsl;
 using types_to_test = std::tuple<std::string, std::vector<int>>;
 
 TEMPLATE_LIST_TEST_CASE("Leaf", "", types_to_test) {
-    using type     = TestType;
-    using ctype    = const type;
-    using ref      = type&;
-    using cref     = const type&;
-    using pointer  = type*;
-    using cpointer = const type*;
+    using type  = TestType;
+    using ctype = const type;
+    using ref   = type&;
+    using cref  = const type&;
 
     types_to_test values{"Hello world", std::vector<int>{1, 2, 3}};
     types_to_test other_values{"Hello sky", std::vector<int>{3, 2, 1}};
