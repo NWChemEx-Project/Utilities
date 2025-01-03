@@ -15,8 +15,9 @@
  */
 
 #pragma once
-#include <tuple>
+#include <array>
 #include <type_traits>
+#include <utilities/dsl/leaf.hpp>
 #include <utilities/dsl/term.hpp>
 #include <utilities/dsl/term_traits.hpp>
 
@@ -36,6 +37,9 @@ namespace utilities::dsl {
 template<typename DerivedType, typename... Args>
 class NAryOp : public Term<DerivedType> {
 private:
+    template<std::size_t I>
+    using type_i = std::tuple_element_t<I, std::tuple<Args...>>;
+
     /// Works out the types associated with each type
     using traits_types = std::tuple<TermTraits<Args>...>;
 
@@ -44,6 +48,12 @@ private:
     using traits_i_type = std::tuple_element_t<I, traits_types>;
 
 public:
+    /// The value of "N" in N-ary
+    static constexpr auto N = sizeof...(Args);
+
+    /// Type used to type-erase the "leaves" of the expression
+    using leaf_type = Leaf;
+
     /// Unqualified type of the I-th object
     template<std::size_t I>
     using object_type = typename traits_i_type<I>::value_type;
@@ -72,8 +82,7 @@ public:
      */
     template<typename... Args2>
     explicit NAryOp(Args2&&... args) :
-      m_objects_(TermTraits<std::decay_t<Args2>>::make_holder(
-        std::forward<Args2>(args))...) {}
+      m_objects_{make_leaf(std::forward<Args2>(args))...} {}
 
     // -------------------------------------------------------------------------
     // -- Getters and setters
@@ -95,7 +104,7 @@ public:
      */
     template<std::size_t I>
     object_reference<I> object() {
-        return traits_i_type<I>::unwrap_holder(std::get<I>(m_objects_));
+        return unwrap_leaf<type_i<I>>(m_objects_[I]);
     }
 
     /** @brief Returns a read-only reference to the `I`-th object in the
@@ -114,7 +123,7 @@ public:
      */
     template<std::size_t I>
     const_object_reference<I> object() const {
-        return traits_i_type<I>::unwrap_holder(std::get<I>(m_objects_));
+        return unwrap_leaf<type_i<I>>(m_objects_[I]);
     }
 
     // -------------------------------------------------------------------------
@@ -169,8 +178,8 @@ private:
     template<typename DerivedType2, typename... Args2>
     friend class NAryOp;
 
-    /// A tuple containing the arguments to *this
-    std::tuple<typename TermTraits<Args>::holder_type...> m_objects_;
+    /// The arguments to *this
+    std::array<leaf_type, N> m_objects_;
 };
 
 // -----------------------------------------------------------------------------
@@ -181,12 +190,12 @@ template<typename DerivedType, typename... Args>
 template<typename DerivedType2, typename... Args2>
 bool NAryOp<DerivedType, Args...>::operator==(
   const NAryOp<DerivedType2, Args2...>& other) const noexcept {
-    using value_type1 = std::tuple<typename TermTraits<Args>::value_type...>;
-    using value_type2 = std::tuple<typename TermTraits<Args2>::value_type...>;
-    if constexpr(std::is_same_v<value_type1, value_type2>) {
-        return m_objects_ == other.m_objects_;
-    } else {
+    using lhs_type = NAryOp<DerivedType, Args...>;
+    using rhs_type = NAryOp<DerivedType2, Args2...>;
+    if constexpr(lhs_type::N != rhs_type::N) {
         return false;
+    } else {
+        return m_objects_ == other.m_objects_;
     }
 }
 

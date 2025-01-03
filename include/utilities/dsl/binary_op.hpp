@@ -184,13 +184,6 @@ public:
       const BinaryOp<DerivedType2, LHSType2, RHSType2>& other) const noexcept {
         return !((*this) == other);
     }
-
-private:
-    /// The object on the left side of the operator
-    typename lhs_traits::holder_type m_lhs_;
-
-    /// The object on the right side of the operator
-    typename rhs_traits::holder_type m_rhs_;
 };
 
 // -----------------------------------------------------------------------------
