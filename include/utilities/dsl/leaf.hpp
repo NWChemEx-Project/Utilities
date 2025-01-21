@@ -15,9 +15,9 @@
  */
 
 #pragma once
+#include <stdexcept>
 #include <utilities/dsl/detail_/leaf_holder.hpp>
 #include <utility>
-#include <stdexcept>
 
 namespace utilities::dsl {
 
